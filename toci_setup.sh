@@ -25,5 +25,5 @@ sudo ./bm_poseur --bridge-ip=none create-bridge
 sudo service libvirt-bin restart
 
 cd $TOCI_WORKING_DIR/stackforge_diskimage-builder/
-bin/disk-image-create -u base -a i386 -o $TOCI_WORKING_DIR/incubator/base
+bin/disk-image-create -u base -a i386 -o $TOCI_WORKING_DIR/tripleo_incubator/base
 
