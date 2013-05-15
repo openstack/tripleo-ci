@@ -36,9 +36,9 @@ if [ ${TOCI_UPLOAD:-0} == 1 ] ; then
     mv result_cache.html result_cache.html.bck
     echo "<html><head/><body>" > index.html
     if [ $STATUS == 0 ] ; then
-        echo "<a href=\"$(basename $TOCI_LOG_DIR)\"\>$STARTTIME : OK\</a\>\<br/\>" > result_cache.html
+        echo "<a href=\"$(basename $TOCI_LOG_DIR)\"\>$STARTTIME : OK</a\>\<br/\>" > result_cache.html
     else
-        echo "<a style=\"COLOR: #FF0000\" href=\"$(basename $TOCI_LOG_DIR)\"\>$STARTTIME : ERR\</a\>\<br/\>" > result_cache.html
+        echo "<a style=\"COLOR: #FF0000\" href=\"$(basename $TOCI_LOG_DIR)\"\>$STARTTIME : ERR</a\>\<br/\>" > result_cache.html
     fi
     # keep only the last 100 runs
     head -n 100 result_cache.html.bck >> result_cache.html
@@ -47,6 +47,7 @@ if [ ${TOCI_UPLOAD:-0} == 1 ] ; then
     echo "</body></html>" >> index.html
 
     scp index.html ec2-user@$TOCI_RESULTS_SERVER:/var/www/html/toci/index.html
+    ssh ec2-user@$TOCI_RESULTS_SERVER "chmod -R 775 /var/www/html/toci/*"
 
 fi
 
