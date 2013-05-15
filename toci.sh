@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/usr/bin/env bash
 
 export STARTTIME=$(date)
 export TOCI_WORKING_DIR=$(mktemp -d)
