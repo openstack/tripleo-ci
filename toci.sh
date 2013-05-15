@@ -23,11 +23,11 @@ export USER=${USER:-$(whoami)}
 mkdir -p $TOCI_CACHE_DIR
 
 STATUS=0
-./toci_setup.sh > $TOCI_LOG_DIR/setup.out 2>&1 || STATUS=1
+timeout 30m ./toci_setup.sh > $TOCI_LOG_DIR/setup.out 2>&1 || STATUS=1
 if [ $STATUS == 0 ] ; then
-    ./toci_test.sh > $TOCI_LOG_DIR/test.out 2>&1 || STATUS=1
+    timeout 30m ./toci_test.sh > $TOCI_LOG_DIR/test.out 2>&1 || STATUS=1
 fi
-./toci_cleanup.sh > $TOCI_LOG_DIR/cleanup.out 2>&1 || STATUS=1
+timeout 30m ./toci_cleanup.sh > $TOCI_LOG_DIR/cleanup.out 2>&1 || STATUS=1
 
 if [ ${TOCI_UPLOAD:-0} == 1 ] ; then
     cd $(dirname $TOCI_LOG_DIR)
