@@ -17,6 +17,8 @@ echo "Starting run $STARTTIME ($TOCI_WORKING_DIR,$TOCI_LOG_DIR)"
 # env specific to this run, can contain
 # TOCI_RESULTS_SERVER, http_proxy, TOCI_UPLOAD, TOCI_REMOVE,
 source ~/.toci
+# If running in cron $USER isn't setup
+export USER=${USER:-$(whoami)}
 
 mkdir -p $TOCI_CACHE_DIR
 
