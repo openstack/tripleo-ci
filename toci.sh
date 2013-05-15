@@ -11,6 +11,7 @@ export TOCI_LOG_DIR=$(mktemp -d --tmpdir toci_logs_XXXXXXX)
 # e.g. downloaded images, git repo's etc...
 export TOCI_CACHE_DIR=/var/tmp/toci_cache
 
+RESULT_CACHE=$TOCI_CACHE_DIR/results_cache.html
 
 echo "Starting run $STARTTIME ($TOCI_WORKING_DIR,$TOCI_LOG_DIR)"
 
@@ -32,18 +33,18 @@ timeout 30m ./toci_cleanup.sh > $TOCI_LOG_DIR/cleanup.out 2>&1 || STATUS=1
 if [ ${TOCI_UPLOAD:-0} == 1 ] ; then
     cd $(dirname $TOCI_LOG_DIR)
     tar -czf - $(basename $TOCI_LOG_DIR) | ssh ec2-user@$TOCI_RESULTS_SERVER tar -C /var/www/html/toci -xzf -
-    touch result_cache.html
-    mv result_cache.html result_cache.html.bck
+    touch $RESULT_CACHE
+    mv $RESULT_CACHE result_cache.html.bck
     echo "<html><head/><body>" > index.html
     if [ $STATUS == 0 ] ; then
-        echo "<a href=\"$(basename $TOCI_LOG_DIR)\"\>$STARTTIME : OK</a\>\<br/\>" > result_cache.html
+        echo "<a href=\"$(basename $TOCI_LOG_DIR)\"\>$STARTTIME : OK</a\>\<br/\>" > $RESULT_CACHE
     else
-        echo "<a style=\"COLOR: #FF0000\" href=\"$(basename $TOCI_LOG_DIR)\"\>$STARTTIME : ERR</a\>\<br/\>" > result_cache.html
+        echo "<a style=\"COLOR: #FF0000\" href=\"$(basename $TOCI_LOG_DIR)\"\>$STARTTIME : ERR</a\>\<br/\>" > $RESULT_CACHE
     fi
     # keep only the last 100 runs
-    head -n 100 result_cache.html.bck >> result_cache.html
+    head -n 100 result_cache.html.bck >> $RESULT_CACHE
     rm result_cache.html.bck
-    cat result_cache.html >> index.html
+    cat $RESULT_CACHE >> index.html
     echo "</body></html>" >> index.html
 
     scp index.html ec2-user@$TOCI_RESULTS_SERVER:/var/www/html/toci/index.html
