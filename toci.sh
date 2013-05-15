@@ -32,11 +32,22 @@ fi
 if [ ${TOCI_UPLOAD:-0} == 1 ] ; then
     cd $(dirname $TOCI_LOG_DIR)
     tar -czf - $(basename $TOCI_LOG_DIR) | ssh ec2-user@$TOCI_RESULTS_SERVER tar -C /var/www/html/toci -xzf -
+    touch result_cache.html
+    mv result_cache.html result_cache.html.bck
+    echo "<html><head/><body>" > index.html
     if [ $STATUS == 0 ] ; then
-        ssh ec2-user@$TOCI_RESULTS_SERVER "echo \<a href=\"$(basename $TOCI_LOG_DIR)\"\>$STARTTIME : OK\</a\>\<br/\> >> /var/www/html/toci/index.html ; chmod -R 775 /var/www/html/toci/*"
+        echo "<a href=\"$(basename $TOCI_LOG_DIR)\"\>$STARTTIME : OK\</a\>\<br/\>" > result_cache.html
     else
-        ssh ec2-user@$TOCI_RESULTS_SERVER "echo \<a style=\\\"COLOR: \#FF0000\\\" href=\"$(basename $TOCI_LOG_DIR)\"\>$STARTTIME : ERR\</a\>\<br/\> >> /var/www/html/toci/index.html ; chmod -R 775 /var/www/html/toci/*"
+        echo "<a style=\"COLOR: #FF0000\" href=\"$(basename $TOCI_LOG_DIR)\"\>$STARTTIME : ERR\</a\>\<br/\>" > result_cache.html
     fi
+    # keep only the last 100 runs
+    head -n 100 result_cache.html.bck >> result_cache.html
+    rm result_cache.html.bck
+    cat result_cache.html >> index.html
+    echo "</body></html>" >> index.html
+
+    scp index.html ec2-user@$TOCI_RESULTS_SERVER:/var/www/html/toci/index.html
+
 fi
 
 if [ ${TOCI_REMOVE:-1} == 1 ] ; then
