@@ -18,3 +18,12 @@ done
 # install deps on host machine
 ./scripts/install-dependencies
 
+id | grep libvirt || ( echo "You have been added to the libvirt group, this script will now exit but will succeed if run again in a new shell" ; exit 1 )
+
+cd $TOCI_WORKING_DIR/tripleo_bm_poseur
+sudo ./bm_poseur --bridge-ip=none create-bridge
+sudo service libvirt-bin restart
+
+cd $TOCI_WORKING_DIR/stackforge_diskimage-builder/
+bin/disk-image-create -u base -a i386 -o $TOCI_WORKING_DIR/incubator/base
+
