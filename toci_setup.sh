@@ -27,3 +27,6 @@ sudo service libvirt-bin restart
 cd $TOCI_WORKING_DIR/stackforge_diskimage-builder/
 bin/disk-image-create -u base -a i386 -o $TOCI_WORKING_DIR/tripleo_incubator/base
 
+
+cd $TOCI_WORKING_DIR/tripleo_incubator
+ELEMENTS_PATH=$TOCI_WORKING_DIR/stackforge_tripleo-image-elements/elements DIB_PATH=$TOCI_WORKING_DIR/stackforge_diskimage-builder scripts/boot-elements boot-stack -o bootstrap
