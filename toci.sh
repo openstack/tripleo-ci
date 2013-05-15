@@ -37,9 +37,9 @@ if [ ${TOCI_UPLOAD:-0} == 1 ] ; then
     mv $RESULT_CACHE result_cache.html.bck
     echo "<html><head/><body>" > index.html
     if [ $STATUS == 0 ] ; then
-        echo "<a href=\"$(basename $TOCI_LOG_DIR)\"\>$STARTTIME : OK</a\>\<br/\>" > $RESULT_CACHE
+        echo "<a href=\"$(basename $TOCI_LOG_DIR)\"\>$STARTTIME : OK</a\><br/\>" > $RESULT_CACHE
     else
-        echo "<a style=\"COLOR: #FF0000\" href=\"$(basename $TOCI_LOG_DIR)\"\>$STARTTIME : ERR</a\>\<br/\>" > $RESULT_CACHE
+        echo "<a style=\"COLOR: #FF0000\" href=\"$(basename $TOCI_LOG_DIR)\"\>$STARTTIME : ERR</a\><br/\>" > $RESULT_CACHE
     fi
     # keep only the last 100 runs
     head -n 100 result_cache.html.bck >> $RESULT_CACHE
