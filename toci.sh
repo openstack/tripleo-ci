@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
 export STARTTIME=$(date)
+export TOCI_SOURCE_DIR=$PWD
+
 # All temp files should go here
 export TOCI_WORKING_DIR=$(mktemp -d --tmpdir toci_working_XXXXXXX)
 # Any files to be uploaded to results server goes here
@@ -8,6 +10,7 @@ export TOCI_LOG_DIR=$(mktemp -d --tmpdir toci_logs_XXXXXXX)
 # Files that should be cached between runs should go in here
 # e.g. downloaded images, git repo's etc...
 export TOCI_CACHE_DIR=/var/tmp/toci_cache
+
 
 echo "Starting run $STARTTIME ($TOCI_WORKING_DIR,$TOCI_LOG_DIR)"
 
