@@ -4,6 +4,8 @@ export STARTTIME=$(date)
 export TOCI_WORKING_DIR=$(mktemp -d)
 export TOCI_LOG_DIR=$(mktemp -d)
 
+RESULTS_SERVER=54.228.118.193
+
 echo $TOCI_LOG_DIR
 
 STATUS=0
@@ -15,10 +17,10 @@ fi
 ./toci_cleanup.sh > $TOCI_LOG_DIR/cleanup.out 2>&1 || STATUS=1
 
 cd $(dirname $TOCI_LOG_DIR)
-tar -czf - $(basename $TOCI_LOG_DIR) | ssh ec2-user@toci_results tar -C /var/www/html/toci -xzf -
+tar -czf - $(basename $TOCI_LOG_DIR) | ssh ec2-user@$RESULTS_SERVER tar -C /var/www/html/toci -xzf -
 
 if [ $STATUS == 0 ] ; then
-    ssh ec2-user@toci_results "echo \<a href=\"$(basename $TOCI_LOG_DIR)\"\>$STARTTIME : OK\</a\>\<br/\> >> /var/www/html/toci/index.html ; chmod -R 775 /var/www/html/toci/*"
+    ssh ec2-user@$RESULTS_SERVER "echo \<a href=\"$(basename $TOCI_LOG_DIR)\"\>$STARTTIME : OK\</a\>\<br/\> >> /var/www/html/toci/index.html ; chmod -R 775 /var/www/html/toci/*"
 else
-    ssh ec2-user@toci_results "echo \<a style=\\\"COLOR: \#FF0000\\\" href=\"$(basename $TOCI_LOG_DIR)\"\>$STARTTIME : ERR\</a\>\<br/\> >> /var/www/html/toci/index.html ; chmod -R 775 /var/www/html/toci/*"
+    ssh ec2-user@$RESULTS_SERVER "echo \<a style=\\\"COLOR: \#FF0000\\\" href=\"$(basename $TOCI_LOG_DIR)\"\>$STARTTIME : ERR\</a\>\<br/\> >> /var/www/html/toci/index.html ; chmod -R 775 /var/www/html/toci/*"
 fi
