@@ -8,14 +8,15 @@ for repo in 'tripleo/incubator' 'tripleo/bm_poseur' 'stackforge/diskimage-builde
     get_get_repo $repo
 done
 
-cd $TOCI_WORKING_DIR/tripleo_incubator
 # patches can be added to git repo's like this, this just a temp measure we need to make faster progress
 # until we get up and runing properly
+cd $TOCI_WORKING_DIR/tripleo_incubator
 for PATCH in $TOCI_SOURCE_DIR/patches/incubator* ; do
     git am $PATCH
 done
 
 # install deps on host machine
+cd $TOCI_WORKING_DIR/tripleo_incubator
 ./scripts/install-dependencies
 
 id | grep libvirt || ( echo "You have been added to the libvirt group, this script will now exit but will succeed if run again in a new shell" ; exit 1 )
@@ -29,15 +30,12 @@ bin/disk-image-create -u base -a i386 -o $TOCI_WORKING_DIR/tripleo_incubator/bas
 
 
 cd $TOCI_WORKING_DIR/tripleo_incubator
+sed -i "s/\"user\": \"stack\",/\"user\": \"`whoami`\",/" $TOCI_WORKING_DIR/stackforge_tripleo-image-elements/elements/boot-stack/config.json
 ELEMENTS_PATH=$TOCI_WORKING_DIR/stackforge_tripleo-image-elements/elements \
 DIB_PATH=$TOCI_WORKING_DIR/stackforge_diskimage-builder \
     scripts/boot-elements boot-stack -o bootstrap
 
 BOOTSTRAP_IP=`scripts/get-vm-ip bootstrap`
-
-# We're going to give it 10 minutes to finish firstboot
-for x in {0..60} ; do
-  ssh_noprompt root@$BOOTSTRAP_IP ls /opt/stack/boot-stack/boot-stack.done && break || true
-  sleep 10
-done
+# We're going to wait for it to finish firstboot
+wait_for ssh_noprompt root@$BOOTSTRAP_IP ls /opt/stack/boot-stack/boot-stack.done && break || true
 

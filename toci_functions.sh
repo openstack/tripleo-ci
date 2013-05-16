@@ -18,3 +18,11 @@ ssh_noprompt(){
 scp_noprompt(){
     scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $@
 }
+
+wait_for(){
+    for x in {0..60} ; do
+        $@ && return 0 || true
+        sleep 10
+    done
+    return 1
+}
