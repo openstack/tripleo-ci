@@ -55,3 +55,5 @@ fi
 if [ ${TOCI_REMOVE:-1} == 1 ] ; then
     rm -rf $TOCI_WORKING_DIR $TOCI_LOG_DIR
 fi
+
+echo $STATUS

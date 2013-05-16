@@ -29,4 +29,15 @@ bin/disk-image-create -u base -a i386 -o $TOCI_WORKING_DIR/tripleo_incubator/bas
 
 
 cd $TOCI_WORKING_DIR/tripleo_incubator
-ELEMENTS_PATH=$TOCI_WORKING_DIR/stackforge_tripleo-image-elements/elements DIB_PATH=$TOCI_WORKING_DIR/stackforge_diskimage-builder scripts/boot-elements boot-stack -o bootstrap
+ELEMENTS_PATH=$TOCI_WORKING_DIR/stackforge_tripleo-image-elements/elements \
+DIB_PATH=$TOCI_WORKING_DIR/stackforge_diskimage-builder \
+    scripts/boot-elements boot-stack -o bootstrap
+
+BOOTSTRAP_IP=`scripts/get-vm-ip bootstrap`
+
+# We're going to give it 10 minutes to finish firstboot
+for x in {0..60} ; do
+  ssh_noprompt root@$BOOTSTRAP_IP ls /opt/stack/boot-stack/boot-stack.done && break || true
+  sleep 10
+done
+

@@ -10,3 +10,11 @@ get_get_repo(){
     fi
     cp -r $CACHDIR $TOCI_WORKING_DIR/${1/\//_}
 }
+
+ssh_noprompt(){
+    ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $@
+}
+
+scp_noprompt(){
+    scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $@
+}
