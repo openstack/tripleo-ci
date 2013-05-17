@@ -1,0 +1,31 @@
+From 805222d71ba8d4f3d80a6ddb14ae82dc9fac01e9 Mon Sep 17 00:00:00 2001
+From: Lucas Alvares Gomes <lucasagomes@gmail.com>
+Date: Fri, 17 May 2013 12:03:04 +0100
+Subject: [PATCH 1/1] Remove yum update.
+
+Remove the yum update because we want to install some dependencies
+and not update the whole system. Audit was added to the list
+of dependencies to avoid conflict with the glibc package:
+https://bugzilla.redhat.com/show_bug.cgi?id=949745
+---
+ scripts/install-dependencies | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/scripts/install-dependencies b/scripts/install-dependencies
+index d976c98..d4abf8b 100755
+--- a/scripts/install-dependencies
++++ b/scripts/install-dependencies
+@@ -47,9 +47,8 @@ if [ "$os" = "debian" ]; then
+ fi
+ 
+ if [ "$os" = "redhat" ]; then
+-  sudo yum update -y
+   # For RHEL/CentOS, python-pip is in EPEL
+-  sudo yum install -y python-lxml libvirt-python libvirt qemu-kvm git python-pip openssl-devel python-devel gcc
++  sudo yum install -y python-lxml libvirt-python libvirt qemu-kvm git python-pip openssl-devel python-devel gcc audit
+ 
+   sudo pip-python install -U python-novaclient python-glanceclient python-heatclient python-keystoneclient
+ 
+-- 
+1.8.1.4
+

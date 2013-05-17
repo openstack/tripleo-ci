@@ -1,0 +1,61 @@
+From 3e3cbfc54eeea3a63f0629036a8c56db6dc6fc7b Mon Sep 17 00:00:00 2001
+From: Lucas Alvares Gomes <lucasagomes@gmail.com>
+Date: Fri, 17 May 2013 10:22:02 +0100
+Subject: [PATCH] Update the libvirt configuration.
+
+Management access to libvirt is controlled through membership to a unix
+group, on fedora/rhel we need to updated the libvirt configuration to
+give management access to the libvirtd group.
+---
+ scripts/install-dependencies | 28 +++++++++++++++++++---------
+ 1 file changed, 19 insertions(+), 9 deletions(-)
+
+diff --git a/scripts/install-dependencies b/scripts/install-dependencies
+index d976c98..7f8b1d2 100755
+--- a/scripts/install-dependencies
++++ b/scripts/install-dependencies
+@@ -6,15 +6,6 @@ if ! grep "$(cat ~/.ssh/id_rsa.pub)" ~/.ssh/authorized_keys >/dev/null; then
+   cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
+ fi
+ 
+-# libvirtd group
+-grep libvirtd /etc/group || sudo groupadd libvirtd
+-if ! id | grep libvirtd; then
+-   echo "adding $USER to group libvirtd"
+-   sudo usermod -a -G libvirtd $USER
+-   exec sudo su -l $USER $PWD/$0
+-   PRINT_RESTART=1
+-fi
+-
+ # packages
+ os=unsupported
+ if [ -f /etc/redhat-release ]; then
+@@ -56,6 +47,25 @@ if [ "$os" = "redhat" ]; then
+   sudo service libvirtd restart
+ fi
+ 
++# libvirtd group
++grep libvirtd /etc/group || sudo groupadd libvirtd
++if ! id | grep libvirtd; then
++   echo "adding $USER to group libvirtd"
++   sudo usermod -a -G libvirtd $USER
++
++   if [ "$os" = "redhat" ]; then
++       libvirtd_file=/etc/libvirt/libvirtd.conf
++       if ! sudo grep  "^unix_sock_group" $libvirtd_file > /dev/null; then
++           sudo sed -i 's/^#unix_sock_group.*/unix_sock_group = "libvirtd"/g' $libvirtd_file
++           sudo sed -i 's/^#auth_unix_rw.*/auth_unix_rw = "none"/g' $libvirtd_file
++           sudo sed -i 's/^#unix_sock_rw_perms.*/unix_sock_rw_perms = "0770"/g' $libvirtd_file
++           sudo service libvirtd restart
++       fi
++   fi
++
++   exec sudo su -l $USER $PWD/$0
++fi
++
+ echo "Check to see that you are in the libvirtd group in your current shell before going on. You can check by running:"
+ echo
+ echo "id | grep libvirtd"
+-- 
+1.8.1.6
+
