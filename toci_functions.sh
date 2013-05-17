@@ -39,3 +39,6 @@ apply_patches(){
     done
 }
 
+mark_time(){
+    echo $(date) : $@
+}

@@ -1,12 +1,14 @@
 #!/usr/bin/env bash
 
+. toci_functions.sh
+
 export STARTTIME=$(date)
 export TOCI_SOURCE_DIR=$PWD
 
 # All temp files should go here
 export TOCI_WORKING_DIR=$(mktemp -d --tmpdir toci_working_XXXXXXX)
 # Any files to be uploaded to results server goes here
-export TOCI_LOG_DIR=$(mktemp -d --tmpdir toci_logs_XXXXXXX)
+export TOCI_LOG_DIR=${TOCI_LOG_DIR:-$(mktemp -d --tmpdir toci_logs_XXXXXXX)}
 # Files that should be cached between runs should go in here
 # e.g. downloaded images, git repo's etc...
 export TOCI_CACHE_DIR=/var/tmp/toci_cache
@@ -24,11 +26,15 @@ export USER=${USER:-$(whoami)}
 mkdir -p $TOCI_CACHE_DIR
 
 STATUS=0
+mark_time Starting setup
 timeout 30m ./toci_setup.sh > $TOCI_LOG_DIR/setup.out 2>&1 || STATUS=1
 if [ $STATUS == 0 ] ; then
+    mark_time Starting tests
     timeout 30m ./toci_test.sh > $TOCI_LOG_DIR/test.out 2>&1 || STATUS=1
 fi
+mark_time Starting cleanup
 timeout 30m ./toci_cleanup.sh > $TOCI_LOG_DIR/cleanup.out 2>&1 || STATUS=1
+mark_time Starting finished
 
 if [ ${TOCI_UPLOAD:-0} == 1 ] ; then
     cd $(dirname $TOCI_LOG_DIR)
