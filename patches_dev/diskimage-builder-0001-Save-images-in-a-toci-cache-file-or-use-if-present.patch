@@ -1,0 +1,40 @@
+From 7688741d6693fa7b544dc64ef3c5dcfc4468cd4b Mon Sep 17 00:00:00 2001
+From: Derek Higgins <derekh@redhat.com>
+Date: Fri, 17 May 2013 12:16:09 +0100
+Subject: [PATCH] Save images in a toci cache file or use if present
+
+FOR DEV ONLY
+If you want to skip building images in place of a cached version, place 
+this file in patches.
+
+---
+ bin/disk-image-create |    9 +++++++++
+ 1 file changed, 9 insertions(+)
+
+diff --git a/bin/disk-image-create b/bin/disk-image-create
+index da16b66..ecf42d9 100755
+--- a/bin/disk-image-create
++++ b/bin/disk-image-create
+@@ -87,6 +87,13 @@ source $_LIB/img-functions
+ 
+ IMAGE_NAME=${IMAGE_NAME%%\.${IMAGE_TYPE}}
+ 
++CACHEFILE=$TOCI_CACHE_DIR/$(basename $IMAGE_NAME.$IMAGE_TYPE)
++if [ -e $CACHEFILE ] ; then
++    echo Using $CACHEFILE
++    cp $CACHEFILE $IMAGE_NAME.$IMAGE_TYPE
++    exit 0
++fi
++
+ IMAGE_ELEMENT=$($SCRIPT_HOME/element-info --expand-dependencies $IMAGE_ELEMENT)
+ 
+ echo "Building elements: $IMAGE_ELEMENT"
+@@ -138,3 +145,5 @@ finalise_base
+ unmount_image
+ compress_image
+ save_image $IMAGE_NAME.$IMAGE_TYPE
++
++cp $IMAGE_NAME.$IMAGE_TYPE $TOCI_CACHE_DIR/$(basename $IMAGE_NAME.$IMAGE_TYPE)
+-- 
+1.7.10.4
+
