@@ -26,7 +26,12 @@ wait_for 3 3 ls /var/run/libvirt/libvirt-sock
 
 cd $TOCI_WORKING_DIR/tripleo_bm_poseur
 sudo ./bm_poseur --bridge-ip=none create-bridge
-sudo service libvirt-bin restart
+
+if [ -f /etc/init.d/libvirt-bin ]; then
+  sudo service libvirt-bin restart
+else
+  sudo service libvirtd restart
+fi
 
 cd $TOCI_WORKING_DIR/stackforge_diskimage-builder/
 bin/disk-image-create -u base -a i386 -o $TOCI_WORKING_DIR/tripleo_incubator/base
