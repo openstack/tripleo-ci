@@ -1,0 +1,24 @@
+From 664d91b1dbaace845b67a8f6cf703aa51ac50a74 Mon Sep 17 00:00:00 2001
+From: Derek Higgins <derekh@redhat.com>
+Date: Thu, 16 May 2013 16:34:10 +0100
+Subject: [PATCH] Fix path to root wrap
+
+---
+ elements/nova/install.d/74-nova |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/elements/nova/install.d/74-nova b/elements/nova/install.d/74-nova
+index 4a1edaf..cfc585d 100755
+--- a/elements/nova/install.d/74-nova
++++ b/elements/nova/install.d/74-nova
+@@ -11,6 +11,6 @@ cp -a /opt/stack/nova/etc/nova/rootwrap* /etc/nova
+ 
+ ln -sf /opt/stack/venvs/nova/bin/nova-rootwrap /usr/local/bin/nova-rootwrap
+ 
+-echo "nova ALL=(root) NOPASSWD: /opt/stack/venvs/bin/nova-rootwrap" > /etc/sudoers.d/nova
++echo "nova ALL=(root) NOPASSWD: /opt/stack/venvs/nova/bin/nova-rootwrap" > /etc/sudoers.d/nova
+ chmod 0440 /etc/sudoers.d/nova
+ visudo -c
+-- 
+1.7.10.4
+
