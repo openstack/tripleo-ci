@@ -21,6 +21,9 @@ cd $TOCI_WORKING_DIR/tripleo_incubator
 
 id | grep libvirt || ( echo "You have been added to the libvirt group, this script will now exit but will succeed if run again in a new shell" ; exit 1 )
 
+# looks like libvirt somtimes takes a little time to start
+wait_for 3 3 ls /var/run/libvirt/libvirt-sock
+
 cd $TOCI_WORKING_DIR/tripleo_bm_poseur
 sudo ./bm_poseur --bridge-ip=none create-bridge
 sudo service libvirt-bin restart
@@ -37,5 +40,5 @@ DIB_PATH=$TOCI_WORKING_DIR/stackforge_diskimage-builder \
 
 BOOTSTRAP_IP=`scripts/get-vm-ip bootstrap`
 # We're going to wait for it to finish firstboot
-wait_for ssh_noprompt root@$BOOTSTRAP_IP ls /opt/stack/boot-stack/boot-stack.done && break || true
+wait_for 30 10 ssh_noprompt root@$BOOTSTRAP_IP ls /opt/stack/boot-stack/boot-stack.done
 

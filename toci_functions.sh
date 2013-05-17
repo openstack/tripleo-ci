@@ -20,9 +20,14 @@ scp_noprompt(){
 }
 
 wait_for(){
-    for x in {0..60} ; do
+    LOOPS=$1
+    SLEEPTIME=$2
+    shift ; shift
+    i=0
+    while [ $i -lt $LOOPS ] ; do
+        i=$((i + 1))
         $@ && return 0 || true
-        sleep 10
+        sleep $SLEEPTIME
     done
     return 1
 }
