@@ -25,7 +25,7 @@ id | grep libvirt || ( echo "You have been added to the libvirt group, this scri
 wait_for 3 3 ls /var/run/libvirt/libvirt-sock
 
 cd $TOCI_WORKING_DIR/tripleo_bm_poseur
-sudo ./bm_poseur --bridge-ip=none create-bridge
+sudo ./bm_poseur --bridge-ip=none create-bridge || true
 
 if [ -f /etc/init.d/libvirt-bin ]; then
   sudo service libvirt-bin restart
