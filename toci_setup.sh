@@ -10,10 +10,10 @@ done
 
 # patches can be added to git repo's like this, this just a temp measure we need to make faster progress
 # until we get up and runing properly
-cd $TOCI_WORKING_DIR/tripleo_incubator
-for PATCH in $TOCI_SOURCE_DIR/patches/incubator* ; do
-    git am $PATCH
-done
+apply_patches tripleo_incubator incubator*
+apply_patches tripleo_bm_poseur bm_poseur*
+apply_patches stackforge_diskimage-builder diskimage-builder*
+apply_patches stackforge_tripleo-image-elements tripleo-image-elements*
 
 # install deps on host machine
 cd $TOCI_WORKING_DIR/tripleo_incubator

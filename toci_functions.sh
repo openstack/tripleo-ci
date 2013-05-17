@@ -31,3 +31,11 @@ wait_for(){
     done
     return 1
 }
+
+apply_patches(){
+    cd $TOCI_WORKING_DIR/$1
+    for PATCH in $(find $TOCI_SOURCE_DIR/patches/ -name "$2") ; do
+        patch -p1 -N < $PATCH || echo Error : could not apply $PATCH >> /tmp/toci_logs/error-applying-patches.log
+    done
+}
+
