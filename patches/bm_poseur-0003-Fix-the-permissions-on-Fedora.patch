@@ -1,0 +1,57 @@
+From 38147986b6cdfa6595e770751bfaa2d8547b2d49 Mon Sep 17 00:00:00 2001
+From: Lucas Alvares Gomes <lucasagomes@gmail.com>
+Date: Fri, 17 May 2013 18:03:05 +0100
+Subject: [PATCH 1/1] Fix the permissions on Fedora.
+
+---
+ lib/actions.py | 20 ++++++++++++++++++--
+ 1 file changed, 18 insertions(+), 2 deletions(-)
+
+diff --git a/lib/actions.py b/lib/actions.py
+index f0a3e95..3bc5ac9 100755
+--- a/lib/actions.py
++++ b/lib/actions.py
+@@ -19,6 +19,7 @@ import libvirt
+ import argparse
+ import time
+ import os.path
++import pwd
+ import sys
+ import subprocess
+ from textwrap import dedent
+@@ -224,6 +225,12 @@ class actions(argparse.Action):
+         cmd = "rm -rf %s*" % self.params.image_path
+         call(cmd, shell=True)
+ 
++    def user_exist(self, user):
++        try:
++            pwd.getpwnam(user)
++            return True
++        except KeyError:
++            return True
+ 
+     def create_vms(self):
+         """ creates the first vm """
+@@ -245,8 +252,17 @@ class actions(argparse.Action):
+         cmd = 'chmod 644 %s*' % self.params.image_path
+         return_code = call(cmd, shell=True)
+ 
+-        cmd = 'sudo chown libvirt-qemu %s*' % self.params.image_path
+-        call(cmd, shell=True)
++        qemu_user=""
++        if self.user_exist("libvirt-qemu"): # Debian
++            qemu_user="libvirt-qemu"
++        if self.user_exist("qemu"): # RedHat
++            qemu_user="qemu"
++        else:
++            self._print("WARNING: QEMU user not found.")
++
++        if qemu_user:
++            cmd = 'sudo chown %s %s*' % (qemu_user, self.params.image_path)
++            call(cmd, shell=True)
+ 
+         self._print('%s vms have been created!' % str(self.params.vms))
+ 
+-- 
+1.8.1.4
+
