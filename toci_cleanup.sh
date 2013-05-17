@@ -2,7 +2,7 @@
 
 set -x
 
-for ID in $(virsh list --uuid --all); do
-  virsh destroy $ID
-  virsh undefine --remove-all-storage $ID
+for ID in $(sudo virsh list --uuid --all); do
+  sudo virsh destroy $ID
+  sudo virsh undefine --remove-all-storage $ID
 done
