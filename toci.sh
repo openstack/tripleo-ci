@@ -27,13 +27,13 @@ mkdir -p $TOCI_CACHE_DIR
 
 STATUS=0
 mark_time Starting setup
-timeout 30m ./toci_setup.sh > $TOCI_LOG_DIR/setup.out 2>&1 || STATUS=1
+timeout --foreground 30m ./toci_setup.sh > $TOCI_LOG_DIR/setup.out 2>&1 || STATUS=1
 if [ $STATUS == 0 ] ; then
     mark_time Starting tests
-    timeout 30m ./toci_test.sh > $TOCI_LOG_DIR/test.out 2>&1 || STATUS=1
+    timeout --foreground 30m ./toci_test.sh > $TOCI_LOG_DIR/test.out 2>&1 || STATUS=1
 fi
 mark_time Starting cleanup
-timeout 30m ./toci_cleanup.sh > $TOCI_LOG_DIR/cleanup.out 2>&1 || STATUS=1
+timeout --foreground 30m ./toci_cleanup.sh > $TOCI_LOG_DIR/cleanup.out 2>&1 || STATUS=1
 mark_time Starting finished
 
 if [ ${TOCI_UPLOAD:-0} == 1 ] ; then
