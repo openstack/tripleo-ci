@@ -12,9 +12,30 @@ get_get_repo(){
 }
 
 ssh_noprompt(){
-    ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $@
+    ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=QUIET $@
 }
 
 scp_noprompt(){
-    scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $@
+    scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=QUIET $@
 }
+
+wait_for(){
+    LOOPS=$1
+    SLEEPTIME=$2
+    shift ; shift
+    i=0
+    while [ $i -lt $LOOPS ] ; do
+        i=$((i + 1))
+        $@ && return 0 || true
+        sleep $SLEEPTIME
+    done
+    return 1
+}
+
+apply_patches(){
+    cd $TOCI_WORKING_DIR/$1
+    for PATCH in $(find $TOCI_SOURCE_DIR/patches/ -name "$2") ; do
+        patch -p1 -N < $PATCH || echo Error : could not apply $PATCH >> /tmp/toci_logs/error-applying-patches.log
+    done
+}
+
