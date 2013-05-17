@@ -12,11 +12,11 @@ get_get_repo(){
 }
 
 ssh_noprompt(){
-    ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $@
+    ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=QUIET $@
 }
 
 scp_noprompt(){
-    scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $@
+    scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=QUIET $@
 }
 
 wait_for(){
