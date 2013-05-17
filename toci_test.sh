@@ -19,7 +19,4 @@ MAC=`$TOCI_WORKING_DIR/tripleo_bm_poseur/bm_poseur get-macs`
 nova keypair-add --pub-key ~/.ssh/id_rsa.pub default
 nova baremetal-node-create ubuntu 1 512 10 $MAC
 
-for x in {0..30} ; do
-  ssh_noprompt root@$BOOTSTRAP_IP grep 'Free VCPUS: 1' /var/log/upstart/nova-compute.log  && break || true
-  sleep 10
-done
+wait_for ssh_noprompt root@$BOOTSTRAP_IP grep 'VCPUS' /var/log/upstart/nova-compute.log &> /dev/null && break || true
