@@ -28,7 +28,7 @@ ssh_noprompt root@$BOOTSTRAP_IP "cat /opt/stack/boot-stack/virtual-power-key.pub
 
 # Now we have to wait for the bm poseur to appear on the compute node and for the compute node to then
 # update the scheduler
-wait_for 20 10 ssh_noprompt root@$BOOTSTRAP_IP grep \'record updated for\' /var/log/upstart/nova-compute.log -A 100 \| grep \'Updating host status\'
+wait_for 40 10 ssh_noprompt root@$BOOTSTRAP_IP grep \'record updated for\' /var/log/upstart/nova-compute.log -A 100 \| grep \'Updating host status\'
 
 # I've tried all kinds of things to wait for before doing the nova boot and can't find a reliable combination,
 # I suspect I need to watch the scheduler and compute log to follow a chain of events,
@@ -38,4 +38,4 @@ sleep 67
 nova boot --flavor 256 --image base --key_name default bmtest
 
 # ping the node TODO : make this more readable and output less errors
-wait_for 20 10 ssh_noprompt root@$BOOTSTRAP_IP 'source ~/stackrc ; ping -c 1 $(nova list | grep ctlplane | sed -e "s/.*=\(.*\) .*/\1/g")'
+wait_for 40 10 ssh_noprompt root@$BOOTSTRAP_IP 'source ~/stackrc ; ping -c 1 $(nova list | grep ctlplane | sed -e "s/.*=\(.*\) .*/\1/g")'

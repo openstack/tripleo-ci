@@ -45,5 +45,5 @@ DIB_PATH=$TOCI_WORKING_DIR/stackforge_diskimage-builder \
 
 BOOTSTRAP_IP=`scripts/get-vm-ip bootstrap`
 # We're going to wait for it to finish firstboot
-wait_for 30 10 ssh_noprompt root@$BOOTSTRAP_IP ls /opt/stack/boot-stack/boot-stack.done
+wait_for 60 10 ssh_noprompt root@$BOOTSTRAP_IP ls /opt/stack/boot-stack/boot-stack.done
 
