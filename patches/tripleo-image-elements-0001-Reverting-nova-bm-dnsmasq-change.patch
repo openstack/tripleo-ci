@@ -1,0 +1,26 @@
+From 9da3adec67a6d1fb1f0964f0fe593552bed88ff2 Mon Sep 17 00:00:00 2001
+From: Derek Higgins <derekh@redhat.com>
+Date: Sat, 18 May 2013 10:08:58 +0100
+Subject: [PATCH] Reverting https://review.openstack.org/#/c/29438/1
+
+It seems to be causing "start nova-bm-dnsmasq" to never return
+during firstboot of bootstrap vm
+---
+ elements/nova-compute/install.d/80-nova-compute | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/elements/nova-compute/install.d/80-nova-compute b/elements/nova-compute/install.d/80-nova-compute
+index a9645b3..1907382 100755
+--- a/elements/nova-compute/install.d/80-nova-compute
++++ b/elements/nova-compute/install.d/80-nova-compute
+@@ -14,7 +14,6 @@ task
+ 
+ script
+   exec dnsmasq --conf-file= \\
+-               --keep-in-foreground \\
+                --port=0 \\
+                --enable-tftp \\
+                --tftp-root=/tftpboot \\
+-- 
+1.8.1.4
+
