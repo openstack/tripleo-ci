@@ -44,6 +44,10 @@ DIB_PATH=$TOCI_WORKING_DIR/stackforge_diskimage-builder \
     scripts/boot-elements boot-stack -o bootstrap
 
 BOOTSTRAP_IP=`scripts/get-vm-ip bootstrap`
+
+# Get logs from the node on error
+trap get_state_from_host ERR
+
 # We're going to wait for it to finish firstboot
 wait_for 60 10 ssh_noprompt root@$BOOTSTRAP_IP ls /opt/stack/boot-stack/boot-stack.done
 

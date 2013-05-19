@@ -6,6 +6,9 @@ set -xe
 cd $TOCI_WORKING_DIR/tripleo_incubator
 BOOTSTRAP_IP=`scripts/get-vm-ip bootstrap`
 
+# Get logs from the node on exit
+trap get_state_from_host EXIT
+
 scp_noprompt root@$BOOTSTRAP_IP:stackrc $TOCI_WORKING_DIR/stackrc
 sed -i "s/localhost/$BOOTSTRAP_IP/" $TOCI_WORKING_DIR/stackrc
 source $TOCI_WORKING_DIR/stackrc
