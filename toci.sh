@@ -32,8 +32,10 @@ if [ $STATUS == 0 ] ; then
     mark_time Starting tests
     timeout --foreground 60m ./toci_test.sh > $TOCI_LOG_DIR/test.out 2>&1 || STATUS=1
 fi
-mark_time Starting cleanup
-timeout --foreground 60m ./toci_cleanup.sh > $TOCI_LOG_DIR/cleanup.out 2>&1 || STATUS=1
+if [ ${TOCI_CLEANUP:-1} == 1 ] ; then
+    mark_time Starting cleanup
+    timeout --foreground 60m ./toci_cleanup.sh > $TOCI_LOG_DIR/cleanup.out 2>&1 || STATUS=1
+fi
 mark_time Starting finished
 
 if [ ${TOCI_UPLOAD:-0} == 1 ] ; then
