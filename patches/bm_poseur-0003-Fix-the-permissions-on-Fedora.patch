@@ -1,14 +1,15 @@
-From 38147986b6cdfa6595e770751bfaa2d8547b2d49 Mon Sep 17 00:00:00 2001
+From c501505b7fb70cac22ee7f3c4588172a50bff2a5 Mon Sep 17 00:00:00 2001
 From: Lucas Alvares Gomes <lucasagomes@gmail.com>
 Date: Fri, 17 May 2013 18:03:05 +0100
-Subject: [PATCH 1/1] Fix the permissions on Fedora.
+Subject: [PATCH 1/1] Fix image ownership on Fedora.
 
+Images should be owned by the same uid that qemu guests will run as.
 ---
  lib/actions.py | 20 ++++++++++++++++++--
  1 file changed, 18 insertions(+), 2 deletions(-)
 
 diff --git a/lib/actions.py b/lib/actions.py
-index f0a3e95..3bc5ac9 100755
+index f0a3e95..fbd9ad4 100755
 --- a/lib/actions.py
 +++ b/lib/actions.py
 @@ -19,6 +19,7 @@ import libvirt
@@ -28,7 +29,7 @@ index f0a3e95..3bc5ac9 100755
 +            pwd.getpwnam(user)
 +            return True
 +        except KeyError:
-+            return True
++            return False
  
      def create_vms(self):
          """ creates the first vm """
