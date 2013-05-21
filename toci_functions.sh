@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 get_get_repo(){
-    CACHDIR=$TOCI_CACHE_DIR/${1/\//_}
+    CACHDIR=$TOCI_CACHE_DIR/${1/[^\/]*\//}
     if [ ! -e $CACHDIR ] ; then
         git clone https://github.com/$1.git $CACHDIR
     else
@@ -9,7 +9,7 @@ get_get_repo(){
         git fetch
         git reset --hard origin/master
     fi
-    cp -r $CACHDIR $TOCI_WORKING_DIR/${1/\//_}
+    cp -r $CACHDIR $TOCI_WORKING_DIR/${1/[^\/]*\//}
 }
 
 ssh_noprompt(){

@@ -3,7 +3,7 @@
 set -xe
 . toci_functions.sh
 
-cd $TOCI_WORKING_DIR/tripleo_incubator
+cd $TOCI_WORKING_DIR/incubator
 BOOTSTRAP_IP=`scripts/get-vm-ip bootstrap`
 
 # Get logs from the node on exit
@@ -16,14 +16,14 @@ source $TOCI_WORKING_DIR/stackrc
 unset http_proxy
 nova list
 
-sudo $TOCI_WORKING_DIR/tripleo_bm_poseur/bm_poseur --vms 1 --arch i686 create-vm
-MAC=`$TOCI_WORKING_DIR/tripleo_bm_poseur/bm_poseur get-macs`
+sudo $TOCI_WORKING_DIR/bm_poseur/bm_poseur --vms 1 --arch i686 create-vm
+MAC=`$TOCI_WORKING_DIR/bm_poseur/bm_poseur get-macs`
 
 nova keypair-add --pub-key ~/.ssh/id_rsa.pub default
 nova baremetal-node-create ubuntu 1 512 10 $MAC
 
 # Load the base image into glance
-export DIB_PATH=$TOCI_WORKING_DIR/stackforge_diskimage-builder
+export DIB_PATH=$TOCI_WORKING_DIR/diskimage-builder
 ./scripts/load-image base.qcow2
 
 # place the bootstrap public key on host so that it can admin virt
