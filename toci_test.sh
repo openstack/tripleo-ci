@@ -38,7 +38,8 @@ wait_for 40 10 ssh_noprompt root@$BOOTSTRAP_IP grep \'record updated for\' /var/
 # but for now I'm tired so I'm going to
 sleep 67
 
-heat stack-create -f $TOCI_SOURCE_DIR/templates/heat_base.json toci_stack
+#heat stack-create -f $TOCI_SOURCE_DIR/templates/heat_base.json toci_stack
+nova boot --flavor 256 --image base --key_name default bmtest
 
 # ping the node TODO : make this more readable and output less errors
 wait_for 40 10 ssh_noprompt root@$BOOTSTRAP_IP 'source ~/stackrc ; ping -c 1 $(nova list | grep ctlplane | sed -e "s/.*=\(.*\) .*/\1/g")'
