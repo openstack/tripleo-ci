@@ -1,0 +1,30 @@
+From 1d3d7f9bc17b96333ca6481fca62be3d9b8e3d91 Mon Sep 17 00:00:00 2001
+From: Derek Higgins <derekh@redhat.com>
+Date: Wed, 22 May 2013 12:03:54 +0100
+Subject: [PATCH] Use current oslo.config
+
+Looks like this is needed until a new version of oslo.config is released
+
+---
+ elements/boot-stack/install.d/01-boot-stack | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/elements/boot-stack/install.d/01-boot-stack b/elements/boot-stack/install.d/01-boot-stack
+index b5b6717..8ec3b20 100755
+--- a/elements/boot-stack/install.d/01-boot-stack
++++ b/elements/boot-stack/install.d/01-boot-stack
+@@ -12,6 +12,12 @@ if [ -f /etc/resolvconf/resolv.conf.d/head ]; then
+   resolv_conf=/etc/resolvconf/resolv.conf.d/head
+ fi
+ 
++git clone https://github.com/openstack/oslo.config
++cd oslo.config
++python setup.py install
++cd -
++
+ echo 'nameserver 8.8.8.8' > $resolv_conf
+ 
+ cat > /etc/hosts <<eof
+-- 
+1.8.1.4
+
