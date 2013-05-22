@@ -1,19 +1,18 @@
-From 1d3d7f9bc17b96333ca6481fca62be3d9b8e3d91 Mon Sep 17 00:00:00 2001
+From f83dff356ab5e93605b7e5d1c9f5a4d5c6d40628 Mon Sep 17 00:00:00 2001
 From: Derek Higgins <derekh@redhat.com>
-Date: Wed, 22 May 2013 12:03:54 +0100
+Date: Wed, 22 May 2013 13:31:20 +0100
 Subject: [PATCH] Use current oslo.config
 
 Looks like this is needed until a new version of oslo.config is released
-
 ---
- elements/boot-stack/install.d/01-boot-stack | 6 ++++++
- 1 file changed, 6 insertions(+)
+ elements/boot-stack/install.d/01-boot-stack | 5 +++++
+ 1 file changed, 5 insertions(+)
 
 diff --git a/elements/boot-stack/install.d/01-boot-stack b/elements/boot-stack/install.d/01-boot-stack
-index b5b6717..8ec3b20 100755
+index b5b6717..a8f0293 100755
 --- a/elements/boot-stack/install.d/01-boot-stack
 +++ b/elements/boot-stack/install.d/01-boot-stack
-@@ -12,6 +12,12 @@ if [ -f /etc/resolvconf/resolv.conf.d/head ]; then
+@@ -12,6 +12,11 @@ if [ -f /etc/resolvconf/resolv.conf.d/head ]; then
    resolv_conf=/etc/resolvconf/resolv.conf.d/head
  fi
  
