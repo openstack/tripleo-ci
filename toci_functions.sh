@@ -46,6 +46,6 @@ mark_time(){
 
 # Get config files and logs from a host for debuging purposes
 get_state_from_host(){
-    ssh_noprompt root@$BOOTSTRAP_IP "( set -x ; ps -ef ; df -h ; uptime ; netstat -lpn ; iptables-save ; brctl show ; ip addr) > /var/log/host_info.txt 2>&1 ;
+    ssh_noprompt root@$BOOTSTRAP_IP "( set -x ; ps -ef ; df -h ; uptime ; netstat -lpn ; iptables-save ; brctl show ; ip addr ; dpkg -l || rpm -qa) > /var/log/host_info.txt 2>&1 ;
                                      tar -czf - /var/log /etc || true" > $TOCI_LOG_DIR/bootstraplogs.tgz
 }
