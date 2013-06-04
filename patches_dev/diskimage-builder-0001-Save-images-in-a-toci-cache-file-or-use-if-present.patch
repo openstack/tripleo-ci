@@ -1,18 +1,23 @@
-From 7688741d6693fa7b544dc64ef3c5dcfc4468cd4b Mon Sep 17 00:00:00 2001
+From b465493d8de1dbcbed43e4faf56128473a1c1be5 Mon Sep 17 00:00:00 2001
 From: Derek Higgins <derekh@redhat.com>
 Date: Fri, 17 May 2013 12:16:09 +0100
 Subject: [PATCH] Save images in a toci cache file or use if present
 
 FOR DEV ONLY
-If you want to skip building images in place of a cached version, place 
-this file in patches.
+If you want to
+o skip building images in place of a cached version,
+o mv first-boot scripts instead of rm
 
+place this file in patches.
+
+Change-Id: Ieb3dbc176de7d7ae8bfefa66e82d2a53c73d2a38
 ---
- bin/disk-image-create |    9 +++++++++
- 1 file changed, 9 insertions(+)
+ bin/disk-image-create        | 9 +++++++++
+ elements/base/dib-first-boot | 6 +++---
+ 2 files changed, 12 insertions(+), 3 deletions(-)
 
 diff --git a/bin/disk-image-create b/bin/disk-image-create
-index da16b66..ecf42d9 100755
+index 091b39c..b5d37b4 100755
 --- a/bin/disk-image-create
 +++ b/bin/disk-image-create
 @@ -87,6 +87,13 @@ source $_LIB/img-functions
@@ -29,12 +34,25 @@ index da16b66..ecf42d9 100755
  IMAGE_ELEMENT=$($SCRIPT_HOME/element-info --expand-dependencies $IMAGE_ELEMENT)
  
  echo "Building elements: $IMAGE_ELEMENT"
-@@ -138,3 +145,5 @@ finalise_base
+@@ -136,3 +143,5 @@ finalise_base
  unmount_image
  compress_image
  save_image $IMAGE_NAME.$IMAGE_TYPE
 +
 +cp $IMAGE_NAME.$IMAGE_TYPE $TOCI_CACHE_DIR/$(basename $IMAGE_NAME.$IMAGE_TYPE)
+diff --git a/elements/base/dib-first-boot b/elements/base/dib-first-boot
+index 48a5bab..bdcbba4 100755
+--- a/elements/base/dib-first-boot
++++ b/elements/base/dib-first-boot
+@@ -6,6 +6,6 @@ touch /var/log/first-boot.d.log
+ chmod 0600 /var/log/first-boot.d.log
+ 
+ run-parts /etc/first-boot.d >> /var/log/first-boot.d.log 2>&1
+-rm -fr /etc/first-boot.d
+-# delete itself
+-rm $0
++mv /etc/first-boot.d /etc/first-boot.d_done
++# move itself
++mv $0 $0_done
 -- 
-1.7.10.4
-
+1.8.1.4
