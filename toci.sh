@@ -71,6 +71,11 @@ if [ ${TOCI_UPLOAD:-0} == 1 ] ; then
 
 fi
 
+    # Send a irc message
+    if [ -n "$TOCI_IRC" -a $STATUS != 0 ] ; then
+        send_irc $TOCI_IRC ERROR during toci run, see http://$TOCI_RESULTS_SERVER/toci/$(basename $TOCI_LOG_DIR)/
+    fi
+
 if [ ${TOCI_REMOVE:-1} == 1 ] ; then
     rm -rf $TOCI_WORKING_DIR $TOCI_LOG_DIR
 fi

@@ -49,3 +49,21 @@ get_state_from_host(){
     ssh_noprompt root@$BOOTSTRAP_IP "( set -x ; ps -ef ; df -h ; uptime ; netstat -lpn ; iptables-save ; brctl show ; ip addr ; dpkg -l || rpm -qa) > /var/log/host_info.txt 2>&1 ;
                                      tar -czf - /var/log /etc || true" > $TOCI_LOG_DIR/bootstraplogs.tgz
 }
+
+# Sends a message to a freenode irc channel
+send_irc(){
+    exec 3<>/dev/tcp/irc.freenode.net/6667
+
+    CHANNEL=$1
+    shift
+    MESSAGE=$@
+
+    echo "Nick toci-bot" >&3
+    echo "User toci-bot -i * : hi" >&3
+    sleep 2
+    echo "JOIN #$CHANNEL" >&3
+    echo "PRIVMSG #$CHANNEL :$@" >&3
+    echo "QUIT" >&3
+
+    cat <&3 > /dev/null
+}
