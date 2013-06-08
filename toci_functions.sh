@@ -35,9 +35,11 @@ wait_for(){
 
 apply_patches(){
     cd $TOCI_WORKING_DIR/$1
-    for PATCH in $(find $TOCI_SOURCE_DIR/patches/ -name "$2") ; do
-        patch -p1 -N < $PATCH || echo Error : could not apply $PATCH >> $TOCI_LOG_DIR/error-applying-patches.log
-    done
+    if [ -d "$TOCI_SOURCE_DIR/patches/" ]; then
+      for PATCH in $(find $TOCI_SOURCE_DIR/patches/ -name "$2") ; do
+          patch -p1 -N < $PATCH || echo Error : could not apply $PATCH >> $TOCI_LOG_DIR/error-applying-patches.log
+      done
+    fi
 }
 
 mark_time(){
