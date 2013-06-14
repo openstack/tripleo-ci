@@ -21,15 +21,18 @@ else
   sudo service libvirtd restart
 fi
 
-cd $TOCI_WORKING_DIR/diskimage-builder/
-bin/disk-image-create -u base -a i386 -o $TOCI_WORKING_DIR/incubator/base
-
 cd $TOCI_WORKING_DIR/incubator
 sed -i "s/\"user\": \"stack\",/\"user\": \"`whoami`\",/" $TOCI_WORKING_DIR/tripleo-image-elements/elements/boot-stack/config.json
 ELEMENTS_PATH=$TOCI_WORKING_DIR/tripleo-image-elements/elements \
 DIB_PATH=$TOCI_WORKING_DIR/diskimage-builder \
     scripts/boot-elements boot-stack -o bootstrap
 
+cd $TOCI_WORKING_DIR
+export ELEMENTS_PATH=$TOCI_WORKING_DIR/diskimage-builder/elements:$TOCI_WORKING_DIR/tripleo-image-elements/elements
+./diskimage-builder/bin/disk-image-create -u -a i386 -o $TOCI_WORKING_DIR/incubator/notcompute stackuser boot-stack heat-cfntools quantum-network-node
+./diskimage-builder/bin/disk-image-create -u -a i386 -o $TOCI_WORKING_DIR/incubator/compute stackuser nova-compute heat-cfntools
+
+cd $TOCI_WORKING_DIR/incubator
 BOOTSTRAP_IP=`scripts/get-vm-ip bootstrap`
 
 # Get logs from the node on error

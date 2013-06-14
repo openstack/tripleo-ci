@@ -1,0 +1,25 @@
+From 7b33a7becb6ad6a4176784ab160ed3a6efcbdb71 Mon Sep 17 00:00:00 2001
+From: Derek Higgins <derekh@redhat.com>
+Date: Tue, 4 Jun 2013 12:09:31 +0100
+Subject: [PATCH] Increase size of bootstrap node
+
+---
+ scripts/boot-elements | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/scripts/boot-elements b/scripts/boot-elements
+index e585289..46089b4 100755
+--- a/scripts/boot-elements
++++ b/scripts/boot-elements
+@@ -24,7 +24,7 @@ SCRIPT_HOME=$(dirname $0)
+ ARCH=i386
+ IMAGE_NAME=stack
+ ENGINE=kvm
+-export DIB_IMAGE_SIZE=10
++export DIB_IMAGE_SIZE=30
+ START_VM=yes
+ ALWAYS_ELEMENTS='vm local-config stackuser ubuntu cloud-init-nocloud'
+ EXTRA_ELEMENTS=
+-- 
+1.8.1.4
+

@@ -16,15 +16,19 @@ source $TOCI_WORKING_DIR/stackrc
 unset http_proxy
 nova list
 
-sudo $TOCI_WORKING_DIR/bm_poseur/bm_poseur --vms 1 --arch i686 create-vm
-MAC=`$TOCI_WORKING_DIR/bm_poseur/bm_poseur get-macs`
+sudo $TOCI_WORKING_DIR/bm_poseur/bm_poseur --max-mem 2097152 --vms 5 --arch i686 create-vm
 
 nova keypair-add --pub-key ~/.ssh/id_rsa.pub default
-nova baremetal-node-create ubuntu 1 512 10 $MAC
+for MAC in $($TOCI_WORKING_DIR/bm_poseur/bm_poseur get-macs); do
+    nova baremetal-node-create ubuntu 1 512 10 $MAC
+done
 
 # Load the base image into glance
 export DIB_PATH=$TOCI_WORKING_DIR/diskimage-builder
-./scripts/load-image base.qcow2
+./scripts/load-image notcompute.qcow2
+./scripts/load-image compute.qcow2
+
+keystone role-create --name heat_stack_user
 
 # place the bootstrap public key on host so that it can admin virt
 ssh_noprompt root@$BOOTSTRAP_IP "cat /opt/stack/boot-stack/virtual-power-key.pub" >> ~/.ssh/authorized_keys
@@ -38,7 +42,7 @@ wait_for 40 10 ssh_noprompt root@$BOOTSTRAP_IP grep \'record updated for\' /var/
 # but for now I'm tired so I'm going to
 sleep 67
 
-heat stack-create -f $TOCI_SOURCE_DIR/templates/heat_base.json toci_stack
+heat stack-create -f $TOCI_WORKING_DIR/tripleo-heat-templates/bootstack-vm.yaml overcloud -P 'notcomputeImage=notcompute'
 
 # ping the node TODO : make this more readable and output less errors
 wait_for 40 10 ssh_noprompt root@$BOOTSTRAP_IP 'source ~/stackrc ; ping -c 1 $(nova list | grep ctlplane | sed -e "s/.*=\(.*\) .*/\1/g")'
