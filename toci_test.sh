@@ -16,12 +16,22 @@ source $TOCI_WORKING_DIR/stackrc
 unset http_proxy
 nova list
 
-sudo $TOCI_WORKING_DIR/bm_poseur/bm_poseur --max-mem 2097152 --vms 5 --arch i686 create-vm
-
 nova keypair-add --pub-key ~/.ssh/id_rsa.pub default
-for MAC in $($TOCI_WORKING_DIR/bm_poseur/bm_poseur get-macs); do
+
+if [ -n "$TOCI_MACS" ]; then
+  MACS=( $TOCI_MACS )
+  IPS=( $TOCI_IPS )
+  COUNT=0
+  for MAC in "${MACS[@]}"; do
+    nova baremetal-node-create --pm_address=${IPS[$COUNT]} --pm_user=$TOCI_IPMI_USER --pm_password=$TOCI_IPMI_PASSWORD ubuntu 1 512 20 $MAC
+    COUNT=$(( $COUNT + 1 ))
+  done
+else
+  sudo $TOCI_WORKING_DIR/bm_poseur/bm_poseur --max-mem 2097152 --vms 5 --arch i686 create-vm
+  for MAC in $($TOCI_WORKING_DIR/bm_poseur/bm_poseur get-macs); do
     nova baremetal-node-create ubuntu 1 512 10 $MAC
-done
+  done
+fi
 
 # Load the base image into glance
 export DIB_PATH=$TOCI_WORKING_DIR/diskimage-builder

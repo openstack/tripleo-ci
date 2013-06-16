@@ -22,6 +22,10 @@ else
 fi
 
 cd $TOCI_WORKING_DIR/incubator
+# if we are using IPMI then enable it
+if [ -n "$TOCI_IPMI_USER" ]; then
+  sed -i "s/\"power_manager\":.*,/\"power_manager\": \"nova.virt.baremetal.ipmi.IPMI\",/" $TOCI_WORKING_DIR/tripleo-image-elements/elements/boot-stack/config.json
+fi
 sed -i "s/\"user\": \"stack\",/\"user\": \"`whoami`\",/" $TOCI_WORKING_DIR/tripleo-image-elements/elements/boot-stack/config.json
 ELEMENTS_PATH=$TOCI_WORKING_DIR/tripleo-image-elements/elements \
 DIB_PATH=$TOCI_WORKING_DIR/diskimage-builder \
