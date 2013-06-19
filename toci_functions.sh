@@ -5,9 +5,10 @@ get_get_repo(){
     if [ ! -e $CACHDIR ] ; then
         git clone https://github.com/$1.git $CACHDIR
     else
-        cd $CACHDIR
+        pushd $CACHDIR
         git fetch
         git reset --hard origin/master
+        popd
     fi
     cp -r $CACHDIR $TOCI_WORKING_DIR/${1/[^\/]*\//}
 }
@@ -34,12 +35,13 @@ wait_for(){
 }
 
 apply_patches(){
-    cd $TOCI_WORKING_DIR/$1
+    pushd $TOCI_WORKING_DIR/$1
     if [ -d "$TOCI_SOURCE_DIR/patches/" ]; then
       for PATCH in $(find $TOCI_SOURCE_DIR/patches/ -name "$2") ; do
           patch -p1 -N < $PATCH || echo Error : could not apply $PATCH >> $TOCI_LOG_DIR/error-applying-patches.log
       done
     fi
+    popd
 }
 
 mark_time(){

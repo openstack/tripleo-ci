@@ -3,8 +3,8 @@
 set -xe
 . toci_functions.sh
 
-cd $TOCI_WORKING_DIR/incubator
-BOOTSTRAP_IP=`scripts/get-vm-ip bootstrap`
+cd $TOCI_WORKING_DIR
+BOOTSTRAP_IP=`$TOCI_WORKING_DIR/incubator/scripts/get-vm-ip bootstrap`
 
 # Get logs from the node on exit
 trap get_state_from_host EXIT
@@ -37,8 +37,8 @@ fi
 
 # Load the base image into glance
 export DIB_PATH=$TOCI_WORKING_DIR/diskimage-builder
-./scripts/load-image notcompute.qcow2
-./scripts/load-image compute.qcow2
+$TOCI_WORKING_DIR/incubator/scripts/load-image notcompute.qcow2
+$TOCI_WORKING_DIR/incubator/scripts/load-image compute.qcow2
 
 keystone role-create --name heat_stack_user
 
