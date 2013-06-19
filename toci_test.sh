@@ -20,10 +20,12 @@ nova keypair-add --pub-key ~/.ssh/id_rsa.pub default
 
 if [ -n "$TOCI_MACS" ]; then
   MACS=( $TOCI_MACS )
-  IPS=( $TOCI_IPS )
+  IPS=( $TOCI_PM_IPS )
+  USERS=( $TOCI_PM_USERS )
+  PASSWORDS=( $TOCI_PM_PASSWORDS )
   COUNT=0
   for MAC in "${MACS[@]}"; do
-    nova baremetal-node-create --pm_address=${IPS[$COUNT]} --pm_user=$TOCI_IPMI_USER --pm_password=$TOCI_IPMI_PASSWORD ubuntu 1 512 20 $MAC
+    nova baremetal-node-create --pm_address=${IPS[$COUNT]} --pm_user=${USERS[$COUNT]} --pm_password=${PASSWORDS[$COUNT]} ubuntu 1 512 20 $MAC
     COUNT=$(( $COUNT + 1 ))
   done
 else

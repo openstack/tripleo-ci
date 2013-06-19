@@ -25,10 +25,10 @@ export https_proxy=http://1.2.3.4:3128
 # The following options can be used w/ real hardware
 # Space delimited, aligned in order
 #export TOCI_MACS="12:34:56:78:9A:E1 12:34:56:78:9A:E2"
-#export TOCI_IPS="10.0.0.1 10.0.0.2"
-
-#export TOCI_IPMI_USER="foo"
-#export TOCI_IPMI_PASSWORD="bar"
+#export TOCI_PM_DRIVER="nova.virt.baremetal.ipmi.IPMI"
+#export TOCI_PM_IPS="10.0.0.1 10.0.0.2"
+#export TOCI_PM_USERS="user1 user2"
+#export TOCI_PM_PASSWORDS="user1 user2"
 ```
 
 Then run updated_launch.sh (this does a git update) or you can use toci.sh
