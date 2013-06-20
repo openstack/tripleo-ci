@@ -29,13 +29,13 @@ if [ -n "$TOCI_MACS" ]; then
     COUNT=$(( $COUNT + 1 ))
   done
 else
-  sudo $TOCI_WORKING_DIR/bm_poseur/bm_poseur --max-mem 2097152 --vms 5 --arch i686 create-vm
+  sudo $TOCI_WORKING_DIR/bm_poseur/bm_poseur --max-mem 2097152 --vms 5 --arch "$TOCI_ARCH" create-vm
   for MAC in $($TOCI_WORKING_DIR/bm_poseur/bm_poseur get-macs); do
     nova baremetal-node-create ubuntu 1 512 10 $MAC
   done
 fi
 
-# Load the base image into glance
+# Load images into glance
 export DIB_PATH=$TOCI_WORKING_DIR/diskimage-builder
 $TOCI_WORKING_DIR/incubator/scripts/load-image notcompute.qcow2
 $TOCI_WORKING_DIR/incubator/scripts/load-image compute.qcow2

@@ -21,6 +21,11 @@ else
   sudo service libvirtd restart
 fi
 
+# set default arch for flavors in boot-stack
+if [ "$TOCI_ARCH" != "i386" ]; then
+  sed -i "s/\"arch\":.*,/\"arch\": \"$TOCI_ARCH\",/" $TOCI_WORKING_DIR/tripleo-image-elements/elements/boot-stack/config.json
+fi
+
 # custom power driver config
 if [ -n "$TOCI_PM_DRIVER" ]; then
   sed -i "s/\"power_manager\":.*,/\"power_manager\": \"$TOCI_PM_DRIVER\",/" $TOCI_WORKING_DIR/tripleo-image-elements/elements/boot-stack/config.json
@@ -29,11 +34,11 @@ fi
 sed -i "s/\"user\": \"stack\",/\"user\": \"`whoami`\",/" $TOCI_WORKING_DIR/tripleo-image-elements/elements/boot-stack/config.json
 ELEMENTS_PATH=$TOCI_WORKING_DIR/tripleo-image-elements/elements \
 DIB_PATH=$TOCI_WORKING_DIR/diskimage-builder \
-    $TOCI_WORKING_DIR/incubator/scripts/boot-elements boot-stack -o bootstrap
+    $TOCI_WORKING_DIR/incubator/scripts/boot-elements boot-stack -o bootstrap -a "$TOCI_DIB_ARCH"
 
 export ELEMENTS_PATH=$TOCI_WORKING_DIR/diskimage-builder/elements:$TOCI_WORKING_DIR/tripleo-image-elements/elements
-$TOCI_WORKING_DIR/diskimage-builder/bin/disk-image-create -u -a i386 -o $TOCI_WORKING_DIR/notcompute stackuser boot-stack heat-cfntools quantum-network-node
-$TOCI_WORKING_DIR/diskimage-builder/bin/disk-image-create -u -a i386 -o $TOCI_WORKING_DIR/compute stackuser nova-compute heat-cfntools quantum-openvswitch-agent
+$TOCI_WORKING_DIR/diskimage-builder/bin/disk-image-create -u -a $TOCI_DIB_ARCH -o $TOCI_WORKING_DIR/notcompute stackuser boot-stack heat-cfntools quantum-network-node
+$TOCI_WORKING_DIR/diskimage-builder/bin/disk-image-create -u -a $TOCI_DIB_ARCH -o $TOCI_WORKING_DIR/compute stackuser nova-compute heat-cfntools quantum-openvswitch-agent
 
 BOOTSTRAP_IP=`$TOCI_WORKING_DIR/incubator/scripts/get-vm-ip bootstrap`
 

@@ -21,6 +21,12 @@ mkdir -p $TOCI_LOG_DIR
 # e.g. downloaded images, git repo's etc...
 export TOCI_CACHE_DIR=/var/tmp/toci_cache
 
+export TOCI_ARCH=${TOCI_ARCH:-'i686'}
+export TOCI_DIB_ARCH='i386'
+if [ "$TOCI_ARCH" == 'x86_64' ]; then
+  export TOCI_DIB_ARCH='amd64'
+fi
+
 RESULT_CACHE=$TOCI_CACHE_DIR/results_cache.html
 
 echo "Starting run $STARTTIME ($TOCI_WORKING_DIR,$TOCI_LOG_DIR)"

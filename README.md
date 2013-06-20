@@ -22,6 +22,10 @@ TOCI_GIT_CHECKOUT=1
 export http_proxy=http://1.2.3.4:3128
 export https_proxy=http://1.2.3.4:3128
 
+# set the arch (defaults to i386)
+TOCI_ARCH="x86_64"
+
+
 # The following options can be used w/ real hardware
 # Space delimited, aligned in order
 #export TOCI_MACS="12:34:56:78:9A:E1 12:34:56:78:9A:E2"
