@@ -86,5 +86,5 @@ if [ ${TOCI_REMOVE:-1} == 1 ] ; then
     rm -rf $TOCI_WORKING_DIR $TOCI_LOG_DIR
 fi
 
-declare | grep -e "^TOCI" > $TOCI_WORKING_DIR/toci_env
+declare | grep -e "^http.*proxy" -e "^TOCI_" -e '^DIB_' | sed  -e 's/^/export /g' > $TOCI_WORKING_DIR/toci_env
 echo $STATUS
