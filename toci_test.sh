@@ -56,5 +56,14 @@ sleep 67
 
 heat stack-create -f $TOCI_WORKING_DIR/tripleo-heat-templates/bootstack-vm.yaml overcloud -P 'notcomputeImage=notcompute'
 
+sleep 60
+
+NOTCOMPUTEIP=$(nova list | grep overcloud-notcompute-  | cut -d = -f 2 | cut -d \  -f 1)
+heat stack-create -f $TOCI_WORKING_DIR/tripleo-heat-templates/nova-compute-instance.yaml -P "NovaApiHost=$NOTCOMPUTEIP;NovaImage=compute;RabbitHost=$NOTCOMPUTEIP;QuantumDSN=mysql://quantum:unset@$NOTCOMPUTEIP/quantum;RabbitPassword=guest;GlanceHost=$NOTCOMPUTEIP;NovaDSN=mysql://nova:unset@$NOTCOMPUTEIP/nova;QuantumHost=$NOTCOMPUTEIP;ServicePassword=unset;KeystoneHost=$NOTCOMPUTEIP;QuantumNetworkType=gre;QuantumEnableTunnelling=true;QuantumNetworkVLANRanges=;QuantumBridgeMappings=" overcloud-compute
+
+# mainly sleeping here so we don't have to loop as much later
+sleep 120
+
 # ping the node TODO : make this more readable and output less errors
-wait_for 40 10 ssh_noprompt root@$BOOTSTRAP_IP 'source ~/stackrc ; ping -c 1 $(nova list | grep ctlplane | sed -e "s/.*=\(.*\) .*/\1/g")'
+wait_for 40 10 ssh_noprompt root@$BOOTSTRAP_IP 'source ~/stackrc ; ping -c 1 $(nova list | grep overcloud-notcompute | sed -e "s/.*=\(.*\) .*/\1/g")'
+wait_for 40 10 ssh_noprompt root@$BOOTSTRAP_IP 'source ~/stackrc ; ping -c 1 $(nova list | grep overcloud-compute | sed -e "s/.*=\(.*\) .*/\1/g")'
