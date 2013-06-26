@@ -4,19 +4,19 @@ set -xe
 . toci_functions.sh
 
 cd $TOCI_WORKING_DIR
-BOOTSTRAP_IP=`$TOCI_WORKING_DIR/incubator/scripts/get-vm-ip bootstrap`
+BOOTSTRAP_IP=`$TOCI_WORKING_DIR/incubator/scripts/get-vm-ip seed`
 
 # Get logs from the node on exit
 trap get_state_from_host EXIT
 
-scp_noprompt root@$BOOTSTRAP_IP:stackrc $TOCI_WORKING_DIR/stackrc
-sed -i "s/localhost/$BOOTSTRAP_IP/" $TOCI_WORKING_DIR/stackrc
-source $TOCI_WORKING_DIR/stackrc
+scp_noprompt root@$BOOTSTRAP_IP:stackrc $TOCI_WORKING_DIR/seedrc
+sed -i "s/localhost/$BOOTSTRAP_IP/" $TOCI_WORKING_DIR/seedrc
+source $TOCI_WORKING_DIR/seedrc
 
-unset http_proxy
 nova list
 
-nova keypair-add --pub-key ~/.ssh/id_rsa.pub default
+#Adds nova keypair
+user-config
 
 if [ -n "$TOCI_MACS" ]; then
   MACS=( $TOCI_MACS )
@@ -30,9 +30,7 @@ if [ -n "$TOCI_MACS" ]; then
   done
 else
   sudo $TOCI_WORKING_DIR/bm_poseur/bm_poseur --max-mem 2097152 --vms 5 --arch "$TOCI_ARCH" create-vm
-  for MAC in $($TOCI_WORKING_DIR/bm_poseur/bm_poseur get-macs); do
-    nova baremetal-node-create ubuntu 1 512 10 $MAC
-  done
+  setup-baremetal 1 512 10 seed
 fi
 
 # Load images into glance

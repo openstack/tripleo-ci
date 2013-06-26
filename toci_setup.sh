@@ -6,7 +6,8 @@ set -xe
 cd $TOCI_WORKING_DIR
 
 # install deps on host machine
-$TOCI_WORKING_DIR/incubator/scripts/install-dependencies
+install-dependencies
+setup-network
 
 id | grep libvirt || ( echo "You have been added to the libvirt group, this script will now exit but will succeed if run again in a new shell" ; exit 1 )
 
@@ -34,13 +35,15 @@ fi
 sed -i "s/\"user\": \"stack\",/\"user\": \"`whoami`\",/" $TOCI_WORKING_DIR/tripleo-image-elements/elements/boot-stack/config.json
 ELEMENTS_PATH=$TOCI_WORKING_DIR/tripleo-image-elements/elements \
 DIB_PATH=$TOCI_WORKING_DIR/diskimage-builder \
-    $TOCI_WORKING_DIR/incubator/scripts/boot-elements boot-stack -o bootstrap -a "$TOCI_DIB_ARCH"
+    $TOCI_WORKING_DIR/incubator/scripts/boot-elements boot-stack -o seed -a "$TOCI_DIB_ARCH"
 
 export ELEMENTS_PATH=$TOCI_WORKING_DIR/diskimage-builder/elements:$TOCI_WORKING_DIR/tripleo-image-elements/elements
 $TOCI_WORKING_DIR/diskimage-builder/bin/disk-image-create -u -a $TOCI_DIB_ARCH -o $TOCI_WORKING_DIR/notcompute stackuser boot-stack heat-cfntools quantum-network-node
 $TOCI_WORKING_DIR/diskimage-builder/bin/disk-image-create -u -a $TOCI_DIB_ARCH -o $TOCI_WORKING_DIR/compute stackuser nova-compute heat-cfntools quantum-openvswitch-agent
 
-BOOTSTRAP_IP=`$TOCI_WORKING_DIR/incubator/scripts/get-vm-ip bootstrap`
+BOOTSTRAP_IP=`$TOCI_WORKING_DIR/incubator/scripts/get-vm-ip seed`
+
+export no_proxy=$no_proxy,$SEED_IP
 
 # Get logs from the node on error
 trap get_state_from_host ERR

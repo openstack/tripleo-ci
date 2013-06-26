@@ -41,6 +41,9 @@ STATUS=0
 mark_time Starting git
 timeout --foreground 60m ./toci_git.sh > $TOCI_LOG_DIR/git.out 2>&1 || STATUS=1
 
+# Add incubator scripts to path
+export PATH=$PATH:$TOCI_WORKING_DIR/incubator/scripts
+
 if [ $STATUS == 0 ] ; then
   mark_time Starting setup
   timeout --foreground 60m ./toci_setup.sh > $TOCI_LOG_DIR/setup.out 2>&1 || STATUS=1
@@ -86,5 +89,5 @@ if [ ${TOCI_REMOVE:-1} == 1 ] ; then
     rm -rf $TOCI_WORKING_DIR $TOCI_LOG_DIR
 fi
 
-declare | grep -e "^http.*proxy" -e "^TOCI_" -e '^DIB_' | sed  -e 's/^/export /g' > $TOCI_WORKING_DIR/toci_env
+declare | grep -e "^PATH=" -e "^http.*proxy" -e "^TOCI_" -e '^DIB_' | sed  -e 's/^/export /g' > $TOCI_WORKING_DIR/toci_env
 echo $STATUS
