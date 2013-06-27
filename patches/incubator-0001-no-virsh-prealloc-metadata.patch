@@ -1,0 +1,24 @@
+From 00d597b5e8575ffc82045f210977a3b33856254e Mon Sep 17 00:00:00 2001
+From: Derek Higgins <derekh@redhat.com>
+Date: Thu, 27 Jun 2013 15:16:51 +0100
+Subject: [PATCH] No --prealloc-metadata on fedora's virsh
+
+---
+ scripts/create-nodes | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/scripts/create-nodes b/scripts/create-nodes
+index b1f210f..821d826 100755
+--- a/scripts/create-nodes
++++ b/scripts/create-nodes
+@@ -13,6 +13,6 @@ count=0
+ 
+ for (( count=0; count<TOTAL; ++count )) ; do
+   # TODO: make this idempotent / at least not error when run more than once.
+-  virsh vol-create-as default baremetal-$count.qcow2 ${DISK}G --format qcow2 --prealloc-metadata
++  virsh vol-create-as default baremetal-$count.qcow2 ${DISK}G --format qcow2 # --prealloc-metadata
+   configure-vm --name baremetal_$count --image /var/lib/libvirt/images/baremetal-$count.qcow2 --arch i686 --cpus $CPU --memory $MEM
+ done
+-- 
+1.8.1.4
+
