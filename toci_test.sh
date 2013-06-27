@@ -33,9 +33,8 @@ if [ -n "$TOCI_MACS" ]; then
 else
   create-nodes 1 512 10 3
   export MACS=$($TOCI_WORKING_DIR/bm_poseur/bm_poseur get-macs)
+  setup-baremetal 1 512 10 seed
 fi
-
-setup-baremetal 1 512 10 seed
 
 # Load images into glance
 export DIB_PATH=$TOCI_WORKING_DIR/diskimage-builder
