@@ -91,3 +91,4 @@ fi
 
 declare | grep -e "^PATH=" -e "^http.*proxy" -e "^TOCI_" -e '^DIB_' | sed  -e 's/^/export /g' > $TOCI_WORKING_DIR/toci_env
 echo $STATUS
+exit $STATUS
