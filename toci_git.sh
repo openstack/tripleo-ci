@@ -8,8 +8,8 @@ for repo in 'tripleo/incubator' 'tripleo/bm_poseur' 'stackforge/diskimage-builde
     if [ ${TOCI_GIT_CHECKOUT:-1} == 1 ] ; then
       get_get_repo $repo
     else
-      if [ ! -d "$TOCI_WORK_DIR/$repo" ]; then
-        echo "Please checkout $repo to $TOCI_WORK_DIR or enabled TOCI_GIT_CHECKOUT."
+      if [ ! -d "$TOCI_WORKING_DIR/$repo" ]; then
+        echo "Please checkout $repo to $TOCI_WORKING_DIR or enabled TOCI_GIT_CHECKOUT."
       fi
     fi
 done
