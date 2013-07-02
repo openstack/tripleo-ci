@@ -29,7 +29,7 @@ fi
 
 RESULT_CACHE=$TOCI_CACHE_DIR/results_cache.html
 
-echo "Starting run $STARTTIME ($TOCI_WORKING_DIR,$TOCI_LOG_DIR)"
+echo "Starting run $STARTTIME ( $TOCI_WORKING_DIR $TOCI_LOG_DIR )"
 
 # If running in cron $USER isn't setup
 export USER=${USER:-$(whoami)}
