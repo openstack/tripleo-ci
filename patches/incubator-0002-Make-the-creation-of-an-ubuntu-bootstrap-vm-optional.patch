@@ -1,0 +1,27 @@
+From bd098b0e40fa43a331ca8ca4b559b24f03aebe12 Mon Sep 17 00:00:00 2001
+From: Lucas Alvares Gomes <lucasagomes@gmail.com>
+Date: Wed, 3 Jul 2013 16:34:56 +0100
+Subject: [PATCH 1/1] Make the creation of an ubuntu bootstrap vm optional
+
+---
+ scripts/boot-seed-vm | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/scripts/boot-seed-vm b/scripts/boot-seed-vm
+index 05f63c4..d9864e9 100755
+--- a/scripts/boot-seed-vm
++++ b/scripts/boot-seed-vm
+@@ -26,8 +26,8 @@ IMAGE_NAME=seed
+ ENGINE=kvm
+ export DIB_IMAGE_SIZE=30
+ START_VM=yes
+-ALWAYS_ELEMENTS='vm local-config stackuser ubuntu cloud-init-nocloud boot-stack nova-baremetal seed-stack-config'
+-EXTRA_ELEMENTS=
++ALWAYS_ELEMENTS='vm local-config stackuser boot-stack nova-baremetal seed-stack-config'
++EXTRA_ELEMENTS=${EXTRA_ELEMENTS:-ubuntu cloud-init-nocloud}
+ 
+ function show_options () {
+     echo "Usage: $SCRIPT_NAME [options] <element> [<element> ...]"
+-- 
+1.8.1.4
+

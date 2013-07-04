@@ -51,7 +51,11 @@ sudo ip route add 192.0.2.0/24 dev virbr0 via $SEED_IP
 
 # Now we have to wait for the bm poseur to appear on the compute node and for the compute node to then
 # update the scheduler
-wait_for 40 10 ssh_noprompt root@$SEED_IP grep 'record\\ updated\\ for' /var/log/upstart/nova-compute.log -A 100 \| grep \'Updating host status\'
+if [ -d /var/log/upstart ]; then
+    wait_for 40 10 ssh_noprompt root@$SEED_IP grep 'record\\ updated\\ for' /var/log/upstart/nova-compute.log -A 100 \| grep \'Updating host status\'
+else
+    wait_for 40 10 ssh_noprompt root@$SEED_IP journalctl _SYSTEMD_UNIT=nova-compute.service \| grep \'record updated for\' -A 100 \| grep \'Updating host status\'
+fi
 
 
 # I've tried all kinds of things to wait for before doing the nova boot and can't find a reliable combination,
