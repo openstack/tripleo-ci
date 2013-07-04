@@ -27,6 +27,8 @@ if [ "$TOCI_ARCH" == 'x86_64' ]; then
   export TOCI_DIB_ARCH='amd64'
 fi
 
+export TOCI_DISTROELEMENT=${TOCI_DISTROELEMENT:-'fedora disable-selinux'}
+
 RESULT_CACHE=$TOCI_CACHE_DIR/results_cache.html
 
 echo "Starting run $STARTTIME ( $TOCI_WORKING_DIR $TOCI_LOG_DIR )"

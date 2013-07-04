@@ -31,7 +31,7 @@ if [ -n "$TOCI_PM_DRIVER" ]; then
 fi
 
 sed -i "s/\"user\": \"stack\",/\"user\": \"`whoami`\",/" $TOCI_WORKING_DIR/tripleo-image-elements/elements/seed-stack-config/config.json
-$TOCI_WORKING_DIR/incubator/scripts/boot-seed-vm
+EXTRA_ELEMENTS=$TOCI_DISTROELEMENT $TOCI_WORKING_DIR/incubator/scripts/boot-seed-vm
 
 export ELEMENTS_PATH=$TOCI_WORKING_DIR/diskimage-builder/elements:$TOCI_WORKING_DIR/tripleo-image-elements/elements
 $TOCI_WORKING_DIR/diskimage-builder/bin/disk-image-create -u -a $TOCI_DIB_ARCH -o $TOCI_WORKING_DIR/notcompute stackuser boot-stack heat-cfntools quantum-network-node
