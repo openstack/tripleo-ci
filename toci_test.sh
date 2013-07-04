@@ -46,9 +46,13 @@ keystone role-create --name heat_stack_user
 # place the bootstrap public key on host so that it can admin virt
 ssh_noprompt root@$SEED_IP "cat /opt/stack/boot-stack/virtual-power-key.pub" >> ~/.ssh/authorized_keys
 
+sudo ip route del 192.0.2.0/24 dev virbr0 || true
+sudo ip route add 192.0.2.0/24 dev virbr0 via $SEED_IP
+
 # Now we have to wait for the bm poseur to appear on the compute node and for the compute node to then
 # update the scheduler
-wait_for 40 10 ssh_noprompt root@$SEED_IP grep \'record updated for\' /var/log/upstart/nova-compute.log -A 100 \| grep \'Updating host status\'
+wait_for 40 10 ssh_noprompt root@$SEED_IP grep 'record\\ updated\\ for' /var/log/upstart/nova-compute.log -A 100 \| grep \'Updating host status\'
+
 
 # I've tried all kinds of things to wait for before doing the nova boot and can't find a reliable combination,
 # I suspect I need to watch the scheduler and compute log to follow a chain of events,
@@ -57,19 +61,12 @@ sleep 67
 
 heat stack-create -f $TOCI_WORKING_DIR/tripleo-heat-templates/bootstack-vm.yaml overcloud -P 'notcomputeImage=notcompute'
 
-sleep 60
+# Just sleeping here so that we don't fill the logs with so many loops
+sleep 180
 
 heat list
 
+wait_for 40 10 heat list \| grep CREATE_COMPLETE
+wait_for 5 10 ping -c 1 $(nova list | grep overcloud | sed -e "s/.*=\(.*\) .*/\1/g")
+
 # TODO : get the compute nodes working again
-
-#NOTCOMPUTEIP=$(nova list | grep overcloud-notcompute-  | cut -d = -f 2 | cut -d \  -f 1)
-#heat stack-create -f $TOCI_WORKING_DIR/tripleo-heat-templates/nova-compute-instance.yaml -P "NovaApiHost=$NOTCOMPUTEIP;NovaImage=compute;RabbitHost=$NOTCOMPUTEIP;QuantumDSN=mysql://quantum:unset@$NOTCOMPUTEIP/quantum;RabbitPassword=guest;GlanceHost=$NOTCOMPUTEIP;NovaDSN=mysql://nova:unset@$NOTCOMPUTEIP/nova;QuantumHost=$NOTCOMPUTEIP;ServicePassword=unset;KeystoneHost=$NOTCOMPUTEIP;QuantumNetworkType=gre;QuantumEnableTunnelling=true;QuantumNetworkVLANRanges=;QuantumBridgeMappings=" overcloud-compute
-
-# mainly sleeping here so we don't have to loop as much later
-#sleep 120
-
-# ping the node TODO : make this more readable and output less errors
-#wait_for 40 10 ssh_noprompt root@$SEED_IP 'source ~/stackrc ; ping -c 1 $(nova list | grep overcloud-notcompute | sed -e "s/.*=\(.*\) .*/\1/g")'
-#wait_for 40 10 heat list \| grep CREATE_COMPLETE
-#wait_for 40 10 ssh_noprompt root@$SEED_IP 'source ~/stackrc ; ping -c 1 $(nova list | grep overcloud-compute | sed -e "s/.*=\(.*\) .*/\1/g")'

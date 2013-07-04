@@ -28,7 +28,7 @@ wait_for(){
     i=0
     while [ $i -lt $LOOPS ] ; do
         i=$((i + 1))
-        $@ && return 0 || true
+        eval "$@" && return 0 || true
         sleep $SLEEPTIME
     done
     return 1
