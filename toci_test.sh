@@ -71,6 +71,10 @@ sleep 180
 heat list
 
 wait_for 40 10 heat list \| grep CREATE_COMPLETE
+
+# Delete the rule that prevent the Fedora bootstrap vm from forwarding
+# icmp packages. If the rule doesn't exist just do nothing...
+ssh_noprompt root@$SEED_IP iptables -D FORWARD -j REJECT --reject-with icmp-host-prohibited || true
 wait_for 20 10 ping -c 1 $(nova list | grep overcloud | sed -e "s/.*=\(.*\) .*/\1/g")
 
 # TODO : get the compute nodes working again
