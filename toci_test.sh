@@ -71,6 +71,6 @@ sleep 180
 heat list
 
 wait_for 40 10 heat list \| grep CREATE_COMPLETE
-wait_for 5 10 ping -c 1 $(nova list | grep overcloud | sed -e "s/.*=\(.*\) .*/\1/g")
+wait_for 20 10 ping -c 1 $(nova list | grep overcloud | sed -e "s/.*=\(.*\) .*/\1/g")
 
 # TODO : get the compute nodes working again
