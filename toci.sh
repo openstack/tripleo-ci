@@ -27,7 +27,7 @@ if [ "$TOCI_ARCH" == 'x86_64' ]; then
   export TOCI_DIB_ARCH='amd64'
 fi
 
-export TOCI_DISTROELEMENT=${TOCI_DISTROELEMENT:-'fedora disable-selinux'}
+export TOCI_DISTROELEMENT=${TOCI_DISTROELEMENT:-'fedora selinux-permissive'}
 
 RESULT_CACHE=$TOCI_CACHE_DIR/results_cache.html
 
