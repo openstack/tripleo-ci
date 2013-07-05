@@ -1,0 +1,27 @@
+From 57a1304df924ec331cdfa3f2544439038175abd5 Mon Sep 17 00:00:00 2001
+From: Lucas Alvares Gomes <lucasagomes@gmail.com>
+Date: Fri, 5 Jul 2013 10:20:15 +0100
+Subject: [PATCH 1/1] Add arping to the fedora map-packages
+
+Needed for the quantum-network-node element
+
+Change-Id: I9a96476667c33a8260a60e7ad95c0f15166bc868
+---
+ elements/fedora/bin/map-packages | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/elements/fedora/bin/map-packages b/elements/fedora/bin/map-packages
+index 0fb40a2..1b341aa 100755
+--- a/elements/fedora/bin/map-packages
++++ b/elements/fedora/bin/map-packages
+@@ -44,6 +44,7 @@ package_map = {
+     'qemu-utils': 'qemu-img',
+     'python-pyopenssl': 'pyOpenSSL',
+     'libmysqlclient-dev': 'mysql-devel',
++    'arping': 'iputils',
+     }
+ 
+ for arg in sys.argv[1:]:
+-- 
+1.8.1.4
+
