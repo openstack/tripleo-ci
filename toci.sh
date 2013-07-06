@@ -92,5 +92,7 @@ if [ ${TOCI_REMOVE:-1} == 1 ] ; then
 fi
 
 declare | grep -e "^PATH=" -e "^http.*proxy" -e "^TOCI_" -e '^DIB_' | sed  -e 's/^/export /g' > $TOCI_WORKING_DIR/toci_env
+echo 'export no_proxy=$($TOCI_WORKING_DIR/incubator/scripts/get-vm-ip seed)' >> $TOCI_WORKING_DIR/toci_env
+
 echo $STATUS
 exit $STATUS
