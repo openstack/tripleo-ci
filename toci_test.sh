@@ -39,7 +39,6 @@ fi
 # Load images into glance
 export DIB_PATH=$TOCI_WORKING_DIR/diskimage-builder
 $TOCI_WORKING_DIR/incubator/scripts/load-image notcompute.qcow2
-#$TOCI_WORKING_DIR/incubator/scripts/load-image compute.qcow2
 
 keystone role-create --name heat_stack_user
 
@@ -73,8 +72,7 @@ heat list
 wait_for 40 20 heat list \| grep CREATE_COMPLETE
 
 # Delete the rule that prevent the Fedora bootstrap vm from forwarding
-# icmp packages. If the rule doesn't exist just do nothing...
+# packages. If the rule doesn't exist just do nothing...
 ssh_noprompt root@$SEED_IP iptables -D FORWARD -j REJECT --reject-with icmp-host-prohibited || true
 wait_for 20 15 ping -c 1 $(nova list | grep overcloud | sed -e "s/.*=\(.*\) .*/\1/g")
 
-# TODO : get the compute nodes working again
