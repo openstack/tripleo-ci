@@ -34,14 +34,4 @@ sed -i "s/\"user\": \"stack\",/\"user\": \"`whoami`\",/" $TOCI_WORKING_DIR/tripl
 EXTRA_ELEMENTS=$TOCI_DISTROELEMENT $TOCI_WORKING_DIR/incubator/scripts/boot-seed-vm
 
 export ELEMENTS_PATH=$TOCI_WORKING_DIR/diskimage-builder/elements:$TOCI_WORKING_DIR/tripleo-image-elements/elements
-$TOCI_WORKING_DIR/diskimage-builder/bin/disk-image-create -u -a $TOCI_DIB_ARCH -o $TOCI_WORKING_DIR/notcompute $TOCI_DISTROELEMENT stackuser boot-stack heat-cfntools quantum-network-node
-#$TOCI_WORKING_DIR/diskimage-builder/bin/disk-image-create -u -a $TOCI_DIB_ARCH -o $TOCI_WORKING_DIR/compute stackuser nova-compute heat-cfntools quantum-openvswitch-agent
-
-SEED_IP=`$TOCI_WORKING_DIR/incubator/scripts/get-vm-ip seed`
-
-# Get logs from the node on error
-trap get_state_from_host ERR
-
-# We're going to wait for it to finish firstboot
-wait_for 60 10 ssh_noprompt root@$SEED_IP ls /opt/stack/boot-stack/boot-stack.done
-
+$TOCI_WORKING_DIR/diskimage-builder/bin/disk-image-create -u -a $TOCI_DIB_ARCH -o $TOCI_WORKING_DIR/notcompute $TOCI_DISTROELEMENT stackuser boot-stack heat-cfntools neutron-network-node

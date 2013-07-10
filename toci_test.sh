@@ -15,6 +15,9 @@ source $TOCI_WORKING_DIR/seedrc
 
 export no_proxy=$no_proxy,$SEED_IP
 
+# wait for a successfull os-refresh-config
+wait_for 60 10 ssh_noprompt root@$SEED_IP ls /opt/stack/boot-stack.ok
+
 nova list
 
 #Adds nova keypair
@@ -31,7 +34,7 @@ if [ -n "$TOCI_MACS" ]; then
     COUNT=$(( $COUNT + 1 ))
   done
 else
-  create-nodes 1 512 10 3
+  create-nodes 1 768 10 3
   export MACS=$($TOCI_WORKING_DIR/bm_poseur/bm_poseur get-macs)
   setup-baremetal 1 512 10 all
 fi
@@ -62,7 +65,7 @@ fi
 # but for now I'm tired so I'm going to
 sleep 67
 
-heat stack-create -f $TOCI_WORKING_DIR/tripleo-heat-templates/bootstack-vm.yaml overcloud -P 'notcomputeImage=notcompute'
+heat stack-create -f $TOCI_WORKING_DIR/tripleo-heat-templates/bootstack-vm.yaml overcloud -P 'Image=notcompute'
 
 # Just sleeping here so that we don't fill the logs with so many loops
 sleep 180
