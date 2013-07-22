@@ -1,24 +1,24 @@
 #!/usr/bin/env bash
 
 get_get_repo(){
-    CACHEDIR=$TOCI_CACHE_DIR/${1/[^\/]*\//}
+    CACHEDIR=$TOCI_WORKING_DIR/${1/[^\/]*\//}
     if [ ! -e $CACHEDIR ] ; then
         git clone https://github.com/$1.git $CACHEDIR
+        repo_basename=${1#*/}
+        apply_patches ${repo_basename} ${repo_basename}*
     else
         pushd $CACHEDIR
         git fetch
-        git reset --hard origin/master
         popd
     fi
-    cp -r $CACHEDIR $TOCI_WORKING_DIR/${1/[^\/]*\//}
 }
 
 ssh_noprompt(){
-    ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=QUIET $@
+    ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=QUIET -o PasswordAuthentication=no $@
 }
 
 scp_noprompt(){
-    scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=QUIET $@
+    scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=QUIET -o PasswordAuthentication=no $@
 }
 
 wait_for(){
@@ -55,6 +55,13 @@ get_state_from_host(){
                                      tar -czf - --exclude=udev/hwdb.bin --exclude=selinux/targeted /var/log /etc || true" > $TOCI_LOG_DIR/bootstraplogs.tgz
 }
 
+# On Exit write relevant toci env to a rc file
+get_tocienv(){
+    declare | grep -e "^PATH=" -e "^http.*proxy" -e "^TOCI_" -e '^DIB_' | sed  -e 's/^/export /g' > $TOCI_WORKING_DIR/toci_env
+    # Some IP we sont want to proxy
+    echo 'export no_proxy=$($TOCI_WORKING_DIR/tripleo-incubator/scripts/get-vm-ip seed),192.0.2.2,192.0.2.5,192.0.2.6,192.0.2.7,192.0.2.8' >> $TOCI_WORKING_DIR/toci_env
+}
+
 # Sends a message to a freenode irc channel
 send_irc(){
     exec 3<>/dev/tcp/irc.freenode.net/6667
@@ -71,4 +78,9 @@ send_irc(){
     echo "QUIT" >&3
 
     cat <&3 > /dev/null
+}
+
+ERROR(){
+    echo $@
+    exit 1
 }

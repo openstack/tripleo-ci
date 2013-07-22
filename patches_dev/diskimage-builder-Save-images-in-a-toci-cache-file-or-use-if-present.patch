@@ -1,6 +1,6 @@
-From 5304e2de786bcea1e9074c03421b26d03751e1d6 Mon Sep 17 00:00:00 2001
+From 448fbaa131521e6060f9d87c83098c8cb90696ea Mon Sep 17 00:00:00 2001
 From: Derek Higgins <derekh@redhat.com>
-Date: Fri, 17 May 2013 12:16:09 +0100
+Date: Fri, 19 Jul 2013 13:55:41 +0100
 Subject: [PATCH] Save images in a toci cache file or use if present
 
 FOR DEV ONLY
@@ -9,22 +9,20 @@ o skip building images in place of a cached version,
 o mv first-boot scripts instead of rm
 
 place this file in patches.
-
-Change-Id: Ieb3dbc176de7d7ae8bfefa66e82d2a53c73d2a38
 ---
- bin/disk-image-create        | 10 ++++++++++
- elements/base/dib-first-boot |  2 +-
- 2 files changed, 11 insertions(+), 1 deletion(-)
+ bin/disk-image-create        | 8 ++++++++
+ elements/base/dib-first-boot | 2 +-
+ 2 files changed, 9 insertions(+), 1 deletion(-)
 
 diff --git a/bin/disk-image-create b/bin/disk-image-create
-index d71fa26..4413faa 100755
+index efbcf85..e7fc46f 100755
 --- a/bin/disk-image-create
 +++ b/bin/disk-image-create
-@@ -83,6 +83,13 @@ arg_to_elements "$@"
+@@ -97,6 +97,13 @@ arg_to_elements "$@"
  
  IMAGE_NAME=${IMAGE_NAME%%\.${IMAGE_TYPE}}
  
-+CACHEFILE=$TOCI_CACHE_DIR/$(basename $IMAGE_NAME.$IMAGE_TYPE)
++CACHEFILE=$TOCI_WORKING_DIR/image_cache/$(basename $IMAGE_NAME.$IMAGE_TYPE)
 +if [ -e $CACHEFILE ] ; then
 +    echo Using $CACHEFILE
 +    cp $CACHEFILE $IMAGE_NAME.$IMAGE_TYPE
@@ -34,13 +32,14 @@ index d71fa26..4413faa 100755
  mk_build_dir
  create_base
  run_d extra-data
-@@ -127,3 +134,6 @@ finalise_base
- unmount_image
- compress_image
- save_image $IMAGE_NAME.$IMAGE_TYPE
-+
-+cp $IMAGE_NAME.$IMAGE_TYPE $TOCI_CACHE_DIR/$(basename $IMAGE_NAME.$IMAGE_TYPE)
-+
+@@ -144,6 +151,7 @@ unmount_image
+ if [ "$IS_RAMDISK" == "0" ]; then
+   compress_image
+   save_image $IMAGE_NAME.$IMAGE_TYPE
++  cp $IMAGE_NAME.$IMAGE_TYPE $TOCI_WORKING_DIR/image_cache/$(basename $IMAGE_NAME.$IMAGE_TYPE)
+ else
+   remove_image
+ fi
 diff --git a/elements/base/dib-first-boot b/elements/base/dib-first-boot
 index 1e39860..c13a930 100755
 --- a/elements/base/dib-first-boot
