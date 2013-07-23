@@ -64,8 +64,6 @@ fi
 # but for now I'm tired so I'm going to
 sleep 67
 
-# TODO : find a better solution then guessing what the controller-address will be
-sed -i $TOCI_WORKING_DIR/tripleo-heat-templates/undercloud-vm.yaml -e 's/\(.*controller-address:\).*/\1 192.0.2.2/'
 heat stack-create -f $TOCI_WORKING_DIR/tripleo-heat-templates/undercloud-vm.yaml -P "PowerUserName=$(whoami)" undercloud
 
 # Just sleeping here so that we don't fill the logs with so many loops
