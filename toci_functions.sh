@@ -4,13 +4,15 @@ get_get_repo(){
     CACHEDIR=$TOCI_WORKING_DIR/${1/[^\/]*\//}
     if [ ! -e $CACHEDIR ] ; then
         git clone https://github.com/$1.git $CACHEDIR
-        repo_basename=${1#*/}
-        apply_patches ${repo_basename} ${repo_basename}*
     else
         pushd $CACHEDIR
+        # Repositories in $TOCI_WORKING_DIR aren't updated but we do fetch origin
+        # this fetch will make it a little more obvious to a user that upstream has changed
         git fetch
         popd
     fi
+    repo_basename=${1#*/}
+    apply_patches ${repo_basename} ${repo_basename}*
 }
 
 ssh_noprompt(){
