@@ -33,9 +33,9 @@ if [ -n "$TOCI_MACS" ]; then
     COUNT=$(( $COUNT + 1 ))
   done
 else
-  create-nodes 1 1024 10 5
+  create-nodes 1 1024 30 5
   export MACS=$($TOCI_WORKING_DIR/bm_poseur/bm_poseur get-macs)
-  setup-baremetal 1 1024 10 seed
+  setup-baremetal 1 1024 30 seed
 fi
 
 # Load images into glance
@@ -111,7 +111,7 @@ if [ "$TOCI_DO_OVERCLOUD" != "1" ] ; then
 fi
 
 user-config
-setup-baremetal 1 1024 10 undercloud
+setup-baremetal 1 1024 30 undercloud
 ssh_noprompt heat-admin@$UNDERCLOUD_IP "cat /opt/stack/boot-stack/virtual-power-key.pub" >> ~/.ssh/authorized_keys
 
 $TOCI_WORKING_DIR/diskimage-builder/bin/disk-image-create -a $TOCI_DIB_ARCH -o overcloud-compute $TOCI_DISTROELEMENT nova-compute nova-kvm neutron-openvswitch-agent heat-localip heat-cfntools stackuser
