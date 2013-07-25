@@ -20,7 +20,6 @@ TOCI_CLEANUP=1
 TOCI_REMOVE=1
 TOCI_GIT_CHECKOUT=1
 export http_proxy=http://1.2.3.4:3128
-export https_proxy=http://1.2.3.4:3128
 
 # set the arch (defaults to i386)
 TOCI_ARCH="x86_64"
