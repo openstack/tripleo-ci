@@ -86,3 +86,17 @@ ERROR(){
     echo $@
     exit 1
 }
+
+# Check for some dependencies
+function check_dependencies(){
+  commands=("patch" "make" "tar" "ssh" "arp" "busybox")
+  for cmd in "${commands[@]}"; do
+    which "${cmd}" > /dev/null 2>&1 || ERROR "$cmd: command not found"
+  done
+
+  python -c 'import yaml' > /dev/null 2>&1 || ERROR "Please install PyYAML"
+
+  # TODO : why do I need to do this, heat client complains without it
+  python -c 'import keystoneclient' || ERROR "Please install python-keystoneclient"
+  export PYTHONPATH=$(python -c 'import keystoneclient; print keystoneclient.__file__.rsplit("/", 1)[0]'):$PYTHONPATH
+}
