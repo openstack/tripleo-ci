@@ -8,14 +8,13 @@ cd $TOCI_WORKING_DIR
 # Were going to cache images here
 mkdir -p $TOCI_WORKING_DIR/image_cache
 
-# install deps on host machine
+# install deps on host machine, this script also restarts libvirt so we have to wait for it to be ready
 install-dependencies
+wait_for 3 3 ls /var/run/libvirt/libvirt-sock
+
 setup-network
 
 id | grep libvirt || ( echo "You have been added to the libvirt group, this script will now exit but will succeed if run again in a new shell" ; exit 1 )
-
-# looks like libvirt somtimes takes a little time to start
-wait_for 3 3 ls /var/run/libvirt/libvirt-sock
 
 if [ -f /etc/init.d/libvirt-bin ]; then
   sudo service libvirt-bin restart
