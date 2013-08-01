@@ -23,13 +23,15 @@ wait_for 10 5 nova list
 user-config #Adds nova keypair
 
 if [ -n "$TOCI_MACS" ]; then
+  # call setup-baremetal with no macs so baremetal flavor is created
+  MACS= setup-baremetal 1 1024 30 seed
   MACS=( $TOCI_MACS )
   IPS=( $TOCI_PM_IPS )
   USERS=( $TOCI_PM_USERS )
   PASSWORDS=( $TOCI_PM_PASSWORDS )
   COUNT=0
   for MAC in "${MACS[@]}"; do
-    nova baremetal-node-create --pm_address=${IPS[$COUNT]} --pm_user=${USERS[$COUNT]} --pm_password=${PASSWORDS[$COUNT]} ubuntu 1 512 20 $MAC
+    nova baremetal-node-create --pm_address=${IPS[$COUNT]} --pm_user=${USERS[$COUNT]} --pm_password=${PASSWORDS[$COUNT]} ubuntu 1 1024 30 $MAC
     COUNT=$(( $COUNT + 1 ))
   done
 else
