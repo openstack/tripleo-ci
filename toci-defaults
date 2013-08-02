@@ -1,0 +1,50 @@
+#!/usr/bin/bash
+
+# Time the script was started
+export STARTTIME=$(date)
+
+# All toci working files should go here
+export TOCI_WORKING_DIR=${TOCI_WORKING_DIR:-/opt/toci}
+export TRIPLEO_ROOT=$TOCI_WORKING_DIR # some scripts are expecting this
+
+# Should toci get tripleo repositories
+export TOCI_GIT_CHECKOUT=${TOCI_GIT_CHECKOUT:-1}
+
+# Files that should be cached between runs should go in here
+# e.g. downloaded images, git repo's etc...
+export TOCI_CACHE_DIR=${TOCI_CACHE_DIR:-/var/tmp/toci_cache}
+
+# Any files to be uploaded to results server go here
+export TOCI_LOG_DIR=${TOCI_LOG_DIR:-$(mktemp -d --tmpdir toci_logs_XXXXXXX)}
+
+# Set TOCI_ARCH to x86_64 to build 64 bit arch
+export TOCI_ARCH=${TOCI_ARCH:-'i386'}
+export TOCI_DIB_ARCH='i386'
+if [ "$TOCI_ARCH" == 'x86_64' ]; then
+  export TOCI_DIB_ARCH='amd64'
+fi
+
+# toci is building fedora images by default
+export TOCI_DISTROELEMENT=${TOCI_DISTROELEMENT:-'fedora selinux-permissive'}
+
+# Set to 0 if you don't want an overcloud to be started
+export TOCI_DO_OVERCLOUD=${TOCI_DO_OVERCLOUD:-1}
+
+# This is needed for help build the index.html if upload results to server
+export RESULT_CACHE=${RESULT_CACHE:-$TOCI_CACHE_DIR/results_cache.html}
+
+# Add incubator scripts to path
+export PATH=$PATH:$TOCI_WORKING_DIR/tripleo-incubator/scripts
+
+# Should toci remove VM's when finished
+export TOCI_CLEANUP=${TOCI_CLEANUP:-0}
+
+# Should toci remove WORKING and LOG dirs when finished
+export TOCI_REMOVE=${TOCI_REMOVE:-0}
+
+# Should toci upload results to a server
+export TOCI_UPLOAD=${TOCI_UPLOAD:-0}
+export TOCI_RESULTS_SERVER # nd server to upload to
+
+# irc channel (on freenode) to notify on error
+export TOCI_IRC
