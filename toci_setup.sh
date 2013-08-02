@@ -35,8 +35,7 @@ fi
 sed -i "s/\"user\": \"stack\",/\"user\": \"`whoami`\",/" $TOCI_WORKING_DIR/tripleo-image-elements/elements/seed-stack-config/config.json
 
 # Create a deployment ramdisk + kernel
-#$TOCI_WORKING_DIR/diskimage-builder/bin/ramdisk-image-create -x -a $TOCI_DIB_ARCH $TOCI_DISTROELEMENT deploy -o deploy-ramdisk
-$TOCI_WORKING_DIR/diskimage-builder/bin/ramdisk-image-create -x -a $TOCI_DIB_ARCH ubuntu deploy -o deploy-ramdisk
+$TOCI_WORKING_DIR/diskimage-builder/bin/ramdisk-image-create -x -a $TOCI_DIB_ARCH ${TOCI_DISTROELEMENT%% *} deploy -o deploy-ramdisk
 
 
 # If using Fedora keep using F18 for now
