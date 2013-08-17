@@ -38,17 +38,10 @@ sed -i "s/\"user\": \"stack\",/\"user\": \"`whoami`\",/" $TOCI_WORKING_DIR/tripl
 $TOCI_WORKING_DIR/diskimage-builder/bin/ramdisk-image-create -x -a $TOCI_DIB_ARCH ${TOCI_DISTROELEMENT%% *} deploy -o deploy-ramdisk
 
 
-# If using Fedora keep using F18 for now
-if [[ "$TOCI_DISTROELEMENT" =~ fedora ]] ; then
-    export DIB_CLOUD_IMAGES=http://mattdm.fedorapeople.org/cloud-images
-    export DIB_RELEASE=Fedora18
-    export BASE_IMAGE_FILE=Fedora18-Cloud-$TOCI_ARCH-latest.qcow2
-fi
-
 # Boot a seed vm
 EXTRA_ELEMENTS=$TOCI_DISTROELEMENT $TOCI_WORKING_DIR/tripleo-incubator/scripts/boot-seed-vm
 
 # Make the tripleo image elements accessible to diskimage-builder
 export ELEMENTS_PATH=$TOCI_WORKING_DIR/diskimage-builder/elements:$TOCI_WORKING_DIR/tripleo-image-elements/elements
 
-$TOCI_WORKING_DIR/diskimage-builder/bin/disk-image-create -a $TOCI_DIB_ARCH -o $TOCI_WORKING_DIR/undercloud $TOCI_DISTROELEMENT boot-stack nova-baremetal heat-localip heat-cfntools stackuser
+$TOCI_WORKING_DIR/diskimage-builder/bin/disk-image-create -a $TOCI_DIB_ARCH -o $TOCI_WORKING_DIR/undercloud $TOCI_DISTROELEMENT boot-stack nova-baremetal heat-cfntools stackuser local-config

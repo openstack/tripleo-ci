@@ -16,7 +16,7 @@ source $TOCI_WORKING_DIR/seedrc
 export no_proxy=$no_proxy,$SEED_IP
 
 # wait for a successful os-refresh-config
-wait_for 60 10 ssh_noprompt root@$SEED_IP ls /opt/stack/boot-stack/init-neutron.ok
+wait_for 60 10 ssh_noprompt root@$SEED_IP journalctl -u os-collect-config \| grep \'Completed phase post-configure\'
 
 # Make sure nova has had a chance to start responding to requests
 wait_for 10 5 nova list
@@ -39,6 +39,8 @@ else
   export MACS=$($TOCI_WORKING_DIR/bm_poseur/bm_poseur get-macs)
   setup-baremetal 1 1024 30 seed
 fi
+
+setup-neutron 192.0.2.2 192.0.2.3 192.0.2.0/24 192.0.2.1 ctlplane
 
 # Load images into glance
 export DIB_PATH=$TOCI_WORKING_DIR/diskimage-builder
@@ -86,22 +88,16 @@ source $TOCI_WORKING_DIR/undercloudrc
 sed -i -e "s/\$UNDERCLOUD_IP/$UNDERCLOUD_IP/g" $TOCI_WORKING_DIR/undercloudrc
 export no_proxy=$no_proxy,$UNDERCLOUD_IP
 
-# If using Fedora keep using F18 for now
-if [[ "$TOCI_DISTROELEMENT" =~ fedora ]] ; then
-    export DIB_CLOUD_IMAGES=http://mattdm.fedorapeople.org/cloud-images
-    export DIB_RELEASE=Fedora18
-    export BASE_IMAGE_FILE=Fedora18-Cloud-$TOCI_ARCH-latest.qcow2
-fi
-
 # Make the tripleo image elements accessible to diskimage-builder
 export ELEMENTS_PATH=$TOCI_WORKING_DIR/diskimage-builder/elements:$TOCI_WORKING_DIR/tripleo-image-elements/elements
 
 if [ "$TOCI_DO_OVERCLOUD" = "1" ] ; then
-    $TOCI_WORKING_DIR/diskimage-builder/bin/disk-image-create -a $TOCI_DIB_ARCH -o overcloud-control $TOCI_DISTROELEMENT boot-stack heat-localip heat-cfntools neutron-network-node stackuser
+    $TOCI_WORKING_DIR/diskimage-builder/bin/disk-image-create -a $TOCI_DIB_ARCH -o overcloud-control $TOCI_DISTROELEMENT boot-stack heat-cfntools neutron-network-node stackuser local-config
 fi
 
 # wait for a successful os-refresh-config
-wait_for 60 10 ssh_noprompt heat-admin@$UNDERCLOUD_IP ls /opt/stack/boot-stack/init-neutron.ok
+wait_for 60 10 ssh_noprompt heat-admin@$UNDERCLOUD_IP sudo journalctl -u os-collect-config \| grep \'Completed phase post-configure\'
+
 
 # Make sure nova has had a chance to start responding to requests
 wait_for 10 5 nova list
@@ -112,9 +108,10 @@ fi
 
 user-config
 setup-baremetal 1 1024 30 undercloud
+setup-neutron 192.0.2.5 192.0.2.24 192.0.2.0/24 $UNDERCLOUD_IP ctlplane
 ssh_noprompt heat-admin@$UNDERCLOUD_IP "cat /opt/stack/boot-stack/virtual-power-key.pub" >> ~/.ssh/authorized_keys
 
-$TOCI_WORKING_DIR/diskimage-builder/bin/disk-image-create -a $TOCI_DIB_ARCH -o overcloud-compute $TOCI_DISTROELEMENT nova-compute nova-kvm neutron-openvswitch-agent heat-localip heat-cfntools stackuser
+$TOCI_WORKING_DIR/diskimage-builder/bin/disk-image-create -a $TOCI_DIB_ARCH -o overcloud-compute $TOCI_DISTROELEMENT nova-compute nova-kvm neutron-openvswitch-agent heat-cfntools stackuser local-config
 
 if [ -d /var/log/upstart ]; then
     wait_for 40 10 ssh_noprompt heat-admin@$UNDERCLOUD_IP grep 'record\\ updated\\ for' /var/log/upstart/nova-compute.log -A 100 \| grep \'Updating host status\'
@@ -141,7 +138,7 @@ export no_proxy=$no_proxy,$OVERCLOUD_IP
 
 # wait for a successful os-refresh-config
 ssh_noprompt heat-admin@$UNDERCLOUD_IP sudo iptables -D FORWARD -j REJECT --reject-with icmp-host-prohibited || true
-wait_for 60 10 ssh_noprompt heat-admin@$OVERCLOUD_IP ls /opt/stack/boot-stack/init-neutron.ok
+wait_for 60 10 ssh_noprompt heat-admin@$OVERCLOUD_IP sudo journalctl -u os-collect-config \| grep \'Completed phase post-configure\'
 
 # Make sure nova has had a chance to start responding to requests
 wait_for 10 5 nova list
