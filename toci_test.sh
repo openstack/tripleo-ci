@@ -18,6 +18,9 @@ export no_proxy=$no_proxy,$SEED_IP
 # wait for a successful os-refresh-config
 wait_for 60 10 ssh_noprompt root@$SEED_IP journalctl -u os-collect-config \| grep \'Completed phase post-configure\'
 
+# setup keystone endpoints
+SERVICE_TOKEN=unset setup-endpoints $SEED_IP
+
 # Make sure nova has had a chance to start responding to requests
 wait_for 10 5 nova list
 user-config #Adds nova keypair
@@ -98,6 +101,8 @@ fi
 # wait for a successful os-refresh-config
 wait_for 60 10 ssh_noprompt heat-admin@$UNDERCLOUD_IP sudo journalctl -u os-collect-config \| grep \'Completed phase post-configure\'
 
+# setup keystone endpoints
+SERVICE_TOKEN=unset setup-endpoints $UNDERCLOUD_IP
 
 # Make sure nova has had a chance to start responding to requests
 wait_for 10 5 nova list
@@ -139,6 +144,9 @@ export no_proxy=$no_proxy,$OVERCLOUD_IP
 # wait for a successful os-refresh-config
 ssh_noprompt heat-admin@$UNDERCLOUD_IP sudo iptables -D FORWARD -j REJECT --reject-with icmp-host-prohibited || true
 wait_for 60 10 ssh_noprompt heat-admin@$OVERCLOUD_IP sudo journalctl -u os-collect-config \| grep \'Completed phase post-configure\'
+
+# setup keystone endpoints
+SERVICE_TOKEN=unset setup-endpoints $OVERCLOUD_IP
 
 # Make sure nova has had a chance to start responding to requests
 wait_for 10 5 nova list
