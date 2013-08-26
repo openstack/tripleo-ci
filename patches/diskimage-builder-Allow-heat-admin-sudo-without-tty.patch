@@ -4,13 +4,13 @@ Date: Fri, 19 Jul 2013 10:21:27 +0100
 Subject: [PATCH] Allow heat-admin sudo without tty
 
 ---
- elements/fedora/pre-install.d/00-allow-root-sudo | 5 +++++
+ elements/rpm-distro/pre-install.d/00-allow-root-sudo | 5 +++++
  1 file changed, 5 insertions(+)
 
-diff --git a/elements/fedora/pre-install.d/00-allow-root-sudo b/elements/fedora/pre-install.d/00-allow-root-sudo
+diff --git a/elements/rpm-distro/pre-install.d/00-allow-root-sudo b/elements/rpm-distro/pre-install.d/00-allow-root-sudo
 index 4736ac8..ff59cfb 100755
---- a/elements/fedora/pre-install.d/00-allow-root-sudo
-+++ b/elements/fedora/pre-install.d/00-allow-root-sudo
+--- a/elements/rpm-distro/pre-install.d/00-allow-root-sudo
++++ b/elements/rpm-distro/pre-install.d/00-allow-root-sudo
 @@ -5,3 +5,8 @@ set -e
  echo "Defaults:root !requiretty" >> /etc/sudoers.d/root-notty
  chmod 0440 /etc/sudoers.d/root-notty
