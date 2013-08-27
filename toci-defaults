@@ -44,7 +44,6 @@ export TOCI_REMOVE=${TOCI_REMOVE:-0}
 
 # Should toci upload results to a server
 export TOCI_UPLOAD=${TOCI_UPLOAD:-0}
-export TOCI_RESULTS_SERVER # nd server to upload to
 
 # irc channel (on freenode) to notify on error
 export TOCI_IRC

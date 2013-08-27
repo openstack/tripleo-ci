@@ -54,7 +54,13 @@ mark_time Finished
 
 if [ $TOCI_UPLOAD == 1 ] ; then
     cd $(dirname $TOCI_LOG_DIR)
-    tar -czf - $(basename $TOCI_LOG_DIR) | ssh ec2-user@$TOCI_RESULTS_SERVER tar -C /var/www/html/toci -xzf -
+
+    [[ "$TOCI_RESULTS_DST" =~ (.*)@(.*):(.*) ]] || ( echo "Couldn't parse '$TOCI_RESULTS_DST'" && exit 1 )
+    TOCI_RESULTS_USER=${BASH_REMATCH[1]}
+    TOCI_RESULTS_HOST=${BASH_REMATCH[2]}
+    TOCI_RESULTS_PATH=${BASH_REMATCH[3]}
+
+    tar -czf - $(basename $TOCI_LOG_DIR) | ssh $TOCI_RESULTS_USER@$TOCI_RESULTS_HOST tar -C $TOCI_RESULTS_PATH -xzf -
     touch $RESULT_CACHE
     mv $RESULT_CACHE result_cache.html.bck
     echo "<html><head/><body>" > index.html
@@ -69,14 +75,14 @@ if [ $TOCI_UPLOAD == 1 ] ; then
     cat $RESULT_CACHE >> index.html
     echo "</body></html>" >> index.html
 
-    scp index.html ec2-user@$TOCI_RESULTS_SERVER:/var/www/html/toci/index.html
-    ssh ec2-user@$TOCI_RESULTS_SERVER "chmod -R 775 /var/www/html/toci/*"
+    scp index.html $TOCI_RESULTS_USER@$TOCI_RESULTS_HOST:$TOCI_RESULTS_PATH/index.html
+    ssh $TOCI_RESULTS_USER@$TOCI_RESULTS_HOST "chmod -R 775 $TOCI_RESULTS_PATH/*"
 
 fi
 
 # Send a irc message
 if [ -n "$TOCI_IRC" -a $STATUS != 0 ] ; then
-    send_irc $TOCI_IRC ERROR during toci run, see http://$TOCI_RESULTS_SERVER/toci/$(basename $TOCI_LOG_DIR)/
+    send_irc $TOCI_IRC ERROR during toci run, see http://$TOCI_RESULTS_HOST/toci/$(basename $TOCI_LOG_DIR)/
 fi
 
 if [ $TOCI_REMOVE == 1 ] ; then
