@@ -9,6 +9,10 @@ SEED_IP=`$TOCI_WORKING_DIR/tripleo-incubator/scripts/get-vm-ip seed`
 # Get logs from the node on exit
 trap get_state_from_host EXIT
 
+# Add a route to the baremetal bridge via the seed node
+sudo ip route del 192.0.2.0/24 dev virbr0 || true
+sudo ip route add 192.0.2.0/24 dev virbr0 via $SEED_IP
+
 scp_noprompt root@$SEED_IP:stackrc $TOCI_WORKING_DIR/seedrc
 sed -i "s/localhost/$SEED_IP/" $TOCI_WORKING_DIR/seedrc
 source $TOCI_WORKING_DIR/seedrc
@@ -19,7 +23,7 @@ export no_proxy=$no_proxy,$SEED_IP
 wait_for 60 10 ssh_noprompt root@$SEED_IP journalctl -u os-collect-config \| grep \'Completed phase post-configure\'
 
 # setup keystone endpoints
-SERVICE_TOKEN=unset setup-endpoints $SEED_IP
+SERVICE_TOKEN=unset setup-endpoints 192.0.2.1
 
 # Make sure nova has had a chance to start responding to requests
 wait_for 10 5 nova list
@@ -53,9 +57,6 @@ keystone role-create --name heat_stack_user
 
 # place the bootstrap public key on host so that it can admin virt
 ssh_noprompt root@$SEED_IP "cat /opt/stack/boot-stack/virtual-power-key.pub" >> ~/.ssh/authorized_keys
-
-sudo ip route del 192.0.2.0/24 dev virbr0 || true
-sudo ip route add 192.0.2.0/24 dev virbr0 via $SEED_IP
 
 # Now we have to wait for the bm poseur to appear on the compute node and for the compute node to then
 # update the scheduler
