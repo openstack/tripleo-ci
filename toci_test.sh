@@ -62,7 +62,7 @@ sudo ip route add 192.0.2.0/24 dev virbr0 via $SEED_IP
 if [ -d /var/log/upstart ]; then
     wait_for 40 10 ssh_noprompt root@$SEED_IP grep 'record\\ updated\\ for' /var/log/upstart/nova-compute.log -A 100 \| grep \'Updating host status\'
 else
-    wait_for 40 10 ssh_noprompt root@$SEED_IP journalctl _SYSTEMD_UNIT=nova-compute.service \| grep \'record updated for\' -A 100 \| grep \'Updating host status\'
+    wait_for 40 10 ssh_noprompt root@$SEED_IP journalctl -u nova-compute -u openstack-nova-compute \| grep \'record updated for\' -A 100 \| grep \'Updating host status\'
 fi
 
 
@@ -121,7 +121,7 @@ $TOCI_WORKING_DIR/diskimage-builder/bin/disk-image-create -a $TOCI_DIB_ARCH -o o
 if [ -d /var/log/upstart ]; then
     wait_for 40 10 ssh_noprompt heat-admin@$UNDERCLOUD_IP grep 'record\\ updated\\ for' /var/log/upstart/nova-compute.log -A 100 \| grep \'Updating host status\'
 else
-    wait_for 40 10 ssh_noprompt heat-admin@$UNDERCLOUD_IP sudo journalctl _SYSTEMD_UNIT=nova-compute.service \| grep \'record updated for\' -A 100 \| grep \'Updating host status\'
+    wait_for 40 10 ssh_noprompt heat-admin@$UNDERCLOUD_IP sudo journalctl -u nova-compute -u openstack-nova-compute \| grep \'record updated for\' -A 100 \| grep \'Updating host status\'
 fi
 
 sleep 67
