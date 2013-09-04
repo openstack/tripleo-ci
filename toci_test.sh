@@ -7,7 +7,7 @@ cd $TOCI_WORKING_DIR
 SEED_IP=`$TOCI_WORKING_DIR/tripleo-incubator/scripts/get-vm-ip seed`
 
 # Get logs from the node on exit
-trap get_state_from_host EXIT
+trap "get_state_from_host root $SEED_IP" EXIT
 
 scp_noprompt root@$SEED_IP:stackrc $TOCI_WORKING_DIR/seedrc
 sed -i "s/localhost/$SEED_IP/" $TOCI_WORKING_DIR/seedrc
@@ -98,6 +98,9 @@ if [ "$TOCI_DO_OVERCLOUD" = "1" ] ; then
     $TOCI_WORKING_DIR/diskimage-builder/bin/disk-image-create -a $TOCI_DIB_ARCH -o overcloud-control $TOCI_DISTROELEMENT boot-stack heat-cfntools neutron-network-node stackuser local-config
 fi
 
+# Also get undercloud logs
+trap "get_state_from_host root $SEED_IP ; get_state_from_host heat-admin $UNDERCLOUD_IP" EXIT
+
 # wait for a successful os-refresh-config
 wait_for 60 10 ssh_noprompt heat-admin@$UNDERCLOUD_IP sudo journalctl -u os-collect-config \| grep \'Completed phase post-configure\'
 
@@ -140,6 +143,9 @@ export OVERCLOUD_IP=$(nova list | grep ctlplane | grep notcompute | sed -e "s/.*
 sed -e "s/$UNDERCLOUD_IP/$OVERCLOUD_IP/g" undercloudrc > overcloudrc
 source $TOCI_WORKING_DIR/overcloudrc
 export no_proxy=$no_proxy,$OVERCLOUD_IP
+
+# Also get overcloud logs
+trap "get_state_from_host root $SEED_IP ; get_state_from_host heat-admin $UNDERCLOUD_IP ; get_state_from_host heat-admin $OVERCLOUD_IP" EXIT
 
 # wait for a successful os-refresh-config
 ssh_noprompt heat-admin@$UNDERCLOUD_IP sudo iptables -D FORWARD -j REJECT --reject-with icmp-host-prohibited || true
