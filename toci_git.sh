@@ -15,7 +15,7 @@ for repo in 'openstack/tripleo-incubator' 'tripleo/bm_poseur' 'openstack/diskima
 done
 
 # Get a local copy of each of the git repositories  referenced in
-REGEX="^([^ ]+) (git|tar) ([/~][^ ]+) ([^ ]+) ?([^ ]*)$"
+REGEX="^([^ ]+) ([^ ]+) ([/~][^ ]+) ([^ ]+) ?([^ ]*)$"
 for sr in $TOCI_WORKING_DIR/*/elements/*/source-repository* ; do
     while read line ; do
         # ignore blank lines and lines begining in '#'
@@ -43,7 +43,6 @@ for sr in $TOCI_WORKING_DIR/*/elements/*/source-repository* ; do
             fi
         else
             echo "Couldn't parse '$line' as a source repository"
-            return 1
         fi
     done < $sr
 done
