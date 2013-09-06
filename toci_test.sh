@@ -61,9 +61,9 @@ ssh_noprompt root@$SEED_IP "cat /opt/stack/boot-stack/virtual-power-key.pub" >> 
 # Now we have to wait for the bm poseur to appear on the compute node and for the compute node to then
 # update the scheduler
 if [ -d /var/log/upstart ]; then
-    wait_for 40 10 ssh_noprompt root@$SEED_IP grep 'record\\ updated\\ for' /var/log/upstart/nova-compute.log -A 100 \| grep \'Updating host status\'
+    wait_for 40 10 ssh_noprompt root@$SEED_IP grep 'record\\ updated\\ for' /var/log/upstart/nova-compute.log
 else
-    wait_for 40 10 ssh_noprompt root@$SEED_IP journalctl -u nova-compute -u openstack-nova-compute \| grep \'record updated for\' -A 100 \| grep \'Updating host status\'
+    wait_for 40 10 ssh_noprompt root@$SEED_IP journalctl -u nova-compute -u openstack-nova-compute \| grep \'record updated for\'
 fi
 
 
@@ -123,9 +123,9 @@ ssh_noprompt heat-admin@$UNDERCLOUD_IP "cat /opt/stack/boot-stack/virtual-power-
 $TOCI_WORKING_DIR/diskimage-builder/bin/disk-image-create -a $TOCI_DIB_ARCH -o overcloud-compute $TOCI_DISTROELEMENT nova-compute nova-kvm neutron-openvswitch-agent os-collect-config stackuser local-config
 
 if [ -d /var/log/upstart ]; then
-    wait_for 40 10 ssh_noprompt heat-admin@$UNDERCLOUD_IP grep 'record\\ updated\\ for' /var/log/upstart/nova-compute.log -A 100 \| grep \'Updating host status\'
+    wait_for 40 10 ssh_noprompt heat-admin@$UNDERCLOUD_IP grep 'record\\ updated\\ for' /var/log/upstart/nova-compute.log
 else
-    wait_for 40 10 ssh_noprompt heat-admin@$UNDERCLOUD_IP sudo journalctl -u nova-compute -u openstack-nova-compute \| grep \'record updated for\' -A 100 \| grep \'Updating host status\'
+    wait_for 40 10 ssh_noprompt heat-admin@$UNDERCLOUD_IP sudo journalctl -u nova-compute -u openstack-nova-compute \| grep \'record updated for\'
 fi
 
 sleep 67
