@@ -39,7 +39,7 @@ $TOCI_WORKING_DIR/diskimage-builder/bin/ramdisk-image-create -x -a $TOCI_DIB_ARC
 
 
 # Boot a seed vm
-EXTRA_ELEMENTS=$TOCI_DISTROELEMENT $TOCI_WORKING_DIR/tripleo-incubator/scripts/boot-seed-vm
+EXTRA_ELEMENTS=$TOCI_DISTROELEMENT $TOCI_WORKING_DIR/tripleo-incubator/scripts/boot-seed-vm -a $TOCI_DIB_ARCH
 
 # Make the tripleo image elements accessible to diskimage-builder
 export ELEMENTS_PATH=$TOCI_WORKING_DIR/diskimage-builder/elements:$TOCI_WORKING_DIR/tripleo-image-elements/elements

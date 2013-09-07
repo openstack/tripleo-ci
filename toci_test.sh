@@ -42,9 +42,9 @@ if [ -n "$TOCI_MACS" ]; then
     COUNT=$(( $COUNT + 1 ))
   done
 else
-  create-nodes 1 1024 30 5
+  create-nodes 5
   export MACS=$($TOCI_WORKING_DIR/bm_poseur/bm_poseur get-macs)
-  setup-baremetal 1 1024 30 seed
+  setup-baremetal seed
 fi
 
 setup-neutron 192.0.2.2 192.0.2.3 192.0.2.0/24 192.0.2.1 ctlplane
@@ -72,6 +72,9 @@ fi
 # but for now I'm tired so I'm going to
 sleep 67
 
+if [ "$TOCI_ARCH" != "i386" ]; then
+  sed -i "s/arch: i386/arch: $TOCI_DIB_ARCH/" $TOCI_WORKING_DIR/tripleo-heat-templates/undercloud-vm.yaml
+fi
 heat stack-create -f $TOCI_WORKING_DIR/tripleo-heat-templates/undercloud-vm.yaml -P "PowerUserName=$(whoami)" undercloud
 
 # Just sleeping here so that we don't fill the logs with so many loops
@@ -116,7 +119,7 @@ if [ "$TOCI_DO_OVERCLOUD" != "1" ] ; then
 fi
 
 user-config
-setup-baremetal 1 1024 30 undercloud
+setup-baremetal undercloud
 setup-neutron 192.0.2.5 192.0.2.24 192.0.2.0/24 $UNDERCLOUD_IP ctlplane
 ssh_noprompt heat-admin@$UNDERCLOUD_IP "cat /opt/stack/boot-stack/virtual-power-key.pub" >> ~/.ssh/authorized_keys
 
