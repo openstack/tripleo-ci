@@ -61,16 +61,10 @@ ssh_noprompt root@$SEED_IP "cat /opt/stack/boot-stack/virtual-power-key.pub" >> 
 # Now we have to wait for the bm poseur to appear on the compute node and for the compute node to then
 # update the scheduler
 if [ -d /var/log/upstart ]; then
-    wait_for 40 10 ssh_noprompt root@$SEED_IP grep 'record\\ updated\\ for' /var/log/upstart/nova-compute.log
+    wait_for 40 10 ssh_noprompt root@$SEED_IP grep 'Free VCPUS: [^0]' /var/log/upstart/nova-compute.log
 else
-    wait_for 40 10 ssh_noprompt root@$SEED_IP journalctl -u nova-compute -u openstack-nova-compute \| grep \'record updated for\'
+    wait_for 40 10 ssh_noprompt root@$SEED_IP journalctl -u nova-compute -u openstack-nova-compute \| grep \'Free VCPUS: [^0]\'
 fi
-
-
-# I've tried all kinds of things to wait for before doing the nova boot and can't find a reliable combination,
-# I suspect I need to watch the scheduler and compute log to follow a chain of events,
-# but for now I'm tired so I'm going to
-sleep 67
 
 if [ "$TOCI_ARCH" != "i386" ]; then
   sed -i "s/arch: i386/arch: $TOCI_DIB_ARCH/" $TOCI_WORKING_DIR/tripleo-heat-templates/undercloud-vm.yaml
@@ -126,12 +120,10 @@ ssh_noprompt heat-admin@$UNDERCLOUD_IP "cat /opt/stack/boot-stack/virtual-power-
 $TOCI_WORKING_DIR/diskimage-builder/bin/disk-image-create -a $TOCI_DIB_ARCH -o overcloud-compute $TOCI_DISTROELEMENT nova-compute nova-kvm neutron-openvswitch-agent os-collect-config stackuser local-config
 
 if [ -d /var/log/upstart ]; then
-    wait_for 40 10 ssh_noprompt heat-admin@$UNDERCLOUD_IP grep 'record\\ updated\\ for' /var/log/upstart/nova-compute.log
+    wait_for 40 10 ssh_noprompt heat-admin@$UNDERCLOUD_IP grep 'Free VCPUS: [^0]' /var/log/upstart/nova-compute.log
 else
-    wait_for 40 10 ssh_noprompt heat-admin@$UNDERCLOUD_IP sudo journalctl -u nova-compute -u openstack-nova-compute \| grep \'record updated for\'
+    wait_for 40 10 ssh_noprompt heat-admin@$UNDERCLOUD_IP sudo journalctl -u nova-compute -u openstack-nova-compute \| grep \'Free VCPUS: [^0]\'
 fi
-
-sleep 67
 
 load-image overcloud-control.qcow2
 load-image overcloud-compute.qcow2
@@ -141,7 +133,7 @@ heat stack-create -f $TOCI_WORKING_DIR/tripleo-heat-templates/overcloud.yaml -P 
 
 sleep 161
 
-wait_for 40 20 heat list \| grep CREATE_COMPLETE
+wait_for 50 20 heat list \| grep CREATE_COMPLETE
 
 export OVERCLOUD_IP=$(nova list | grep ctlplane | grep notcompute | sed -e "s/.*=\([0-9.]*\).*/\1/")
 sed -e "s/$UNDERCLOUD_IP/$OVERCLOUD_IP/g" undercloudrc > overcloudrc
