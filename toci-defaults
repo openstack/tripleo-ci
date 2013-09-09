@@ -49,7 +49,6 @@ export TOCI_UPLOAD=${TOCI_UPLOAD:-0}
 export TOCI_IRC
 
 # bm_poser host resources, use by various scripts
-export NODE_CPU=${TOCI_NODE_CPU:-1}     # Number of cpu's
-export NODE_MEM=${TOCI_NODE_MEM:-1024}  # RAM MB
-export NODE_DISK=${TOCI_NODE_DISK:-30}  # Disk size
-export NODE_ARCH=$TOCI_DIB_ARCH         # arch i386/amd64
+export TOCI_NODE_CPU=${TOCI_NODE_CPU:-1}     # Number of cpu's
+export TOCI_NODE_MEM=${TOCI_NODE_MEM:-1024}  # RAM MB
+export TOCI_NODE_DISK=${TOCI_NODE_DISK:-30}  # Disk size

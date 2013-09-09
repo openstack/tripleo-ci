@@ -19,10 +19,10 @@ A. $ ssh heat-admin@192.0.2.2
 **Q. How can I create more bm_poseur nodes and add them to my undercloud**
 
     $ . undercloudrc
-    #              <cpus> <memory> <disk> <quantity>
-    $ create-nodes  1      1024     10     5
+    #              <cpus> <memory> <disk> <architecture> <quantity>
+    $ create-nodes  1      1024     10     i386           5
     $ export MACS=$($TOCI_WORKING_DIR/bm_poseur/bm_poseur get-macs)
-    $ setup-baremetal 1 768 10 all
+    $ setup-baremetal 1 768 10 i386 all
 
 **Q. How can I create a new image, using the elements fedora, selinux-permissive and stackuser**
 

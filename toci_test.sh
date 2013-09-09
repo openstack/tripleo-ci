@@ -31,20 +31,20 @@ user-config #Adds nova keypair
 
 if [ -n "$TOCI_MACS" ]; then
   # call setup-baremetal with no macs so baremetal flavor is created
-  MACS= setup-baremetal 1 1024 30 seed
+  MACS= setup-baremetal $TOCI_NODE_CPU $TOCI_NODE_MEM $TOCI_NODE_DISK $TOCI_DIB_ARCH seed
   MACS=( $TOCI_MACS )
   IPS=( $TOCI_PM_IPS )
   USERS=( $TOCI_PM_USERS )
   PASSWORDS=( $TOCI_PM_PASSWORDS )
   COUNT=0
   for MAC in "${MACS[@]}"; do
-    nova baremetal-node-create --pm_address=${IPS[$COUNT]} --pm_user=${USERS[$COUNT]} --pm_password=${PASSWORDS[$COUNT]} ubuntu 1 1024 30 $MAC
+    nova baremetal-node-create --pm_address=${IPS[$COUNT]} --pm_user=${USERS[$COUNT]} --pm_password=${PASSWORDS[$COUNT]} ubuntu $TOCI_NODE_CPU $TOCI_NODE_MEM $TOCI_NODE_DISK $MAC
     COUNT=$(( $COUNT + 1 ))
   done
 else
-  create-nodes 5
+  create-nodes $TOCI_NODE_CPU $TOCI_NODE_MEM $TOCI_NODE_DISK $TOCI_DIB_ARCH 5
   export MACS=$($TOCI_WORKING_DIR/bm_poseur/bm_poseur get-macs)
-  setup-baremetal seed
+  setup-baremetal $TOCI_NODE_CPU $TOCI_NODE_MEM $TOCI_NODE_DISK $TOCI_DIB_ARCH seed
 fi
 
 setup-neutron 192.0.2.2 192.0.2.3 192.0.2.0/24 192.0.2.1 ctlplane
@@ -119,7 +119,7 @@ if [ "$TOCI_DO_OVERCLOUD" != "1" ] ; then
 fi
 
 user-config
-setup-baremetal undercloud
+setup-baremetal $TOCI_NODE_CPU $TOCI_NODE_MEM $TOCI_NODE_DISK $TOCI_DIB_ARCH undercloud
 setup-neutron 192.0.2.5 192.0.2.24 192.0.2.0/24 $UNDERCLOUD_IP ctlplane
 ssh_noprompt heat-admin@$UNDERCLOUD_IP "cat /opt/stack/boot-stack/virtual-power-key.pub" >> ~/.ssh/authorized_keys
 
