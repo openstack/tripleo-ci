@@ -22,6 +22,12 @@ else
   sudo service libvirtd restart
 fi
 
+# Check the default libvirt connection URI
+HYPERV_TYPE=`virsh uri`
+if [[ ${HYPERV_TYPE##*/} != "system" ]]; then
+    export LIBVIRT_DEFAULT_URI="qemu:///system"
+fi
+
 # set default arch for flavors in boot-stack
 if [ "$TOCI_ARCH" != "i386" ]; then
   sed -i "s/\"arch\":.*,/\"arch\": \"$TOCI_ARCH\",/" $TOCI_WORKING_DIR/tripleo-image-elements/elements/seed-stack-config/config.json
