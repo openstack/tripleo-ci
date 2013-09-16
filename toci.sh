@@ -3,9 +3,9 @@
 export TOCI_SOURCE_DIR=$(realpath $(dirname $0))
 
 # setup toci env variables
+[ -e ~/.toci ] && source ~/.toci                                 # your local toci env setup
 source $TOCI_SOURCE_DIR/toci-defaults                            # defaults for env variables toci expects
 [ -e $TOCI_SOURCE_DIR/tocirc ] && source $TOCI_SOURCE_DIR/tocirc # env variables you may want to setup for this run
-[ -e ~/.toci ] && source ~/.toci                                 # your local toci env setup
 
 . $TOCI_SOURCE_DIR/toci_functions.sh
 
