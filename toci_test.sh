@@ -22,8 +22,9 @@ export no_proxy=$no_proxy,$SEED_IP
 # wait for a successful os-refresh-config
 wait_for 60 10 ssh_noprompt root@$SEED_IP journalctl -u os-collect-config \| grep \'Completed phase post-configure\'
 
-# setup keystone endpoints
-SERVICE_TOKEN=unset setup-endpoints 192.0.2.1
+# init keystone / setup endpoints
+init-keystone -p unset unset 192.0.2.1 admin@example.com root@192.0.2.1
+setup-endpoints 192.0.2.1 --glance-password unset --heat-password unset --neutron-password unset --nova-password unset
 
 # Make sure nova has had a chance to start responding to requests
 wait_for 10 5 nova list
@@ -103,7 +104,8 @@ trap "get_state_from_host root $SEED_IP ; get_state_from_host heat-admin $UNDERC
 wait_for 60 10 ssh_noprompt heat-admin@$UNDERCLOUD_IP sudo journalctl -u os-collect-config \| grep \'Completed phase post-configure\'
 
 # setup keystone endpoints
-SERVICE_TOKEN=unset setup-endpoints $UNDERCLOUD_IP
+init-keystone -p unset unset $UNDERCLOUD_IP admin@example.com root@$UNDERCLOUD_IP
+setup-endpoints $UNDERCLOUD_IP --glance-password unset --heat-password unset --neutron-password unset --nova-password unset
 
 # Make sure nova has had a chance to start responding to requests
 wait_for 10 5 nova list
@@ -148,7 +150,8 @@ ssh_noprompt heat-admin@$UNDERCLOUD_IP sudo iptables -D FORWARD -j REJECT --reje
 wait_for 60 10 ssh_noprompt heat-admin@$OVERCLOUD_IP sudo journalctl -u os-collect-config \| grep \'Completed phase post-configure\'
 
 # setup keystone endpoints
-SERVICE_TOKEN=unset setup-endpoints $OVERCLOUD_IP
+init-keystone -p unset unset $OVERCLOUD_IP admin@example.com root@$OVERCLOUD_IP
+setup-endpoints $OVERCLOUD_IP --glance-password unset --heat-password unset --neutron-password unset --nova-password unset
 
 # Make sure nova has had a chance to start responding to requests
 wait_for 10 5 nova list
