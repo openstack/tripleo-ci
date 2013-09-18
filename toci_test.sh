@@ -67,7 +67,7 @@ else
     wait_for 40 10 ssh_noprompt root@$SEED_IP journalctl -u nova-compute -u openstack-nova-compute \| grep \'Free VCPUS: [^0]\'
 fi
 
-if [ "$TOCI_ARCH" != "i386" ]; then
+if [ "$TOCI_DIB_ARCH" != "i386" ]; then
   sed -i "s/arch: i386/arch: $TOCI_DIB_ARCH/" $TOCI_WORKING_DIR/tripleo-heat-templates/undercloud-vm.yaml
 fi
 heat stack-create -f $TRIPLEO_ROOT/tripleo-heat-templates/undercloud.yaml -P "PowerUserName=$(whoami);AdminToken=${TOCI_ADMIN_TOKEN};AdminPassword=${TOCI_UNDERCLOUD_PASSWORD};CinderPassword=${TOCI_UNDERCLOUD_PASSWORD};GlancePassword=${TOCI_UNDERCLOUD_PASSWORD};HeatPassword=${TOCI_UNDERCLOUD_PASSWORD};NeutronPassword=${TOCI_UNDERCLOUD_PASSWORD};NovaPassword=${TOCI_UNDERCLOUD_PASSWORD}" undercloud
