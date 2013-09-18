@@ -24,8 +24,8 @@ if [ "$TOCI_ARCH" == 'x86_64' ]; then
   export TOCI_DIB_ARCH='amd64'
 fi
 
-# toci is building fedora images by default, set to "ubuntu" to build ubuntu images
-export TOCI_DISTROELEMENT=${TOCI_DISTROELEMENT:-'fedora selinux-permissive'}
+# This gets passed into diskimage builder
+export NODE_DIST=${NODE_DIST:-'pip-cache fedora selinux-permissive'}
 
 # Set to 0 if you don't want an overcloud to be started
 export TOCI_DO_OVERCLOUD=${TOCI_DO_OVERCLOUD:-1}
