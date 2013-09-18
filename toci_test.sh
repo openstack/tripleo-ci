@@ -70,7 +70,7 @@ fi
 if [ "$TOCI_DIB_ARCH" != "i386" ]; then
   sed -i "s/arch: i386/arch: $TOCI_DIB_ARCH/" $TOCI_WORKING_DIR/tripleo-heat-templates/undercloud-vm.yaml
 fi
-heat stack-create -f $TOCI_WORKING_DIR/tripleo-heat-templates/undercloud-vm.yaml -P "PowerUserName=$(whoami);AdminToken=${TOCI_ADMIN_TOKEN};AdminPassword=${TOCI_UNDERCLOUD_PASSWORD};GlancePassword=${TOCI_UNDERCLOUD_PASSWORD};HeatPassword=${TOCI_UNDERCLOUD_PASSWORD};NeutronPassword=${TOCI_UNDERCLOUD_PASSWORD};NovaPassword=${TOCI_UNDERCLOUD_PASSWORD}" undercloud
+heat stack-create -f $TOCI_WORKING_DIR/tripleo-heat-templates/undercloud-vm.yaml -P "PowerUserName=$(whoami);AdminToken=${TOCI_ADMIN_TOKEN};AdminPassword=${UNDERCLOUD_ADMIN_PASSWORD};GlancePassword=${UNDERCLOUD_ADMIN_PASSWORD};HeatPassword=${UNDERCLOUD_ADMIN_PASSWORD};NeutronPassword=${UNDERCLOUD_ADMIN_PASSWORD};NovaPassword=${UNDERCLOUD_ADMIN_PASSWORD}" undercloud
 
 
 # Just sleeping here so that we don't fill the logs with so many loops
@@ -105,8 +105,8 @@ trap "get_state_from_host root $SEED_IP ; get_state_from_host heat-admin $UNDERC
 wait_for 60 10 ssh_noprompt heat-admin@$UNDERCLOUD_IP sudo journalctl -u os-collect-config \| grep \'Completed phase post-configure\'
 
 # setup keystone endpoints
-init-keystone -p unset unset $UNDERCLOUD_IP admin@example.com root@$UNDERCLOUD_IP
-setup-endpoints $UNDERCLOUD_IP --glance-password unset --heat-password unset --neutron-password unset --nova-password unset
+init-keystone -p $UNDERCLOUD_ADMIN_PASSWORD $TOCI_ADMIN_TOKEN $UNDERCLOUD_IP admin@example.com heat-admin@$UNDERCLOUD_IP
+setup-endpoints $UNDERCLOUD_IP --glance-password $UNDERCLOUD_ADMIN_PASSWORD --heat-password $UNDERCLOUD_ADMIN_PASSWORD --neutron-password $UNDERCLOUD_ADMIN_PASSWORD --nova-password $UNDERCLOUD_ADMIN_PASSWORD
 
 # Make sure nova has had a chance to start responding to requests
 wait_for 10 5 nova list
@@ -132,7 +132,7 @@ load-image overcloud-control.qcow2
 load-image overcloud-compute.qcow2
 
 make -C $TOCI_WORKING_DIR/tripleo-heat-templates overcloud.yaml
-heat stack-create -f $TOCI_WORKING_DIR/tripleo-heat-templates/overcloud.yaml -P "AdminToken=${TOCI_ADMIN_TOKEN};AdminPassword=${TOCI_OVERCLOUD_PASSWORD};CinderPassword=${TOCI_OVERCLOUD_PASSWORD};GlancePassword=${TOCI_OVERCLOUD_PASSWORD};HeatPassword=${TOCI_OVERCLOUD_PASSWORD};NeutronPassword=${TOCI_OVERCLOUD_PASSWORD};NovaPassword=${TOCI_OVERCLOUD_PASSWORD};notcomputeImage=overcloud-control" overcloud
+heat stack-create -f $TOCI_WORKING_DIR/tripleo-heat-templates/overcloud.yaml -P "AdminToken=${TOCI_ADMIN_TOKEN};AdminPassword=${OVERCLOUD_ADMIN_PASSWORD};CinderPassword=${OVERCLOUD_ADMIN_PASSWORD};GlancePassword=${OVERCLOUD_ADMIN_PASSWORD};HeatPassword=${OVERCLOUD_ADMIN_PASSWORD};NeutronPassword=${OVERCLOUD_ADMIN_PASSWORD};NovaPassword=${OVERCLOUD_ADMIN_PASSWORD};notcomputeImage=overcloud-control" overcloud
 
 sleep 161
 
@@ -151,8 +151,8 @@ ssh_noprompt heat-admin@$UNDERCLOUD_IP sudo iptables -D FORWARD -j REJECT --reje
 wait_for 60 10 ssh_noprompt heat-admin@$OVERCLOUD_IP sudo journalctl -u os-collect-config \| grep \'Completed phase post-configure\'
 
 # setup keystone endpoints
-init-keystone -p unset unset $OVERCLOUD_IP admin@example.com root@$OVERCLOUD_IP
-setup-endpoints $OVERCLOUD_IP --glance-password unset --heat-password unset --neutron-password unset --nova-password unset
+init-keystone -p $OVERCLOUD_ADMIN_PASSWORD $TOCI_ADMIN_TOKEN $OVERCLOUD_IP admin@example.com heat-admin@$OVERCLOUD_IP
+setup-endpoints $OVERCLOUD_IP --glance-password $OVERCLOUD_ADMIN_PASSWORD --heat-password $OVERCLOUD_ADMIN_PASSWORD --neutron-password $OVERCLOUD_ADMIN_PASSWORD --nova-password $OVERCLOUD_ADMIN_PASSWORD
 
 # Make sure nova has had a chance to start responding to requests
 wait_for 10 5 nova list
