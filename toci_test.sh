@@ -94,7 +94,7 @@ export no_proxy=$no_proxy,$UNDERCLOUD_IP
 export ELEMENTS_PATH=$TOCI_WORKING_DIR/diskimage-builder/elements:$TOCI_WORKING_DIR/tripleo-image-elements/elements
 
 if [ "$TOCI_DO_OVERCLOUD" = "1" ] ; then
-    $TOCI_WORKING_DIR/diskimage-builder/bin/disk-image-create -a $TOCI_DIB_ARCH -o overcloud-control $TOCI_DISTROELEMENT boot-stack os-collect-config neutron-network-node stackuser local-config
+    $TOCI_WORKING_DIR/diskimage-builder/bin/disk-image-create -a $TOCI_DIB_ARCH -o overcloud-control boot-stack os-collect-config neutron-network-node stackuser local-config
 fi
 
 # Also get undercloud logs
@@ -119,7 +119,7 @@ setup-baremetal $TOCI_NODE_CPU $TOCI_NODE_MEM $TOCI_NODE_DISK $TOCI_DIB_ARCH und
 setup-neutron 192.0.2.5 192.0.2.24 192.0.2.0/24 $UNDERCLOUD_IP ctlplane
 ssh_noprompt heat-admin@$UNDERCLOUD_IP "cat /opt/stack/boot-stack/virtual-power-key.pub" >> ~/.ssh/authorized_keys
 
-$TOCI_WORKING_DIR/diskimage-builder/bin/disk-image-create -a $TOCI_DIB_ARCH -o overcloud-compute $TOCI_DISTROELEMENT nova-compute nova-kvm neutron-openvswitch-agent os-collect-config stackuser local-config
+$TOCI_WORKING_DIR/diskimage-builder/bin/disk-image-create -a $TOCI_DIB_ARCH -o overcloud-compute nova-compute nova-kvm neutron-openvswitch-agent os-collect-config stackuser local-config
 
 if [ -d /var/log/upstart ]; then
     wait_for 40 10 ssh_noprompt heat-admin@$UNDERCLOUD_IP grep 'Free VCPUS: [^0]' /var/log/upstart/nova-compute.log
