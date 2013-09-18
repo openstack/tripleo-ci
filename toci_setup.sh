@@ -35,13 +35,13 @@ fi
 sed -i "s/\"user\": \"stack\",/\"user\": \"`whoami`\",/" $TOCI_WORKING_DIR/tripleo-image-elements/elements/seed-stack-config/config.json
 
 # Create a deployment ramdisk + kernel
-$TOCI_WORKING_DIR/diskimage-builder/bin/ramdisk-image-create -x -a $TOCI_DIB_ARCH deploy -o deploy-ramdisk
+$TOCI_WORKING_DIR/diskimage-builder/bin/ramdisk-image-create -x -a $TOCI_DIB_ARCH ${TOCI_DISTROELEMENT%% *} deploy -o deploy-ramdisk
 
 
 # Boot a seed vm
-$TOCI_WORKING_DIR/tripleo-incubator/scripts/boot-seed-vm -a $TOCI_DIB_ARCH
+EXTRA_ELEMENTS=$TOCI_DISTROELEMENT $TOCI_WORKING_DIR/tripleo-incubator/scripts/boot-seed-vm -a $TOCI_DIB_ARCH
 
 # Make the tripleo image elements accessible to diskimage-builder
 export ELEMENTS_PATH=$TOCI_WORKING_DIR/diskimage-builder/elements:$TOCI_WORKING_DIR/tripleo-image-elements/elements
 
-$TOCI_WORKING_DIR/diskimage-builder/bin/disk-image-create -a $TOCI_DIB_ARCH -o $TOCI_WORKING_DIR/undercloud boot-stack nova-baremetal os-collect-config stackuser local-config
+$TOCI_WORKING_DIR/diskimage-builder/bin/disk-image-create -a $TOCI_DIB_ARCH -o $TOCI_WORKING_DIR/undercloud $TOCI_DISTROELEMENT boot-stack nova-baremetal os-collect-config stackuser local-config
