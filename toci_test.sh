@@ -20,7 +20,11 @@ source $TOCI_WORKING_DIR/seedrc
 export no_proxy=$no_proxy,$SEED_IP
 
 # wait for a successful os-refresh-config
-wait_for 60 10 ssh_noprompt root@$SEED_IP journalctl -u os-collect-config \| grep \'Completed phase post-configure\'
+if [[ "$NODE_DIST" =~ (.*)ubuntu(.*) ]]; then
+    wait_for 60 10 ssh_noprompt root@$SEED_IP grep 'Completed phase post-configure' /var/log/upstart/os-collect-config.log
+else
+    wait_for 60 10 ssh_noprompt root@$SEED_IP journalctl -u os-collect-config \| grep \'Completed phase post-configure\'
+fi
 
 # init keystone / setup endpoints
 init-keystone -p unset unset 192.0.2.1 admin@example.com root@192.0.2.1
@@ -61,7 +65,7 @@ ssh_noprompt root@$SEED_IP "cat /opt/stack/boot-stack/virtual-power-key.pub" >> 
 
 # Now we have to wait for the bm poseur to appear on the compute node and for the compute node to then
 # update the scheduler
-if [ -d /var/log/upstart ]; then
+if [[ "$NODE_DIST" =~ (.*)ubuntu(.*) ]]; then
     wait_for 40 10 ssh_noprompt root@$SEED_IP grep 'Free VCPUS: [^0]' /var/log/upstart/nova-compute.log
 else
     wait_for 40 10 ssh_noprompt root@$SEED_IP journalctl -u nova-compute -u openstack-nova-compute \| grep \'Free VCPUS: [^0]\'
@@ -102,7 +106,11 @@ fi
 trap "get_state_from_host root $SEED_IP ; get_state_from_host heat-admin $UNDERCLOUD_IP" EXIT
 
 # wait for a successful os-refresh-config
-wait_for 60 10 ssh_noprompt heat-admin@$UNDERCLOUD_IP sudo journalctl -u os-collect-config \| grep \'Completed phase post-configure\'
+if [[ "$NODE_DIST" =~ (.*)ubuntu(.*) ]]; then
+    wait_for 60 10 ssh_noprompt heat-admin@$UNDERCLOUD_IP grep 'Completed phase post-configure' /var/log/upstart/os-collect-config.log
+else
+    wait_for 60 10 ssh_noprompt heat-admin@$UNDERCLOUD_IP sudo journalctl -u os-collect-config \| grep \'Completed phase post-configure\'
+fi
 
 # setup keystone endpoints
 init-keystone -p $UNDERCLOUD_ADMIN_PASSWORD $TOCI_ADMIN_TOKEN $UNDERCLOUD_IP admin@example.com heat-admin@$UNDERCLOUD_IP
@@ -148,7 +156,13 @@ trap "get_state_from_host root $SEED_IP ; get_state_from_host heat-admin $UNDERC
 
 # wait for a successful os-refresh-config
 ssh_noprompt heat-admin@$UNDERCLOUD_IP sudo iptables -D FORWARD -j REJECT --reject-with icmp-host-prohibited || true
-wait_for 60 10 ssh_noprompt heat-admin@$OVERCLOUD_IP sudo journalctl -u os-collect-config \| grep \'Completed phase post-configure\'
+
+if [[ "$NODE_DIST" =~ (.*)ubuntu(.*) ]]; then
+    wait_for 60 10 ssh_noprompt heat-admin@$OVERCLOUD_IP grep 'Completed phase post-configure' /var/log/upstart/os-collect-config.log
+else
+    wait_for 60 10 ssh_noprompt heat-admin@$OVERCLOUD_IP sudo journalctl -u os-collect-config \| grep \'Completed phase post-configure\'
+fi
+
 
 # setup keystone endpoints
 init-keystone -p $OVERCLOUD_ADMIN_PASSWORD $TOCI_ADMIN_TOKEN $OVERCLOUD_IP admin@example.com heat-admin@$OVERCLOUD_IP
