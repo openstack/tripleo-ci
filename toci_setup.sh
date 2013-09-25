@@ -39,9 +39,9 @@ $TOCI_WORKING_DIR/diskimage-builder/bin/ramdisk-image-create -x -a $TOCI_DIB_ARC
 
 
 # Boot a seed vm
-$TOCI_WORKING_DIR/tripleo-incubator/scripts/boot-seed-vm -a $TOCI_DIB_ARCH $NODE_DIST
+$TOCI_WORKING_DIR/tripleo-incubator/scripts/boot-seed-vm -a $TOCI_DIB_ARCH $NODE_DIST $DHCP_DRIVER
 
 # Make the tripleo image elements accessible to diskimage-builder
 export ELEMENTS_PATH=$TOCI_WORKING_DIR/diskimage-builder/elements:$TOCI_WORKING_DIR/tripleo-image-elements/elements
 
-$TOCI_WORKING_DIR/diskimage-builder/bin/disk-image-create $NODE_DIST -a $TOCI_DIB_ARCH -o $TOCI_WORKING_DIR/undercloud boot-stack nova-baremetal os-collect-config stackuser local-config
+$TOCI_WORKING_DIR/diskimage-builder/bin/disk-image-create $NODE_DIST -a $TOCI_DIB_ARCH -o $TOCI_WORKING_DIR/undercloud boot-stack nova-baremetal os-collect-config stackuser local-config $DHCP_DRIVER
