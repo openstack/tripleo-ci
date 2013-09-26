@@ -52,7 +52,7 @@ mark_time(){
 
 # Get config files and logs from a host for debuging purposes
 get_state_from_host(){
-    ssh_noprompt $1@$2 "( set -x ; ps -ef ; df -h ; uptime ; sudo netstat -lpn ; sudo iptables-save ; brctl show ; ip addr ; dpkg -l || rpm -qa) > /var/log/host_info.txt 2>&1 ;
+    ssh_noprompt $1@$2 "( set -x ; ps -ef ; df -h ; uptime ; sudo netstat -lpn ; sudo iptables-save ; sudo ovs-vsctl show ; ip addr ; dpkg -l || rpm -qa) > /var/log/host_info.txt 2>&1 ;
                                      sudo tar -czf - --exclude=udev/hwdb.bin --exclude=selinux/targeted /var/log /etc || true" > $TOCI_LOG_DIR/$2.tgz
 }
 
