@@ -44,6 +44,9 @@ else
   export SEED_MACS=$(create-nodes $TOCI_NODE_CPU $TOCI_NODE_MEM $TOCI_NODE_DISK $TOCI_DIB_ARCH 1)
   setup-baremetal $TOCI_NODE_CPU $TOCI_NODE_MEM $TOCI_NODE_DISK $TOCI_DIB_ARCH "$SEED_MACS" seed
 
+  # If MAC's weren't provided then we're using virtual nodes
+  OVERCLOUD_LIBVIRT_TYPE=${OVERCLOUD_LIBVIRT_TYPE:-";NovaComputeLibvirtType=qemu"}
+
 fi
 
 setup-neutron 192.0.2.2 192.0.2.3 192.0.2.0/24 192.0.2.1 ctlplane
@@ -147,7 +150,7 @@ load-image overcloud-control.qcow2
 load-image overcloud-compute.qcow2
 
 make -C $TOCI_WORKING_DIR/tripleo-heat-templates overcloud.yaml
-heat stack-create -f $TOCI_WORKING_DIR/tripleo-heat-templates/overcloud.yaml -P "AdminToken=${TOCI_ADMIN_TOKEN};AdminPassword=${OVERCLOUD_ADMIN_PASSWORD};CinderPassword=${OVERCLOUD_ADMIN_PASSWORD};GlancePassword=${OVERCLOUD_ADMIN_PASSWORD};HeatPassword=${OVERCLOUD_ADMIN_PASSWORD};NeutronPassword=${OVERCLOUD_ADMIN_PASSWORD};NovaPassword=${OVERCLOUD_ADMIN_PASSWORD};notcomputeImage=overcloud-control" overcloud
+heat stack-create -f $TOCI_WORKING_DIR/tripleo-heat-templates/overcloud.yaml -P "AdminToken=${TOCI_ADMIN_TOKEN};AdminPassword=${OVERCLOUD_ADMIN_PASSWORD};CinderPassword=${OVERCLOUD_ADMIN_PASSWORD};GlancePassword=${OVERCLOUD_ADMIN_PASSWORD};HeatPassword=${OVERCLOUD_ADMIN_PASSWORD};NeutronPassword=${OVERCLOUD_ADMIN_PASSWORD};NovaPassword=${OVERCLOUD_ADMIN_PASSWORD};notcomputeImage=overcloud-control${OVERCLOUD_LIBVIRT_TYPE}" overcloud
 
 sleep 161
 
