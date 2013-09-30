@@ -58,3 +58,4 @@ export TOCI_NODE_DISK=${TOCI_NODE_DISK:-30}  # Disk size
 export TOCI_ADMIN_TOKEN='admin'
 export UNDERCLOUD_ADMIN_PASSWORD='stack'
 export OVERCLOUD_ADMIN_PASSWORD='stack'
+export OVERCLOUD_DEMO_PASSWORD='stack'
