@@ -58,8 +58,8 @@ get_state_from_host(){
 
 # On Exit write relevant toci env to a rc file
 get_tocienv(){
-    declare | grep -e "^PATH=" -e "^http.*proxy" -e "^TOCI_" -e '^DIB_' | sed  -e 's/^/export /g' > $TOCI_WORKING_DIR/toci_env
-    # Some IP we sont want to proxy
+    declare | grep -e "^PATH=" -e "^http.*proxy" -e "^TOCI_" -e '^DIB_' -e 'CLOUD_ADMIN_PASSWORD' | sed  -e 's/^/export /g' > $TOCI_WORKING_DIR/toci_env
+    # Some IP we don't want to proxy
     echo 'export no_proxy=$($TOCI_WORKING_DIR/tripleo-incubator/scripts/get-vm-ip seed),192.0.2.2,192.0.2.5,192.0.2.6,192.0.2.7,192.0.2.8' >> $TOCI_WORKING_DIR/toci_env
 }
 
