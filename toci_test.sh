@@ -13,8 +13,8 @@ trap "get_state_from_host root $SEED_IP" EXIT
 sudo ip route del 192.0.2.0/24 dev virbr0 || true
 sudo ip route add 192.0.2.0/24 dev virbr0 via $SEED_IP
 
-scp_noprompt root@$SEED_IP:stackrc $TOCI_WORKING_DIR/seedrc
-sed -i "s/localhost/$SEED_IP/" $TOCI_WORKING_DIR/seedrc
+cp $TOCI_WORKING_DIR/tripleo-incubator/seedrc $TOCI_WORKING_DIR/seedrc
+sed -i "s/\$SEED_IP/$SEED_IP/" $TOCI_WORKING_DIR/seedrc
 source $TOCI_WORKING_DIR/seedrc
 
 export no_proxy=$no_proxy,$SEED_IP
@@ -85,8 +85,8 @@ wait_for 20 15 ping -c 1 $(nova list | grep undercloud | sed -e "s/.*=\(.*\) .*/
 
 export UNDERCLOUD_IP=$(nova list | grep ctlplane | sed -e "s/.*=\([0-9.]*\).*/\1/")
 cp $TOCI_WORKING_DIR/tripleo-incubator/undercloudrc $TOCI_WORKING_DIR/undercloudrc
-source $TOCI_WORKING_DIR/undercloudrc
 sed -i -e "s/\$UNDERCLOUD_IP/$UNDERCLOUD_IP/g" $TOCI_WORKING_DIR/undercloudrc
+source $TOCI_WORKING_DIR/undercloudrc
 export no_proxy=$no_proxy,$UNDERCLOUD_IP
 
 # Make the tripleo image elements accessible to diskimage-builder
@@ -154,7 +154,8 @@ sleep 161
 wait_for 50 20 heat list \| grep CREATE_COMPLETE
 
 export OVERCLOUD_IP=$(nova list | grep ctlplane | grep notcompute | sed -e "s/.*=\([0-9.]*\).*/\1/")
-sed -e "s/$UNDERCLOUD_IP/$OVERCLOUD_IP/g" undercloudrc > overcloudrc
+cp $TOCI_WORKING_DIR/tripleo-incubator/overcloudrc $TOCI_WORKING_DIR/overcloudrc
+sed -i -e "s/\$OVERCLOUD_IP/$OVERCLOUD_IP/g" $TOCI_WORKING_DIR/overcloudrc
 source $TOCI_WORKING_DIR/overcloudrc
 export no_proxy=$no_proxy,$OVERCLOUD_IP
 
