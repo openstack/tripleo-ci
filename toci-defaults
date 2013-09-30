@@ -52,7 +52,7 @@ export TOCI_IRC
 
 # bm_poser host resources, use by various scripts
 export TOCI_NODE_CPU=${TOCI_NODE_CPU:-1}     # Number of cpu's
-export TOCI_NODE_MEM=${TOCI_NODE_MEM:-1024}  # RAM MB
+export TOCI_NODE_MEM=${TOCI_NODE_MEM:-2048}  # RAM MB
 export TOCI_NODE_DISK=${TOCI_NODE_DISK:-30}  # Disk size
 
 export TOCI_ADMIN_TOKEN='admin'
