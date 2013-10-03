@@ -37,7 +37,7 @@ user-config #Adds nova keypair
 if [ -n "$TOCI_MACS" ]; then
 
   # For the seed VM we use only the first MAC and power management setting
-  setup-baremetal $TOCI_NODE_CPU $TOCI_NODE_MEM $TOCI_NODE_DISK $TOCI_DIB_ARCH "${TOCI_MACS%% *}" seed "${TOCI_PM_IPS%% *}" "${TOCI_PM_USER%% *}" "${TOCI_PM_PASSWORDS%% *}"
+  setup-baremetal $TOCI_NODE_CPU $TOCI_NODE_MEM $TOCI_NODE_DISK $TOCI_DIB_ARCH "${TOCI_MACS%% *}" seed "${TOCI_PM_IPS%% *}" "${TOCI_PM_USERS%% *}" "${TOCI_PM_PASSWORDS%% *}"
 
 else
 
