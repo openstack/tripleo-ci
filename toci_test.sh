@@ -178,9 +178,27 @@ fi
 # setup keystone endpoints
 init-keystone -p $OVERCLOUD_ADMIN_PASSWORD $TOCI_ADMIN_TOKEN $OVERCLOUD_IP admin@example.com heat-admin@$OVERCLOUD_IP
 setup-endpoints $OVERCLOUD_IP --glance-password $OVERCLOUD_ADMIN_PASSWORD --heat-password $OVERCLOUD_ADMIN_PASSWORD --neutron-password $OVERCLOUD_ADMIN_PASSWORD --nova-password $OVERCLOUD_ADMIN_PASSWORD
+keystone role-create --name heat_stack_user
+user-config
+setup-neutron "" "" 10.0.0.0/8 "" "" 192.0.2.45 192.0.2.64 192.0.2.0/24
 
 # Make sure nova has had a chance to start responding to requests
 wait_for 10 5 nova list
 
 # Lets add a cirros image to the overcloud
 curl -L https://launchpad.net/cirros/trunk/0.3.0/+download/cirros-0.3.0-i386-disk.img | glance image-create --name cirros --disk-format qcow2 --container-format bare --is-public 1
+
+# create demo user
+os-adduser -p $OVERCLOUD_DEMO_PASSWORD demo demo@example.com
+source $TRIPLEO_ROOT/tripleo-incubator/overcloudrc-user
+user-config
+
+# Start and test a image on the overcloud
+nova boot --key-name default --flavor m1.tiny --image cirros --key_name default demo
+sleep 20 # give the port a chance to appear
+PORT=$(neutron port-list -f csv -c id --quote none | tail -n1)
+neutron security-group-rule-create default --protocol tcp --direction ingress --port-range-min 22 --port-range-max 22
+neutron security-group-rule-create default --protocol icmp --direction ingress
+IP=$(neutron floatingip-create ext-net --port-id "${PORT//[[:space:]]/}" | grep -o -P "192[0-9.]*")
+
+wait_for 10 5 ping -c 1 $IP
