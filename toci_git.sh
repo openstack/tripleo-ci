@@ -4,7 +4,7 @@ set -xe
 . toci_functions.sh
 
 # Get the tripleO repo's
-for repo in 'openstack/tripleo-incubator' 'tripleo/bm_poseur' 'openstack/diskimage-builder' 'openstack/tripleo-image-elements' 'openstack/tripleo-heat-templates' ; do
+for repo in 'openstack/tripleo-incubator' 'openstack/diskimage-builder' 'openstack/tripleo-image-elements' 'openstack/tripleo-heat-templates' ; do
     if [ ${TOCI_GIT_CHECKOUT:-1} == 1 ] ; then
       get_get_repo $repo
     else
