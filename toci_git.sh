@@ -9,7 +9,7 @@ for repo in 'openstack/tripleo-incubator' 'openstack/diskimage-builder' 'opensta
       get_get_repo $repo
     else
       if [ ! -d "$TOCI_WORKING_DIR/$repo" ]; then
-        echo "Please checkout $repo to $TOCI_WORKING_DIR or enabled TOCI_GIT_CHECKOUT."
+        echo "Please checkout $repo to $TOCI_WORKING_DIR or enable TOCI_GIT_CHECKOUT."
       fi
     fi
 done

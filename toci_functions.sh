@@ -2,8 +2,16 @@
 
 get_get_repo(){
     CACHEDIR=$TOCI_WORKING_DIR/${1/[^\/]*\//}
+    repo_basename=${1#*/}
     if [ ! -e $CACHEDIR ] ; then
         git clone https://github.com/$1.git $CACHEDIR
+        REF_VAR=TOCI_REPOREF_${repo_basename//-/_}
+        REF=${!REF_VAR}
+        if [ -n "$REF" ]; then
+            pushd $CACHEDIR
+            git reset --hard $REF
+            popd
+        fi
     else
         pushd $CACHEDIR
         # Repositories in $TOCI_WORKING_DIR aren't updated but we do fetch origin
@@ -11,7 +19,6 @@ get_get_repo(){
         git fetch
         popd
     fi
-    repo_basename=${1#*/}
     apply_patches ${repo_basename} ${repo_basename}*
 }
 
