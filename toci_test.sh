@@ -96,7 +96,7 @@ export no_proxy=$no_proxy,$UNDERCLOUD_IP
 export ELEMENTS_PATH=$TOCI_WORKING_DIR/diskimage-builder/elements:$TOCI_WORKING_DIR/tripleo-image-elements/elements
 
 if [ "$TOCI_DO_OVERCLOUD" = "1" ] ; then
-    $TOCI_WORKING_DIR/diskimage-builder/bin/disk-image-create $NODE_DIST -a $TOCI_DIB_ARCH -o overcloud-control boot-stack os-collect-config neutron-network-node stackuser local-config
+    $TOCI_WORKING_DIR/diskimage-builder/bin/disk-image-create $NODE_DIST -a $TOCI_DIB_ARCH -o overcloud-control boot-stack os-collect-config neutron-network-node stackuser local-config notcompute
 fi
 
 # Also get undercloud logs
