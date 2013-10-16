@@ -49,7 +49,7 @@ else
 
 fi
 
-setup-neutron 192.0.2.2 192.0.2.3 192.0.2.0/24 192.0.2.1 ctlplane
+setup-neutron 192.0.2.2 192.0.2.3 192.0.2.0/24 192.0.2.1 192.0.2.1 ctlplane
 
 # Load images into glance
 export DIB_PATH=$TOCI_WORKING_DIR/diskimage-builder
@@ -135,7 +135,7 @@ else
 
 fi
 
-setup-neutron 192.0.2.5 192.0.2.24 192.0.2.0/24 $UNDERCLOUD_IP ctlplane
+setup-neutron 192.0.2.5 192.0.2.24 192.0.2.0/24 192.0.2.1 $UNDERCLOUD_IP ctlplane
 ssh_noprompt heat-admin@$UNDERCLOUD_IP "cat /opt/stack/boot-stack/virtual-power-key.pub" >> ~/.ssh/authorized_keys
 
 $TOCI_WORKING_DIR/diskimage-builder/bin/disk-image-create $NODE_DIST -a $TOCI_DIB_ARCH -o overcloud-compute nova-compute nova-kvm neutron-openvswitch-agent os-collect-config stackuser local-config
@@ -180,7 +180,7 @@ init-keystone -p $OVERCLOUD_ADMIN_PASSWORD $TOCI_ADMIN_TOKEN $OVERCLOUD_IP admin
 setup-endpoints $OVERCLOUD_IP --glance-password $OVERCLOUD_ADMIN_PASSWORD --heat-password $OVERCLOUD_ADMIN_PASSWORD --neutron-password $OVERCLOUD_ADMIN_PASSWORD --nova-password $OVERCLOUD_ADMIN_PASSWORD
 keystone role-create --name heat_stack_user
 user-config
-setup-neutron "" "" 10.0.0.0/8 "" "" 192.0.2.45 192.0.2.64 192.0.2.0/24
+setup-neutron "" "" 10.0.0.0/8 "" "" "" 192.0.2.45 192.0.2.64 192.0.2.0/24
 
 # Make sure nova has had a chance to start responding to requests
 wait_for 10 5 nova list
