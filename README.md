@@ -7,47 +7,43 @@ Description
 
 TripleO CI test framework.
 
-By default it uses bm_poseur nodes. Options exist to deploy on real hardware as well.
+By default toci builds images for seed, undercloud and overcloud hosts, it
+then uses bare metal poseur nodes to set up a virtualized tripleo environment.
+
+Options also exist so you can specify hosts to setup tripleo on a real
+baremetal environment.
 
 Configuration
 -------------
 
-edit ~/.toci and add values for
+If using toci to setup tripleo on a virtualized environment we recommend you
+setup a proxy server for http traffic
+
+edit ~/.toci and add a value for
 ```bash
-TOCI_UPLOAD=0
-TOCI_RESULTS_SERVER=1.2.3.4
-TOCI_CLEANUP=1
-TOCI_REMOVE=1
-TOCI_GIT_CHECKOUT=1
 export http_proxy=http://1.2.3.4:3128
-
-# set the arch (defaults to i386)
-TOCI_ARCH="x86_64"
-
-
-# The following options can be used w/ real hardware
-# Space delimited, aligned in order
-#export TOCI_MACS="12:34:56:78:9A:E1 12:34:56:78:9A:E2"
-#export TOCI_PM_DRIVER="nova.virt.baremetal.ipmi.IPMI"
-#export TOCI_PM_IPS="10.0.0.1 10.0.0.2"
-#export TOCI_PM_USERS="user1 user2"
-#export TOCI_PM_PASSWORDS="user1 user2"
 ```
 
-Then run updated_launch.sh (this does a git update) or you can use toci.sh
-directly to start the setup and tests.
+See toci-defaults for a list of additional environment variables that can be
+defined in ~/.toci in order to control things like
+* Changing the architecture to amd64
+* Deploying tripleo images on real baremetal hosts
+* Increasing the resources allocated to bm_poseur nodes
+* notifying an irc channel and uploading toci results to a server (used if
+  running toci as a CI framwork)
 
 Using Toci to setup a dev environment
 -------------------------------------
 
-I usually do this as root, in theory it will also work as a non privilaged user.
+I usually do this as root, in theory it will also work as a non privileged
+user.
 
-    $ git clone https://github.com/openstack-infra/tripleo-ci.git
+    $ git clone https://github.com/openstack-infra/tripleo-ci.git toci
     $ cd toci
-    $ vi ~/.toci # Will work without a proxy but a lot slower
-    export http_proxy=http://192.168.1.104:8080
+    $ vi ~/.toci # Will work without a proxy but can be a lot slower
+    export http_proxy=http://1.2.3.4:8080
 
-To run toci here is your command
+To deploy toci run the command command
 
     $ ./toci.sh
 
@@ -55,7 +51,59 @@ Toci will start with a line outputing the working and log directories e.g.
 Starting run Wed  3 Jul 11:46:39 IST 2013 ( /opt/toci /tmp/toci_logs_nGnrhLN )
 
 Once it ran successfully (ERROR wasn't echo'd to the terminal) you should have
-1. seed vm
-2. undercloud vm
-3. overcloud controller vm
-4. overcloud compute vm
+* seed vm
+* undercloud vm
+* overcloud controller vm
+* overcloud compute vm
+
+NOTE: toci will now have cloned the dependency git repositories to /opt/toci,
+If you rerun toci it will NOT re-clone these again, if you would like it to
+reclone the most recient version of any of these repositories you can simply
+delete it before running toci.
+
+If you would like to test a specific change locally in tripleo you can simply
+edit the repository locally and commit this change to its master branch and
+rerun toci. See the FAQ if you would like to do this without rebuilding all of
+the images (e.g. For speed reasons, you would only like to rebuild the
+overcloud images and reuse the previously built seed and undercloud image)
+
+See FAQ.md for more information on how to use the tripleo deployment
+
+Using Toci as a CI framework for TripleO
+----------------------------------------
+
+If running toci as part of a automated CI job several environment variables
+can be defined to help make toci more suitable e.g.
+
+*So toci cleans up after itself*
+```bash
+export TOCI_UPLOAD=1
+export TOCI_REMOVE=1
+```
+
+*scp logs to a server when finished*
+```bash
+TOCI_RESULTS_DST=user@1.2.3.4:/var/www/html/toci
+```
+
+*Notify a freeenode irc channel uppon error*
+```bash
+TOCI_IRC=channeltonotify
+```
+
+*Only build and deploy the seed and undercloud*
+```bash
+export TOCI_DO_OVERCLOUD=0
+```
+
+
+Use toci to deploy on real baremetal
+-----------------------------------
+```bash
+export TOCI_PM_DRIVER="nova.virt.baremetal.ipmi.IPMI"
+#Space delimited, aligned in order
+export TOCI_MACS="84:2b:22:11:11:11 84:2b:22:11:11:12 84:2b:22:11:11:13"
+export TOCI_PM_IPS="10.16.111.111 10.16.111.112 10.16.111.113"
+export TOCI_PM_USERS="root root root"
+export TOCI_PM_PASSWORDS="passwd  passwd passwd"
+```
