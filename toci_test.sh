@@ -71,8 +71,12 @@ fi
 if [ "$TOCI_DIB_ARCH" != "i386" ]; then
   sed -i "s/arch: i386/arch: $TOCI_DIB_ARCH/" $TOCI_WORKING_DIR/tripleo-heat-templates/undercloud-vm.yaml
 fi
-heat stack-create -f $TOCI_WORKING_DIR/tripleo-heat-templates/undercloud-vm.yaml -P "PowerUserName=$(whoami);AdminToken=${TOCI_ADMIN_TOKEN};AdminPassword=${UNDERCLOUD_ADMIN_PASSWORD};GlancePassword=${UNDERCLOUD_ADMIN_PASSWORD};HeatPassword=${UNDERCLOUD_ADMIN_PASSWORD};NeutronPassword=${UNDERCLOUD_ADMIN_PASSWORD};NovaPassword=${UNDERCLOUD_ADMIN_PASSWORD}" undercloud
 
+if [ -n "$TOCI_PM_DRIVER" ]; then
+  UNDERCLOUD_POWER_MANAGER=${UNDERCLOUD_POWER_MANAGER:-";PowerManager=${TOCI_PM_DRIVER}"}
+fi
+
+heat stack-create -f $TOCI_WORKING_DIR/tripleo-heat-templates/undercloud-vm.yaml -P "PowerUserName=$(whoami);AdminToken=${TOCI_ADMIN_TOKEN};AdminPassword=${UNDERCLOUD_ADMIN_PASSWORD};GlancePassword=${UNDERCLOUD_ADMIN_PASSWORD};HeatPassword=${UNDERCLOUD_ADMIN_PASSWORD};NeutronPassword=${UNDERCLOUD_ADMIN_PASSWORD};NovaPassword=${UNDERCLOUD_ADMIN_PASSWORD}${UNDERCLOUD_POWER_MANAGER}" undercloud
 
 # Just sleeping here so that we don't fill the logs with so many loops
 sleep 180
