@@ -8,15 +8,15 @@ Description
 TripleO CI test framework.
 
 By default toci builds images for seed, undercloud and overcloud hosts, it
-then uses bare metal poseur nodes to set up a virtualized tripleo environment.
+then uses bare metal poseur nodes to set up a virtualized TripleO environment.
 
-Options also exist so you can specify hosts to setup tripleo on a real
+Options also exist so you can specify hosts to setup TripleO on a real
 baremetal environment.
 
 Configuration
 -------------
 
-If using toci to setup tripleo on a virtualized environment we recommend you
+If using toci to setup TripleO on a virtualized environment we recommend you
 setup a proxy server for http traffic
 
 edit ~/.toci and add a value for
@@ -27,7 +27,7 @@ export http_proxy=http://1.2.3.4:3128
 See toci-defaults for a list of additional environment variables that can be
 defined in ~/.toci in order to control things like
 * Changing the architecture to amd64
-* Deploying tripleo images on real baremetal hosts
+* Deploying TripleO images on real baremetal hosts
 * Increasing the resources allocated to bm_poseur nodes
 * notifying an irc channel and uploading toci results to a server (used if
   running toci as a CI framwork)
@@ -47,7 +47,7 @@ To deploy toci run the command command
 
     $ ./toci.sh
 
-Toci will start with a line outputing the working and log directories e.g.
+Toci will start with a line outputting the working and log directories e.g.
 Starting run Wed  3 Jul 11:46:39 IST 2013 ( /opt/toci /tmp/toci_logs_nGnrhLN )
 
 Once it ran successfully (ERROR wasn't echo'd to the terminal) you should have
@@ -58,16 +58,16 @@ Once it ran successfully (ERROR wasn't echo'd to the terminal) you should have
 
 NOTE: toci will now have cloned the dependency git repositories to /opt/toci,
 If you rerun toci it will NOT re-clone these again, if you would like it to
-reclone the most recient version of any of these repositories you can simply
+reclone the most recent version of any of these repositories you can simply
 delete it before running toci.
 
-If you would like to test a specific change locally in tripleo you can simply
+If you would like to test a specific change locally in TripleO you can simply
 edit the repository locally and commit this change to its master branch and
 rerun toci. See the FAQ if you would like to do this without rebuilding all of
 the images (e.g. For speed reasons, you would only like to rebuild the
 overcloud images and reuse the previously built seed and undercloud image)
 
-See FAQ.md for more information on how to use the tripleo deployment
+See FAQ.md for more information on how to use the TripleO deployment
 
 Using Toci as a CI framework for TripleO
 ----------------------------------------
@@ -86,7 +86,7 @@ export TOCI_REMOVE=1
 TOCI_RESULTS_DST=user@1.2.3.4:/var/www/html/toci
 ```
 
-*Notify a freeenode irc channel uppon error*
+*Notify a freenode irc channel upon error*
 ```bash
 TOCI_IRC=channeltonotify
 ```
