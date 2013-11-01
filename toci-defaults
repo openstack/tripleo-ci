@@ -27,8 +27,6 @@ fi
 # This gets passed into diskimage builder
 export NODE_DIST=${NODE_DIST:-'pip-cache fedora selinux-permissive'}
 
-export DHCP_DRIVER=${DHCP_DRIVER:-'bm-dnsmasq'}
-
 # Set to 0 if you don't want an overcloud to be started
 export TOCI_DO_OVERCLOUD=${TOCI_DO_OVERCLOUD:-1}
 
