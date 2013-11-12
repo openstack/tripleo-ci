@@ -27,6 +27,9 @@ fi
 # This gets passed into diskimage builder
 export NODE_DIST=${NODE_DIST:-'pip-cache fedora selinux-permissive'}
 
+# custom diskimage builder elements for the undercloud
+export TOCI_UNDERCLOUD_EXTRA_ELEMENTS=${TOCI_UNDERCLOUD_EXTRA_ELEMENTS:-''}
+
 # Set to 0 if you don't want an overcloud to be started
 export TOCI_DO_OVERCLOUD=${TOCI_DO_OVERCLOUD:-1}
 

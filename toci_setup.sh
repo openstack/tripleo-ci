@@ -37,11 +37,10 @@ sed -i "s/\"user\": \"stack\",/\"user\": \"`whoami`\",/" $TOCI_WORKING_DIR/tripl
 # Create a deployment ramdisk + kernel
 $TOCI_WORKING_DIR/diskimage-builder/bin/ramdisk-image-create -x -a $TOCI_DIB_ARCH $NODE_DIST deploy -o deploy-ramdisk
 
+# Make the tripleo image elements accessible to diskimage-builder
+export ELEMENTS_PATH=$TOCI_WORKING_DIR/diskimage-builder/elements:$TOCI_WORKING_DIR/tripleo-image-elements/elements
 
 # Boot a seed vm
 $TOCI_WORKING_DIR/tripleo-incubator/scripts/boot-seed-vm -a $TOCI_DIB_ARCH $NODE_DIST neutron-dhcp-agent
 
-# Make the tripleo image elements accessible to diskimage-builder
-export ELEMENTS_PATH=$TOCI_WORKING_DIR/diskimage-builder/elements:$TOCI_WORKING_DIR/tripleo-image-elements/elements
-
-$TOCI_WORKING_DIR/diskimage-builder/bin/disk-image-create $NODE_DIST -a $TOCI_DIB_ARCH -o $TOCI_WORKING_DIR/undercloud boot-stack nova-baremetal os-collect-config stackuser local-config neutron-dhcp-agent
+$TOCI_WORKING_DIR/diskimage-builder/bin/disk-image-create $NODE_DIST $TOCI_UNDERCLOUD_EXTRA_ELEMENTS -a $TOCI_DIB_ARCH -o $TOCI_WORKING_DIR/undercloud boot-stack nova-baremetal os-collect-config stackuser local-config neutron-dhcp-agent
