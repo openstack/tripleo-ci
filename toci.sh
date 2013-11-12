@@ -27,7 +27,7 @@ mark_time Starting git
 for repo in $TOCI_WORKING_DIR/*/.git ; do
     repo_dir=$(dirname $repo)
     repo_name=$(basename $repo_dir)
-    if [[ "^(tripleo-incubator|bm_poseur|diskimage-builder|tripleo-image-elements|tripleo-heat-templates)$" =~ "$repo_name" ]] ; then
+    if [[ "^(tripleo-incubator|diskimage-builder|tripleo-image-elements|tripleo-heat-templates)$" =~ "$repo_name" ]] ; then
         continue
     fi
     export DIB_REPOLOCATION_$repo_name=$repo_dir
