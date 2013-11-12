@@ -27,6 +27,9 @@ fi
 # This gets passed into diskimage builder
 export NODE_DIST=${NODE_DIST:-'pip-cache fedora selinux-permissive'}
 
+# custom diskimage builder elements for the seed
+export TOCI_SEED_EXTRA_ELEMENTS=${TOCI_SEED_EXTRA_ELEMENTS:-''}
+
 # custom diskimage builder elements for the undercloud
 export TOCI_UNDERCLOUD_EXTRA_ELEMENTS=${TOCI_UNDERCLOUD_EXTRA_ELEMENTS:-''}
 

@@ -41,6 +41,6 @@ $TOCI_WORKING_DIR/diskimage-builder/bin/ramdisk-image-create -x -a $TOCI_DIB_ARC
 export ELEMENTS_PATH=$TOCI_WORKING_DIR/diskimage-builder/elements:$TOCI_WORKING_DIR/tripleo-image-elements/elements
 
 # Boot a seed vm
-$TOCI_WORKING_DIR/tripleo-incubator/scripts/boot-seed-vm -a $TOCI_DIB_ARCH $NODE_DIST neutron-dhcp-agent
+$TOCI_WORKING_DIR/tripleo-incubator/scripts/boot-seed-vm -a $TOCI_DIB_ARCH $NODE_DIST $TOCI_SEED_EXTRA_ELEMENTS neutron-dhcp-agent
 
 $TOCI_WORKING_DIR/diskimage-builder/bin/disk-image-create $NODE_DIST $TOCI_UNDERCLOUD_EXTRA_ELEMENTS -a $TOCI_DIB_ARCH -o $TOCI_WORKING_DIR/undercloud boot-stack nova-baremetal os-collect-config stackuser local-config neutron-dhcp-agent
