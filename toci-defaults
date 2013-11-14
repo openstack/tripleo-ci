@@ -39,6 +39,9 @@ export TOCI_OVERCLOUD_EXTRA_ELEMENTS=${TOCI_OVERCLOUD_EXTRA_ELEMENTS:-''}
 # Set to 0 if you don't want an overcloud to be started
 export TOCI_DO_OVERCLOUD=${TOCI_DO_OVERCLOUD:-1}
 
+# Set to 1 if you want a single machine overcloud (uses less resources)
+export TOCI_OVERCLOUD_ALL_IN_ONE=${TOCI_OVERCLOUD_ALL_IN_ONE:-0}
+
 # This is needed for help build the index.html if upload results to server
 export RESULT_CACHE=${RESULT_CACHE:-$TOCI_CACHE_DIR/results_cache.html}
 

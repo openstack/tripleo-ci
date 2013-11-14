@@ -96,7 +96,11 @@ export no_proxy=$no_proxy,$UNDERCLOUD_IP
 export ELEMENTS_PATH=$TOCI_WORKING_DIR/diskimage-builder/elements:$TOCI_WORKING_DIR/tripleo-image-elements/elements
 
 if [ "$TOCI_DO_OVERCLOUD" = "1" ] ; then
-    $TOCI_WORKING_DIR/diskimage-builder/bin/disk-image-create $NODE_DIST $TOCI_OVERCLOUD_EXTRA_ELEMENTS -a $TOCI_DIB_ARCH -o overcloud-control boot-stack os-collect-config neutron-network-node stackuser local-config notcompute
+    if [ "$TOCI_OVERCLOUD_ALL_IN_ONE" = "1" ] ; then
+        $TOCI_WORKING_DIR/diskimage-builder/bin/disk-image-create $NODE_DIST $TOCI_OVERCLOUD_EXTRA_ELEMENTS -a $TOCI_DIB_ARCH -o overcloud-all-in-one boot-stack nova-compute nova-kvm neutron-openvswitch-agent os-collect-config stackuser local-config neutron-network-node notcompute
+    else
+        $TOCI_WORKING_DIR/diskimage-builder/bin/disk-image-create $NODE_DIST $TOCI_OVERCLOUD_EXTRA_ELEMENTS -a $TOCI_DIB_ARCH -o overcloud-control boot-stack os-collect-config neutron-network-node stackuser local-config notcompute
+    fi
 fi
 
 # Also get undercloud logs
@@ -138,7 +142,9 @@ fi
 setup-neutron 192.0.2.5 192.0.2.24 192.0.2.0/24 192.0.2.1 $UNDERCLOUD_IP ctlplane
 ssh_noprompt heat-admin@$UNDERCLOUD_IP "cat /opt/stack/boot-stack/virtual-power-key.pub" >> ~/.ssh/authorized_keys
 
-$TOCI_WORKING_DIR/diskimage-builder/bin/disk-image-create $NODE_DIST $TOCI_OVERCLOUD_EXTRA_ELEMENTS -a $TOCI_DIB_ARCH -o overcloud-compute nova-compute nova-kvm neutron-openvswitch-agent os-collect-config stackuser local-config
+if [ "$TOCI_OVERCLOUD_ALL_IN_ONE" = "0" ] ; then
+    $TOCI_WORKING_DIR/diskimage-builder/bin/disk-image-create $NODE_DIST $TOCI_OVERCLOUD_EXTRA_ELEMENTS -a $TOCI_DIB_ARCH -o overcloud-compute nova-compute nova-kvm neutron-openvswitch-agent os-collect-config stackuser local-config
+fi
 
 if [ -d /var/log/upstart ]; then
     wait_for 40 10 ssh_noprompt heat-admin@$UNDERCLOUD_IP grep 'Free VCPUS: [^0]' /var/log/upstart/nova-compute.log
@@ -146,11 +152,20 @@ else
     wait_for 40 10 ssh_noprompt heat-admin@$UNDERCLOUD_IP sudo journalctl -u nova-compute -u openstack-nova-compute \| grep \'Free VCPUS: [^0]\'
 fi
 
-load-image overcloud-control.qcow2
-load-image overcloud-compute.qcow2
+if [ "$TOCI_OVERCLOUD_ALL_IN_ONE" = "1" ] ; then
+    load-image overcloud-all-in-one.qcow2
+else
+    load-image overcloud-control.qcow2
+    load-image overcloud-compute.qcow2
+fi
 
-make -C $TOCI_WORKING_DIR/tripleo-heat-templates overcloud.yaml
-heat stack-create -f $TOCI_WORKING_DIR/tripleo-heat-templates/overcloud.yaml -P "AdminToken=${TOCI_ADMIN_TOKEN};AdminPassword=${OVERCLOUD_ADMIN_PASSWORD};CinderPassword=${OVERCLOUD_ADMIN_PASSWORD};GlancePassword=${OVERCLOUD_ADMIN_PASSWORD};HeatPassword=${OVERCLOUD_ADMIN_PASSWORD};NeutronPassword=${OVERCLOUD_ADMIN_PASSWORD};NovaPassword=${OVERCLOUD_ADMIN_PASSWORD};notcomputeImage=overcloud-control${OVERCLOUD_LIBVIRT_TYPE}" overcloud
+
+if [ "$TOCI_OVERCLOUD_ALL_IN_ONE" = "1" ] ; then
+    heat stack-create -f $TOCI_WORKING_DIR/tripleo-heat-templates/overcloud-all-in-one.yaml -P "AdminToken=${TOCI_ADMIN_TOKEN};AdminPassword=${OVERCLOUD_ADMIN_PASSWORD};CinderPassword=${OVERCLOUD_ADMIN_PASSWORD};GlancePassword=${OVERCLOUD_ADMIN_PASSWORD};HeatPassword=${OVERCLOUD_ADMIN_PASSWORD};NeutronPassword=${OVERCLOUD_ADMIN_PASSWORD};NovaPassword=${OVERCLOUD_ADMIN_PASSWORD};Image=overcloud-all-in-one${OVERCLOUD_LIBVIRT_TYPE}" overcloud
+else
+    make -C $TOCI_WORKING_DIR/tripleo-heat-templates overcloud.yaml
+    heat stack-create -f $TOCI_WORKING_DIR/tripleo-heat-templates/overcloud.yaml -P "AdminToken=${TOCI_ADMIN_TOKEN};AdminPassword=${OVERCLOUD_ADMIN_PASSWORD};CinderPassword=${OVERCLOUD_ADMIN_PASSWORD};GlancePassword=${OVERCLOUD_ADMIN_PASSWORD};HeatPassword=${OVERCLOUD_ADMIN_PASSWORD};NeutronPassword=${OVERCLOUD_ADMIN_PASSWORD};NovaPassword=${OVERCLOUD_ADMIN_PASSWORD};notcomputeImage=overcloud-control${OVERCLOUD_LIBVIRT_TYPE}" overcloud
+fi
 
 sleep 161
 
