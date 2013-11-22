@@ -171,7 +171,12 @@ sleep 161
 
 wait_for 50 20 heat list \| grep CREATE_COMPLETE
 
-export OVERCLOUD_IP=$(nova list | grep ctlplane | grep notcompute | sed -e "s/.*=\([0-9.]*\).*/\1/")
+if [ "$TOCI_OVERCLOUD_ALL_IN_ONE" = "1" ] ; then
+  export OVERCLOUD_IP=$(nova list | grep ctlplane | grep overcloud-allinone | sed -e "s/.*=\([0-9.]*\).*/\1/")
+else
+  export OVERCLOUD_IP=$(nova list | grep ctlplane | grep notcompute | sed -e "s/.*=\([0-9.]*\).*/\1/")
+fi
+
 cp $TOCI_WORKING_DIR/tripleo-incubator/overcloudrc $TOCI_WORKING_DIR/overcloudrc
 sed -i -e "s/\$OVERCLOUD_IP/$OVERCLOUD_IP/g" $TOCI_WORKING_DIR/overcloudrc
 source $TOCI_WORKING_DIR/overcloudrc
