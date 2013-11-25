@@ -72,6 +72,7 @@ if [ -n "$TOCI_PM_DRIVER" ]; then
   UNDERCLOUD_POWER_MANAGER=${UNDERCLOUD_POWER_MANAGER:-";PowerManager=${TOCI_PM_DRIVER}"}
 fi
 
+make -C $TOCI_WORKING_DIR/tripleo-heat-templates undercloud-vm.yaml
 heat stack-create -f $TOCI_WORKING_DIR/tripleo-heat-templates/undercloud-vm.yaml -P "PowerUserName=$(whoami);AdminToken=${TOCI_ADMIN_TOKEN};AdminPassword=${UNDERCLOUD_ADMIN_PASSWORD};GlancePassword=${UNDERCLOUD_ADMIN_PASSWORD};HeatPassword=${UNDERCLOUD_ADMIN_PASSWORD};NeutronPassword=${UNDERCLOUD_ADMIN_PASSWORD};NovaPassword=${UNDERCLOUD_ADMIN_PASSWORD};BaremetalArch=${TOCI_DIB_ARCH}${UNDERCLOUD_POWER_MANAGER}" undercloud
 
 # Just sleeping here so that we don't fill the logs with so many loops
