@@ -98,9 +98,9 @@ export ELEMENTS_PATH=$TOCI_WORKING_DIR/diskimage-builder/elements:$TOCI_WORKING_
 
 if [ "$TOCI_DO_OVERCLOUD" = "1" ] ; then
     if [ "$TOCI_OVERCLOUD_ALL_IN_ONE" = "1" ] ; then
-        $TOCI_WORKING_DIR/diskimage-builder/bin/disk-image-create $NODE_DIST $TOCI_OVERCLOUD_EXTRA_ELEMENTS -a $TOCI_DIB_ARCH -o overcloud-all-in-one boot-stack nova-compute nova-kvm neutron-openvswitch-agent os-collect-config stackuser local-config neutron-network-node notcompute
+        $TOCI_WORKING_DIR/diskimage-builder/bin/disk-image-create $NODE_DIST $TOCI_OVERCLOUD_EXTRA_ELEMENTS -a $TOCI_DIB_ARCH -o overcloud-all-in-one boot-stack nova-compute nova-kvm neutron-openvswitch-agent os-collect-config stackuser local-config neutron-network-node
     else
-        $TOCI_WORKING_DIR/diskimage-builder/bin/disk-image-create $NODE_DIST $TOCI_OVERCLOUD_EXTRA_ELEMENTS -a $TOCI_DIB_ARCH -o overcloud-control boot-stack os-collect-config neutron-network-node stackuser local-config notcompute
+        $TOCI_WORKING_DIR/diskimage-builder/bin/disk-image-create $NODE_DIST $TOCI_OVERCLOUD_EXTRA_ELEMENTS -a $TOCI_DIB_ARCH -o overcloud-control boot-stack os-collect-config neutron-network-node stackuser local-config
     fi
 fi
 
