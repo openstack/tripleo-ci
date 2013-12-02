@@ -1,0 +1,163 @@
+#!/usr/bin/python
+#
+# Runs a tripleo-ci test-worker
+#
+# Copyright 2013 Red Hat, Inc.
+# All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may
+# not use this file except in compliance with the License. You may obtain
+# a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations
+# under the License.
+#
+
+import argparse
+import logging
+import sys
+import threading
+import time
+import uuid
+
+import gear
+
+logging.basicConfig(
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+logger = logging.getLogger('testenv-worker')
+logger.setLevel(logging.INFO)
+
+
+class CallbackClient(gear.Client):
+    def __init__(self):
+        super(CallbackClient, self).__init__()
+        self.event = threading.Event()
+
+    def handleWorkComplete(self, packet):
+        super(CallbackClient, self).handleWorkComplete(packet)
+        self.event.set()
+
+    def handleWorkException(self, packet):
+        super(CallbackClient, self).handleWorkException(packet)
+        self.event.set()
+
+    def handleWorkFail(self, packet):
+        super(CallbackClient, self).handleWorkFail(packet)
+        self.event.set()
+
+    def wait(self, timeout=None):
+        """Wait for notification of completion, error or failure.
+
+        :param timeout: a timeout for the operation in seconds
+        :type  timeout: float
+        :returns: True if a notification was received, False on timeout
+        """
+        self.event.wait(timeout)
+        return self.event.is_set()
+
+
+def add_servers(client, servers):
+    for server in servers.split(','):
+        server = server.rsplit(':', 1)
+        if len(server) == 1:
+            server.append('4730')
+        client.addServer(server[0], int(server[1]))
+
+
+def run_callback(geard, timeout, callback_name, te_data):
+    client = CallbackClient()
+    add_servers(client, geard)
+    client.waitForServer()
+
+    cb_job = gear.Job(callback_name, te_data)
+    client.submitJob(cb_job)
+
+    # Wait for 30 seconds, then test the status of the job
+    if not client.wait(30):
+        # Request the job status from the broker
+        cb_job.connection.sendPacket(gear.Packet(gear.constants.REQ,
+                                                 gear.constants.GET_STATUS,
+                                                 cb_job.handle))
+        # Let a little time pass for the STATUS_RES to return, If we're in
+        # here we've already waited 30 seconds so another 10 wont make much
+        # difference
+        time.sleep(10)
+        if not cb_job.running:
+            logger.error("No sign of the Callback job starting,"
+                         "assuming its no longer present")
+            return
+
+    # The job has started, give it time to complete, adding a timeout here
+    # assumes the test environment is now safe for reuse, so this timeout
+    # MUST be longer then the timeout on client nodes to avoid two client
+    # nodes simultaneously using the same test environment
+    client.wait(timeout)
+    if cb_job.failure:
+        logger.error("The Job appears to have failed")
+    elif not cb_job.complete:
+        logger.error("No sign of Job completing, Freeing up the environment")
+    else:
+        logger.info('Returned from Job : %s', cb_job.data)
+
+
+def run_teworker(geard, num, timeout, te_data):
+    worker = gear.Worker('testenv-worker-%s' % num)
+    add_servers(worker, geard)
+    worker.waitForServer()
+
+    worker.registerFunction('lockenv')
+    while True:
+        job = worker.getJob()
+        logger.info('Received job : %s', job.arguments)
+
+        # Once this Job is called we call back to the client to run its
+        # commands while this environment is locked
+        run_callback(geard, timeout, job.arguments, te_data)
+
+        job.sendWorkComplete("")
+
+
+def main(args=sys.argv[1:]):
+    parser = argparse.ArgumentParser(
+        description='Registers a test environment with a gearman broker, the '
+                    'registered job "lockenv" then holds the environment in a '
+                    '"locked" state while it calls back to the client. The '
+                    'clients job is provided with data (contents of datafile)'
+    )
+    parser.add_argument('datafile',
+                        help='Path to the data to provided to the client')
+    parser.add_argument('--timeout', '-t', type=int, default=7200,
+                        help='The maximum number of seconds to hold the '
+                             'testenv for.')
+    parser.add_argument('--tenum', '-n', default=uuid.uuid4().hex,
+                        help='A unique identifier identifing this env on '
+                             'this host.')
+    parser.add_argument('--geard', '-b', default='127.0.0.1:4730',
+                        help='A comma seperated list of gearman brokers to '
+                             'connect to.')
+    parser.add_argument('--debug', '-d',  action='store_true',
+                        help='Set to debug mode.')
+    opts = parser.parse_args(args)
+    if opts.debug:
+        logger.setLevel(logging.DEBUG)
+
+    with open(opts.datafile, "r") as fp:
+        te_data = fp.read()
+
+    logger.info('Starting test-env worker with data %r', te_data.strip()[:200])
+    # If this job dies we loose the test environment, so catch everything and
+    # retry after a short sleep.
+    while True:
+        try:
+            run_teworker(opts.geard, opts.tenum, opts.timeout, te_data)
+        except:
+            logger.exception('Error while running worker')
+        time.sleep(5)
+
+if __name__ == '__main__':
+    main()
