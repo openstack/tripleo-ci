@@ -1,0 +1,8 @@
+#!/bin/bash
+set -eux
+
+install-packages python-pip
+
+pip install gear
+
+install -m 0755 -o root -g root $(dirname $0)/../testenv-worker /usr/local/bin
