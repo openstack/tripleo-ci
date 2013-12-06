@@ -98,9 +98,9 @@ export ELEMENTS_PATH=$TOCI_WORKING_DIR/diskimage-builder/elements:$TOCI_WORKING_
 
 if [ "$TOCI_DO_OVERCLOUD" = "1" ] ; then
     if [ "$TOCI_OVERCLOUD_ALL_IN_ONE" = "1" ] ; then
-        $TOCI_WORKING_DIR/diskimage-builder/bin/disk-image-create $NODE_DIST $TOCI_OVERCLOUD_EXTRA_ELEMENTS -a $TOCI_DIB_ARCH -o overcloud-all-in-one boot-stack nova-compute nova-kvm neutron-openvswitch-agent os-collect-config stackuser local-config neutron-network-node
+        $TOCI_WORKING_DIR/diskimage-builder/bin/disk-image-create $NODE_DIST $TOCI_OVERCLOUD_EXTRA_ELEMENTS -a $TOCI_DIB_ARCH -o overcloud-all-in-one boot-stack cinder nova-compute nova-kvm neutron-openvswitch-agent os-collect-config stackuser neutron-network-node dhcp-all-interfaces swift-proxy swift-storage local-config
     else
-        $TOCI_WORKING_DIR/diskimage-builder/bin/disk-image-create $NODE_DIST $TOCI_OVERCLOUD_EXTRA_ELEMENTS -a $TOCI_DIB_ARCH -o overcloud-control boot-stack os-collect-config neutron-network-node stackuser local-config
+        $TOCI_WORKING_DIR/diskimage-builder/bin/disk-image-create $NODE_DIST $TOCI_OVERCLOUD_EXTRA_ELEMENTS -a $TOCI_DIB_ARCH -o overcloud-control boot-stack cinder os-collect-config neutron-network-node dhcp-all-interfaces stackuser swift-proxy swift-storage local-config
     fi
 fi
 
@@ -162,10 +162,10 @@ fi
 
 
 if [ "$TOCI_OVERCLOUD_ALL_IN_ONE" = "1" ] ; then
-    heat stack-create -f $TOCI_WORKING_DIR/tripleo-heat-templates/overcloud-all-in-one.yaml -P "AdminToken=${TOCI_ADMIN_TOKEN};AdminPassword=${OVERCLOUD_ADMIN_PASSWORD};CinderPassword=${OVERCLOUD_ADMIN_PASSWORD};GlancePassword=${OVERCLOUD_ADMIN_PASSWORD};HeatPassword=${OVERCLOUD_ADMIN_PASSWORD};NeutronPassword=${OVERCLOUD_ADMIN_PASSWORD};NovaPassword=${OVERCLOUD_ADMIN_PASSWORD};Image=overcloud-all-in-one${OVERCLOUD_LIBVIRT_TYPE}" overcloud
+    heat stack-create -f $TOCI_WORKING_DIR/tripleo-heat-templates/overcloud-all-in-one.yaml -P "AdminToken=${TOCI_ADMIN_TOKEN};AdminPassword=${OVERCLOUD_ADMIN_PASSWORD};CinderPassword=${OVERCLOUD_ADMIN_PASSWORD};GlancePassword=${OVERCLOUD_ADMIN_PASSWORD};HeatPassword=${OVERCLOUD_ADMIN_PASSWORD};NeutronPassword=${OVERCLOUD_ADMIN_PASSWORD};NovaPassword=${OVERCLOUD_ADMIN_PASSWORD};SwiftPassword=${OVERCLOUD_ADMIN_PASSWORD};Image=overcloud-all-in-one${OVERCLOUD_LIBVIRT_TYPE}" overcloud
 else
     make -C $TOCI_WORKING_DIR/tripleo-heat-templates overcloud.yaml
-    heat stack-create -f $TOCI_WORKING_DIR/tripleo-heat-templates/overcloud.yaml -P "AdminToken=${TOCI_ADMIN_TOKEN};AdminPassword=${OVERCLOUD_ADMIN_PASSWORD};CinderPassword=${OVERCLOUD_ADMIN_PASSWORD};GlancePassword=${OVERCLOUD_ADMIN_PASSWORD};HeatPassword=${OVERCLOUD_ADMIN_PASSWORD};NeutronPassword=${OVERCLOUD_ADMIN_PASSWORD};NovaPassword=${OVERCLOUD_ADMIN_PASSWORD};notcomputeImage=overcloud-control${OVERCLOUD_LIBVIRT_TYPE}" overcloud
+    heat stack-create -f $TOCI_WORKING_DIR/tripleo-heat-templates/overcloud.yaml -P "AdminToken=${TOCI_ADMIN_TOKEN};AdminPassword=${OVERCLOUD_ADMIN_PASSWORD};CinderPassword=${OVERCLOUD_ADMIN_PASSWORD};GlancePassword=${OVERCLOUD_ADMIN_PASSWORD};HeatPassword=${OVERCLOUD_ADMIN_PASSWORD};NeutronPassword=${OVERCLOUD_ADMIN_PASSWORD};NovaPassword=${OVERCLOUD_ADMIN_PASSWORD};SwiftPassword=${OVERCLOUD_ADMIN_PASSWORD};notcomputeImage=overcloud-control${OVERCLOUD_LIBVIRT_TYPE}" overcloud
 fi
 
 sleep 161
@@ -198,7 +198,7 @@ fi
 
 # setup keystone endpoints
 init-keystone -p $OVERCLOUD_ADMIN_PASSWORD $TOCI_ADMIN_TOKEN $OVERCLOUD_IP admin@example.com heat-admin@$OVERCLOUD_IP
-setup-endpoints $OVERCLOUD_IP --glance-password $OVERCLOUD_ADMIN_PASSWORD --heat-password $OVERCLOUD_ADMIN_PASSWORD --neutron-password $OVERCLOUD_ADMIN_PASSWORD --nova-password $OVERCLOUD_ADMIN_PASSWORD
+setup-endpoints $OVERCLOUD_IP --glance-password $OVERCLOUD_ADMIN_PASSWORD --heat-password $OVERCLOUD_ADMIN_PASSWORD --neutron-password $OVERCLOUD_ADMIN_PASSWORD --nova-password $OVERCLOUD_ADMIN_PASSWORD --swift-password $OVERCLOUD_ADMIN_PASSWORD
 keystone role-create --name heat_stack_user
 user-config
 setup-neutron "" "" 10.0.0.0/8 "" "" "" 192.0.2.45 192.0.2.64 192.0.2.0/24
