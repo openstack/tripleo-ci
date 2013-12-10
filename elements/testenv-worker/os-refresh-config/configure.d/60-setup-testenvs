@@ -1,0 +1,63 @@
+#!/bin/bash
+#
+# Copyright 2013 Red Hat, Inc.
+# All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may
+# not use this file except in compliance with the License. You may obtain
+# a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations
+# under the License.
+#
+
+set -e
+
+# We don't want this running twice, even if it fails
+# We'll end up with lots of stuff duplicated
+[ -e /opt/stack/setup-testenvs.done ] && exit 0
+touch /opt/stack/setup-testenvs.done
+
+# Calculate number of envs to setup based on lowest of Host Mem/CPU and Disk
+MEMTOTAL=$(free -g | awk '/Mem/ {print $2}')
+NUMENVS=$(expr $MEMTOTAL / $(os-apply-config --key gearman-worker.mem-per-env --key-default 16))
+
+CPUTOTAL=$(grep "^processor" /proc/cpuinfo | wc -l)
+ENVS=$(expr $CPUTOTAL / $(os-apply-config --key gearman-worker.cpu-per-env --key-default 4))
+NUMENVS=$(($ENVS < $NUMENVS ? $ENVS : $NUMENVS))
+
+DISKTOTAL=$(df /var/lib/libvirt/images/ | awk '/^\// {print $2}')
+ENVS=$(expr $DISKTOTAL / 1024 / 1024 / $(os-apply-config --key gearman-worker.disk-per-env --key-default 80))
+NUMENVS=$(($ENVS < $NUMENVS ? $ENVS : $NUMENVS))
+
+echo "Setting up $NUMENVS test environments"
+
+export PATH=/opt/stack/tripleo-incubator/scripts/:$PATH
+
+# Place the physical interface onto the seed bridge
+OVSBRIDGE=$(os-apply-config --key gearman-worker.ovs.physical_bridge --type netdevice)
+ensure-bridge $OVSBRIDGE \
+              $(os-apply-config --key gearman-worker.ovs.public_interface --type netdevice)
+
+# Get the IP of this host
+HOSTIP=$(os-apply-config --key local-ipv4 --type netaddress)
+
+# Define OS Auth env variables, needed for neutron command
+export OS_PASSWORD=$(os-apply-config --key gearman-worker.auth_passwd)
+export OS_AUTH_URL=$(os-apply-config --key gearman-worker.auth_url --type netaddress)
+export OS_USERNAME=$(os-apply-config --key gearman-worker.auth_user)
+export OS_TENANT_NAME=$(os-apply-config --key gearman-worker.auth_tenant)
+
+killall -9 testenv-worker || true
+for port in $(neutron port-list | awk "\$4~\"te_$(hostname)_.*\" {print \$2}") ; do
+    neutron port-delete $port
+done
+
+for NUM in $(seq 1 $NUMENVS) ; do
+    ensure-test-env $HOSTIP $OVSBRIDGE $NUM
+done
