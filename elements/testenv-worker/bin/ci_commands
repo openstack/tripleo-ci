@@ -1,0 +1,91 @@
+#!/usr/bin/python
+#
+# Script to use as a forced command in a roots authorized_keys (by setting
+# command="/usr/local/bin/ci_commands". Defines a number of commands that can
+# be run over ssh as root.
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may
+# not use this file except in compliance with the License. You may obtain
+# a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations
+# under the License.
+#
+
+from __future__ import print_function
+
+import os
+import re
+import subprocess
+import sys
+
+
+def virsh_start(params):
+    return subprocess.call(["virsh", "start", params[1]])
+
+
+def virsh_destroy(params):
+    return subprocess.call(["virsh", "destroy", params[1]])
+
+
+def virsh_list(params):
+    command = ["virsh", "list"]
+    if len(params) > 1 and params[1] == "--all":
+        command.append("--all")
+    return subprocess.call(command)
+
+
+def copyseed(params):
+    seed_file = "/var/lib/libvirt/images/seed_%s.qcow2" % params[0]
+
+    rv = subprocess.call(["dd", "of=%s" % seed_file])
+    rv = rv or subprocess.call(["chattr", "+C", seed_file])
+
+    return rv
+
+
+COMMANDS = {
+    'virsh start': virsh_start,
+    'virsh destroy': virsh_destroy,
+    'virsh list': virsh_list,
+    'copyseed': copyseed,
+}
+
+
+def is_arg_safe(arg):
+    unsafe_characters = r"[^a-zA-Z0-9_-]"
+    search = re.compile(unsafe_characters).search
+    if not bool(search(arg)):
+        return True
+    raise ValueError("Unsafe argument detected: %s" % arg)
+
+
+def check_args(args):
+    for arg in args:
+        is_arg_safe(arg)
+
+
+def main():
+    orig_command = os.environ["SSH_ORIGINAL_COMMAND"]
+    user_args = os.environ["SSH_ORIGINAL_COMMAND"].split()[1:]
+    check_args(user_args)
+
+    for command in COMMANDS:
+        if orig_command.find(command + " ") == 0 or orig_command == command:
+            handler = COMMANDS[command]
+            print("Calling %s with: %s" % (handler, user_args),
+                file=sys.stderr)
+            return handler(user_args)
+    else:
+        print("Unknown command: %s" % os.environ["SSH_ORIGINAL_COMMAND"],
+            file=sys.stderr)
+        return 1
+
+
+if __name__ == "__main__":
+    exit(main())

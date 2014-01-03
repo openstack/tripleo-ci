@@ -47,6 +47,12 @@ ensure-bridge $OVSBRIDGE \
 # Get the IP of this host
 HOSTIP=$(os-apply-config --key local-ipv4 --type netaddress)
 
+# Generate a ssh keypair
+if [ ! -e /root/.ssh/test_env_rsa ] ; then
+  ssh-keygen -N '' -f /root/.ssh/test_env_rsa
+  echo no-port-forwarding,no-agent-forwarding,no-X11-forwarding,command=\"/usr/local/bin/ci_commands\" $(cat /root/.ssh/test_env_rsa.pub) >> ~/.ssh/authorized_keys
+fi
+
 # Define OS Auth env variables, needed for neutron command
 export OS_PASSWORD=$(os-apply-config --key gearman-worker.auth_passwd)
 export OS_AUTH_URL=$(os-apply-config --key gearman-worker.auth_url --type netaddress)
