@@ -40,6 +40,9 @@ $TOCI_WORKING_DIR/diskimage-builder/bin/ramdisk-image-create -x -a $TOCI_DIB_ARC
 # Make the tripleo image elements accessible to diskimage-builder
 export ELEMENTS_PATH=$TOCI_WORKING_DIR/diskimage-builder/elements:$TOCI_WORKING_DIR/tripleo-image-elements/elements
 
+# Setup a seed vm
+$TOCI_WORKING_DIR/tripleo-incubator/scripts/setup-seed-vm -a $TOCI_DIB_ARCH
+
 # Boot a seed vm
 $TOCI_WORKING_DIR/tripleo-incubator/scripts/boot-seed-vm -a $TOCI_DIB_ARCH $NODE_DIST $TOCI_SEED_EXTRA_ELEMENTS neutron-dhcp-agent
 
