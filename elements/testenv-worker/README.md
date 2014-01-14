@@ -19,4 +19,4 @@ Configuration
         ovs:
           physical_bridge:  # A bridge name for the public_interface and seed interfaces
           public_interface: # The interface that should be moved onto physical_bridge
-                            # in order to comunicate with seed VM's
+                            # in order to communicate with seed VMs
