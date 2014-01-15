@@ -39,9 +39,10 @@ IMAGE_NAME=seed_${NUM}
 setup-seed-vm -a amd64 -o $IMAGE_NAME -b brbm$NUM -p $OVSBRIDGE
 SEEDMAC=$(virsh dumpxml $IMAGE_NAME | grep 'mac address' | awk -F \' 'NR==1,/mac address/ {print $2}')
 
-PORTOUTPUT=$(neutron port-create --name te_$(hostname)_$NUM --mac-address $SEEDMAC ctlplane)
+NETWORKNAME=$(os-apply-config --key gearman-worker.network_name --type netdevice)
+PORTOUTPUT=$(neutron port-create --name te_$(hostname)_$NUM --mac-address $SEEDMAC --format shell --column fixed_ips $NETWORKNAME)
 echo "$PORTOUTPUT"
-SEEDIP=$(echo "$PORTOUTPUT" | awk '/ fixed_ips / {print gensub(".*:\\s?\"([0-9.]+)\".*", "\\1", $0)}')
+SEEDIP=$(echo "$PORTOUTPUT" | grep -E -o "([0-9]+\.){3}[0-9]+")
 
 echo "{\"host-ip\":\"$HOSTIP\", \"seed-ip\":\"$SEEDIP\", \"node-macs\":\"$NODEMACS\", \"ssh-key\":\"$(base64 -w 0 /root/.ssh/test_env_rsa)\"}" > $DATAFILE
 
