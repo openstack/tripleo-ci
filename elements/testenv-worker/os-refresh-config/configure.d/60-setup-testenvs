@@ -44,9 +44,6 @@ OVSBRIDGE=$(os-apply-config --key gearman-worker.ovs.physical_bridge --type netd
 ensure-bridge $OVSBRIDGE \
               $(os-apply-config --key gearman-worker.ovs.public_interface --type netdevice)
 
-# Get the IP of this host
-HOSTIP=$(os-apply-config --key local-ipv4 --type netaddress)
-
 # Generate a ssh keypair
 if [ ! -e /root/.ssh/test_env_rsa ] ; then
   ssh-keygen -N '' -f /root/.ssh/test_env_rsa
@@ -58,6 +55,16 @@ export OS_PASSWORD=$(os-apply-config --key gearman-worker.auth_passwd)
 export OS_AUTH_URL=$(os-apply-config --key gearman-worker.auth_url --type netaddress)
 export OS_USERNAME=$(os-apply-config --key gearman-worker.auth_user)
 export OS_TENANT_NAME=$(os-apply-config --key gearman-worker.auth_tenant)
+
+# Give this host an IP on tripleo-bm-test
+DEVICE=$(os-apply-config --key gearman-worker.ovs.physical_bridge --type netdevice)
+MAC=$(ip link show ${DEVICE} | awk 'NR==2 {print $2}')
+NETWORKNAME=$(os-apply-config --key gearman-worker.network_name --type netdevice)
+PORTOUTPUT=$(neutron port-create --name te_$(hostname) --mac-address $MAC --format shell --column fixed_ips $NETWORKNAME)
+echo "$PORTOUTPUT"
+HOSTIP=$(echo "$PORTOUTPUT" | grep -E -o "([0-9]+\.){3}[0-9]+")
+# TODO : Get prefix length
+ip addr add $HOSTIP/24 dev $DEVICE
 
 killall -9 testenv-worker || true
 for port in $(neutron port-list | awk "\$4~\"te_$(hostname)_.*\" {print \$2}") ; do
