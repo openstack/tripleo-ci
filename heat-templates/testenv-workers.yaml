@@ -1,0 +1,93 @@
+Description: Create a bare metal test environment undercloud host to run test environment workers.
+HeatTemplateFormatVersion: '2012-12-12'
+Parameters:
+  AuthUrl:
+    Description: Keystone server.
+    Type: String
+  AuthPassword:
+    Description: User password.
+    Type: String
+    NoEcho: true
+  GearmanHost:
+    Description: Gearman server host.
+    Type: String
+  GearmanPort:
+    Default: 4730
+    Description: Gearman server port.
+    Type: String
+  KeyName:
+    Default: default
+    Description: Name of an existing EC2 KeyPair to enable SSH access
+    Type: String
+  NetworkName:
+    Description: Name of the Neutron network to allocate ports on.
+    Type: String
+  Flavor:
+    Default: baremetal
+    Description: Flavor to request when deploying.
+    Type: String
+  PublicInterface:
+    Default: eth0
+    Description: Network interface to make into a bridge (for seed vm connectivity)
+    Type: String
+  testenvImage:
+    Default: testenv-worker
+    Type: String
+Resources:
+  AccessPolicy:
+    Properties:
+      AllowedResources:
+      - testenvConfig
+    Type: OS::Heat::AccessPolicy
+  Key:
+    Properties:
+      UserName:
+        Ref: User
+    Type: AWS::IAM::AccessKey
+  User:
+    Properties:
+      Policies:
+      - Ref: AccessPolicy
+    Type: AWS::IAM::User
+  testenv0:
+    Metadata:
+      os-collect-config:
+        cfn:
+          access_key_id:
+            Ref: Key
+          path: testenv0.Metadata
+          secret_access_key:
+            Fn::GetAtt:
+            - Key
+            - SecretAccessKey
+          stack_name:
+            Ref: AWS::StackName
+      gearman-worker:
+        host:
+          Ref: GearmanHost
+        port:
+          Ref: GearmanPort
+        memperenv: 16
+        cpuperenv: 4
+        diskperenv: 80
+        auth_user: admin
+        auth_tenant: admin
+        auth_url:
+            Ref: AuthUrl
+        auth_passwd:
+            Ref: AuthPassword
+        network_name:
+            Ref: NetworkName
+      neutron:
+        ovs:
+          public_interface:
+            Ref: PublicInterface
+          physical_bridge: br-ctlplane
+    Properties:
+      flavor:
+        Ref: Flavor
+      image:
+        Ref: testenvImage
+      key_name:
+        Ref: KeyName
+    Type: OS::Nova::Server
