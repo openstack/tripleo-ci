@@ -14,7 +14,7 @@ PRIV_SSH_KEY=$(OS_CONFIG_FILES=$TE_DATAFILE os-apply-config --key ssh-key --type
 echo $PRIV_SSH_KEY | base64 -d > ~/.ssh/id_rsa
 chmod 600 ~/.ssh/id_rsa
 
-source ~/tripleo/incubator/scripts/devtest_variables.sh
+source ~/tripleo/tripleo-incubator/scripts/devtest_variables.sh
 devtest_setup.sh --trash-my-machine
 devtest_ramdisk.sh
 devtest_seed.sh
