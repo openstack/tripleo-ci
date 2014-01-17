@@ -37,7 +37,7 @@ Resources:
   AccessPolicy:
     Properties:
       AllowedResources:
-      - testenvConfig
+      - testenv0
     Type: OS::Heat::AccessPolicy
   Key:
     Properties:
