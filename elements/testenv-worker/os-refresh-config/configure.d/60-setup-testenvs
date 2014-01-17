@@ -40,9 +40,9 @@ echo "Setting up $NUMENVS test environments"
 export PATH=/opt/stack/tripleo-incubator/scripts/:$PATH
 
 # Place the physical interface onto the seed bridge
-OVSBRIDGE=$(os-apply-config --key gearman-worker.ovs.physical_bridge --type netdevice)
+OVSBRIDGE=$(os-apply-config --key neutron.ovs.physical_bridge --type netdevice)
 ensure-bridge $OVSBRIDGE \
-              $(os-apply-config --key gearman-worker.ovs.public_interface --type netdevice)
+              $(os-apply-config --key neutron.ovs.public_interface --type netdevice)
 
 # Generate a ssh keypair
 if [ ! -e /root/.ssh/test_env_rsa ] ; then
@@ -57,7 +57,7 @@ export OS_USERNAME=$(os-apply-config --key gearman-worker.auth_user)
 export OS_TENANT_NAME=$(os-apply-config --key gearman-worker.auth_tenant)
 
 # Give this host an IP on tripleo-bm-test
-DEVICE=$(os-apply-config --key gearman-worker.ovs.physical_bridge --type netdevice)
+DEVICE=$(os-apply-config --key neutron.ovs.physical_bridge --type netdevice)
 MAC=$(ip link show ${DEVICE} | awk 'NR==2 {print $2}')
 NETWORKNAME=$(os-apply-config --key gearman-worker.network_name --type netdevice)
 PORTOUTPUT=$(neutron port-create --name te_$(hostname) --mac-address $MAC --format shell --column fixed_ips $NETWORKNAME)

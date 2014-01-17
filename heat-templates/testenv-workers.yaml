@@ -67,9 +67,9 @@ Resources:
           Ref: GearmanHost
         port:
           Ref: GearmanPort
-        memperenv: 16
-        cpuperenv: 4
-        diskperenv: 80
+        mem-per-env: 16
+        cpu-per-env: 4
+        disk-per-env: 80
         auth_user: admin
         auth_tenant: admin
         auth_url:
