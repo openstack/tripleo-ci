@@ -53,8 +53,9 @@ fi
 # Define OS Auth env variables, needed for neutron command
 export OS_PASSWORD=$(os-apply-config --key gearman-worker.auth_passwd)
 export OS_AUTH_URL=$(os-apply-config --key gearman-worker.auth_url --type netaddress)
-export OS_USERNAME=$(os-apply-config --key gearman-worker.auth_user)
-export OS_TENANT_NAME=$(os-apply-config --key gearman-worker.auth_tenant)
+# TODO : add a type to os-apply-config for username
+export OS_USERNAME=$(os-apply-config --key gearman-worker.auth_user --type raw)
+export OS_TENANT_NAME=$(os-apply-config --key gearman-worker.auth_tenant --type raw)
 
 # Give this host an IP on tripleo-bm-test
 DEVICE=$(os-apply-config --key neutron.ovs.physical_bridge --type netdevice)

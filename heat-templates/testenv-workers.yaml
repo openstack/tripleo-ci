@@ -70,8 +70,8 @@ Resources:
         mem-per-env: 16
         cpu-per-env: 4
         disk-per-env: 80
-        auth_user: admin
-        auth_tenant: admin
+        auth_user: tripleo-ci
+        auth_tenant: openstack-nodepool
         auth_url:
             Ref: AuthUrl
         auth_passwd:
