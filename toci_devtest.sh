@@ -11,8 +11,11 @@ fi
 
 PRIV_SSH_KEY=$(OS_CONFIG_FILES=$TE_DATAFILE os-apply-config --key ssh-key --type raw)
 
+mkdir -p ~/.ssh
 echo $PRIV_SSH_KEY | base64 -d > ~/.ssh/id_rsa
 chmod 600 ~/.ssh/id_rsa
+# Generate the public key from the private one, this is needed in other parts of devtest
+ssh-keygen -y -f ~/.ssh/id_rsa > ~/.ssh/id_rsa.pub
 
 source ~/tripleo/tripleo-incubator/scripts/devtest_variables.sh
 devtest_setup.sh --trash-my-machine
