@@ -16,6 +16,7 @@ echo $PRIV_SSH_KEY | base64 -d > ~/.ssh/id_rsa
 chmod 600 ~/.ssh/id_rsa
 # Generate the public key from the private one, this is needed in other parts of devtest
 ssh-keygen -y -f ~/.ssh/id_rsa > ~/.ssh/id_rsa.pub
+cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
 
 export TRIPLEO_ROOT=~/tripleo
 source ~/tripleo/tripleo-incubator/scripts/devtest_variables.sh
