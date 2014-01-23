@@ -2,8 +2,6 @@
 
 set -e
 
-. toci_functions.sh
-
 if [ ! -e "$TE_DATAFILE" ] ; then
     echo "Couldn't find data file"
     exit 1
