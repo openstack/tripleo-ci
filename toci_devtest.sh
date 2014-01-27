@@ -25,8 +25,8 @@ for GITDIR in $(ls -d /opt/stack/new/*/.git) ; do
     export DIB_REPOLOCATION_$PROJNAME=$PROJDIR
 done
 
-export TRIPLEO_ROOT=~/tripleo
-source ~/tripleo/tripleo-incubator/scripts/devtest_variables.sh
+export TRIPLEO_ROOT=/opt/stack/new/
+source $TRIPLEO_ROOT/tripleo-incubator/scripts/devtest_variables.sh
 devtest_setup.sh --trash-my-machine
 devtest_ramdisk.sh
 devtest_seed.sh
