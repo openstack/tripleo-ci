@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -e
+set -ex
 
 if [ ! -e "$TE_DATAFILE" ] ; then
     echo "Couldn't find data file"
