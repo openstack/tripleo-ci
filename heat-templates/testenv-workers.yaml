@@ -67,9 +67,9 @@ Resources:
           Ref: GearmanHost
         port:
           Ref: GearmanPort
-        mem-per-env: 16
-        cpu-per-env: 4
-        disk-per-env: 80
+        mem-per-env: 20
+        cpu-per-env: 5
+        disk-per-env: 100
         auth_user: tripleo-ci
         auth_tenant: openstack-nodepool
         auth_url:

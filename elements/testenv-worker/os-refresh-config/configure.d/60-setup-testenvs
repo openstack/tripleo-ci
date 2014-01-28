@@ -25,14 +25,14 @@ touch /opt/stack/setup-testenvs.done
 
 # Calculate number of envs to setup based on lowest of Host Mem/CPU and Disk
 MEMTOTAL=$(free -g | awk '/Mem/ {print $2}')
-NUMENVS=$(expr $MEMTOTAL / $(os-apply-config --key gearman-worker.mem-per-env --key-default 16))
+NUMENVS=$(expr $MEMTOTAL / $(os-apply-config --key gearman-worker.mem-per-env --key-default 20))
 
 CPUTOTAL=$(grep "^processor" /proc/cpuinfo | wc -l)
-ENVS=$(expr $CPUTOTAL / $(os-apply-config --key gearman-worker.cpu-per-env --key-default 4))
+ENVS=$(expr $CPUTOTAL / $(os-apply-config --key gearman-worker.cpu-per-env --key-default 5))
 NUMENVS=$(($ENVS < $NUMENVS ? $ENVS : $NUMENVS))
 
 DISKTOTAL=$(df /var/lib/libvirt/images/ | awk '/^\// {print $2}')
-ENVS=$(expr $DISKTOTAL / 1024 / 1024 / $(os-apply-config --key gearman-worker.disk-per-env --key-default 80))
+ENVS=$(expr $DISKTOTAL / 1024 / 1024 / $(os-apply-config --key gearman-worker.disk-per-env --key-default 100))
 NUMENVS=$(($ENVS < $NUMENVS ? $ENVS : $NUMENVS))
 
 echo "Setting up $NUMENVS test environments"
