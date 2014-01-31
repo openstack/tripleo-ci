@@ -19,6 +19,10 @@ Parameters:
     Default: default
     Description: Name of an existing EC2 KeyPair to enable SSH access
     Type: String
+  Hosts:
+    Default: ''
+    Description: A string to append to /etc/hosts
+    Type: String
   NetworkName:
     Description: Name of the Neutron network to allocate ports on.
     Type: String
@@ -83,6 +87,8 @@ Resources:
           public_interface:
             Ref: PublicInterface
           physical_bridge: br-ctlplane
+      hosts:
+        Ref: Hosts
     Properties:
       flavor:
         Ref: Flavor
