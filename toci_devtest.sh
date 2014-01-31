@@ -29,5 +29,11 @@ export TRIPLEO_ROOT=/opt/stack/new/
 source $TRIPLEO_ROOT/tripleo-incubator/scripts/devtest_variables.sh
 devtest_setup.sh --trash-my-machine
 devtest_ramdisk.sh
+echo "Running $TRIPLEO_TEST test run"
 devtest_seed.sh
+export no_proxy=${no_proxy:-},192.0.2.1
+source $TRIPLEO_ROOT/tripleo-incubator/seedrc
+if [ "seed" != "$TRIPLEO_TEST" ]; then
+    devtest_undercloud.sh $TE_DATAFILE
+fi
 echo 'Run completed.'
