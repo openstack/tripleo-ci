@@ -8,6 +8,7 @@ if [ ! -e "$TE_DATAFILE" ] ; then
 fi
 
 PRIV_SSH_KEY=$(OS_CONFIG_FILES=$TE_DATAFILE os-apply-config --key ssh-key --type raw)
+SEED_IP=$(OS_CONFIG_FILES=$TE_DATAFILE os-apply-config --key seed-ip --type netaddress --key-default '')
 
 mkdir -p ~/.ssh
 echo $PRIV_SSH_KEY | base64 -d > ~/.ssh/id_rsa
@@ -25,11 +26,18 @@ for GITDIR in $(ls -d /opt/stack/new/*/.git) ; do
     export DIB_REPOLOCATION_$PROJNAME=$PROJDIR
 done
 
+function get_state_from_host(){
+    mkdir -p logs/
+    ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=QUIET -o PasswordAuthentication=no $2 \
+        "( set -x ; ps -ef ; df -h ; uptime ; sudo netstat -lpn ; sudo iptables-save ; sudo ovs-vsctl show ; ip addr ; dpkg -l || rpm -qa) > /var/log/host_info.txt 2>&1 ; sudo tar -czf - --exclude=udev/hwdb.bin --exclude=selinux/targeted /var/log /etc || true" > logs/$1_logs.tgz
+}
+
 export TRIPLEO_ROOT=/opt/stack/new/
 source $TRIPLEO_ROOT/tripleo-incubator/scripts/devtest_variables.sh
 devtest_setup.sh --trash-my-machine
 devtest_ramdisk.sh
 echo "Running $TRIPLEO_TEST test run"
+trap "get_state_from_host seed root@$SEED_IP" EXIT
 devtest_seed.sh
 export no_proxy=${no_proxy:-},192.0.2.1
 source $TRIPLEO_ROOT/tripleo-incubator/seedrc
