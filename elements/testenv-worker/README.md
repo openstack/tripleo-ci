@@ -2,7 +2,7 @@ Install and configure a tripleo testenv worker
 
 Carves up this host into a number of test environments and registers each one with gearman.
 
-Typically built with "-a amd64 -o testenv-worker local-config stackuser ubuntu
+Typically built with "-a amd64 -o testenv-worker stackuser ubuntu
 testenv-worker dhcp-all-interfaces hosts"
 
 See deploy-testenv in the tripleo-cd element for example deployments.
