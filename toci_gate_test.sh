@@ -18,7 +18,7 @@ if [[ $NODE_NAME =~ .*tripleo-test-cloud-hp1* ]] ; then
 fi
 
 # tripleo ci default control variables
-export DIB_COMMON_ELEMENTS="common-venv stackuser pypi-openstack"
+export DIB_COMMON_ELEMENTS="common-venv stackuser"
 export USE_CIRROS=1
 
 # print the final values of control variables to console

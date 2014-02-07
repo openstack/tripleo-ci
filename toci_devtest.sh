@@ -94,6 +94,101 @@ function cherrypick(){
 # Add cherrypick's here e.g.
 # cherrypick <projectname> <gerrit-refspec>
 
+# Create a local pypi mirror of python packages that are being tested
+# TODO : Should probably split this out into a seperate file
+export TRIPLEO_ROOT=/opt/stack/new/
+MIRROR_ROOT=~/.cache/image-create/pypi/mirror/
+
+# We don't want this left behind if ever we start reusing VM's
+rm -rf $MIRROR_ROOT
+
+# echo's out a project name from a ref
+# $1 : e.g. openstack/nova:master:refs/changes/87/64787/3 returns nova
+function filterref(){
+    PROJ=${1%%:*}
+    PROJ=${PROJ##*/}
+    echo $PROJ
+}
+
+# Test if this is a project we want to build a package for
+# NB. keep the leading and trailing spaces, keeps the matching simpler
+BUILDPACKAGES=" os-apply-config os-cloud-config os-collect-config \
+os-refresh-config oslo.concurrency oslo.config oslo.db oslo.i18n \
+oslo.log oslo.messaging oslo.middleware oslo.rootwrap oslo.serialization \
+oslo.utils oslo.vmware pbr python-ceilometerclient python-cinderclient \
+python-glanceclient python-heatclient python-ironicclient \
+python-keystoneclient python-neutronclient python-novaclient \
+python-openstackclient python-saharaclient python-swiftclient \
+python-troveclient python-zaqarclient "
+function buildpackage(){
+    [[ "$BUILDPACKAGES" =~ " $1 "  ]] && return 0
+    return 1
+}
+
+# If this is a job to test master of everything we get a list of all git repo's
+if [ -z "${ZUUL_CHANGES:-}" ] ; then
+    echo "No change ids specified, building all projects in $TRIPLEO_ROOT"
+    ZUUL_CHANGES=$(find $TRIPLEO_ROOT -maxdepth 2 -type d -name .git -printf "%h ")
+fi
+
+mkdir -p $MIRROR_ROOT
+cd $MIRROR_ROOT
+# pip doesn't use the index from the extra index in order to query for case
+# mismatches, so any requirments with mismatches need to be pulled into
+# the local repo
+export PIP_INDEX_URL="http://pypi.openstack.org/simple/"
+# markupsafe : Case incorrect in jinja2 (fixed upstream but not released)
+# sysv-ipc   : The "-" is a "_" on pypi.o.o
+# xstatic-*  : Case incorrect (https://review.openstack.org/#/c/130287)
+ALWAYS_MIRROR_PKGS="markupsafe sysv-ipc xstatic xstatic-angular xstatic-angular-cookies xstatic-angular-mock xstatic-bootstrap-datepicker xstatic-bootstrap-scss xstatic-d3 xstatic-hogan xstatic-font-awesome xstatic-jasmine xstatic-jquery xstatic-jquery-migrate xstatic-jquery.quicksearch xstatic-jquery.tablesorter xstatic-jquery-ui xstatic-jsencrypt xstatic-qunit xstatic-rickshaw xstatic-spin"
+for P in $ALWAYS_MIRROR_PKGS ; do
+    mkdir -p $P
+    pip install -d $P $P
+done
+
+
+# Config for our CI pypi mirror
+export no_proxy=127.0.0.1
+export PIP_INDEX_URL="http://127.0.0.1:8765/"
+export PIP_EXTRA_INDEX_URL="http://pypi.openstack.org/simple/"
+
+# Start our http pypi mirror
+cd $MIRROR_ROOT
+python -m SimpleHTTPServer 8765 1>$TRIPLEO_ROOT/pypi_mirror.log 2>$TRIPLEO_ROOT/pypi_mirror_error.log &
+sleep 2
+
+# loop through each of the projects listed in ZUUL_CHANGES if it is a project we
+# typically pull in as a pip dependency then build it and add it to the mirror,
+# pbr is required as .pydistutils.cfg doesn't support a extra-index-url
+# e.g. ZUUL_CHANGES=openstack/cinder:master:refs/changes/61/71461/4^opensta...
+[[ "$ZUUL_CHANGES" =~ .*/pbr.* ]] || ZUUL_CHANGES="pbr $ZUUL_CHANGES"
+for PROJ in ${ZUUL_CHANGES//^/ } ; do
+
+    PROJ=$(filterref $PROJ)
+    buildpackage $PROJ || continue
+
+    PROJDIR=$TRIPLEO_ROOT/$PROJ
+    cd $PROJDIR
+
+    # We don't want this left behind if ever we start reusing VM's
+    rm -rf $PROJDIR/dist
+
+    # We're building pre-release packages but not all the tripleo pip installs
+    # include --pre so giving them a fake release number
+    git tag -m 999.999.999 999.999.999
+
+    # build and get the name of the package
+    python setup.py sdist
+    cd dist
+    PACKAGE=$(ls *)
+
+    # Place package in the mirror along with the index pip is expecting
+    mkdir -p $MIRROR_ROOT/$PROJ
+    mv $PROJDIR/dist/$PACKAGE $MIRROR_ROOT/$PROJ/$PACKAGE
+done
+
+# Everything is now in place to build images using the local repositories
+
 function get_state_from_host(){
     local SSH_CMD
     SSH_CMD='( set -x;
@@ -167,7 +262,6 @@ function get_state_from_hosts(){
     fi
 }
 
-export TRIPLEO_ROOT=/opt/stack/new/
 source $TRIPLEO_ROOT/tripleo-incubator/scripts/devtest_variables.sh
 devtest_setup.sh --trash-my-machine
 devtest_ramdisk.sh
