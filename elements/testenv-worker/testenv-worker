@@ -138,7 +138,7 @@ def main(args=sys.argv[1:]):
                         help='A unique identifier identifing this env on '
                              'this host.')
     parser.add_argument('--geard', '-b', default='127.0.0.1:4730',
-                        help='A comma seperated list of gearman brokers to '
+                        help='A comma separated list of gearman brokers to '
                              'connect to.')
     parser.add_argument('--debug', '-d',  action='store_true',
                         help='Set to debug mode.')
