@@ -11,7 +11,7 @@ PRIV_SSH_KEY=$(OS_CONFIG_FILES=$TE_DATAFILE os-apply-config --key ssh-key --type
 SEED_IP=$(OS_CONFIG_FILES=$TE_DATAFILE os-apply-config --key seed-ip --type netaddress --key-default '')
 
 mkdir -p ~/.ssh
-echo $PRIV_SSH_KEY | base64 -d > ~/.ssh/id_rsa
+echo "$PRIV_SSH_KEY" > ~/.ssh/id_rsa
 chmod 600 ~/.ssh/id_rsa
 # Generate the public key from the private one, this is needed in other parts of devtest
 ssh-keygen -y -f ~/.ssh/id_rsa > ~/.ssh/id_rsa.pub
