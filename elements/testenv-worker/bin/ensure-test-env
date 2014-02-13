@@ -29,7 +29,7 @@ LOGFILE=/var/log/testenv-worker_${NUM}.log
 setup-network $NUM
 
 # FIXME : not idempotent, just creates more nodes, even if some already existed in this bridge
-create-nodes 1 4 30 amd64 4 brbm$NUM
+create-nodes 1 4096 30 amd64 4 brbm$NUM
 NODEMACS=
 for node in $(virsh list --all --name | grep brbm$NUM); do
     NODEMACS="$(virsh dumpxml $node | grep 'mac address' | awk -F \' 'NR==1,/mac address/ {print $2}')${NODEMACS:+ }$NODEMACS"
