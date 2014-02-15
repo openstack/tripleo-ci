@@ -45,6 +45,7 @@ if [ "seed" != "$TRIPLEO_TEST" ]; then
     devtest_undercloud.sh $TE_DATAFILE
 fi
 if [ "overcloud" = "$TRIPLEO_TEST" ]; then
-    devtest_overcloud.sh $TE_DATAFILE
+    source $TRIPLEO_ROOT/tripleo-incubator/undercloudrc
+    devtest_overcloud.sh
 fi
 echo 'Run completed.'
