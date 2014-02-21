@@ -149,7 +149,7 @@ def main(args=sys.argv[1:]):
     with open(opts.datafile, "r") as fp:
         te_data = fp.read()
 
-    logger.info('Starting test-env worker with data %r', te_data.strip()[:200])
+    logger.info('Starting test-env worker with data %r', te_data.strip())
     # If this job dies we loose the test environment, so catch everything and
     # retry after a short sleep.
     while True:

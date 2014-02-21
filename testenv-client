@@ -57,7 +57,7 @@ class TestCallback(object):
         except gear.InterruptedError:
             return
 
-        logger.info('Received job : %s', job.arguments.strip()[:200])
+        logger.info('Received job : %s', job.arguments.strip())
         logger.info('Running command "%s"', ' '.join(self.command))
 
         with tempfile.NamedTemporaryFile('w') as fp:
