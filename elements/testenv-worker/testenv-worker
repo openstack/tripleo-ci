@@ -131,7 +131,7 @@ def main(args=sys.argv[1:]):
     )
     parser.add_argument('datafile',
                         help='Path to the data to provided to the client')
-    parser.add_argument('--timeout', '-t', type=int, default=7200,
+    parser.add_argument('--timeout', '-t', type=int, default=10800,
                         help='The maximum number of seconds to hold the '
                              'testenv for.')
     parser.add_argument('--tenum', '-n', default=uuid.uuid4().hex,
