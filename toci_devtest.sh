@@ -42,6 +42,7 @@ devtest_seed.sh
 export no_proxy=${no_proxy:-},192.0.2.1
 source $TRIPLEO_ROOT/tripleo-incubator/seedrc
 if [ "seed" != "$TRIPLEO_TEST" ]; then
+    trap "get_state_from_host seed root@$SEED_IP ; get_state_from_host undercloud heat-admin@192.0.2.2" EXIT
     devtest_undercloud.sh $TE_DATAFILE
 fi
 if [ "overcloud" = "$TRIPLEO_TEST" ]; then
