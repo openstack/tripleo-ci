@@ -29,7 +29,7 @@ done
 function get_state_from_host(){
     mkdir -p $WORKSPACE/logs/
     ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=QUIET -o PasswordAuthentication=no $2 \
-        "( set -x ; ps -ef ; df -h ; uptime ; sudo netstat -lpn ; sudo iptables-save ; sudo ovs-vsctl show ; ip addr ; dpkg -l || rpm -qa) > /var/log/host_info.txt 2>&1 ; sudo tar -czf - --exclude=udev/hwdb.bin --exclude=selinux/targeted /var/log /etc || true" > $WORKSPACE/logs/$1_logs.tgz
+        "( set -x ; ps -ef ; df -h ; uptime ; sudo netstat -lpn ; sudo iptables-save ; sudo ovs-vsctl show ; ip addr ; dpkg -l || rpm -qa) 2>&1 | sudo dd of=/var/log/host_info.txt &> /dev/null ; sudo tar -czf - --exclude=udev/hwdb.bin --exclude=selinux/targeted /var/log /etc || true" > $WORKSPACE/logs/$1_logs.tgz
 }
 
 export TRIPLEO_ROOT=/opt/stack/new/
