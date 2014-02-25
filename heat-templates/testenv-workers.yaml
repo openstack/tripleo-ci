@@ -53,8 +53,20 @@ Resources:
       Policies:
       - Ref: AccessPolicy
     Type: AWS::IAM::User
+  testenv0CompletionCondition:
+    DependsOn: testenv0
+    Properties:
+      Count: '1'
+      Handle:
+        Ref: testenv0CompletionHandle
+      Timeout: '900'
+    Type: AWS::CloudFormation::WaitCondition
+  testenv0CompletionHandle:
+    Type: AWS::CloudFormation::WaitConditionHandle
   testenv0:
     Metadata:
+      completion-handle:
+        Ref: testenv0CompletionHandle
       os-collect-config:
         cfn:
           access_key_id:
