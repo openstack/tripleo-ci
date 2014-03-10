@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -ex
+set -eux
 
 if [ ! -e "$TE_DATAFILE" ] ; then
     echo "Couldn't find data file"
@@ -41,12 +41,15 @@ trap "get_state_from_host seed root@$SEED_IP" EXIT
 devtest_seed.sh
 export no_proxy=${no_proxy:-},192.0.2.1
 source $TRIPLEO_ROOT/tripleo-incubator/seedrc
-if [ "seed" != "$TRIPLEO_TEST" ]; then
+if [ "undercloud" = "$TRIPLEO_TEST" ]; then
     trap "get_state_from_host seed root@$SEED_IP ; get_state_from_host undercloud heat-admin@192.0.2.2" EXIT
     devtest_undercloud.sh $TE_DATAFILE
+    source $TRIPLEO_ROOT/tripleo-incubator/undercloudrc
 fi
 if [ "overcloud" = "$TRIPLEO_TEST" ]; then
-    source $TRIPLEO_ROOT/tripleo-incubator/undercloudrc
+    # Register more nodes with the seed.
+    export NODE_ARCH=$(jq -r '.arch' $TE_DATAFILE)
+    setup-baremetal $TE_DATAFILE --service-host seed --not-first
     devtest_overcloud.sh
 fi
 echo 'Run completed.'
