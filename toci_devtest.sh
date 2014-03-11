@@ -32,17 +32,28 @@ function get_state_from_host(){
         "( set -x ; ps -ef ; df -h ; uptime ; sudo netstat -lpn ; sudo iptables-save ; sudo ovs-vsctl show ; ip addr ; dpkg -l || rpm -qa) 2>&1 | sudo dd of=/var/log/host_info.txt &> /dev/null ; sudo tar -czf - --exclude=udev/hwdb.bin --exclude=selinux/targeted /var/log /etc || true" > $WORKSPACE/logs/$1_logs.tgz
 }
 
+function get_state_from_hosts(){
+    get_state_from_host seed root@$SEED_IP
+    # If this isn't a seed job get logs of running instances on the seed
+    if [ "seed" != "$TRIPLEO_TEST" ]; then
+        source $TRIPLEO_ROOT/tripleo-incubator/seedrc || true
+        nova list
+        for IP in $(nova list | grep -oE '([0-9]+\.){3}[0-9]+') ; do
+            get_state_from_host $IP heat-admin@$IP || true
+        done
+    fi
+}
+
 export TRIPLEO_ROOT=/opt/stack/new/
 source $TRIPLEO_ROOT/tripleo-incubator/scripts/devtest_variables.sh
 devtest_setup.sh --trash-my-machine
 devtest_ramdisk.sh
 echo "Running $TRIPLEO_TEST test run"
-trap "get_state_from_host seed root@$SEED_IP" EXIT
+trap "get_state_from_hosts" EXIT
 devtest_seed.sh
 export no_proxy=${no_proxy:-},192.0.2.1
 source $TRIPLEO_ROOT/tripleo-incubator/seedrc
 if [ "undercloud" = "$TRIPLEO_TEST" ]; then
-    trap "get_state_from_host seed root@$SEED_IP ; get_state_from_host undercloud heat-admin@192.0.2.2" EXIT
     devtest_undercloud.sh $TE_DATAFILE
     source $TRIPLEO_ROOT/tripleo-incubator/undercloudrc
 fi
