@@ -41,8 +41,21 @@ PORTOUTPUT=$(neutron port-create --name te_$(hostname)_$NUM --mac-address $SEEDM
 echo "$PORTOUTPUT"
 SEEDIP=$(echo "$PORTOUTPUT" | grep -E -o "([0-9]+\.){3}[0-9]+")
 
-NEW_JSON=$(jq ". + {\"remote-operations\":\"1\", \"host-ip\":\"$HOSTIP\", \"seed-ip\":\"$SEEDIP\", \"ssh-key\":\"$(python -c 'print open("/root/.ssh/test_env_rsa").read().replace("\n", "\\n")')\", \"ssh-user\":\"root\", \"env-num\":\"$NUM\", \"seed-route-dev\":\"eth1\", \"power_manager\":\"nova.virt.baremetal.virtual_power_driver.VirtualPowerManager\", \"arch\":\"amd64\"}" < $DATAFILE)
-echo $NEW_JSON > $DATAFILE
+NEW_JSON=$(mktemp)
+jq -s add $DATAFILE - <<EOF > $NEW_JSON
+{
+    "arch":"amd64",
+    "env-num":"$NUM",
+    "host-ip":"$HOSTIP",
+    "power_manager":"nova.virt.baremetal.virtual_power_driver.VirtualPowerManager",
+    "remote-operations":"1",
+    "seed-ip":"$SEEDIP",
+    "seed-route-dev":"eth1",
+    "ssh-key":"$(python -c 'print open("/root/.ssh/test_env_rsa").read().replace("\n", "\\n")')",
+    "ssh-user":"root"
+}
+EOF
+mv $NEW_JSON $DATAFILE
 
 BROKER=$(os-apply-config --key gearman-worker.host --type netaddress):$(os-apply-config --key gearman-worker.port --key-default 4730  --type int)
 # FIXME : not idempotent, just starts more workers, we need a way cleanly kill then
