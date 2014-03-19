@@ -19,6 +19,7 @@
 #
 
 import argparse
+import json
 import logging
 import sys
 import threading
@@ -93,11 +94,12 @@ def run_callback(geard, timeout, callback_name, te_data):
             client.shutdown()
             return
 
-    # The job has started, give it time to complete, adding a timeout here
-    # assumes the test environment is now safe for reuse, so this timeout
-    # MUST be longer then the timeout on client nodes to avoid two client
-    # nodes simultaneously using the same test environment
-    client.wait(timeout)
+    # We timeout after the configured timeout - the 40 second sleep that we
+    # perform during initial handshaking. Note that after this timeout we offer
+    # the environment for other test clients, but the prior client's
+    # credentials are still valid, so very confusing errors can occur if we
+    # were ever to timeout without the client timing out first.
+    client.wait(timeout - 40)
     if cb_job.failure:
         logger.error("The Job appears to have failed")
     elif not cb_job.complete:
@@ -116,10 +118,18 @@ def run_teworker(geard, num, timeout, te_data):
     while True:
         job = worker.getJob()
         logger.info('Received job : %s', job.arguments)
+        if job.arguments.startswith("{"):
+            arguments = json.loads(job.arguments)
+            call_back = arguments["callback_name"]
+            job_timeout = int(arguments.get("timeout", timeout))
+        else:
+            # legacy support, for clients that just send the callback name
+            call_back = job.arguments
+            job_timeout = timeout
 
         # Once this Job is called we call back to the client to run its
         # commands while this environment is locked
-        run_callback(geard, timeout, job.arguments, te_data)
+        run_callback(geard, job_timeout, call_back, te_data)
 
         job.sendWorkComplete("")
 
@@ -135,7 +145,7 @@ def main(args=sys.argv[1:]):
                         help='Path to the data to provided to the client')
     parser.add_argument('--timeout', '-t', type=int, default=10800,
                         help='The maximum number of seconds to hold the '
-                             'testenv for.')
+                             'testenv for, can be overridden by the client.')
     parser.add_argument('--tenum', '-n', default=uuid.uuid4().hex,
                         help='A unique identifier identifing this env on '
                              'this host.')
