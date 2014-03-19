@@ -1,6 +1,7 @@
 #!/bin/bash
 #
 # Copyright 2013 Red Hat, Inc.
+# Copyright 2014 Hewlett-Packard Development Company, L.P.
 # All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
@@ -29,11 +30,7 @@ LOGFILE=/var/log/testenv-worker_${NUM}.log
 setup-network $NUM
 
 # FIXME : not idempotent, just creates more nodes, even if some already existed in this bridge
-create-nodes 1 4096 30 amd64 4 brbm$NUM
-NODEMACS=
-for node in $(virsh list --all --name | grep brbm$NUM); do
-    NODEMACS="$(virsh dumpxml $node | grep 'mac address' | awk -F \' 'NR==1,/mac address/ {print $2}')${NODEMACS:+ }$NODEMACS"
-done
+create-nodes 1 4096 30 amd64 4 root $HOSTIP $DATAFILE brbm$NUM
 
 IMAGE_NAME=seed_${NUM}
 setup-seed-vm -a amd64 -o $IMAGE_NAME -b brbm$NUM -p $OVSBRIDGE
@@ -44,7 +41,8 @@ PORTOUTPUT=$(neutron port-create --name te_$(hostname)_$NUM --mac-address $SEEDM
 echo "$PORTOUTPUT"
 SEEDIP=$(echo "$PORTOUTPUT" | grep -E -o "([0-9]+\.){3}[0-9]+")
 
-echo "{\"remote-operations\":\"1\", \"host-ip\":\"$HOSTIP\", \"seed-ip\":\"$SEEDIP\", \"node-macs\":\"$NODEMACS\", \"ssh-key\":\"$(python -c 'print open("/root/.ssh/test_env_rsa").read().replace("\n", "\\n")')\", \"ssh-user\":\"root\", \"env-num\":\"$NUM\", \"seed-route-dev\":\"eth1\", \"power_manager\":\"nova.virt.baremetal.virtual_power_driver.VirtualPowerManager\", \"arch\":\"amd64\"}" > $DATAFILE
+NEW_JSON=$(jq ". + {\"remote-operations\":\"1\", \"host-ip\":\"$HOSTIP\", \"seed-ip\":\"$SEEDIP\", \"ssh-key\":\"$(python -c 'print open("/root/.ssh/test_env_rsa").read().replace("\n", "\\n")')\", \"ssh-user\":\"root\", \"env-num\":\"$NUM\", \"seed-route-dev\":\"eth1\", \"power_manager\":\"nova.virt.baremetal.virtual_power_driver.VirtualPowerManager\", \"arch\":\"amd64\"}" < $DATAFILE)
+echo $NEW_JSON > $DATAFILE
 
 BROKER=$(os-apply-config --key gearman-worker.host --type netaddress):$(os-apply-config --key gearman-worker.port --key-default 4730  --type int)
 # FIXME : not idempotent, just starts more workers, we need a way cleanly kill then
