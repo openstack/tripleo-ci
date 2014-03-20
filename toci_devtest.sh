@@ -10,6 +10,10 @@ fi
 PRIV_SSH_KEY=$(OS_CONFIG_FILES=$TE_DATAFILE os-apply-config --key ssh-key --type raw)
 SEED_IP=$(OS_CONFIG_FILES=$TE_DATAFILE os-apply-config --key seed-ip --type netaddress --key-default '')
 
+# The default pip timeout (15 seconds) isn't long enough to cater for our
+# occasional network blips, bug #1292141
+export PIP_DEFAULT_TIMEOUT=${PIP_DEFAULT_TIMEOUT:-30}
+
 mkdir -p ~/.ssh
 echo "$PRIV_SSH_KEY" > ~/.ssh/id_rsa
 chmod 600 ~/.ssh/id_rsa
