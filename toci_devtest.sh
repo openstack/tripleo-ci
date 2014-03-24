@@ -7,12 +7,6 @@ if [ ! -e "$TE_DATAFILE" ] ; then
     exit 1
 fi
 
-pushd /opt/stack/new/neutron
-# "Revert https://review.openstack.org/#/c/58533/19"
-git revert --no-edit 3c00dd43f613c838f713a7cbf3cedb6767a8c52a || true
-git reset --hard HEAD # Do this incase the revert fails (hopefully because its not needed)
-popd
-
 PRIV_SSH_KEY=$(OS_CONFIG_FILES=$TE_DATAFILE os-apply-config --key ssh-key --type raw)
 SEED_IP=$(OS_CONFIG_FILES=$TE_DATAFILE os-apply-config --key seed-ip --type netaddress --key-default '')
 
