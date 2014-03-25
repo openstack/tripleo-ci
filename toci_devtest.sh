@@ -63,8 +63,7 @@ if [ "undercloud" = "$TRIPLEO_TEST" ]; then
 fi
 if [ "overcloud" = "$TRIPLEO_TEST" ]; then
     # Register more nodes with the seed.
-    export NODE_ARCH=$(jq -r '.arch' $TE_DATAFILE)
-    setup-baremetal $TE_DATAFILE --service-host seed --not-first
+    setup-baremetal --service-host seed --nodes <(jq '.nodes - [.nodes[0]]' $TE_DATAFILE)
     devtest_overcloud.sh
 fi
 echo 'Run completed.'
