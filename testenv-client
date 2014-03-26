@@ -19,6 +19,7 @@
 #
 
 import argparse
+import json
 import logging
 import sys
 import subprocess
@@ -41,9 +42,9 @@ class TestCallback(object):
         self.servers = servers
         self.name = name
         self.command = command
-        # Default the return value to 1, this may end up being
+        # Default the return value to None, this may end up being
         # used if the gearman worker goes down before the job finishes
-        self.rv = 1
+        self.rv = None
 
     def __call__(self):
         self.worker = gear.Worker('testenv-client-%s' % self.name)
@@ -132,25 +133,29 @@ def main(args=sys.argv[1:]):
                              'connect to.')
     parser.add_argument('--jobnum', '-n', default=uuid.uuid4().hex,
                         help='A unique identifier identifing this job.')
+    parser.add_argument('--timeout', '-t',  default='10800',
+                        help='Set a timeout, after which the command will '
+                             'be killed.')
     parser.add_argument('--debug', '-d',  action='store_true',
                         help='Set to debug mode.')
     opts = parser.parse_args(args)
     if opts.debug:
         logger.setLevel(logging.DEBUG)
 
-    calback_name = "callback_" + opts.jobnum
-    cb = TestCallback(opts.geard, calback_name, opts.command)
+    callback_name = "callback_" + opts.jobnum
+    cb = TestCallback(opts.geard, callback_name, opts.command)
     threading.Thread(target=cb).start()
 
     client = TestEnvClient()
     add_servers(client, opts.geard)
     client.waitForServer()
 
-    job = gear.Job('lockenv', calback_name)
+    job_params = {"callback_name": callback_name, "timeout": opts.timeout}
+    job = gear.Job('lockenv', json.dumps(job_params))
     client.submitJob(job)
 
-    # No timeout here as there will be a timeout on the jenkins jobs, lets not
-    # second guess it.
+    # No timeout here as there will be a timeout on the jenkins jobs, which is
+    # also passed to the testenv-worker, lets not second guess them.
     client.wait()
     if job.failure:
         # This signals an error with the gearman connection to the worker
@@ -159,6 +164,13 @@ def main(args=sys.argv[1:]):
 
     cb.worker.stopWaitingForJobs()
 
+    # If the testenv worker releases the environment before our command
+    # completes we kill this process and all its children, to immediately
+    # stop the running job
+    if cb.rv is None:
+        logger.error("The command hasn't completed but the testenv worker has "
+                     "released the environment. Killing all processes.")
+        subprocess.call(["sudo", "kill", "-9", "-%d" % os.getpgrp()])
     logger.debug("Exiting with status : %d", cb.rv)
     return cb.rv
 
