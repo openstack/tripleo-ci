@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -e
+set -eu
 
 # cd to toci directory so relative paths work (below and in toci_devtest.sh)
 cd $(dirname $0)
@@ -18,4 +18,5 @@ sudo pip install gear os-apply-config
 # testing running a server on the same machine is convenient.
 GEARDSERVER=${GEARDSERVER:-127.0.0.1}
 
-./testenv-client -b $GEARDSERVER:4730 -- ./toci_devtest.sh
+TIMEOUT_SECS=$((DEVSTACK_GATE_TIMEOUT*60))
+./testenv-client -b $GEARDSERVER:4730 -t $TIMEOUT_SECS -- ./toci_devtest.sh
