@@ -49,6 +49,7 @@ jq -s add $DATAFILE - <<EOF > $NEW_JSON
     "host-ip":"$HOSTIP",
     "power_manager":"nova.virt.baremetal.virtual_power_driver.VirtualPowerManager",
     "remote-operations":"1",
+    "remote-host":"$(hostname)",
     "seed-ip":"$SEEDIP",
     "seed-route-dev":"eth1",
     "ssh-key":"$(python -c 'print open("/root/.ssh/test_env_rsa").read().replace("\n", "\\n")')",
