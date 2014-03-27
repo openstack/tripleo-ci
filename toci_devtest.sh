@@ -59,7 +59,6 @@ export no_proxy=${no_proxy:-},192.0.2.1
 source $TRIPLEO_ROOT/tripleo-incubator/seedrc
 if [ "undercloud" = "$TRIPLEO_TEST" ]; then
     devtest_undercloud.sh $TE_DATAFILE
-    source $TRIPLEO_ROOT/tripleo-incubator/undercloudrc
 fi
 if [ "overcloud" = "$TRIPLEO_TEST" ]; then
     # Register more nodes with the seed.
