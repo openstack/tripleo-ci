@@ -1,13 +1,30 @@
 Description: Create a bare metal test environment undercloud host to run test environment workers.
 HeatTemplateFormatVersion: '2012-12-12'
 Parameters:
-  AuthUrl:
-    Description: Keystone server.
+  AuthTenant:
+    Description: Overcloud Auth Tenant.
     Type: String
+    Default: 'openstack-nodepool'
+  AuthUrl:
+    Description: Overcloud Keystone.
+    Type: String
+  AuthUser:
+    Description: Overcloud Auth User.
+    Type: String
+    Default: 'tripleo-ci'
+    NoEcho: true
   AuthPassword:
     Description: User password.
     Type: String
     NoEcho: true
+  CPUPerEnv:
+    Default: 5
+    Description: CPU's to require per testenv
+    Type: String
+  DiskPerEnv:
+    Default: 100
+    Description: Disk space to require per testenv
+    Type: String
   GearmanHost:
     Description: Gearman server host.
     Type: String
@@ -22,6 +39,10 @@ Parameters:
   Hosts:
     Default: ''
     Description: A string to append to /etc/hosts
+    Type: String
+  MemPerEnv:
+    Default: 20
+    Description: RAM to require per testenv
     Type: String
   NetworkName:
     Description: Name of the Neutron network to allocate ports on.
@@ -83,11 +104,16 @@ Resources:
           Ref: GearmanHost
         port:
           Ref: GearmanPort
-        mem-per-env: 20
-        cpu-per-env: 5
-        disk-per-env: 100
-        auth_user: tripleo-ci
-        auth_tenant: openstack-nodepool
+        mem-per-env:
+            Ref: MemPerEnv
+        cpu-per-env:
+            Ref: CPUPerEnv
+        disk-per-env:
+            Ref: DiskPerEnv
+        auth_user:
+            Ref: AuthUser
+        auth_tenant:
+            Ref: AuthTenant
         auth_url:
             Ref: AuthUrl
         auth_passwd:
