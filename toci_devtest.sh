@@ -7,6 +7,8 @@ if [ ! -e "$TE_DATAFILE" ] ; then
     exit 1
 fi
 
+export PATH=/sbin:/usr/sbin:$PATH
+
 PRIV_SSH_KEY=$(OS_CONFIG_FILES=$TE_DATAFILE os-apply-config --key ssh-key --type raw)
 SEED_IP=$(OS_CONFIG_FILES=$TE_DATAFILE os-apply-config --key seed-ip --type netaddress --key-default '')
 
