@@ -27,13 +27,10 @@ DATAFILE=$(mktemp /tmp/test_env_${NUM}_XXXXXX)
 trap 'rm -f $DATAFILE' ERR
 LOGFILE=/var/log/testenv-worker_${NUM}.log
 
-setup-network $NUM
+NODE_CPU=1 NODE_MEM=4096 NODE_DISK=30 NODE_ARCH=amd64
+OVERCLOUD_COMPUTESCALE=2 # Creates this + 2 nodes in testenv.
+devtest_testenv.sh $DATAFILE -n $NUM -p $OVSBRIDGE -b brbm$NUM
 
-# FIXME : not idempotent, just creates more nodes, even if some already existed in this bridge
-create-nodes 1 4096 30 amd64 4 root $HOSTIP $DATAFILE brbm$NUM
-
-IMAGE_NAME=seed_${NUM}
-setup-seed-vm -a amd64 -o $IMAGE_NAME -b brbm$NUM -p $OVSBRIDGE
 SEEDMAC=$(virsh dumpxml $IMAGE_NAME | grep 'mac address' | awk -F \' 'NR==1,/mac address/ {print $2}')
 
 NETWORKNAME=$(os-apply-config --key gearman-worker.network_name --type netdevice)
@@ -44,16 +41,12 @@ SEEDIP=$(echo "$PORTOUTPUT" | grep -E -o "([0-9]+\.){3}[0-9]+")
 NEW_JSON=$(mktemp)
 jq -s add $DATAFILE - <<EOF > $NEW_JSON
 {
-    "arch":"amd64",
     "env-num":"$NUM",
-    "host-ip":"$HOSTIP",
-    "power_manager":"nova.virt.baremetal.virtual_power_driver.VirtualPowerManager",
     "remote-operations":"1",
     "remote-host":"$(hostname)",
     "seed-ip":"$SEEDIP",
     "seed-route-dev":"eth1",
     "ssh-key":"$(python -c 'print open("/root/.ssh/test_env_rsa").read().replace("\n", "\\n")')",
-    "ssh-user":"root"
 }
 EOF
 mv $NEW_JSON $DATAFILE
