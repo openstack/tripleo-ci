@@ -21,6 +21,8 @@ echo "$PRIV_SSH_KEY" > ~/.ssh/id_rsa
 chmod 600 ~/.ssh/id_rsa
 # Generate the public key from the private one, this is needed in other parts of devtest
 ssh-keygen -y -f ~/.ssh/id_rsa > ~/.ssh/id_rsa.pub
+# Ensure there is a newline after the last key
+echo >> ~/.ssh/authorized_keys
 cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
 
 # set DIB_REPOLOCATION_<project> for each of the projects cloned by devstack-vm-gate-wrap.sh
