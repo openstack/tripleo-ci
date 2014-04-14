@@ -7,13 +7,6 @@ if [ ! -e "$TE_DATAFILE" ] ; then
     exit 1
 fi
 
-# test revert of https://review.openstack.org/#/c/86643/1
-# TODO : remove once bug #1307424 is fixed
-pushd /opt/stack/new/nova
-git revert --no-edit 79ab96e34ba5b8dd3e4e542dd3a7f65624b13367 || true
-git reset --hard HEAD # Do this incase the revert fails (hopefully because its not needed)
-popd
-
 export PATH=/sbin:/usr/sbin:$PATH
 
 PRIV_SSH_KEY=$(OS_CONFIG_FILES=$TE_DATAFILE os-apply-config --key ssh-key --type raw)
