@@ -23,7 +23,7 @@ HOSTIP=$1
 OVSBRIDGE=$2
 NUM=$3
 
-DATAFILE=$(mktemp /tmp/test_env_${NUM}_XXXXXX)
+DATAFILE=/etc/test_env_${NUM}.json
 trap 'rm -f $DATAFILE' ERR
 LOGFILE=/var/log/testenv-worker_${NUM}.log
 
