@@ -16,12 +16,12 @@ export PATH=/sbin:/usr/sbin:$PATH
 #      that triggers ci).
 function temprevert(){
     # Before reverting check to ensure this isn't the related fix
-    if git --git-dir=/opt/stack/new/${ZUUL_PROJECT#*/}/.git log -1 | grep -iE "bug.*$3" ; then
+    if git --git-dir=/opt/git/openstack/${ZUUL_PROJECT#*/}/.git log -1 | grep -iE "bug.*$3" ; then
         echo "Skipping temprevert because bug fix $3 was found in git message."
         return 0
     fi
 
-    pushd /opt/stack/new/$1
+    pushd /opt/git/openstack/$1
     git revert --no-edit $2 || true
     git reset --hard HEAD # Do this incase the revert fails (hopefully because its not needed)
     popd
@@ -49,7 +49,7 @@ cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
 
 # set DIB_REPOLOCATION_<project> for each of the projects cloned by devstack-vm-gate-wrap.sh
 # built images will then pull git repository dependencies from local disk.
-for GITDIR in $(ls -d /opt/stack/new/*/.git) ; do
+for GITDIR in $(find /opt/git -maxdepth 3 -mindepth 3 -type d -name '*.git'); do
     PROJDIR=${GITDIR%/.git}
     PROJNAME=${PROJDIR##*/}
     PROJNAME=${PROJNAME//[-.]/_}
@@ -87,7 +87,7 @@ function get_state_from_hosts(){
     fi
 }
 
-export TRIPLEO_ROOT=/opt/stack/new/
+export TRIPLEO_ROOT=/opt/git/openstack
 source $TRIPLEO_ROOT/tripleo-incubator/scripts/devtest_variables.sh
 devtest_setup.sh --trash-my-machine
 devtest_ramdisk.sh
