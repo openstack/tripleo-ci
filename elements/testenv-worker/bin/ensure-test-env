@@ -28,10 +28,10 @@ trap 'rm -f $DATAFILE' ERR
 LOGFILE=/var/log/testenv-worker_${NUM}.log
 
 NODE_CPU=1 NODE_MEM=4096 NODE_DISK=30 NODE_ARCH=amd64
-OVERCLOUD_COMPUTESCALE=2 # Creates this + 2 nodes in testenv.
-devtest_testenv.sh $DATAFILE -n $NUM -p $OVSBRIDGE -b brbm$NUM
+export OVERCLOUD_COMPUTESCALE=2 # Creates this + 2 nodes in testenv.
+devtest_testenv.sh $DATAFILE -n $NUM -b $OVSBRIDGE
 
-SEEDMAC=$(virsh dumpxml $IMAGE_NAME | grep 'mac address' | awk -F \' 'NR==1,/mac address/ {print $2}')
+SEEDMAC=$(virsh dumpxml seed_$NUM | grep 'mac address' | awk -F \' 'NR==1,/mac address/ {print $2}')
 
 NETWORKNAME=$(os-apply-config --key gearman-worker.network_name --type netdevice)
 PORTOUTPUT=$(neutron port-create --name te_$(hostname)_$NUM --mac-address $SEEDMAC --format shell --column fixed_ips $NETWORKNAME)
@@ -46,7 +46,7 @@ jq -s add $DATAFILE - <<EOF > $NEW_JSON
     "remote-host":"$(hostname)",
     "seed-ip":"$SEEDIP",
     "seed-route-dev":"eth1",
-    "ssh-key":"$(python -c 'print open("/root/.ssh/test_env_rsa").read().replace("\n", "\\n")')",
+    "ssh-key":"$(python -c 'print open("/root/.ssh/test_env_rsa").read().replace("\n", "\\n")')"
 }
 EOF
 mv $NEW_JSON $DATAFILE
