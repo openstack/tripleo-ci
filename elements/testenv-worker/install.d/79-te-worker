@@ -1,7 +1,7 @@
 #!/bin/bash
 set -eux
 
-install-packages python-pip libvirt-bin qemu-utils python-libvirt qemu-kvm qemu-system jq
+install-packages python-pip libvirt-bin qemu-utils python-libvirt qemu-kvm qemu-system jq psmisc
 
 pip install gear
 
