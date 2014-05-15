@@ -7,6 +7,13 @@ if [ ! -e "$TE_DATAFILE" ] ; then
     exit 1
 fi
 
+# temp revert of https://review.openstack.org/#/c/92033/
+pushd /opt/stack/new/heat
+git revert --no-edit f8b15273a25ea665b600a4a8a468245d6a42282f || true
+git reset --hard HEAD # Do this incase the revert fails (hopefully because its not needed)
+popd
+
+
 export PATH=/sbin:/usr/sbin:$PATH
 
 PRIV_SSH_KEY=$(OS_CONFIG_FILES=$TE_DATAFILE os-apply-config --key ssh-key --type raw)
