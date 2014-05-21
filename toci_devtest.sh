@@ -46,8 +46,10 @@ function get_state_from_hosts(){
     if [ "seed" != "$TRIPLEO_TEST" ]; then
         source $TRIPLEO_ROOT/tripleo-incubator/seedrc || true
         nova list
-        for IP in $(nova list | grep -oE '([0-9]+\.){3}[0-9]+') ; do
-            get_state_from_host $IP heat-admin@$IP || true
+        for INSTANCE in $(nova list | grep ACTIVE | awk '{printf"%s=%s\n", $4, $12}') ; do
+            IP=${INSTANCE//*=}
+            NAME=${INSTANCE//=*}
+            get_state_from_host $NAME heat-admin@$IP || true
         done
     fi
 }
