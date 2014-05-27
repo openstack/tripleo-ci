@@ -18,11 +18,11 @@ Parameters:
     Type: String
     NoEcho: true
   CPUPerEnv:
-    Default: 5
+    Default: 3
     Description: CPU's to require per testenv
     Type: String
   DiskPerEnv:
-    Default: 100
+    Default: 60
     Description: Disk space to require per testenv
     Type: String
   GearmanHost:
@@ -41,7 +41,7 @@ Parameters:
     Description: A string to append to /etc/hosts
     Type: String
   MemPerEnv:
-    Default: 20
+    Default: 10
     Description: RAM to require per testenv
     Type: String
   NetworkName:
