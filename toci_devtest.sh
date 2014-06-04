@@ -59,10 +59,16 @@ function get_state_from_host(){
     mkdir -p $WORKSPACE/logs/
     ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=QUIET -o PasswordAuthentication=no $2 \
         "( set -x ; ps -ef ; df -h ; uptime ; sudo netstat -lpn ; sudo iptables-save ; sudo ovs-vsctl show ; ip addr ; free ; dpkg -l || rpm -qa) 2>&1 | sudo dd of=/var/log/host_info.txt &> /dev/null ; sudo XZ_OPT=-3 tar -cJf - --exclude=udev/hwdb.bin --exclude=selinux/targeted --exclude=etc/services --exclude=etc/pki /var/log /etc /mnt/state/var/log || true" > $WORKSPACE/logs/$1_logs.tar.xz
-    # Extract the upstart logs so we can add them to logstash.openstack.org for analysis
+    # Extract the logs so we can add them to logstash.openstack.org for analysis
     mkdir $WORKSPACE/logs/$1_logs
     if tar tf $WORKSPACE/logs/$1_logs.tar.xz  var/log/upstart >/dev/null 2>&1; then
         tar xJvf  $WORKSPACE/logs/$1_logs.tar.xz -C $WORKSPACE/logs/$1_logs var/log/upstart --strip-components=3
+    else
+        tar xJvf $WORKSPACE/logs/$1_logs.tar.xz -C $WORKSPACE/logs/$1_logs "var/log/journal/*/system.journal" --strip-components=4
+        for UNIT in $(journalctl --file $WORKSPACE/logs/$1_logs/system.journal -F _SYSTEMD_UNIT) ; do
+            journalctl --file $WORKSPACE/logs/$1_logs/system.journal -u $UNIT > $WORKSPACE/logs/$1_logs/${UNIT/.service/.log}
+        done
+        rm -f $WORKSPACE/logs/$1_logs/system.journal
     fi
 }
 
