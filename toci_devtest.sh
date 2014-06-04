@@ -9,6 +9,23 @@ fi
 
 export PATH=/sbin:/usr/sbin:$PATH
 
+# Revert a commit for tripleo ci
+# $1 : project name e.g. nova
+# $2 : hash id of commit to revert
+# $3 : bug id of reason for revert (used to skip revert if found in commit
+#      that triggers ci).
+function temprevert(){
+    # Before reverting check to ensure this isn't the related fix
+    if git --git-dir=/opt/stack/new/${ZUUL_PROJECT#*/}/.git log -1 | grep -iE "bug.*$3" ; then
+        return 0
+    fi
+
+    pushd /opt/stack/new/$1
+    git revert --no-edit $2 || true
+    git reset --hard HEAD # Do this incase the revert fails (hopefully because its not needed)
+    popd
+}
+
 PRIV_SSH_KEY=$(OS_CONFIG_FILES=$TE_DATAFILE os-apply-config --key ssh-key --type raw)
 SEED_IP=$(OS_CONFIG_FILES=$TE_DATAFILE os-apply-config --key seed-ip --type netaddress --key-default '')
 
