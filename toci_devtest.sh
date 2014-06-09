@@ -26,8 +26,9 @@ function temprevert(){
     popd
 }
 
-# https://review.openstack.org/#/c/94043/
-temprevert nova ce3f9e5fa9cd05f3ee3bb0cc7d06521d05901cf4 1326289
+# Add temporary reverts here e.g.
+# https://review.openstack.org/#/c/<patchnum>/
+#temprevert <projectname> <commit-hash-to-revert> <bugnumber>
 
 PRIV_SSH_KEY=$(OS_CONFIG_FILES=$TE_DATAFILE os-apply-config --key ssh-key --type raw)
 SEED_IP=$(OS_CONFIG_FILES=$TE_DATAFILE os-apply-config --key seed-ip --type netaddress --key-default '')
