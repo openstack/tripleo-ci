@@ -35,7 +35,7 @@ SEED_IP=$(OS_CONFIG_FILES=$TE_DATAFILE os-apply-config --key seed-ip --type neta
 
 # The default pip timeout (15 seconds) isn't long enough to cater for our
 # occasional network blips, bug #1292141
-export PIP_DEFAULT_TIMEOUT=${PIP_DEFAULT_TIMEOUT:-30}
+export PIP_DEFAULT_TIMEOUT=${PIP_DEFAULT_TIMEOUT:-60}
 
 mkdir -p ~/.ssh
 echo "$PRIV_SSH_KEY" > ~/.ssh/id_rsa
