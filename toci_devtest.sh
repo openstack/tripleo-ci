@@ -96,6 +96,10 @@ function get_state_from_host(){
         done
         rm -f $WORKSPACE/logs/$1_logs/system.journal
     fi
+    if tar tf $WORKSPACE/logs/$1_logs.tar.xz  mnt/state/var/log >/dev/null 2>&1; then
+        mkdir $WORKSPACE/logs/$1_logs/mnt
+        tar xJvf  $WORKSPACE/logs/$1_logs.tar.xz -C $WORKSPACE/logs/$1_logs/mnt mnt/state/var/log --strip-components=4
+    fi
 }
 
 function get_state_from_hosts(){
