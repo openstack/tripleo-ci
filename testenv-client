@@ -27,6 +27,7 @@ import os
 import tempfile
 import textwrap
 import threading
+import time
 import uuid
 
 import gear
@@ -42,6 +43,7 @@ class TestCallback(object):
         self.servers = servers
         self.name = name
         self.command = command
+        self.created = time.time()
         # Default the return value to None, this may end up being
         # used if the gearman worker goes down before the job finishes
         self.rv = None
@@ -59,6 +61,9 @@ class TestCallback(object):
             return
 
         logger.info('Received job : %s', job.arguments.strip())
+        time_waiting = time.time() - self.created
+        if time_waiting > 10:
+            logger.warn('%.1f seconds waiting for a worker.' % (time_waiting))
         logger.info('Running command "%s"', ' '.join(self.command))
 
         with tempfile.NamedTemporaryFile('w') as fp:
