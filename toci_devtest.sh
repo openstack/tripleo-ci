@@ -73,7 +73,7 @@ function get_state_from_host(){
 }
 
 function get_state_from_hosts(){
-    get_state_from_host seed root@$SEED_IP
+    get_state_from_host seed root@$SEED_IP &> $WORKSPACE/logs/get_state_from_host.log
     # If this isn't a seed job get logs of running instances on the seed
     if [ "seed" != "$TRIPLEO_TEST" ]; then
         source $TRIPLEO_ROOT/tripleo-incubator/seedrc || true
@@ -81,7 +81,7 @@ function get_state_from_hosts(){
         for INSTANCE in $(nova list | grep ACTIVE | awk '{printf"%s=%s\n", $4, $12}') ; do
             IP=${INSTANCE//*=}
             NAME=${INSTANCE//=*}
-            get_state_from_host $NAME heat-admin@$IP || true
+            get_state_from_host $NAME heat-admin@$IP &>> $WORKSPACE/logs/get_state_from_host.log || true
         done
     fi
 }
