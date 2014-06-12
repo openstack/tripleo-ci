@@ -17,6 +17,7 @@ export PATH=/sbin:/usr/sbin:$PATH
 function temprevert(){
     # Before reverting check to ensure this isn't the related fix
     if git --git-dir=/opt/stack/new/${ZUUL_PROJECT#*/}/.git log -1 | grep -iE "bug.*$3" ; then
+        echo "Skipping temprevert because bug fix $3 was found in git message."
         return 0
     fi
 
