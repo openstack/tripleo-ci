@@ -13,7 +13,7 @@ cd $(dirname $0)
 DISTRIB_CODENAME=$(lsb_release -si)
 if [ $DISTRIB_CODENAME == 'Fedora' ]; then
     FEDORA_IMAGE=$(wget -q http://dl.fedoraproject.org/pub/fedora/linux/updates/20/Images/x86_64/ -O - | grep -o -E 'href="([^"#]+qcow2)"' | cut -d'"' -f2)
-    wget http://dl.fedoraproject.org/pub/fedora/linux/updates/20/Images/x86_64/$FEDORA_IMAGE
+    wget --progress=dot:mega http://dl.fedoraproject.org/pub/fedora/linux/updates/20/Images/x86_64/$FEDORA_IMAGE
     export DIB_LOCAL_IMAGE=$PWD/$FEDORA_IMAGE
 fi
 
