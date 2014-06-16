@@ -58,8 +58,30 @@ done
 
 function get_state_from_host(){
     mkdir -p $WORKSPACE/logs/
-    ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=QUIET -o PasswordAuthentication=no $2 \
-        "( set -x ; ps -ef ; df -h ; uptime ; sudo netstat -lpn ; sudo iptables-save ; sudo ovs-vsctl show ; ip addr ; free ; dpkg -l || rpm -qa) 2>&1 | sudo dd of=/var/log/host_info.txt &> /dev/null ; sudo XZ_OPT=-3 tar -cJf - --exclude=udev/hwdb.bin --exclude=selinux/targeted --exclude=etc/services --exclude=etc/pki /var/log /etc /mnt/state/var/log || true" > $WORKSPACE/logs/$1_logs.tar.xz
+    local SSH_CMD
+    SSH_CMD='( set -x;
+               ps -ef;
+               df -h;
+               uptime;
+               sudo netstat -lpn;
+               sudo iptables-save;
+               sudo ovs-vsctl show;
+               ip addr;
+               free;
+               dpkg -l || rpm -qa;
+             ) 2>&1 | sudo dd of=/var/log/host_info.txt &> /dev/null;
+             sudo XZ_OPT=-3 tar -cJf - \
+               --exclude=udev/hwdb.bin \
+               --exclude=selinux/targeted \
+               --exclude=etc/services \
+               --exclude=etc/pki \
+               /var/log /etc /mnt/state/var/log || true'
+    ssh -o StrictHostKeyChecking=no \
+        -o UserKnownHostsFile=/dev/null \
+        -o LogLevel=QUIET \
+        -o PasswordAuthentication=no $2 \
+        "${SSH_CMD}" > $WORKSPACE/logs/$1_logs.tar.xz
+
     # Extract the logs so we can add them to logstash.openstack.org for analysis
     mkdir $WORKSPACE/logs/$1_logs
     if tar tf $WORKSPACE/logs/$1_logs.tar.xz  var/log/upstart >/dev/null 2>&1; then
