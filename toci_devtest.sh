@@ -69,6 +69,7 @@ function get_state_from_host(){
                ip addr;
                free;
                dpkg -l || rpm -qa;
+               os-collect-config --print;
              ) 2>&1 | sudo dd of=/var/log/host_info.txt &> /dev/null;
              sudo XZ_OPT=-3 tar -cJf - \
                --exclude=udev/hwdb.bin \
