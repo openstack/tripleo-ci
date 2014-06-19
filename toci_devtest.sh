@@ -31,6 +31,9 @@ function temprevert(){
 # https://review.openstack.org/#/c/<patchnum>/
 #temprevert <projectname> <commit-hash-to-revert> <bugnumber>
 
+# https://review.openstack.org/98755
+temprevert neutron e5cdad90f97d3a54a493eca19e7a3ff643426de1 XXX
+
 PRIV_SSH_KEY=$(OS_CONFIG_FILES=$TE_DATAFILE os-apply-config --key ssh-key --type raw)
 SEED_IP=$(OS_CONFIG_FILES=$TE_DATAFILE os-apply-config --key seed-ip --type netaddress --key-default '')
 
