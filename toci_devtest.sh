@@ -87,6 +87,7 @@ function get_state_from_host(){
 
     # Extract the logs so we can add them to logstash.openstack.org for analysis
     mkdir $WORKSPACE/logs/$1_logs
+    tar xJvf  $WORKSPACE/logs/$1_logs.tar.xz -C $WORKSPACE/logs/$1_logs var/log/host_info.txt --strip-components=2
     if tar tf $WORKSPACE/logs/$1_logs.tar.xz  var/log/upstart >/dev/null 2>&1; then
         tar xJvf  $WORKSPACE/logs/$1_logs.tar.xz -C $WORKSPACE/logs/$1_logs var/log/upstart --strip-components=3
     else
