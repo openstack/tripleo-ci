@@ -70,7 +70,7 @@ function get_state_from_host(){
                sudo iptables-save;
                sudo ovs-vsctl show;
                ip addr;
-               free;
+               free -h;
                dpkg -l || rpm -qa;
              ) 2>&1 | sudo dd of=/var/log/host_info.txt &> /dev/null;
              sudo XZ_OPT=-3 tar -cJf - \
