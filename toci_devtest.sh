@@ -63,6 +63,7 @@ function get_state_from_host(){
     mkdir -p $WORKSPACE/logs/
     local SSH_CMD
     SSH_CMD='( set -x;
+               export PATH=$PATH:/sbin
                ps -ef;
                df -h;
                uptime;
