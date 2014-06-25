@@ -52,7 +52,7 @@ cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
 for GITDIR in $(ls -d /opt/stack/new/*/.git) ; do
     PROJDIR=${GITDIR%/.git}
     PROJNAME=${PROJDIR##*/}
-    PROJNAME=${PROJNAME//[-.]/_}
+    PROJNAME=${PROJNAME//[^A-Za-z0-9]/_}
     export DIB_REPOLOCATION_$PROJNAME=$PROJDIR
 done
 
