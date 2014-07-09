@@ -109,14 +109,10 @@ class TEWorkerThread(threading.Thread):
             logger.info('Getting new job...')
             job = self.worker.getJob()
             logger.info('Received job : %s', job.arguments)
-            if job.arguments.startswith("{"):
-                arguments = json.loads(job.arguments)
-                call_back = arguments["callback_name"]
-                job_timeout = int(arguments.get("timeout", self.timeout))
-            else:
-                # legacy support, for clients that just send the callback name
-                call_back = job.arguments
-                job_timeout = self.timeout
+
+            arguments = json.loads(job.arguments)
+            call_back = arguments["callback_name"]
+            job_timeout = int(arguments.get("timeout", self.timeout))
 
             # Once this Job is called we call back to the client to run its
             # commands while this environment is locked
