@@ -17,8 +17,9 @@ export http_proxy=http://192.168.1.100:3128/
 # it for us.
 DISTRIB_CODENAME=$(lsb_release -si)
 if [ $DISTRIB_CODENAME == 'Fedora' ]; then
-    FEDORA_IMAGE=$(wget -q http://dl.fedoraproject.org/pub/fedora/linux/updates/20/Images/x86_64/ -O - | grep -o -E 'href="([^"#]+qcow2)"' | cut -d'"' -f2)
-    wget --progress=dot:mega http://dl.fedoraproject.org/pub/fedora/linux/updates/20/Images/x86_64/$FEDORA_IMAGE
+    # TODO : This should read the ARCH of the test being targeted
+    FEDORA_IMAGE=$(wget -q http://dl.fedoraproject.org/pub/fedora/linux/updates/20/Images/i386/ -O - | grep -o -E 'href="([^"#]+qcow2)"' | cut -d'"' -f2)
+    wget --progress=dot:mega http://dl.fedoraproject.org/pub/fedora/linux/updates/20/Images/i386/$FEDORA_IMAGE
     export DIB_LOCAL_IMAGE=$PWD/$FEDORA_IMAGE
 fi
 
