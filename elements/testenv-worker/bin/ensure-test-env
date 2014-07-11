@@ -45,7 +45,7 @@ jq -s add $DATAFILE - <<EOF > $NEW_JSON
     "remote-operations":"1",
     "remote-host":"$(hostname)",
     "seed-ip":"$SEEDIP",
-    "seed-route-dev":"eth1",
+    "seed-route-dev":"eth1"
 }
 EOF
 mv $NEW_JSON $DATAFILE
