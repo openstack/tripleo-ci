@@ -48,7 +48,7 @@ Parameters:
     Description: Name of the Neutron network to allocate ports on.
     Type: String
   Flavor:
-    Default: baremetal
+    Default: baremetal_full
     Description: Flavor to request when deploying.
     Type: String
   PublicInterface:
