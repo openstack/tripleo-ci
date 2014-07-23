@@ -55,6 +55,9 @@ Parameters:
     Default: eth0
     Description: Network interface to make into a bridge (for seed vm connectivity)
     Type: String
+  NtpServer:
+    Type: String
+    Default: ''
   testenvImage:
     Default: testenv-worker
     Type: String
@@ -127,6 +130,9 @@ Resources:
           physical_bridge: br-ctlplane
       hosts:
         Ref: Hosts
+      ntp:
+        servers:
+          - {server: {Ref: NtpServer}, fudge: "stratum 0"}
     Properties:
       flavor:
         Ref: Flavor
