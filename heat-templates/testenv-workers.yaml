@@ -134,4 +134,6 @@ Resources:
         Ref: testenvImage
       key_name:
         Ref: KeyName
+      networks:
+        - network: ctlplane
     Type: OS::Nova::Server
