@@ -30,6 +30,8 @@ function temprevert(){
 # Add temporary reverts here e.g.
 # https://review.openstack.org/#/c/71557/
 temprevert nova 50b4ba4ee583d25eef10a6608172c002f9bec6f2 1347795
+# https://review.openstack.org/#/c/107511/ (revert fix for scheduler bug)
+temprevert nova 963ad71af4750e28745b6de262da11816b403801 1342919
 
 PRIV_SSH_KEY=$(OS_CONFIG_FILES=$TE_DATAFILE os-apply-config --key ssh-key --type raw)
 SEED_IP=$(OS_CONFIG_FILES=$TE_DATAFILE os-apply-config --key seed-ip --type netaddress --key-default '')
