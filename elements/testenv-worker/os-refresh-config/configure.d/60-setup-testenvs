@@ -39,6 +39,9 @@ echo "Setting up $NUMENVS test environments"
 
 export PATH=/opt/stack/tripleo-incubator/scripts/:$PATH
 
+# Some of the incubator scripts are expecting TRIPLEO_OS_FAMILY to be set
+source /opt/stack/tripleo-incubator/scripts/set-os-type
+
 OVSBRIDGE=$(os-apply-config --key neutron.ovs.physical_bridge --type netdevice)
 
 # Place the physical interface onto the seed bridge
