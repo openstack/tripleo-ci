@@ -96,6 +96,9 @@ function get_state_from_host(){
     if tar tf $WORKSPACE/logs/$1_logs.tar.xz  var/log/upstart >/dev/null 2>&1; then
         tar xJvf  $WORKSPACE/logs/$1_logs.tar.xz -C $WORKSPACE/logs/$1_logs var/log/upstart --strip-components=3
     else
+        if tar tf $WORKSPACE/logs/$1_logs.tar.xz "var/log/audit/audit.log" >/dev/null 2>&1; then
+            tar xJvf $WORKSPACE/logs/$1_logs.tar.xz -C $WORKSPACE/logs/$1_logs "var/log/audit/audit.log" --strip-components=3
+        fi
         tar xJvf $WORKSPACE/logs/$1_logs.tar.xz -C $WORKSPACE/logs/$1_logs "var/log/journal/*/system.journal" --strip-components=4
         for UNIT in $(journalctl --file $WORKSPACE/logs/$1_logs/system.journal -F _SYSTEMD_UNIT) ; do
             journalctl --file $WORKSPACE/logs/$1_logs/system.journal -u $UNIT > $WORKSPACE/logs/$1_logs/${UNIT/.service/.log}
