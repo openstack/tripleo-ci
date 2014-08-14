@@ -28,8 +28,7 @@ function temprevert(){
 }
 
 # Add temporary reverts here e.g.
-# https://review.openstack.org/#/c/107511/ (revert fix for scheduler bug)
-temprevert nova 963ad71af4750e28745b6de262da11816b403801 1342919
+# temprevert <projectname> <commit-hash-to-revert> <bugnumber>
 
 PRIV_SSH_KEY=$(OS_CONFIG_FILES=$TE_DATAFILE os-apply-config --key ssh-key --type raw)
 SEED_IP=$(OS_CONFIG_FILES=$TE_DATAFILE os-apply-config --key seed-ip --type netaddress --key-default '')
@@ -55,12 +54,6 @@ for GITDIR in $(ls -d /opt/stack/new/*/.git) ; do
     PROJNAME=${PROJNAME//[^A-Za-z0-9]/_}
     export DIB_REPOLOCATION_$PROJNAME=$PROJDIR
 done
-
-# Cherry pick in horizon fix for bug https://launchpad.net/bugs/1349774
-loc=$(pwd)
-cd $DIB_REPOLOCATION_horizon
-git fetch https://review.openstack.org/openstack/horizon refs/changes/55/110755/2 && git cherry-pick FETCH_HEAD
-cd $loc
 
 function get_state_from_host(){
     mkdir -p $WORKSPACE/logs/
