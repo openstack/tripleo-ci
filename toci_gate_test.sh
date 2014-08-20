@@ -10,6 +10,10 @@ cd $(dirname $0)
 # can test and use it here for now
 export http_proxy=http://192.168.1.100:3128/
 
+# This allows communication between tripleo jumphost and the CI host running
+# the devtest_seed configuration
+sudo iptables -I INPUT -p tcp --dport 27410 -i eth1 -j ACCEPT
+
 # Download a custom Fedora image here. We want to use an explit URL
 # so that Squid caches this. I'm doing it here to test things for now...
 # Once it works this code actually belongs in prepare_node_tripleo.sh
