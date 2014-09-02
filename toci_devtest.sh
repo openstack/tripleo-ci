@@ -29,7 +29,6 @@ function temprevert(){
 
 # Add temporary reverts here e.g.
 # temprevert <projectname> <commit-hash-to-revert> <bugnumber>
-temprevert heat 04de60093b602c2eac4a612df5d4a2e31424a25d 1362812
 
 PRIV_SSH_KEY=$(OS_CONFIG_FILES=$TE_DATAFILE os-apply-config --key ssh-key --type raw)
 SEED_IP=$(OS_CONFIG_FILES=$TE_DATAFILE os-apply-config --key seed-ip --type netaddress --key-default '')
