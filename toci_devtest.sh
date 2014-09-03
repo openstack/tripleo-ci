@@ -53,6 +53,14 @@ for GITDIR in $(ls -d /opt/stack/new/*/.git) ; do
     PROJNAME=${PROJDIR##*/}
     PROJNAME=${PROJNAME//[^A-Za-z0-9]/_}
     export DIB_REPOLOCATION_$PROJNAME=$PROJDIR
+
+    # devstack-gate leaves some of these repo's in a detached head state (bug 1364345)
+    # dib defaults to using master so we have to explicitly set it.
+    # We can't use the git sha1 in the REPOREF because git didn't get the
+    # ability to fetch a sha1 ref until v1.8.3 (precise has 1.7.9), instead
+    # we create and use a branch
+    git --git-dir=$GITDIR --work-tree=$PROJDIR checkout -b ci-branch
+    export DIB_REPOREF_$PROJNAME=ci-branch
 done
 
 function get_state_from_host(){
