@@ -29,6 +29,8 @@ function temprevert(){
 
 # Add temporary reverts here e.g.
 # temprevert <projectname> <commit-hash-to-revert> <bugnumber>
+# https://review.openstack.org/#/c/116772/
+temprevert ironic cd9933a797ee70286af2a68169105288cd632d0e 1365750
 
 PRIV_SSH_KEY=$(OS_CONFIG_FILES=$TE_DATAFILE os-apply-config --key ssh-key --type raw)
 SEED_IP=$(OS_CONFIG_FILES=$TE_DATAFILE os-apply-config --key seed-ip --type netaddress --key-default '')
