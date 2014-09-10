@@ -29,8 +29,6 @@ function temprevert(){
 
 # Add temporary reverts here e.g.
 # temprevert <projectname> <commit-hash-to-revert> <bugnumber>
-# https://review.openstack.org/#/c/116772/
-temprevert ironic cd9933a797ee70286af2a68169105288cd632d0e 1365750
 
 PRIV_SSH_KEY=$(OS_CONFIG_FILES=$TE_DATAFILE os-apply-config --key ssh-key --type raw)
 SEED_IP=$(OS_CONFIG_FILES=$TE_DATAFILE os-apply-config --key seed-ip --type netaddress --key-default '')
@@ -64,6 +62,12 @@ for GITDIR in $(ls -d /opt/stack/new/*/.git) ; do
     git --git-dir=$GITDIR --work-tree=$PROJDIR checkout -b ci-branch
     export DIB_REPOREF_$PROJNAME=ci-branch
 done
+
+# Cherry pick in a nova fix https://bugs.launchpad.net/nova/+bug/1366859
+loc=$(pwd)
+cd $DIB_REPOLOCATION_nova
+git fetch https://review.openstack.org/openstack/nova refs/changes/99/120099/1 && git cherry-pick FETCH_HEAD
+cd $loc
 
 function get_state_from_host(){
     mkdir -p $WORKSPACE/logs/
