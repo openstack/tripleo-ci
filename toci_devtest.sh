@@ -75,6 +75,7 @@ function get_state_from_host(){
     SSH_CMD='( set -x;
                export PATH=$PATH:/sbin
                ps -efZ;
+               ls -Z /var/run/;
                df -h;
                uptime;
                sudo netstat -lpn;
