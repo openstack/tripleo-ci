@@ -63,10 +63,10 @@ for GITDIR in $(ls -d /opt/stack/new/*/.git) ; do
     export DIB_REPOREF_$PROJNAME=ci-branch
 done
 
-# Cherry pick in a nova fix https://bugs.launchpad.net/nova/+bug/1366859
+# Cherry pick in a nova fix https://bugs.launchpad.net/tripleo/+bug/1369151
 loc=$(pwd)
 cd $DIB_REPOLOCATION_nova
-git fetch https://review.openstack.org/openstack/nova refs/changes/99/120099/1 && git cherry-pick FETCH_HEAD
+git fetch https://review.openstack.org/openstack/nova refs/changes/97/121397/1 && git cherry-pick FETCH_HEAD
 cd $loc
 
 function get_state_from_host(){
