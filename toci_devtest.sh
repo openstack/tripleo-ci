@@ -69,6 +69,12 @@ cd $DIB_REPOLOCATION_nova
 git fetch https://review.openstack.org/openstack/nova refs/changes/97/121397/1 && git cherry-pick FETCH_HEAD
 cd $loc
 
+# Cherry pick in a neutron fix https://bugs.launchpad.net/neutron/+bug/1369386
+loc=$(pwd)
+cd $DIB_REPOLOCATION_neutron
+git fetch https://review.openstack.org/openstack/neutron refs/changes/34/121434/1 && git cherry-pick FETCH_HEAD
+cd $loc
+
 function get_state_from_host(){
     mkdir -p $WORKSPACE/logs/
     local SSH_CMD
