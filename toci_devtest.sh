@@ -63,11 +63,24 @@ for GITDIR in $(ls -d /opt/stack/new/*/.git) ; do
     export DIB_REPOREF_$PROJNAME=ci-branch
 done
 
+# Cherry-pick a commit for tripleo ci
+# $1 : project name e.g. nova
+# $2 : Gerrit refspec to cherry pick
+function cherrypick(){
+    local PROJ_NAME=$1
+    local REFSPEC=$2
+    local GIT_REPO_LOCATION="DIB_REPOLOCATION_${PROJ_NAME//[^A-Za-z0-9]/_}"
+
+    pushd ${!GIT_REPO_LOCATION}
+    git fetch https://review.openstack.org/openstack/$PROJ_NAME "$REFSPEC" && git cherry-pick FETCH_HEAD || true
+    popd
+}
+
+# Add cherrypick's here e.g.
+# cherrypick <projectname> <gerrit-refspec>
+
 # Cherry pick in a neutron fix https://bugs.launchpad.net/neutron/+bug/1369386
-loc=$(pwd)
-cd $DIB_REPOLOCATION_neutron
-git fetch https://review.openstack.org/openstack/neutron refs/changes/34/121434/1 && git cherry-pick FETCH_HEAD || true
-cd $loc
+cherrypick neutron refs/changes/34/121434/1
 
 function get_state_from_host(){
     mkdir -p $WORKSPACE/logs/
