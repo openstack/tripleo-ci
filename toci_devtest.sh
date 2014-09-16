@@ -9,6 +9,16 @@ fi
 
 export PATH=/sbin:/usr/sbin:$PATH
 
+# Place a file in the logs directory containing details from the current job,
+# we can later use this to test if nodes are being reused, bug 1370275.
+mkdir -p $WORKSPACE/logs/
+if [ -e $WORKSPACE/logs/already-used ] ; then
+    echo "This node was used already"
+    cat $WORKSPACE/logs/already-used
+    exit 1
+fi
+echo -e "$LOG_PATH\n$ZUUL_UUID" > $WORKSPACE/logs/already-used
+
 # Revert a commit for tripleo ci
 # $1 : project name e.g. nova
 # $2 : hash id of commit to revert
@@ -70,7 +80,6 @@ git fetch https://review.openstack.org/openstack/neutron refs/changes/34/121434/
 cd $loc
 
 function get_state_from_host(){
-    mkdir -p $WORKSPACE/logs/
     local SSH_CMD
     SSH_CMD='( set -x;
                export PATH=$PATH:/sbin
