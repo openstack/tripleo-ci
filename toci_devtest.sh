@@ -79,9 +79,6 @@ function cherrypick(){
 # Add cherrypick's here e.g.
 # cherrypick <projectname> <gerrit-refspec>
 
-# Cherry pick in a neutron fix https://bugs.launchpad.net/neutron/+bug/1369386
-cherrypick neutron refs/changes/34/121434/1
-
 function get_state_from_host(){
     mkdir -p $WORKSPACE/logs/
     local SSH_CMD
