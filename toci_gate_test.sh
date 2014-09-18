@@ -52,4 +52,5 @@ fi
 GEARDSERVER=${GEARDSERVER:-127.0.0.1}
 
 TIMEOUT_SECS=$((DEVSTACK_GATE_TIMEOUT*60))
+set -m
 ./testenv-client -b $GEARDSERVER:4730 -t $TIMEOUT_SECS -- ./toci_devtest.sh
