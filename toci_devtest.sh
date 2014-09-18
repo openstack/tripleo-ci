@@ -103,6 +103,12 @@ function get_state_from_host(){
     tar xJvf  $WORKSPACE/logs/$1_logs.tar.xz -C $WORKSPACE/logs/$1_logs var/log/host_info.txt --strip-components=2
     if tar tf $WORKSPACE/logs/$1_logs.tar.xz  var/log/upstart >/dev/null 2>&1; then
         tar xJvf  $WORKSPACE/logs/$1_logs.tar.xz -C $WORKSPACE/logs/$1_logs var/log/upstart --strip-components=3
+        # Extract logs for individual services from syslog to the logs directory
+        tar xJvf $WORKSPACE/logs/$1_logs.tar.xz -C $WORKSPACE/logs/$1_logs "var/log/syslog" --strip-components=2
+        for SERVICE in $(awk 'gsub(":|\\[.*", " ", $5) {print $5}' $WORKSPACE/logs/$1_logs/syslog | sort -u) ; do
+            awk "\$5 ~ \"^${SERVICE}[:\\\\[]\"" $WORKSPACE/logs/$1_logs/syslog > $WORKSPACE/logs/$1_logs/${SERVICE//\//_}.log
+        done
+        rm -f $WORKSPACE/logs/$1_logs/syslog
     else
         if tar tf $WORKSPACE/logs/$1_logs.tar.xz "var/log/audit/audit.log" >/dev/null 2>&1; then
             tar xJvf $WORKSPACE/logs/$1_logs.tar.xz -C $WORKSPACE/logs/$1_logs "var/log/audit/audit.log" --strip-components=3
