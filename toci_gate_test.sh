@@ -6,7 +6,8 @@ set -eu
 cd $(dirname $0)
 
 # We are currently running a Squid proxy on 192.168.1.100 in both Racks
-# and the geard server on 192.168.1.1
+# This change may eventually belong in openstack-infra/config but we
+# can test and use it here for now
 export http_proxy=http://192.168.1.100:3128/
 export GEARDSERVER=192.168.1.1
 # the hp1 cloud has a different test network range
@@ -18,20 +19,7 @@ fi
 
 # tripleo ci default control variables
 export DIB_COMMON_ELEMENTS="common-venv stackuser pypi-openstack"
-export OVERCLOUD_CONTROLSCALE=1
-export TRIPLEO_TEST=overcloud
-export USE_IRONIC=1
 export USE_CIRROS=1
-
-# Switch defaults based on the job name
-for JOB_NAME_PART in $(sed 's/-/ /g' <<< $JOB_NAME) ; do
-    case $JOB_NAME_PART in
-        novabm)     export USE_IRONIC=0 ;;
-        ha)         export OVERCLOUD_CONTROLSCALE=3 ;;
-        undercloud) export TRIPLEO_TEST=undercloud ;;
-        vlan)       export TRIPLEO_TEST=vlan ;;
-    esac
-done
 
 # print the final values of control variables to console
 env | grep -E "(DIB_COMMON_ELEMENTS|OVERCLOUD_CONTROLSCALE|TRIPLEO_TEST|USE_IRONIC|USE_CIRROS)="
