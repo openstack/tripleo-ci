@@ -32,8 +32,13 @@ function temprevert(){
 # https://review.openstack.org/#/c/120242/
 temprevert horizon 78c917570e2182bfdd8f5cb7eb5cb2c71d8df6f0 1373430
 
+TRIPLEO_DEBUG=${TRIPLEO_DEBUG:-}
 PRIV_SSH_KEY=$(OS_CONFIG_FILES=$TE_DATAFILE os-apply-config --key ssh-key --type raw)
 SEED_IP=$(OS_CONFIG_FILES=$TE_DATAFILE os-apply-config --key seed-ip --type netaddress --key-default '')
+
+if [ "$TRIPLEO_DEBUG" = "1" ]; then
+    TRIPLEO_DEBUG="--debug-logging"
+fi
 
 # The default pip timeout (15 seconds) isn't long enough to cater for our
 # occasional network blips, bug #1292141
@@ -168,11 +173,11 @@ devtest_seed.sh
 export no_proxy=${no_proxy:-},192.0.2.1
 source $TRIPLEO_ROOT/tripleo-incubator/seedrc
 if [ "undercloud" = "$TRIPLEO_TEST" ]; then
-    devtest_undercloud.sh $TE_DATAFILE
+    devtest_undercloud.sh $TRIPLEO_DEBUG $TE_DATAFILE
 fi
 if [ "overcloud" = "$TRIPLEO_TEST" ]; then
     # Register more nodes with the seed.
     setup-baremetal --service-host seed --nodes <(jq '.nodes - [.nodes[0]]' $TE_DATAFILE)
-    devtest_overcloud.sh
+    devtest_overcloud.sh $TRIPLEO_DEBUG
 fi
 echo 'Run completed.'
