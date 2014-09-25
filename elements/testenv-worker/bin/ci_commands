@@ -63,13 +63,13 @@ def run_command(orig_command):
 # NOTE(NobodyCam): First dumpxml command below (with grep) is for Nova Baremetal and should be
 #                  removed when Nova's Baremetal driver is removed from the repo.
 RE_COMMANDS = {
-    r"""^/usr/bin/virsh( --connect qemu:///system)? list --all \| tail -n \+2 \| awk -F" " '{print \$2}'$""": run_command,
-    r"""^/usr/bin/virsh( --connect qemu:///system)? dumpxml [a-z0-9_]+ \| grep "mac address" \| awk -F"'" '{print \$2}' \| tr -d ':'$""": run_command,
-    r"""^/usr/bin/virsh( --connect qemu:///system)? dumpxml [a-z0-9_]+ \| awk -F "'" '/mac address/{print \$2}'\| tr -d ':'$""": run_command,
-    r"""^/usr/bin/virsh( --connect qemu:///system)? list --all\|grep running( )?\|( )?awk -v qc='"' -F" " '{print qc\$2qc}'$""": run_command,
-    r"""^/usr/bin/virsh( --connect qemu:///system)? (start|destroy|reset) "?[a-z0-9_]+"?$""": run_command,
-    r"""^/usr/bin/virsh( --connect qemu:///system)? dumpxml [a-z0-9_]+ \| awk '[\w\\\/<>\(\){},.|=*;" ]+' Q="'" RS="\[<>\]" \| head -1$""": run_command,
-    r"""^EDITOR="sed -i '[\w\\\/<>\(\)|=*;" ]+'" /usr/bin/virsh( --connect qemu:///system)? edit "?[a-z0-9_]+"?$""": run_command,
+    r"""^(LC_ALL=C )?/usr/bin/virsh( --connect qemu:///system)? list --all \| tail -n \+2 \| awk -F" " '{print \$2}'$""": run_command,
+    r"""^(LC_ALL=C )?/usr/bin/virsh( --connect qemu:///system)? dumpxml [a-z0-9_]+ \| grep "mac address" \| awk -F"'" '{print \$2}' \| tr -d ':'$""": run_command,
+    r"""^(LC_ALL=C )?/usr/bin/virsh( --connect qemu:///system)? dumpxml [a-z0-9_]+ \| awk -F "'" '/mac address/{print \$2}'\| tr -d ':'$""": run_command,
+    r"""^(LC_ALL=C )?/usr/bin/virsh( --connect qemu:///system)? list --all\|grep running( )?\|( )?awk -v qc='"' -F" " '{print qc\$2qc}'$""": run_command,
+    r"""^(LC_ALL=C )?/usr/bin/virsh( --connect qemu:///system)? (start|destroy|reset) "?[a-z0-9_]+"?$""": run_command,
+    r"""^(LC_ALL=C )?/usr/bin/virsh( --connect qemu:///system)? dumpxml [a-z0-9_]+ \| awk '[\w\\\/<>\(\){},.|=*;" ]+' Q="'" RS="\[<>\]" \| head -1$""": run_command,
+    r"""^EDITOR="sed -i '[\w\\\/<>\(\)|=*;" ]+'"( LC_ALL=C)? /usr/bin/virsh( --connect qemu:///system)? edit "?[a-z0-9_]+"?$""": run_command,
 }
 
 
