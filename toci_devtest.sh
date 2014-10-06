@@ -161,7 +161,9 @@ function get_state_from_hosts(){
     if [ "seed" != "$TRIPLEO_TEST" ]; then
         source $TRIPLEO_ROOT/tripleo-incubator/seedrc || true
         nova list
+        heat stack-show $TRIPLEO_TEST
         heat resource-list $TRIPLEO_TEST
+        heat event-list $TRIPLEO_TEST
         for INSTANCE in $(nova list | grep ACTIVE | awk '{printf"%s=%s\n", $4, $12}') ; do
             IP=${INSTANCE//*=}
             NAME=${INSTANCE//=*}
