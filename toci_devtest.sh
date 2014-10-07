@@ -94,12 +94,6 @@ function cherrypick(){
 # Add cherrypick's here e.g.
 # cherrypick <projectname> <gerrit-refspec>
 
-# Neutron l3 agent retry, bug 1368795.
-cherrypick neutron refs/changes/92/121492/6
-
-# Nova bm longer sleeps, bug 1316350.
-cherrypick nova refs/changes/55/121155/1
-
 function get_state_from_host(){
     local SSH_CMD
     SSH_CMD='( set -x;
