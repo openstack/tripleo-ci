@@ -72,9 +72,11 @@ echo "$PORTOUTPUT"
 export HOSTIP=$(echo "$PORTOUTPUT" | grep -E -o "([0-9]+\.){3}[0-9]+")
 
 # TODO : make this persist across reboots
-# TODO : Get prefix length
+SUBNETID=$(awk '/subnet_id/ { print $2}' <<< "$PORTOUTPUT" | sed s/[,\\\"]//g )
+CIDR=$(neutron subnet-show $SUBNETID | awk '/cidr/ {print $4}' | awk -F "/" '{print $2}')
+
 ip link set up dev $DUMMYDEVICE
-ip addr add $HOSTIP/24 dev $DUMMYDEVICE
+ip addr add $HOSTIP/$CIDR dev $DUMMYDEVICE
 
 killall -9 testenv-worker || true
 for port in $(neutron port-list | awk "\$4~\"te_$(hostname)_.*\" {print \$2}") ; do
