@@ -173,7 +173,7 @@ devtest_setup.sh --trash-my-machine
 devtest_ramdisk.sh
 echo "Running $TRIPLEO_TEST test run"
 trap "get_state_from_hosts" EXIT
-devtest_seed.sh
+devtest_seed.sh $TRIPLEO_DEBUG
 export no_proxy=${no_proxy:-},192.0.2.1
 source $TRIPLEO_ROOT/tripleo-incubator/seedrc
 if [ "undercloud" = "$TRIPLEO_TEST" ]; then
