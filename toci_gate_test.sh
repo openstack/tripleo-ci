@@ -5,13 +5,11 @@ set -eu
 # cd to toci directory so relative paths work (below and in toci_devtest.sh)
 cd $(dirname $0)
 
-# We are currently running a Squid proxy on 192.168.1.100 in both Racks
-# This change may eventually belong in openstack-infra/config but we
-# can test and use it here for now
+# Once rh1 migrates to the 172.16.0.0/22 network we can remove the
+# 192.168.1.0/24 entries
 export http_proxy=http://192.168.1.100:3128/
 export GEARDSERVER=192.168.1.1
 export PYPIMIRROR=192.168.1.101
-# the hp1 cloud has a different test network range
 # TODO : make this the default once rh1 has switched over
 if [[ $NODE_NAME =~ .*tripleo-test-cloud-hp1* ]] ; then
     export http_proxy=http://172.16.3.253:3128/
@@ -21,10 +19,29 @@ fi
 
 # tripleo ci default control variables
 export DIB_COMMON_ELEMENTS="common-venv stackuser"
-export USE_CIRROS=1
+export TRIPLEO_TEST=${TRIPLEO_TEST:-"overcloud"}
+export USE_CIRROS=${USE_CIRROS:-"1"}
+export OVERCLOUD_CONTROLSCALE=${OVERCLOUD_CONTROLSCALE:-"1"}
+export TRIPLEO_DEBUG=${TRIPLEO_DEBUG:-""}
+
+# Switch defaults based on the job name
+for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
+    case $JOB_TYPE_PART in
+        undercloud)
+            export TRIPLEO_TEST=undercloud
+            ;;
+        ha)
+            export OVERCLOUD_CONTROLSCALE=3
+            export TRIPLEO_DEBUG=1
+            ;;
+        vlan)
+            export TRIPLEO_TEST=vlan
+            ;;
+    esac
+done
 
 # print the final values of control variables to console
-env | grep -E "(DIB_COMMON_ELEMENTS|OVERCLOUD_CONTROLSCALE|TRIPLEO_TEST|USE_IRONIC|USE_CIRROS)="
+env | grep -E "(DIB_COMMON_ELEMENTS|OVERCLOUD_CONTROLSCALE|TRIPLEO_TEST|USE_CIRROS|TRIPLEO_DEBUG)="
 
 # This allows communication between tripleo jumphost and the CI host running
 # the devtest_seed configuration
