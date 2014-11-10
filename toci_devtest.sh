@@ -61,9 +61,6 @@ ssh-keygen -y -f ~/.ssh/id_rsa > ~/.ssh/id_rsa.pub
 echo >> ~/.ssh/authorized_keys
 cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
 
-cd /opt/stack/new/nova
-git reset --hard 1a45b227dffafe02f1b25562fecb2868609d5128
-
 # set DIB_REPOLOCATION_<project> for each of the projects cloned by devstack-vm-gate-wrap.sh
 # built images will then pull git repository dependencies from local disk.
 for GITDIR in $(ls -d /opt/stack/new/*/.git) ; do
