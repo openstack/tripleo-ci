@@ -4,7 +4,7 @@ TripleO CI
 Introduction
 ------------
 
-TripleO CI is designed to run devtest[1]_  from jenkins jobs, currently in a
+TripleO CI is designed to run devtest [1]_  from jenkins jobs, currently in a
 virtualized baremetal environment. We do this by pre creating a Test
 Environment (TE) containing a number of libvirt domains on their own ovs bridge
 and making them available to instances on a openstack cloud (ci-overcloud).
@@ -13,19 +13,22 @@ along with a TE. The TE is held in a "locked" state for the duration of the CI
 test and held exclusively for the jenkins slave node.
 
 The TripleO CI process is changing fairly quickly with plans in place to
-improve its reliability/speed and consistency[2]_
+improve its reliability/speed and consistency [2]_
 
 Infrastructure
 --------------
 
 The TripleO CI infrastructure is currently run on 2 separate clouds
-(R1 and R2). Each deployment contains
+(HP1 and RH1, donated by HP and RedHat respectively) with two more
+regions currently being built. Each deployment contains
 
 * ci-overcloud : traditional kvm openstack cloud
-   * Should have an allocation of public floating IP available (1 per worker
-     node). Required to allow communication nodepool/jenkins[3]_.
-   * Should have defined a test network which is managed by neutron in the
-     ci-overcloud but should also be made available to TE hosts.
+
+  * Should have an allocation of public floating IP available (1 per worker
+    node). Required to allow communication nodepool/jenkins [3]_.
+  * Should have defined a test network which is managed by neutron in the
+    ci-overcloud but should also be made available to TE hosts.
+
 * TE Hosts : each hosting X number of actual test environments
 
 Test Environments
@@ -88,10 +91,10 @@ CI Overcloud Test Sequence
 
 * The jenkins slave node node is handed over to a jenkins server where the
   job is started
-* Jenkins runs the script devstack-gate/devstack-vm-gate-wrap.sh[6]_. Among
+* Jenkins runs the script devstack-gate/devstack-vm-gate-wrap.sh [6]_. Among
   other things devstack-gate sets the revision of repositories on the
   instance to the revision that needs to be tested (in `/opt/stack/new/`)
-* Once the instance has been setup the tripleo-ci/toci_gate_test.sh[7]_ is run,
+* Once the instance has been setup the tripleo-ci/toci_gate_test.sh [7]_ is run,
   this is a wrapper around TripleO ci primarily responsible for ensuring we
   don't continue with the rest of CI without an allocated TE
 * ./testenv-client is used to talk to geard
@@ -136,12 +139,13 @@ We also make the assumption here that you already have a running ironic
    * devtest_overcloud.sh can be used to deploy a ci-overcloud, see
      http://git.openstack.org/cgit/openstack/tripleo-image-elements/tree/elements/tripleo-cd/deploy-ci-overcloud
 * preparing a ci overcloud
-   * Once an overcloud is deployed it requires certain images/networks/quotas
-     etc... there is a script currently in progress to do this preparation to
-     an overcloud https://review.openstack.org/#/c/90146/
+   * Once an overcloud is deployed it requires certain
+     images/networks/quotas etc... Scripts to automate much of this,
+     and configs for each zone, can be found under
+     http://git.openstack.org/cgit/openstack/tripleo-image-elements/tree/elements/tripleo-cd
 * setting up TE hosts
    * TE host images need to be built and deployed
-     https://review.openstack.org/#/c/90146/
+     http://git.openstack.org/cgit/openstack/tripleo-image-elements/tree/elements/tripleo-cd/bin/deploy-testenv
 
 
 References
