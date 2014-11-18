@@ -112,7 +112,7 @@ function filterref(){
 
 # Test if this is a project we want to build a package for
 # NB. keep the leading and trailing spaces, keeps the matching simpler
-BUILDPACKAGES=" os-apply-config os-cloud-config os-collect-config \
+BUILDPACKAGES=" os-apply-config os-cloud-config os-collect-config os-net-config \
 os-refresh-config oslo.concurrency oslo.config oslo.db oslo.i18n \
 oslo.log oslo.messaging oslo.middleware oslo.rootwrap oslo.serialization \
 oslo.utils oslo.vmware pbr python-ceilometerclient python-cinderclient \
