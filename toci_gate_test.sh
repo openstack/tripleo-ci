@@ -10,11 +10,13 @@ cd $(dirname $0)
 # can test and use it here for now
 export http_proxy=http://192.168.1.100:3128/
 export GEARDSERVER=192.168.1.1
+export PYPIMIRROR=192.168.1.101
 # the hp1 cloud has a different test network range
 # TODO : make this the default once rh1 has switched over
 if [[ $NODE_NAME =~ .*tripleo-test-cloud-hp1* ]] ; then
     export http_proxy=http://172.16.3.253:3128/
     export GEARDSERVER=172.16.3.254
+    export PYPIMIRROR=172.16.3.252
 fi
 
 # tripleo ci default control variables
