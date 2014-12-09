@@ -21,6 +21,7 @@ fi
 export DIB_COMMON_ELEMENTS="common-venv stackuser"
 export TRIPLEO_TEST=${TRIPLEO_TEST:-"overcloud"}
 export USE_CIRROS=${USE_CIRROS:-"1"}
+export USE_MERGEPY=${USE_MERGEPY:-1}
 export OVERCLOUD_CONTROLSCALE=${OVERCLOUD_CONTROLSCALE:-"1"}
 export TRIPLEO_DEBUG=${TRIPLEO_DEBUG:-""}
 
@@ -36,6 +37,9 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
             ;;
         vlan)
             export TRIPLEO_TEST=vlan
+            ;;
+        f20)
+            export USE_MERGEPY=0
             ;;
     esac
 done
