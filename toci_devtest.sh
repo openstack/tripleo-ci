@@ -93,6 +93,7 @@ function cherrypick(){
 
 # Add cherrypick's here e.g.
 # cherrypick <projectname> <gerrit-refspec>
+cherrypick diskimage-builder refs/changes/79/141779/1
 
 # Create a local pypi mirror of python packages that are being tested
 # TODO : Should probably split this out into a seperate file
