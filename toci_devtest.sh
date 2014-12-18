@@ -139,9 +139,10 @@ cd $MIRROR_ROOT
 # the local repo
 export PIP_INDEX_URL="http://$PYPIMIRROR/pypi/simple/"
 # markupsafe : Case incorrect in jinja2 (fixed upstream but not released)
+# pbr is required as .pydistutils.cfg doesn't support a extra-index-url
 # sysv-ipc   : The "-" is a "_" on pypi.o.o
 # xstatic-*  : Case incorrect (https://review.openstack.org/#/c/130287)
-ALWAYS_MIRROR_PKGS="markupsafe sysv-ipc xstatic xstatic-angular xstatic-angular-cookies xstatic-angular-mock xstatic-bootstrap-datepicker xstatic-bootstrap-scss xstatic-d3 xstatic-hogan xstatic-font-awesome xstatic-jasmine xstatic-jquery xstatic-jquery-migrate xstatic-jquery.quicksearch xstatic-jquery.tablesorter xstatic-jquery-ui xstatic-jsencrypt xstatic-qunit xstatic-rickshaw xstatic-spin"
+ALWAYS_MIRROR_PKGS="markupsafe pbr sysv-ipc xstatic xstatic-angular xstatic-angular-cookies xstatic-angular-mock xstatic-bootstrap-datepicker xstatic-bootstrap-scss xstatic-d3 xstatic-hogan xstatic-font-awesome xstatic-jasmine xstatic-jquery xstatic-jquery-migrate xstatic-jquery.quicksearch xstatic-jquery.tablesorter xstatic-jquery-ui xstatic-jsencrypt xstatic-qunit xstatic-rickshaw xstatic-spin"
 for P in $ALWAYS_MIRROR_PKGS ; do
     mkdir -p $P
     pip install -d $P $P
@@ -160,9 +161,7 @@ sleep 2
 
 # loop through each of the projects listed in ZUUL_CHANGES if it is a project we
 # typically pull in as a pip dependency then build it and add it to the mirror,
-# pbr is required as .pydistutils.cfg doesn't support a extra-index-url
 # e.g. ZUUL_CHANGES=openstack/cinder:master:refs/changes/61/71461/4^opensta...
-[[ "$ZUUL_CHANGES" =~ .*/pbr.* ]] || ZUUL_CHANGES="pbr $ZUUL_CHANGES"
 for PROJ in ${ZUUL_CHANGES//^/ } ; do
 
     PROJ=$(filterref $PROJ)
