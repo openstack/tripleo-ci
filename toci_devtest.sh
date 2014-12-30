@@ -102,9 +102,6 @@ cherrypick diskimage-builder refs/changes/79/141779/1
 export TRIPLEO_ROOT=/opt/stack/new/
 MIRROR_ROOT=~/.cache/image-create/pypi/mirror/
 
-# workaround for bug 1101404
-[[ -d ~/.cache ]] && sudo chown -R $(whoami) ~/.cache
-
 # We don't want this left behind if ever we start reusing VM's
 rm -rf $MIRROR_ROOT
 
