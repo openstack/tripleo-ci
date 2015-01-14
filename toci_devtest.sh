@@ -43,6 +43,9 @@ function temprevert(){
 TRIPLEO_DEBUG=${TRIPLEO_DEBUG:-}
 PRIV_SSH_KEY=$(OS_CONFIG_FILES=$TE_DATAFILE os-apply-config --key ssh-key --type raw)
 SEED_IP=$(OS_CONFIG_FILES=$TE_DATAFILE os-apply-config --key seed-ip --type netaddress --key-default '')
+SSH_USER=$(OS_CONFIG_FILES=$TE_DATAFILE os-apply-config --key ssh-user --type username)
+HOST_IP=$(OS_CONFIG_FILES=$TE_DATAFILE os-apply-config --key host-ip --type netaddress)
+ENV_NUM=$(OS_CONFIG_FILES=$TE_DATAFILE os-apply-config --key env-num --type int)
 
 if [ "$TRIPLEO_DEBUG" = "1" ]; then
     TRIPLEO_DEBUG="--debug-logging"
@@ -243,6 +246,15 @@ function get_state_from_host(){
     fi
 }
 
+# Kill any VM's in the test env that we may have started, freeing up RAM
+# for other tests running on the TE host.
+function destroy_vms(){
+    ssh $SSH_USER@$HOST_IP virsh destroy seed_${ENV_NUM} || true
+    for i in $(seq 0 14) ; do
+        ssh $SSH_USER@$HOST_IP virsh destroy baremetalbrbm${ENV_NUM}_${i} || true
+    done
+}
+
 function get_state_from_hosts(){
     get_state_from_host seed root@$SEED_IP &> $WORKSPACE/logs/get_state_from_host.log
     # If this isn't a seed job get logs of running instances on the seed
@@ -261,11 +273,16 @@ function get_state_from_hosts(){
     fi
 }
 
+function cleanup(){
+    get_state_from_hosts || true
+    destroy_vms
+}
+
 source $TRIPLEO_ROOT/tripleo-incubator/scripts/devtest_variables.sh
 devtest_setup.sh --trash-my-machine
 devtest_ramdisk.sh
 echo "Running $TRIPLEO_TEST test run"
-trap "get_state_from_hosts" EXIT
+trap "cleanup" EXIT
 devtest_seed.sh $TRIPLEO_DEBUG
 export no_proxy=${no_proxy:-},192.0.2.1
 source $TRIPLEO_ROOT/tripleo-incubator/seedrc
