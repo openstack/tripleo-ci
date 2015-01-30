@@ -39,6 +39,8 @@ function temprevert(){
 
 # Add temporary reverts here e.g.
 # temprevert <projectname> <commit-hash-to-revert> <bugnumber>
+# https://review.openstack.org/#/c/143054/
+temprevert nova 024ac74ffbc47239426fa95580851825d67dbe61 1416321
 
 TRIPLEO_DEBUG=${TRIPLEO_DEBUG:-}
 PRIV_SSH_KEY=$(OS_CONFIG_FILES=$TE_DATAFILE os-apply-config --key ssh-key --type raw)
