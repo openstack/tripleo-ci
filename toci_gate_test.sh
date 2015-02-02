@@ -59,8 +59,8 @@ sudo iptables -I INPUT -p tcp --dport 27410 -i eth1 -j ACCEPT
 DISTRIB_CODENAME=$(lsb_release -si)
 if [ $DISTRIB_CODENAME == 'Fedora' ]; then
     # TODO : This should read the ARCH of the test being targeted
-    FEDORA_IMAGE=$(wget -q http://dl.fedoraproject.org/pub/fedora/linux/updates/20/Images/i386/ -O - | grep -o -E 'href="([^"#]+qcow2)"' | cut -d'"' -f2)
-    wget --progress=dot:mega http://dl.fedoraproject.org/pub/fedora/linux/updates/20/Images/i386/$FEDORA_IMAGE
+    FEDORA_IMAGE=$(wget -q http://dl.fedoraproject.org/pub/fedora/linux/updates/20/Images/x86_64/ -O - | grep -o -E 'href="([^"#]+qcow2)"' | cut -d'"' -f2)
+    wget --progress=dot:mega http://dl.fedoraproject.org/pub/fedora/linux/updates/20/Images/x86_64/$FEDORA_IMAGE
     export DIB_LOCAL_IMAGE=$PWD/$FEDORA_IMAGE
 fi
 
