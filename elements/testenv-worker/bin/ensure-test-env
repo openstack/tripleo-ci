@@ -27,7 +27,8 @@ DATAFILE=/etc/test_env_${NUM}.json
 trap 'rm -f $DATAFILE' ERR
 LOGFILE=/var/log/testenv-worker_${NUM}.log
 
-export NODE_ARCH=i386
+export NODE_ARCH=amd64
+export NODE_MEM=4096
 export OVERCLOUD_COMPUTESCALE=2 # Creates this + 2 nodes in testenv.
 devtest_testenv.sh $DATAFILE -n $NUM -b $OVSBRIDGE -s /root/.ssh/test_env_rsa
 
