@@ -41,6 +41,8 @@ function temprevert(){
 # temprevert <projectname> <commit-hash-to-revert> <bugnumber>
 # https://review.openstack.org/#/c/143054/
 temprevert nova 024ac74ffbc47239426fa95580851825d67dbe61 1416321
+# https://review.openstack.org/#/c/141148/
+temprevert ironic cb82dabdca5c37d9ac54e4c207a896a32f18525b 1417026
 
 TRIPLEO_DEBUG=${TRIPLEO_DEBUG:-}
 PRIV_SSH_KEY=$(OS_CONFIG_FILES=$TE_DATAFILE os-apply-config --key ssh-key --type raw)
