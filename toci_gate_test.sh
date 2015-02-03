@@ -41,6 +41,25 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
         f20)
             export USE_MERGEPY=0
             ;;
+        f20puppet)
+            export TRIPLEO_ROOT=/opt/stack/new/ #FIXME: also defined in toci_devtest
+            git clone git://git.openstack.org/openstack/tripleo-puppet-elements $TRIPLEO_ROOT/tripleo-puppet-elements
+            export ELEMENTS_PATH=$TRIPLEO_ROOT/tripleo-puppet-elements/elements:$TRIPLEO_ROOT/heat-templates/hot/software-config/elements:$TRIPLEO_ROOT/tripleo-image-elements/elements
+            export USE_MERGEPY=0
+            export DELOREAN_REPO_URL="http://209.132.178.33/repos/current"
+            export RDO_RELEASE=juno
+            export DIB_COMMON_ELEMENTS='stackuser os-net-config delorean-repo rdo-release'
+            export USE_MARIADB=0
+            export SEED_DIB_EXTRA_ARGS='rabbitmq-server mariadb-rpm'
+            export DIB_DEFAULT_INSTALLTYPE=package
+            BASE_PUPPET_ELEMENTS='hosts baremetal dhcp-all-interfaces os-collect-config heat-config-puppet puppet-modules hiera'
+            export OVERCLOUD_CONTROL_DIB_ELEMENTS=$BASE_PUPPET_ELEMENTS
+            export OVERCLOUD_CONTROL_DIB_EXTRA_ARGS='overcloud-controller'
+            export OVERCLOUD_COMPUTE_DIB_ELEMENTS=$BASE_PUPPET_ELEMENTS
+            export OVERCLOUD_COMPUTE_DIB_EXTRA_ARGS='overcloud-compute'
+            export RESOURCE_REGISTRY_PATH="$TRIPLEO_ROOT/tripleo-heat-templates/overcloud-resource-registry-puppet.yaml"
+            export DIB_INSTALLTYPE_puppet_modules=source
+            ;;
     esac
 done
 
