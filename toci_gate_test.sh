@@ -43,7 +43,11 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
             ;;
         f20puppet)
             export TRIPLEO_ROOT=/opt/stack/new/ #FIXME: also defined in toci_devtest
-            git clone git://git.openstack.org/openstack/tripleo-puppet-elements $TRIPLEO_ROOT/tripleo-puppet-elements
+            # FIXME: remove this once nodepool/scripts/prepare_tripleo.sh is
+            # updated
+            if [ ! -d $TRIPLEO_ROOT/tripleo-puppet-elements ]; then
+              git clone git://git.openstack.org/openstack/tripleo-puppet-elements $TRIPLEO_ROOT/tripleo-puppet-elements
+            fi
             export ELEMENTS_PATH=$TRIPLEO_ROOT/tripleo-puppet-elements/elements:$TRIPLEO_ROOT/heat-templates/hot/software-config/elements:$TRIPLEO_ROOT/tripleo-image-elements/elements
             export USE_MERGEPY=0
             export DELOREAN_REPO_URL="http://209.132.178.33/repos/current"
