@@ -50,7 +50,7 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
             fi
             export ELEMENTS_PATH=$TRIPLEO_ROOT/tripleo-puppet-elements/elements:$TRIPLEO_ROOT/heat-templates/hot/software-config/elements:$TRIPLEO_ROOT/tripleo-image-elements/elements
             export USE_MERGEPY=0
-            export DELOREAN_REPO_URL="http://209.132.178.33/repos/current"
+            export DELOREAN_REPO_URL="http://104.130.230.24/~fedora/repos/current"
             export RDO_RELEASE=juno
             export DIB_COMMON_ELEMENTS='stackuser os-net-config delorean-repo rdo-release'
             export USE_MARIADB=0
