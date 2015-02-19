@@ -39,11 +39,6 @@ function temprevert(){
 
 # Add temporary reverts here e.g.
 # temprevert <projectname> <commit-hash-to-revert> <bugnumber>
-temprevert heat 1e82f2c2c35155e0c441e2c57a7b7c9cca208fce 9999999
-
-# temprevert <projectname> <commit-hash-to-revert> <bugnumber>
-temprevert heat 14c7d1bd183f94f6304172ccb93216aeb8ac45bb 9999999
-
 # https://review.openstack.org/#/c/153729/
 temprevert neutron 9c9db24738161aef465489b320e6f54a94b4cac7 1423228
 
@@ -105,8 +100,6 @@ function cherrypick(){
 # cherrypick <projectname> <gerrit-refspec>
 # https://review.openstack.org/#/c/156853/
 cherrypick neutron refs/changes/53/156853/2
-# https://review.openstack.org/#/c/156960/
-cherrypick heat refs/changes/60/156960/1
 
 # Create a local pypi mirror of python packages that are being tested
 # TODO : Should probably split this out into a seperate file
