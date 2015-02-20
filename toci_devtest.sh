@@ -41,6 +41,9 @@ function temprevert(){
 # temprevert <projectname> <commit-hash-to-revert> <bugnumber>
 temprevert heat 1e82f2c2c35155e0c441e2c57a7b7c9cca208fce 9999999
 
+# temprevert <projectname> <commit-hash-to-revert> <bugnumber>
+temprevert heat 14c7d1bd183f94f6304172ccb93216aeb8ac45bb 9999999
+
 # https://review.openstack.org/#/c/153729/
 temprevert neutron 9c9db24738161aef465489b320e6f54a94b4cac7 1423228
 
