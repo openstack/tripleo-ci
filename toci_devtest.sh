@@ -56,8 +56,6 @@ function pin(){
 
 # Add temporary reverts here e.g.
 # temprevert <projectname> <commit-hash-to-revert> <bugnumber>
-# https://review.openstack.org/#/c/153729/
-temprevert neutron 9c9db24738161aef465489b320e6f54a94b4cac7 1423228
 
 TRIPLEO_DEBUG=${TRIPLEO_DEBUG:-}
 PRIV_SSH_KEY=$(OS_CONFIG_FILES=$TE_DATAFILE os-apply-config --key ssh-key --type raw)
