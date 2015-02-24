@@ -181,7 +181,7 @@ for PROJ in ${ZUUL_CHANGES//^/ } ; do
 
     # We're building pre-release packages but not all the tripleo pip installs
     # include --pre so giving them a fake release number
-    git tag -m 999.999.999 999.999.999
+    git tag -f -m 999.999.999 999.999.999
 
     # build and get the name of the package
     python setup.py sdist
