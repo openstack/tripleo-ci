@@ -42,6 +42,8 @@ function temprevert(){
 # https://review.openstack.org/#/c/153729/
 temprevert neutron 9c9db24738161aef465489b320e6f54a94b4cac7 1423228
 
+temprevert heat f6049539859da8f270defcc27e332eb668252fff 1425238
+
 TRIPLEO_DEBUG=${TRIPLEO_DEBUG:-}
 PRIV_SSH_KEY=$(OS_CONFIG_FILES=$TE_DATAFILE os-apply-config --key ssh-key --type raw)
 SEED_IP=$(OS_CONFIG_FILES=$TE_DATAFILE os-apply-config --key seed-ip --type netaddress --key-default '')
