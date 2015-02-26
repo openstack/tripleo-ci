@@ -59,11 +59,6 @@ function pin(){
 # https://review.openstack.org/#/c/153729/
 temprevert neutron 9c9db24738161aef465489b320e6f54a94b4cac7 1423228
 
-# Pin to a version of heat from before https://review.openstack.org/#/c/158545/
-# A temp revert no longer cleanly applies and another patch has been merged to
-# fix bug 1425238, but ci is still having heat related problems.
-pin heat 69a359976715fa885e0d9c9f1c6d1e40a40ad1db 1425238
-
 TRIPLEO_DEBUG=${TRIPLEO_DEBUG:-}
 PRIV_SSH_KEY=$(OS_CONFIG_FILES=$TE_DATAFILE os-apply-config --key ssh-key --type raw)
 SEED_IP=$(OS_CONFIG_FILES=$TE_DATAFILE os-apply-config --key seed-ip --type netaddress --key-default '')
