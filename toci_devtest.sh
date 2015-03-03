@@ -64,11 +64,6 @@ temprevert neutron 9c9db24738161aef465489b320e6f54a94b4cac7 1423228
 # fix bug 1425238, but ci is still having heat related problems.
 pin heat 69a359976715fa885e0d9c9f1c6d1e40a40ad1db 1425238
 
-# Test puppet-nova fix 
-# https://bugs.launchpad.net/tripleo/+bug/1427370
-export DIB_REPOLOCATION_puppet_nova=https://review.openstack.org/stackforge/puppet-nova
-export DIB_REPOREF_puppet_nova=refs/changes/64/160464/1
-
 TRIPLEO_DEBUG=${TRIPLEO_DEBUG:-}
 PRIV_SSH_KEY=$(OS_CONFIG_FILES=$TE_DATAFILE os-apply-config --key ssh-key --type raw)
 SEED_IP=$(OS_CONFIG_FILES=$TE_DATAFILE os-apply-config --key seed-ip --type netaddress --key-default '')
