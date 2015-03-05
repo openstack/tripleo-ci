@@ -24,6 +24,7 @@ export USE_CIRROS=${USE_CIRROS:-"1"}
 export USE_MERGEPY=${USE_MERGEPY:-1}
 export OVERCLOUD_CONTROLSCALE=${OVERCLOUD_CONTROLSCALE:-"1"}
 export TRIPLEO_DEBUG=${TRIPLEO_DEBUG:-""}
+export OVERCLOUD_STACK_TIMEOUT="35"
 
 # Switch defaults based on the job name
 for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
