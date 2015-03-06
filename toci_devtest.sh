@@ -113,8 +113,6 @@ function cherrypick(){
 
 # Add cherrypick's here e.g.
 # cherrypick <projectname> <gerrit-refspec>
-# https://review.openstack.org/#/c/156853/
-cherrypick neutron refs/changes/53/156853/2
 
 # Create a local pypi mirror of python packages that are being tested
 # TODO : Should probably split this out into a seperate file
