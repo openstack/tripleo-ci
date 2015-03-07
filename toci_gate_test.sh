@@ -40,9 +40,11 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
             export TRIPLEO_TEST=vlan
             ;;
         f20)
+            export DIB_RELEASE=20
             export USE_MERGEPY=0
             ;;
         f20puppet)
+            export DIB_RELEASE=20
             export TRIPLEO_ROOT=/opt/stack/new/ #FIXME: also defined in toci_devtest
             # FIXME: remove this once nodepool/scripts/prepare_tripleo.sh is
             # updated
@@ -83,8 +85,14 @@ sudo iptables -I INPUT -p tcp --dport 27410 -i eth1 -j ACCEPT
 DISTRIB_CODENAME=$(lsb_release -si)
 if [ $DISTRIB_CODENAME == 'Fedora' ]; then
     # TODO : This should read the ARCH of the test being targeted
-    FEDORA_IMAGE=$(wget -q http://dl.fedoraproject.org/pub/fedora/linux/updates/20/Images/x86_64/ -O - | grep -o -E 'href="([^"#]+qcow2)"' | cut -d'"' -f2)
-    wget --progress=dot:mega http://dl.fedoraproject.org/pub/fedora/linux/updates/20/Images/x86_64/$FEDORA_IMAGE
+    FEDORA_IMAGE=$(wget -q http://dl.fedoraproject.org/pub/fedora/linux/updates/$DIB_RELEASE/Images/x86_64/ -O - | grep -o -E 'href="([^"#]+qcow2)"' | cut -d'"' -f2)
+    if [ -n "$FEDORA_IMAGE" ]; then
+        wget --progress=dot:mega http://dl.fedoraproject.org/pub/fedora/linux/updates/$DIB_RELEASE/Images/x86_64/$FEDORA_IMAGE
+    else
+        # No Fedora update images are available. Use the release...
+        FEDORA_IMAGE=fedora-$DIB_RELEASE.x86_64.qcow2
+        wget --progress=dot:mega http://cloud.fedoraproject.org/$FEDORA_IMAGE
+    fi
     export DIB_LOCAL_IMAGE=$PWD/$FEDORA_IMAGE
 fi
 
