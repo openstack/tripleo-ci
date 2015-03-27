@@ -114,6 +114,7 @@ function cherrypick(){
 
 # Add cherrypick's here e.g.
 # cherrypick <projectname> <gerrit-refspec>
+cherrypick heat-templates refs/changes/28/168328/2
 
 # Create a local pypi mirror of python packages that are being tested
 # TODO : Should probably split this out into a seperate file
