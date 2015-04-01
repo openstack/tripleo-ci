@@ -297,7 +297,7 @@ function get_state_from_hosts(){
 
 function cleanup(){
     get_state_from_hosts || true
-    destroy_vms
+    destroy_vms &> $WORKSPACE/logs/destroy_vms.log
 }
 
 source $TRIPLEO_ROOT/tripleo-incubator/scripts/devtest_variables.sh
