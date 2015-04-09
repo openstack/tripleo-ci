@@ -50,6 +50,7 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
             export RDO_RELEASE=kilo
             export DIB_COMMON_ELEMENTS='stackuser os-net-config delorean-repo rdo-release'
             export USE_MARIADB=0
+            export ROOT_DISK=40
             export SEED_DIB_EXTRA_ARGS='rabbitmq-server mariadb-rpm'
             export DIB_DEFAULT_INSTALLTYPE=package
             BASE_PUPPET_ELEMENTS='hosts baremetal dhcp-all-interfaces os-collect-config heat-config-puppet puppet-modules hiera'
