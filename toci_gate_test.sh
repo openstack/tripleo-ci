@@ -40,7 +40,7 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
             export TRIPLEO_TEST=vlan
             ;;
         f20)
-            export DIB_RELEASE=20
+            export DIB_RELEASE=21
             ;;
         f20puppet)
             export DIB_RELEASE=21
