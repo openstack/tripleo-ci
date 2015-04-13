@@ -113,7 +113,6 @@ function cherrypick(){
 
 # Add cherrypick's here e.g.
 # cherrypick <projectname> <gerrit-refspec>
-cherrypick heat-templates refs/changes/28/168328/2
 # https://review.openstack.org/#/c/173236/
 # patch to fix the pin qemu-img on Fedora 21
 cherrypick tripleo-image-elements refs/changes/36/173236/1
