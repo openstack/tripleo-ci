@@ -21,7 +21,7 @@ fi
 export DIB_COMMON_ELEMENTS="common-venv stackuser"
 export TRIPLEO_TEST=${TRIPLEO_TEST:-"overcloud"}
 export USE_CIRROS=${USE_CIRROS:-"1"}
-export USE_MERGEPY=${USE_MERGEPY:-1}
+export USE_MERGEPY=${USE_MERGEPY:-0}
 export OVERCLOUD_CONTROLSCALE=${OVERCLOUD_CONTROLSCALE:-"1"}
 export TRIPLEO_DEBUG=${TRIPLEO_DEBUG:-""}
 export OVERCLOUD_STACK_TIMEOUT="35"
@@ -41,13 +41,11 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
             ;;
         f20)
             export DIB_RELEASE=20
-            export USE_MERGEPY=0
             ;;
         f20puppet)
             export DIB_RELEASE=21
             export TRIPLEO_ROOT=/opt/stack/new/ #FIXME: also defined in toci_devtest
             export ELEMENTS_PATH=$TRIPLEO_ROOT/tripleo-puppet-elements/elements:$TRIPLEO_ROOT/heat-templates/hot/software-config/elements:$TRIPLEO_ROOT/tripleo-image-elements/elements
-            export USE_MERGEPY=0
             export DELOREAN_REPO_URL="http://trunk.rdoproject.org/f21/ca/06/ca06d64d6131de1f3a8bfca87f0620b27c746976_657408d4"
             export RDO_RELEASE=kilo
             export DIB_COMMON_ELEMENTS='stackuser os-net-config delorean-repo rdo-release qemu-pinned'
@@ -61,6 +59,9 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
             export OVERCLOUD_COMPUTE_DIB_EXTRA_ARGS='overcloud-compute'
             export RESOURCE_REGISTRY_PATH="$TRIPLEO_ROOT/tripleo-heat-templates/overcloud-resource-registry-puppet.yaml"
             export DIB_INSTALLTYPE_puppet_modules=source
+            ;;
+        precise)
+            export USE_MERGEPY=1
             ;;
     esac
 done
