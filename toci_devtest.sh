@@ -256,7 +256,8 @@ function get_state_from_host(){
                 tar xJvf $WORKSPACE/logs/$1_logs.tar.xz -C $WORKSPACE/logs/$1_logs "var/log/audit/audit.log" --strip-components=3
             fi
             tar xJvf $WORKSPACE/logs/$1_logs.tar.xz -C $WORKSPACE/logs/$1_logs "var/log/journal/*/system.journal" --strip-components=4
-            for UNIT in $(journalctl --file $WORKSPACE/logs/$1_logs/system.journal -F _SYSTEMD_UNIT) ; do
+            # Filter out the 1000's of session-XXX.scope files
+            for UNIT in $(journalctl --file $WORKSPACE/logs/$1_logs/system.journal -F _SYSTEMD_UNIT | grep -v "session-.*scope") ; do
                 journalctl --file $WORKSPACE/logs/$1_logs/system.journal -u $UNIT > $WORKSPACE/logs/$1_logs/${UNIT/.service/.log}
             done
             rm -f $WORKSPACE/logs/$1_logs/system.journal
