@@ -119,6 +119,10 @@ cherrypick tripleo-image-elements refs/changes/36/173236/1
 #https://review.openstack.org/173014 (update packages first)
 cherrypick diskimage-builder refs/changes/14/173014/3
 
+# Pin to an earlier puppetlabs-concat
+# https://bugs.launchpad.net/tripleo/+bug/1444585
+export DIB_REPOREF_puppetlabs_concat=15ecb98dc3a551024b0b92c6aafdefe960a4596f
+
 # Create a local pypi mirror of python packages that are being tested
 # TODO : Should probably split this out into a seperate file
 export TRIPLEO_ROOT=/opt/stack/new/
