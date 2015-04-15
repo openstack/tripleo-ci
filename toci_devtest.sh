@@ -116,8 +116,6 @@ function cherrypick(){
 # https://review.openstack.org/#/c/173236/
 # patch to fix the pin qemu-img on Fedora 21
 cherrypick tripleo-image-elements refs/changes/36/173236/1
-#https://review.openstack.org/173014 (update packages first)
-cherrypick diskimage-builder refs/changes/14/173014/3
 
 # Create a local pypi mirror of python packages that are being tested
 # TODO : Should probably split this out into a seperate file
