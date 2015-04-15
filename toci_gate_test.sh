@@ -54,7 +54,7 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
             export USE_MARIADB=0
             export SEED_DIB_EXTRA_ARGS='rabbitmq-server mariadb-rpm'
             export DIB_DEFAULT_INSTALLTYPE=package
-            BASE_PUPPET_ELEMENTS='hosts baremetal dhcp-all-interfaces os-collect-config heat-config-puppet puppet-modules hiera'
+            BASE_PUPPET_ELEMENTS='hosts baremetal dhcp-all-interfaces os-collect-config heat-config-puppet heat-config-script puppet-modules hiera'
             export OVERCLOUD_CONTROL_DIB_ELEMENTS=$BASE_PUPPET_ELEMENTS
             export OVERCLOUD_CONTROL_DIB_EXTRA_ARGS='overcloud-controller'
             export OVERCLOUD_COMPUTE_DIB_ELEMENTS=$BASE_PUPPET_ELEMENTS
