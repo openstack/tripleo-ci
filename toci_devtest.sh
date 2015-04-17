@@ -116,8 +116,6 @@ function cherrypick(){
 # https://review.openstack.org/#/c/173236/
 # patch to fix the pin qemu-img on Fedora 21
 cherrypick tripleo-image-elements refs/changes/36/173236/1
-#https://review.openstack.org/173014 (update packages first)
-cherrypick diskimage-builder refs/changes/14/173014/3
 
 # Pin to an earlier puppetlabs-concat
 # https://bugs.launchpad.net/tripleo/+bug/1444585
