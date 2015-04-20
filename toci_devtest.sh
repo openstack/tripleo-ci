@@ -113,9 +113,6 @@ function cherrypick(){
 
 # Add cherrypick's here e.g.
 # cherrypick <projectname> <gerrit-refspec>
-# https://review.openstack.org/#/c/173236/
-# patch to fix the pin qemu-img on Fedora 21
-cherrypick tripleo-image-elements refs/changes/36/173236/1
 
 # Pin to an earlier puppetlabs-concat
 # https://bugs.launchpad.net/tripleo/+bug/1444585

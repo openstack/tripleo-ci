@@ -48,7 +48,7 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
             export ELEMENTS_PATH=$TRIPLEO_ROOT/tripleo-puppet-elements/elements:$TRIPLEO_ROOT/heat-templates/hot/software-config/elements:$TRIPLEO_ROOT/tripleo-image-elements/elements
             export DELOREAN_REPO_URL="http://trunk.rdoproject.org/f21/ca/06/ca06d64d6131de1f3a8bfca87f0620b27c746976_657408d4"
             export RDO_RELEASE=kilo
-            export DIB_COMMON_ELEMENTS='stackuser os-net-config delorean-repo rdo-release qemu-pinned'
+            export DIB_COMMON_ELEMENTS='stackuser os-net-config delorean-repo rdo-release'
             export USE_MARIADB=0
             export SEED_DIB_EXTRA_ARGS='rabbitmq-server mariadb-rpm'
             export DIB_DEFAULT_INSTALLTYPE=package
