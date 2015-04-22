@@ -35,6 +35,11 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
         ha)
             export OVERCLOUD_CONTROLSCALE=3
             export TRIPLEO_DEBUG=1
+            export OVERCLOUD_CUSTOM_HEAT_ENV=/opt/stack/new/overcloud-ha.yaml
+            cat >> $OVERCLOUD_CUSTOM_HEAT_ENV <<EOF_CAT
+parameters:
+  EnablePacemaker: true
+EOF_CAT
             ;;
         vlan)
             export TRIPLEO_TEST=vlan
