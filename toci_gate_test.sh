@@ -51,7 +51,7 @@ EOF_CAT
             export DIB_RELEASE=21
             export TRIPLEO_ROOT=/opt/stack/new/ #FIXME: also defined in toci_devtest
             export ELEMENTS_PATH=$TRIPLEO_ROOT/tripleo-puppet-elements/elements:$TRIPLEO_ROOT/heat-templates/hot/software-config/elements:$TRIPLEO_ROOT/tripleo-image-elements/elements
-            export DELOREAN_REPO_URL="http://trunk.rdoproject.org/f21/ca/06/ca06d64d6131de1f3a8bfca87f0620b27c746976_657408d4"
+            export DELOREAN_REPO_URL="http://trunk.rdoproject.org/f21/bf/59/bf59764b9a7f14c1f0223b28aa839142cfec3bf3_c3766014"
             export RDO_RELEASE=kilo
             export DIB_COMMON_ELEMENTS='stackuser os-net-config delorean-repo rdo-release'
             export USE_MARIADB=0
