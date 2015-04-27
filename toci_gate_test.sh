@@ -19,6 +19,7 @@ fi
 
 # tripleo ci default control variables
 export DIB_COMMON_ELEMENTS="common-venv stackuser"
+export DIB_CLOUD_INIT_ETC_HOSTS="localhost"
 export TRIPLEO_TEST=${TRIPLEO_TEST:-"overcloud"}
 export USE_CIRROS=${USE_CIRROS:-"1"}
 export USE_MERGEPY=${USE_MERGEPY:-0}
@@ -64,6 +65,7 @@ EOF_CAT
             export OVERCLOUD_COMPUTE_DIB_EXTRA_ARGS='overcloud-compute'
             export RESOURCE_REGISTRY_PATH="$TRIPLEO_ROOT/tripleo-heat-templates/overcloud-resource-registry-puppet.yaml"
             export DIB_INSTALLTYPE_puppet_modules=source
+            export DIB_CLOUD_INIT_ETC_HOSTS=""
             ;;
         precise)
             export USE_MERGEPY=1
