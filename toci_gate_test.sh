@@ -38,6 +38,10 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
             export TRIPLEO_DEBUG=1
             export OVERCLOUD_CUSTOM_HEAT_ENV=/opt/stack/new/overcloud-ha.yaml
             cat >> $OVERCLOUD_CUSTOM_HEAT_ENV <<EOF_CAT
+resource_registry:
+  OS::TripleO::ControllerConfig: puppet/controller-config-pacemaker.yaml
+
+# NOTE: the EnablePacemaker parameter will be deprecated in the future
 parameters:
   EnablePacemaker: true
 EOF_CAT
