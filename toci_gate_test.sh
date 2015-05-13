@@ -49,7 +49,7 @@ EOF_CAT
         vlan)
             export TRIPLEO_TEST=vlan
             ;;
-        f20)
+        f20|f21)
             export DIB_RELEASE=21
             ;;
         f20puppet)
