@@ -69,7 +69,7 @@ EOF_CAT
         f20|f21)
             export DIB_RELEASE=21
             ;;
-        f20puppet)
+        f20puppet|f21puppet)
             export DIB_RELEASE=21
             export TRIPLEO_ROOT=/opt/stack/new/ #FIXME: also defined in toci_devtest
             export ELEMENTS_PATH=$TRIPLEO_ROOT/tripleo-puppet-elements/elements:$TRIPLEO_ROOT/heat-templates/hot/software-config/elements:$TRIPLEO_ROOT/tripleo-image-elements/elements
