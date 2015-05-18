@@ -32,8 +32,8 @@ function temprevert(){
     fi
 
     pushd /opt/stack/new/$1
-    git revert --no-edit $2 || true
-    git reset --hard HEAD # Do this incase the revert fails (hopefully because its not needed)
+    # Abort on fail so  we're not left in a conflict state
+    git revert --no-edit $2 || git revert --abort
     popd
 }
 
@@ -109,7 +109,9 @@ function cherrypick(){
     local GIT_REPO_LOCATION="DIB_REPOLOCATION_${PROJ_NAME//[^A-Za-z0-9]/_}"
 
     pushd ${!GIT_REPO_LOCATION}
-    git fetch https://review.openstack.org/openstack/$PROJ_NAME "$REFSPEC" && git cherry-pick FETCH_HEAD || true
+    git fetch https://review.openstack.org/openstack/$PROJ_NAME "$REFSPEC"
+    # Abort on fail so  we're not left in a conflict state
+    git cherry-pick FETCH_HEAD || git cherry-pick --abort
     popd
 }
 
