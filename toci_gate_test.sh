@@ -78,18 +78,12 @@ EOF_CAT
             export DELOREAN_REPO_URL="http://trunk.rdoproject.org/f21/bf/59/bf59764b9a7f14c1f0223b28aa839142cfec3bf3_c3766014"
             export RDO_RELEASE=kilo
             export DIB_COMMON_ELEMENTS='stackuser os-net-config delorean-repo rdo-release'
-            export USE_MARIADB=0
             export ROOT_DISK=40
-            export SEED_DIB_EXTRA_ARGS='rabbitmq-server mariadb-rpm'
             export DIB_DEFAULT_INSTALLTYPE=package
-            BASE_PUPPET_ELEMENTS='hosts baremetal dhcp-all-interfaces os-collect-config heat-config-puppet heat-config-script puppet-modules hiera'
-            export OVERCLOUD_CONTROL_DIB_ELEMENTS=$BASE_PUPPET_ELEMENTS
-            export OVERCLOUD_CONTROL_DIB_EXTRA_ARGS='overcloud-controller'
-            export OVERCLOUD_COMPUTE_DIB_ELEMENTS=$BASE_PUPPET_ELEMENTS
-            export OVERCLOUD_COMPUTE_DIB_EXTRA_ARGS='overcloud-compute'
             export RESOURCE_REGISTRY_PATH="$TRIPLEO_ROOT/tripleo-heat-templates/overcloud-resource-registry-puppet.yaml"
             export DIB_INSTALLTYPE_puppet_modules=source
             export DIB_CLOUD_INIT_ETC_HOSTS=""
+            export OVERCLOUD_DISK_IMAGES_CONFIG=$TRIPLEO_ROOT/tripleo-incubator/scripts/overcloud_puppet_disk_images.yaml
             ;;
         precise)
             export USE_MERGEPY=1
