@@ -159,6 +159,10 @@ if [ -z "${ZUUL_CHANGES:-}" ] ; then
     ZUUL_CHANGES=$(find $TRIPLEO_ROOT -maxdepth 2 -type d -name .git -printf "%h ")
 fi
 
+# We have a local mirror and a bandersnatch mirror both serving over http so
+# we need to mark them as trusted hosts to tell pip its ok to not use https
+export PIP_TRUSTED_HOST="$PYPIMIRROR 127.0.0.1"
+
 mkdir -p $MIRROR_ROOT
 cd $MIRROR_ROOT
 # pip doesn't use the index from the extra index in order to query for case
