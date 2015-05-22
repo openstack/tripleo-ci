@@ -39,31 +39,10 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
             export OVERCLOUD_CONTROLSCALE=3
             export OVERCLOUD_STACK_TIMEOUT="90"
             export TRIPLEO_DEBUG=1
-            export OVERCLOUD_CUSTOM_HEAT_ENV=/opt/stack/new/tripleo-heat-templates/overcloud-ha.yaml
-            cat >> $OVERCLOUD_CUSTOM_HEAT_ENV <<EOF_CAT
-resource_registry:
-  OS::TripleO::ControllerConfig: puppet/controller-config-pacemaker.yaml
-
-# NOTE: the EnablePacemaker parameter will be deprecated in the future
-parameters:
-  EnablePacemaker: true
-EOF_CAT
+            export OVERCLOUD_CUSTOM_HEAT_ENV=/opt/stack/new/tripleo-heat-templates/environments/puppet-pacemaker.yaml
             ;;
         ceph)
-            export OVERCLOUD_CUSTOM_HEAT_ENV=/opt/stack/new/overcloud-ceph.yaml
-            cat >> $OVERCLOUD_CUSTOM_HEAT_ENV <<EOF_CAT
-parameters:
-  CephStorageCount: 1
-  GlanceBackend: rbd
-  CephStorageImage: overcloud-compute
-  CephClusterFSID: '4b5c8c0a-ff60-454b-a1b4-9747aa737d19'
-  CephMonKey: 'AQC+Ox1VmEr3BxAALZejqeHj50Nj6wJDvs96OQ=='
-  CephAdminKey: 'AQDLOh1VgEp6FRAAFzT7Zw+Y9V6JJExQAsRnRQ=='
-  NovaEnableRbdBackend: true
-  CinderEnableRbdBackend: true
-  CinderEnableIscsiBackend: false
-  ControllerEnableCephStorage: true
-EOF_CAT
+            export OVERCLOUD_CUSTOM_HEAT_ENV=/opt/stack/new/tripleo-heat-templates/environments/puppet-ceph-devel.yaml
             ;;
         vlan)
             export TRIPLEO_TEST=vlan
