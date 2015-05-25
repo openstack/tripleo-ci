@@ -121,6 +121,8 @@ function cherrypick(){
 # Pin to an earlier puppetlabs-concat
 # https://bugs.launchpad.net/tripleo/+bug/1444585
 export DIB_REPOREF_puppetlabs_concat=15ecb98dc3a551024b0b92c6aafdefe960a4596f
+# https://bugs.launchpad.net/tripleo/+bug/1458520
+export DIB_REPOREF_puppet_memcached=e0e9c024dc4ed6f049d68ad3f2cc3ee9666e7277
 
 # Create a local pypi mirror of python packages that are being tested
 # TODO : Should probably split this out into a seperate file
