@@ -238,6 +238,9 @@ function get_state_from_host(){
                  free -h;
                  dpkg -l || rpm -qa;
                  sudo os-collect-config --print;
+                 which pcs &> /dev/null && pcs status --full;
+                 which pcs &> /dev/null && pcs constraint show --full;
+                 which pcs &> /dev/null && pcs stonith show --full;
                ) 2>&1 | sudo dd of=/var/log/host_info.txt &> /dev/null;
                sudo XZ_OPT=-3 tar -cJf $REMOTE_FILENAME \
                  --exclude=udev/hwdb.bin \
