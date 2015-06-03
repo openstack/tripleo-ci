@@ -47,6 +47,7 @@ parameters:
 EOF
             ;;
         ceph)
+            export OVERCLOUD_STACK_TIMEOUT="90"
             export OVERCLOUD_CUSTOM_HEAT_ENV=/opt/stack/new/tripleo-heat-templates/environments/puppet-ceph-devel.yaml
             ;;
         vlan)
