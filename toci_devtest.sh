@@ -116,6 +116,9 @@ function cherrypick(){
 # Add cherrypick's here e.g.
 # cherrypick <projectname> <gerrit-refspec>
 
+# https://review.openstack.org/#/c/189745/
+cherrypick diskimage-builder refs/changes/45/189745/1
+
 # Pin to an earlier puppetlabs-concat
 # https://bugs.launchpad.net/tripleo/+bug/1444585
 export DIB_REPOREF_puppetlabs_concat=15ecb98dc3a551024b0b92c6aafdefe960a4596f
