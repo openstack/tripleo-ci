@@ -175,7 +175,7 @@ cd $MIRROR_ROOT
 # pip doesn't use the index from the extra index in order to query for case
 # mismatches, so any requirments with mismatches need to be pulled into
 # the local repo
-export PIP_INDEX_URL="http://$PYPIMIRROR/pypi/simple/"
+export PIP_INDEX_URL=https://pypi.python.org/simple/
 # markupsafe : Case incorrect in jinja2 (fixed upstream but not released)
 # pbr is required as .pydistutils.cfg doesn't support a extra-index-url
 # sysv-ipc   : The "-" is a "_" on pypi.o.o
@@ -190,7 +190,7 @@ done
 # Config for our CI pypi mirror
 export no_proxy=127.0.0.1,$PYPIMIRROR
 export PIP_INDEX_URL="http://127.0.0.1:8765/"
-export PIP_EXTRA_INDEX_URL="http://$PYPIMIRROR/pypi/simple/"
+export https://pypi.python.org/simple/
 
 # Start our http pypi mirror
 cd $MIRROR_ROOT
