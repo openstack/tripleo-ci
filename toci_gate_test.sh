@@ -90,6 +90,8 @@ sudo iptables -I INPUT -p tcp --dport 27410 -i eth1 -j ACCEPT
 # it for us.
 DISTRIB_CODENAME=$(lsb_release -si)
 if [ $DISTRIB_CODENAME == 'Fedora' ]; then
+    # Pin to a specific fedora mirror to avoid temporary Fedora infra problems
+    export DIB_DISTRIBUTION_MIRROR=http://dl.fedoraproject.org/pub/fedora/linux
     # TODO : This should read the ARCH of the test being targeted
     FEDORA_IMAGE=$(wget -q http://dl.fedoraproject.org/pub/fedora/linux/updates/$DIB_RELEASE/Images/x86_64/ -O - | grep -o -E 'href="([^"#]+qcow2)"' | cut -d'"' -f2)
     if [ -n "$FEDORA_IMAGE" ]; then
