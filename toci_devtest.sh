@@ -119,9 +119,6 @@ function cherrypick(){
 # Add cherrypick's here e.g.
 # cherrypick <projectname> <gerrit-refspec>
 
-# https://review.openstack.org/#/c/189745/
-cherrypick diskimage-builder refs/changes/45/189745/1
-
 # https://review.openstack.org/#/c/191536/
 cherrypick diskimage-builder refs/changes/36/191536/4
 
