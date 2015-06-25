@@ -8,6 +8,15 @@ sudo yum clean all
 # cd to toci directory so relative paths work (below and in toci_devtest.sh)
 cd $(dirname $0)
 
+# Switch to instack ci once we drop support for tripleo-incubator
+# we can drop the dual code path
+case $TOCI_JOBTYPE in
+    overcloud-f21-nonha)
+        ./toci_gate_test_instack.sh $@
+        exit 0
+        ;;
+esac
+
 # Once rh1 migrates to the 172.16.0.0/22 network we can remove the
 # 192.168.1.0/24 entries
 export http_proxy=http://192.168.1.100:3128/
