@@ -60,6 +60,9 @@ function pin(){
 #https://review.openstack.org/#/c/190622/
 temprevert nova 7f8128f87f5a2fa93c857295fb7e4163986eda25 1464239
 
+# https://review.openstack.org/#/c/195018/7
+temprevert heat d8f3ef910cbb39e6537a54dc31ad955442169f72 1471150
+
 TRIPLEO_DEBUG=${TRIPLEO_DEBUG:-}
 PRIV_SSH_KEY=$(OS_CONFIG_FILES=$TE_DATAFILE os-apply-config --key ssh-key --type raw)
 SEED_IP=$(OS_CONFIG_FILES=$TE_DATAFILE os-apply-config --key seed-ip --type netaddress --key-default '')
