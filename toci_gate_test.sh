@@ -39,7 +39,7 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
             export OVERCLOUD_CONTROLSCALE=3
             export OVERCLOUD_STACK_TIMEOUT="90"
             export TRIPLEO_DEBUG=1
-            export OVERCLOUD_CUSTOM_HEAT_ENV="/opt/stack/new/tripleo-heat-templates/environments/puppet-pacemaker.yaml /opt/stack/new/l3ha.yaml"
+            export OVERCLOUD_CUSTOM_HEAT_ENV="$OVERCLOUD_CUSTOM_HEAT_ENV /opt/stack/new/tripleo-heat-templates/environments/puppet-pacemaker.yaml /opt/stack/new/l3ha.yaml"
             cat >> /opt/stack/new/l3ha.yaml <<EOF
 parameters:
   NeutronL3HA: true
@@ -48,7 +48,7 @@ EOF
             ;;
         ceph)
             export OVERCLOUD_STACK_TIMEOUT="90"
-            export OVERCLOUD_CUSTOM_HEAT_ENV=/opt/stack/new/tripleo-heat-templates/environments/puppet-ceph-devel.yaml
+            export OVERCLOUD_CUSTOM_HEAT_ENV="$OVERCLOUD_CUSTOM_HEAT_ENV /opt/stack/new/tripleo-heat-templates/environments/puppet-ceph-devel.yaml"
             ;;
         vlan)
             export TRIPLEO_TEST=vlan
@@ -69,6 +69,7 @@ EOF
             export DIB_INSTALLTYPE_puppet_modules=source
             export DIB_CLOUD_INIT_ETC_HOSTS=""
             export OVERCLOUD_DISK_IMAGES_CONFIG=$TRIPLEO_ROOT/tripleo-incubator/scripts/overcloud_puppet_disk_images.yaml
+            export OVERCLOUD_CUSTOM_HEAT_ENV="$OVERCLOUD_CUSTOM_HEAT_ENV /opt/stack/new/tripleo-heat-templates/environments/mongodb-nojournal.yaml"
             ;;
         precise)
             export USE_MERGEPY=1
