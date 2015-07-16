@@ -194,6 +194,10 @@ cd $MIRROR_ROOT
 python -m SimpleHTTPServer 8765 1>$TRIPLEO_ROOT/pypi_mirror.log 2>$TRIPLEO_ROOT/pypi_mirror_error.log &
 sleep 2
 
+# Some projects are starting to use version specifiers that are only
+# understood by recent versions of pbr
+sudo pip install -U pbr
+
 # loop through each of the projects listed in ZUUL_CHANGES if it is a project we
 # typically pull in as a pip dependency then build it and add it to the mirror,
 # e.g. ZUUL_CHANGES=openstack/cinder:master:refs/changes/61/71461/4^opensta...
