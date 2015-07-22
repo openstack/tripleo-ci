@@ -57,9 +57,6 @@ function pin(){
 # Add temporary reverts here e.g.
 # temprevert <projectname> <commit-hash-to-revert> <bugnumber>
 
-#https://review.openstack.org/#/c/190622/
-temprevert nova 7f8128f87f5a2fa93c857295fb7e4163986eda25 1464239
-
 TRIPLEO_DEBUG=${TRIPLEO_DEBUG:-}
 PRIV_SSH_KEY=$(OS_CONFIG_FILES=$TE_DATAFILE os-apply-config --key ssh-key --type raw)
 SEED_IP=$(OS_CONFIG_FILES=$TE_DATAFILE os-apply-config --key seed-ip --type netaddress --key-default '')
@@ -118,6 +115,9 @@ function cherrypick(){
 
 # Add cherrypick's here e.g.
 # cherrypick <projectname> <gerrit-refspec>
+
+# https://review.openstack.org/#/c/205271/
+cherrypick nova refs/changes/71/205271/2
 
 # Pin to an earlier puppetlabs-concat
 # https://bugs.launchpad.net/tripleo/+bug/1444585
