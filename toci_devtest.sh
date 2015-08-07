@@ -123,6 +123,10 @@ function cherrypick(){
 # https://bugs.launchpad.net/tripleo/+bug/1444585
 export DIB_REPOREF_puppetlabs_concat=15ecb98dc3a551024b0b92c6aafdefe960a4596f
 
+# Avoid puppet-cinder lock_path patch: https://review.openstack.org/209216
+# Until the fix is merged: https://review.openstack.org/210350
+export DIB_REPOREF_puppet_cinder=aa63bf4d34e31f9e6115c93ca26c88c89b70d901
+
 # Create a local pypi mirror of python packages that are being tested
 # TODO : Should probably split this out into a seperate file
 export TRIPLEO_ROOT=/opt/stack/new/
