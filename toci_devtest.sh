@@ -187,7 +187,7 @@ done
 
 # Config for our CI pypi mirror
 export no_proxy=127.0.0.1,$PYPIMIRROR
-export PIP_INDEX_URL="http://127.0.0.1:8765/"
+#export PIP_INDEX_URL="http://127.0.0.1:8765/"
 #export PIP_EXTRA_INDEX_URL="http://$PYPIMIRROR/pypi/simple/"
 
 # Start our http pypi mirror
