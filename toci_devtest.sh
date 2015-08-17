@@ -56,6 +56,9 @@ function pin(){
 
 # Add temporary reverts here e.g.
 # temprevert <projectname> <commit-hash-to-revert> <bugnumber>
+# Pin to a working version of heat and neutron
+pin heat 1ac9e622675c1e167719906ddf38c32165aa31b7 1485956
+pin neutron 96d97aa03ea38ab37b59d675e3a430ab9f4f3630 1485956
 
 TRIPLEO_DEBUG=${TRIPLEO_DEBUG:-}
 PRIV_SSH_KEY=$(OS_CONFIG_FILES=$TE_DATAFILE os-apply-config --key ssh-key --type raw)
