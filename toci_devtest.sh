@@ -235,6 +235,10 @@ done
 function get_state_from_host(){
     local SSH_CMD
     SSH_OPTIONS='-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=Verbose -o PasswordAuthentication=no'
+    # Explicitly return error if we can't connect to the host, set -e would
+    # change the behaviour of code outside this function and may have adverse
+    # effects.
+    ssh ${SSH_OPTIONS} $2 echo OK || return 1
     TEMPDIR=$(ssh ${SSH_OPTIONS} $2 mktemp -d)
     REMOTE_FILENAME=$TEMPDIR/$1_logs.tar.xz
     MKTAR_CMD="( set -x;
@@ -316,7 +320,11 @@ function get_state_from_hosts(){
         for INSTANCE in $(nova list | grep ACTIVE | awk '{printf"%s=%s\n", $4, $12}') ; do
             IP=${INSTANCE//*=}
             NAME=${INSTANCE//=*}
-            get_state_from_host $NAME heat-admin@$IP &>> $WORKSPACE/logs/get_state_from_host.log || true
+            # TODO: Remove this loop once all the jobs are using the same version of heat and distro
+            for USER in heat-admin fedora ubuntu ; do
+                get_state_from_host $NAME $USER@$IP &>> $WORKSPACE/logs/get_state_from_host.log || continue
+                break
+            done
         done
     fi
 }
