@@ -2,6 +2,9 @@
 
 set -eu
 
+# Clean any cached yum metadata, it maybe stale
+sudo yum clean all
+
 # cd to toci directory so relative paths work (below and in toci_devtest.sh)
 cd $(dirname $0)
 
