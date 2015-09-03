@@ -226,6 +226,10 @@ echo "nameserver 8.8.8.8" > /etc/resolv.conf
 export http_proxy=$http_proxy
 export no_proxy=192.0.2.1,$MY_IP
 
+# Setting up nosync first to abolish time taken during disk io sync's
+yum install -y nosync
+echo /usr/lib64/nosync/nosync.so > /etc/ld.so.preload
+
 yum install -y --nogpg https://rdo.fedorapeople.org/openstack-kilo/rdo-release-kilo.rpm
 yum install -y yum-plugin-priorities
 
