@@ -23,7 +23,7 @@ EOF
 if [ -e ~/stackrc ] ; then
     source ~/stackrc
 
-    nova list
+    nova list | tee /tmp/nova-list.txt
     heat stack-show overcloud
     heat resource-list overcloud
     heat event-list overcloud
