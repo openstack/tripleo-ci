@@ -95,6 +95,8 @@ function postci(){
         find $TRIPLEO_ROOT/delorean/data/repos -name rpmbuild.log | XZ_OPT=-3 xargs tar -cJf $WORKSPACE/logs/delorean_repos.tar.xz
     fi
     if [ "${HOST_IP}" != "" ] ; then
+        # Generate extra state information from the running undercloud
+        ssh root@${SEED_IP} /tmp/get_host_info.sh
 
         # Get logs from the undercloud
         ssh root@${SEED_IP} sudo XZ_OPT=-3 tar -cJf - \
@@ -214,8 +216,9 @@ ssh $SSHOPTS root@${HOST_IP} virsh start seed_$ENV_NUM
 
 tripleo wait_for -d 5 -l 20 scp /etc/yum.repos.d/delorean* root@${SEED_IP}:/etc/yum.repos.d
 
-# copy in custom puppet env data
-scp $TRIPLEO_ROOT/puppet.env root@$SEED_IP:/tmp/
+# copy in required ci files
+cd $TRIPLEO_ROOT
+scp puppet.env tripleo-ci/scripts/get_host_info.sh root@$SEED_IP:/tmp/
 
 ssh $SSHOPTS root@${SEED_IP} <<-EOF
 
