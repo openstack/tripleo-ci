@@ -246,6 +246,9 @@ export no_proxy=192.0.2.1,$MY_IP
 # This sets all the DIB_.*puppet variables for undercloud and overcloud installation
 source /tmp/puppet.env
 
+# Disable installation of tuskar on the undercloud
+sudo sed -i -e 's/.*enable_tuskar.*/enable_tuskar = false/' /usr/share/instack-undercloud/undercloud.conf.sample
+
 openstack undercloud install
 
 source stackrc
