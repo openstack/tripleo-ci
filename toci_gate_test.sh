@@ -72,7 +72,7 @@ EOF
             export DIB_RELEASE=21
             export TRIPLEO_ROOT=/opt/stack/new/ #FIXME: also defined in toci_devtest
             export ELEMENTS_PATH=$TRIPLEO_ROOT/tripleo-puppet-elements/elements:$TRIPLEO_ROOT/heat-templates/hot/software-config/elements:$TRIPLEO_ROOT/tripleo-image-elements/elements
-            export DELOREAN_REPO_URL="http://trunk.rdoproject.org/f21/ba/d8/bad85a2b10274bbe22d626228eac32dbb3f82293_1bcc81bc"
+            export DELOREAN_REPO_URL="http://trunk.rdoproject.org/f21/df/03/df0377d64e1ef0b53c4e78a8ff6a50159de5131a_733f1417"
             export RDO_RELEASE=kilo
             export DIB_COMMON_ELEMENTS='stackuser os-net-config delorean-repo rdo-release'
             export ROOT_DISK=40

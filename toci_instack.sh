@@ -15,14 +15,16 @@ mkdir -p $WORKSPACE/logs
 
 # Add temporary reverts and cherrypick's here e.g.
 # temprevert <projectname> <commit-hash-to-revert> <bugnumber>
-temprevert puppet-heat b5f0f0de7469aa734a3d3ff005a819e03d6633ac 99999
-
 # pin <projectname> <commit-hash-to-pin-to> <bugnumber>
 # cherrypick <projectname> <gerrit-refspec>
 
 # https://review.openstack.org/#/c/221411/ Bug #1493442
 # Make puppet-glance work again on RedHat distros
 cherrypick puppet-glance refs/changes/11/221411/1
+
+# Disable horizon on the overcloud. Bug: #1492416
+cherrypick tripleo-heat-templates refs/changes/97/219697/2
+
 
 # ===== Start : Yum repository setup ====
 # Some repositories used here are not yet pulled into the openstack infrastructure
@@ -156,7 +158,7 @@ python -m SimpleHTTPServer 8766 1>$WORKSPACE/logs/yum_mirror.log 2>$WORKSPACE/lo
 # On top of the distro repositories we layer two othere
 # 1. A recent version of rdo trunk, we should eventually switch to /current
 # 2. Trunk packages we built above, this repo has highest priority
-sudo wget http://trunk.rdoproject.org/centos7/38/1c/381cac9139096bfef49952f3fd67e19451160b61_4bc2d731/delorean.repo -O /etc/yum.repos.d/delorean.repo
+sudo wget http://trunk.rdoproject.org/centos7/df/03/df0377d64e1ef0b53c4e78a8ff6a50159de5131a_733f1417/delorean.repo -O /etc/yum.repos.d/delorean.repo
 sudo wget http://$MY_IP:8766/current/delorean-ci.repo -O /etc/yum.repos.d/delorean-ci.repo
 
 # The repository we have just generated should get priority
