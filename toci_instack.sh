@@ -57,9 +57,7 @@ for PROJECT in diskimage-builder heat instack instack-undercloud ironic ironic-d
 done
 
 # prep delorean
-# "docker build" with 1.7.1-3 appears to be broken on F21
-sudo yum install -y https://kojipkgs.fedoraproject.org//packages/docker-io/1.6.2/3.el6/x86_64/docker-io-1.6.2-3.el6.x86_64.rpm \
-                    createrepo yum-plugin-priorities yum-utils
+sudo yum install -y docker-io createrepo yum-plugin-priorities yum-utils
 sudo systemctl start docker
 
 cd $TRIPLEO_ROOT/delorean
