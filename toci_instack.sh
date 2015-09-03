@@ -33,11 +33,6 @@ temprevert puppet-heat b5f0f0de7469aa734a3d3ff005a819e03d6633ac 99999
 [ -d $TRIPLEO_ROOT/tuskar-ui-extras ] || git clone https://github.com/rdo-management/tuskar-ui-extras $TRIPLEO_ROOT/tuskar-ui-extras
 [ -d $TRIPLEO_ROOT/python-ironic-inspector-client ] || git clone https://github.com/openstack/python-ironic-inspector-client $TRIPLEO_ROOT/python-ironic-inspector-client
 
-# patch from a different gerrit
-pushd $TRIPLEO_ROOT/python-rdomanager-oscplugin
-git fetch https://review.gerrithub.io/rdo-management/python-rdomanager-oscplugin refs/changes/12/243712/3 && git cherry-pick FETCH_HEAD
-popd
-
 # Now that we have setup all of our git repositories we need to build packages from them
 # If this is a job to test master of everything we get a list of all git repo's
 if [ -z "${ZUUL_CHANGES:-}" ] ; then
@@ -107,9 +102,9 @@ function postci(){
         for INSTANCE in $(ssh root@${SEED_IP} cat /tmp/nova-list.txt | grep ACTIVE | awk '{printf"%s=%s\n", $4, $12}') ; do
             IP=${INSTANCE//*=}
             NAME=${INSTANCE//=*}
-            ssh root@${SEED_IP} su stack -c \"scp $SSH_OPTIONS /tmp/get_host_info.sh centos@$IP:/tmp\"
-            ssh root@${SEED_IP} su stack -c \"ssh $SSH_OPTIONS centos@$IP sudo /tmp/get_host_info.sh\"
-            ssh root@${SEED_IP} su stack -c \"ssh $SSH_OPTIONS centos@$IP $TARCMD\" > $WORKSPACE/logs/${NAME}.tar.xz
+            ssh root@${SEED_IP} su stack -c \"scp $SSH_OPTIONS /tmp/get_host_info.sh heat-admin@$IP:/tmp\"
+            ssh root@${SEED_IP} su stack -c \"ssh $SSH_OPTIONS heat-admin@$IP sudo /tmp/get_host_info.sh\"
+            ssh root@${SEED_IP} su stack -c \"ssh $SSH_OPTIONS heat-admin@$IP $TARCMD\" > $WORKSPACE/logs/${NAME}.tar.xz
         done
         destroy_vms &> $WORKSPACE/logs/destroy_vms.log
     fi
