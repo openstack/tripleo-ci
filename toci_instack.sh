@@ -268,8 +268,8 @@ openstack undercloud install
 source stackrc
 
 # I'm removing most of the nodes in the env to speed up discovery
-# This could be in jq but I don't know how (leave 3)
-python -c 'import simplejson ; d = simplejson.loads(open("instackenv.json").read()) ; del d["nodes"][3:] ; print simplejson.dumps(d)' > instackenv_reduced.json
+# This could be in jq but I don't know how
+python -c 'import simplejson ; d = simplejson.loads(open("instackenv.json").read()) ; del d["nodes"][$NODECOUNT:] ; print simplejson.dumps(d)' > instackenv_reduced.json
 
 export DIB_YUM_REPO_CONF="/etc/yum.repos.d/delorean.repo /etc/yum.repos.d/delorean-ci.repo"
 
@@ -286,7 +286,7 @@ openstack baremetal configure boot
 openstack baremetal introspection bulk start
 openstack flavor create --id auto --ram 4096 --disk 40 --vcpus 1 baremetal
 openstack flavor set --property "cpu_arch"="x86_64" --property "capabilities:boot_option"="local" baremetal
-openstack overcloud deploy --templates
+openstack overcloud deploy --templates $DEPLOYFLAGS
 source ~/overcloudrc
 nova list
 

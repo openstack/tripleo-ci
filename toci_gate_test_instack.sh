@@ -8,10 +8,16 @@ export http_proxy=http://192.168.1.100:3128/
 export GEARDSERVER=192.168.1.1
 export PYPIMIRROR=192.168.1.101
 
+export NODECOUNT=2
+export DEPLOYFLAGS=
 # Switch defaults based on the job name
 for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
     case $JOB_TYPE_PART in
         overcloud)
+            ;;
+        ceph)
+            NODECOUNT=4
+            DEPLOYFLAGS="--ceph-storage-scale 2 -e /usr/share/openstack-tripleo-heat-templates/environments/puppet-ceph-devel.yaml"
             ;;
     esac
 done
