@@ -87,6 +87,8 @@ virtualenv venv
 ./venv/bin/python setup.py install
 
 # post ci chores to run at the end of ci
+SSH_OPTIONS='-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=Verbose -o PasswordAuthentication=no'
+TARCMD="sudo XZ_OPT=-3 tar -cJf - --exclude=udev/hwdb.bin --exclude=etc/services --exclude=selinux/targeted --exclude=etc/services --exclude=etc/pki /var/log /etc"
 function postci(){
     set +e
     if [ -e $TRIPLEO_ROOT/delorean/data/repos/ ] ; then
@@ -99,11 +101,16 @@ function postci(){
         ssh root@${SEED_IP} /tmp/get_host_info.sh
 
         # Get logs from the undercloud
-        ssh root@${SEED_IP} sudo XZ_OPT=-3 tar -cJf - \
-                 --exclude=udev/hwdb.bin --exclude=selinux/targeted \
-                 --exclude=etc/services --exclude=etc/pki \
-                 /var/log /etc > $WORKSPACE/logs/undercloud.tar.xz
+        ssh root@${SEED_IP} $TARCMD > $WORKSPACE/logs/undercloud.tar.xz
 
+        # when we ran get_host_info.sh on the undercloud it left the output of nova list in /tmp for us
+        for INSTANCE in $(ssh root@${SEED_IP} cat /tmp/nova-list.txt | grep ACTIVE | awk '{printf"%s=%s\n", $4, $12}') ; do
+            IP=${INSTANCE//*=}
+            NAME=${INSTANCE//=*}
+            ssh root@${SEED_IP} su stack -c \"scp $SSH_OPTIONS /tmp/get_host_info.sh centos@$IP:/tmp\"
+            ssh root@${SEED_IP} su stack -c \"ssh $SSH_OPTIONS centos@$IP sudo /tmp/get_host_info.sh\"
+            ssh root@${SEED_IP} su stack -c \"ssh $SSH_OPTIONS centos@$IP $TARCMD\" > $WORKSPACE/logs/${NAME}.tar.xz
+        done
         destroy_vms &> $WORKSPACE/logs/destroy_vms.log
     fi
     return 0
