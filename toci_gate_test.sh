@@ -105,6 +105,11 @@ DISTRIB_CODENAME=$(lsb_release -si)
 if [ $DISTRIB_CODENAME == 'Fedora' ]; then
     # Pin to a specific fedora mirror to avoid temporary Fedora infra problems
     export DIB_DISTRIBUTION_MIRROR=http://dl.fedoraproject.org/pub/fedora/linux
+
+    for FILE in /etc/yum.repos.d/fedora.repo /etc/yum.repos.d/fedora-updates.repo /etc/yum.repos.d/fedora-updates-testing.repo; do
+        sudo sed -e "s|^#baseurl=http://download.fedoraproject.org/pub/fedora/linux|baseurl=$DIB_DISTRIBUTION_MIRROR|;/^metalink/d" -i $FILE
+    done
+
     # TODO : This should read the ARCH of the test being targeted
     FEDORA_IMAGE=$(wget -q http://dl.fedoraproject.org/pub/fedora/linux/updates/$DIB_RELEASE/Images/x86_64/ -O - | grep -o -E 'href="([^"#]+qcow2)"' | cut -d'"' -f2)
     if [ -n "$FEDORA_IMAGE" ]; then
