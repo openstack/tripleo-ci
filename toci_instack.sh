@@ -50,7 +50,7 @@ ZUUL_CHANGES=${ZUUL_CHANGES//^/ }
 # everything else we are using whatever delorean repository we're using
 # Note: see BUILDPACKAGES in toci_functions it holds a list of projects
 # we are capable of building
-for PROJECT in diskimage-builder heat instack instack-undercloud ironic ironic-discoverd neutron os-cloud-config python-ironic-inspector-client python-rdomanager-oscplugin tripleo-common tripleo-heat-templates tripleo-image-elements tuskar-ui-extras ; do
+for PROJECT in diskimage-builder heat instack instack-undercloud ironic ironic-discoverd os-cloud-config python-ironic-inspector-client python-rdomanager-oscplugin tripleo-common tripleo-heat-templates tripleo-image-elements tuskar-ui-extras ; do
     if ! echo " $ZUUL_CHANGES " | grep " $PROJECT " ; then
         ZUUL_CHANGES="$ZUUL_CHANGES $PROJECT "
     fi
