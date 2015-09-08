@@ -16,8 +16,13 @@ mkdir -p $WORKSPACE/logs
 # Add temporary reverts and cherrypick's here e.g.
 # temprevert <projectname> <commit-hash-to-revert> <bugnumber>
 temprevert puppet-heat b5f0f0de7469aa734a3d3ff005a819e03d6633ac 99999
+
 # pin <projectname> <commit-hash-to-pin-to> <bugnumber>
 # cherrypick <projectname> <gerrit-refspec>
+
+# https://review.openstack.org/#/c/221411/ Bug #1493442
+# Make puppet-glance work again on RedHat distros
+cherrypick puppet-glance refs/changes/11/221411/1
 
 # ===== Start : Yum repository setup ====
 # Some repositories used here are not yet pulled into the openstack infrastructure
