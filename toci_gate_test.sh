@@ -11,7 +11,7 @@ cd $(dirname $0)
 # Switch to instack ci once we drop support for tripleo-incubator
 # we can drop the dual code path
 case $TOCI_JOBTYPE in
-    overcloud-f21-nonha|overcloud-f21puppet-ha|overcloud-f21puppet-ceph)
+    overcloud-f21-nonha|overcloud-f21puppet-ha|overcloud-f21puppet-ceph|overcloud-f21puppet-nonha)
         ./toci_gate_test_instack.sh $@
         exit 0
         ;;
