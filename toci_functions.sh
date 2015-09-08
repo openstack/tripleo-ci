@@ -53,6 +53,10 @@ function cherrypick(){
     # Abort on fail so  we're not left in a conflict state
     git cherry-pick FETCH_HEAD || git cherry-pick --abort
     popd
+
+    # Export a DIB_REPOREF variable as well
+    export DIB_REPOREF_${PROJ_NAME//-/_}=$REFSPEC
+
 }
 
 # echo's out a project name from a ref
