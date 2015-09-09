@@ -261,7 +261,8 @@ export no_proxy=192.0.2.1,$MY_IP
 source /tmp/puppet.env
 
 # Disable installation of tuskar on the undercloud
-sudo sed -i -e 's/.*enable_tuskar.*/enable_tuskar = false/' /usr/share/instack-undercloud/undercloud.conf.sample
+cp /usr/share/instack-undercloud/undercloud.conf.sample ~/undercloud.conf
+sudo sed -i -e 's/.*enable_tuskar.*/enable_tuskar = false/' ~/undercloud.conf
 
 openstack undercloud install
 
