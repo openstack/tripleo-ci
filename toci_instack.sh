@@ -32,7 +32,7 @@ temprevert heat f180cf9e1c106b58c52139a7c999794a7b2e7465 1494747
 # ===== Start : Yum repository setup ====
 # Some repositories used here are not yet pulled into the openstack infrastructure
 # Until this happens we have to grab them separately
-[ -d $TRIPLEO_ROOT/delorean ] || git clone https://github.com/openstack-packages/delorean.git $TRIPLEO_ROOT/delorean
+[ -d $TRIPLEO_ROOT/delorean ] || git clone https://github.com/derekhiggins/delorean.git --branch tripleo-edition $TRIPLEO_ROOT/delorean
 [ -d $TRIPLEO_ROOT/instack-undercloud ] || git clone https://git.openstack.org/openstack/instack-undercloud $TRIPLEO_ROOT/instack-undercloud
 [ -d $TRIPLEO_ROOT/instack ] || git clone https://git.openstack.org/openstack/instack $TRIPLEO_ROOT/instack
 [ -d $TRIPLEO_ROOT/python-tripleoclient ] || git clone https://git.openstack.org/openstack/python-tripleoclient $TRIPLEO_ROOT/python-tripleoclient
@@ -71,10 +71,6 @@ cd $TRIPLEO_ROOT/delorean
 sudo rm -rf data *.sqlite
 mkdir -p data
 
-# Delorean has changed the way it references its dependencies, until we figure
-# out how best to deal with the new delorean pin it.
-git reset --hard 1916092770b35c0b0b6e81b85dd4b41cdf0a293f
-
 sudo semanage fcontext -a -t svirt_sandbox_file_t "$TRIPLEO_ROOT/delorean/data(/.)?"
 sudo semanage fcontext -a -t svirt_sandbox_file_t "$TRIPLEO_ROOT/delorean/scripts(/.)?"
 sudo restorecon -R "$TRIPLEO_ROOT/delorean"
@@ -82,7 +78,15 @@ sudo restorecon -R "$TRIPLEO_ROOT/delorean"
 MY_IP=$(ip addr show dev eth1 | awk '/inet / {gsub("/.*", "") ; print $2}')
 
 sudo chown :$(id -g) /var/run/docker.sock
-./scripts/create_build_image.sh centos
+# Download a prebuilt build image instead of building on
+# Image built as usual then exported using "docker save delorean/centos > centos-$date-$x.tar"
+curl http://${PYPIMIRROR}/buildimages/centos-20150910-1.tar | docker load
+
+# We have a custom delorean that uses "docker exec" to reuse the same build
+# container for each package, so we need to start the build container now
+docker rm -f builder-centos || true
+docker run -d --volume=$PWD/data:/data --volume=$PWD/scripts:/scripts --env DELOREAN_DEV=1 \
+           --env http_proxy=http://192.168.1.100:3128/ --name builder-centos delorean/centos sleep infinity
 
 sed -i -e "s%target=.*%target=centos%" projects.ini
 sed -i -e "s%baseurl=.*%baseurl=http://$MY_IP:8766/%" projects.ini
@@ -149,7 +153,7 @@ for PROJ in $ZUUL_CHANGES ; do
     done
     popd
 
-    ./venv/bin/delorean --config-file projects.ini --head-only --package-name $MAPPED_PROJ --local --build-env DELOREAN_DEV=1 --build-env http_proxy=$http_proxy --info-repo rdoinfo
+    ./venv/bin/delorean --config-file projects.ini --head-only --package-name $MAPPED_PROJ --local --info-repo rdoinfo
 
 done
 
