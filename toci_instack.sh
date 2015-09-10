@@ -30,9 +30,9 @@ cherrypick tripleo-heat-templates refs/changes/97/219697/2
 # Some repositories used here are not yet pulled into the openstack infrastructure
 # Until this happens we have to grab them separately
 [ -d $TRIPLEO_ROOT/delorean ] || git clone https://github.com/openstack-packages/delorean.git $TRIPLEO_ROOT/delorean
-[ -d $TRIPLEO_ROOT/instack-undercloud ] || git clone https://github.com/rdo-management/instack-undercloud.git $TRIPLEO_ROOT/instack-undercloud
-[ -d $TRIPLEO_ROOT/instack ] || git clone https://github.com/rdo-management/instack.git $TRIPLEO_ROOT/instack
-[ -d $TRIPLEO_ROOT/python-rdomanager-oscplugin ] || git clone https://github.com/rdo-management/python-rdomanager-oscplugin.git $TRIPLEO_ROOT/python-rdomanager-oscplugin
+[ -d $TRIPLEO_ROOT/instack-undercloud ] || git clone https://git.openstack.org/openstack/instack-undercloud $TRIPLEO_ROOT/instack-undercloud
+[ -d $TRIPLEO_ROOT/instack ] || git clone https://git.openstack.org/openstack/instack $TRIPLEO_ROOT/instack
+[ -d $TRIPLEO_ROOT/python-tripleoclient ] || git clone https://git.openstack.org/openstack/python-tripleoclient $TRIPLEO_ROOT/python-tripleoclient
 [ -d $TRIPLEO_ROOT/tripleo-common ] || git clone https://git.openstack.org/openstack/tripleo-common $TRIPLEO_ROOT/tripleo-common
 [ -d $TRIPLEO_ROOT/tuskar ] || git clone https://git.openstack.org/openstack/tuskar $TRIPLEO_ROOT/tuskar
 [ -d $TRIPLEO_ROOT/python-tuskarclient ] || git clone https://git.openstack.org/openstack/python-tuskarclient $TRIPLEO_ROOT/python-tuskarclient
@@ -52,7 +52,7 @@ ZUUL_CHANGES=${ZUUL_CHANGES//^/ }
 # everything else we are using whatever delorean repository we're using
 # Note: see BUILDPACKAGES in toci_functions it holds a list of projects
 # we are capable of building
-for PROJECT in diskimage-builder heat instack instack-undercloud ironic ironic-discoverd os-cloud-config python-ironic-inspector-client python-rdomanager-oscplugin tripleo-common tripleo-heat-templates tripleo-image-elements tuskar-ui-extras ; do
+for PROJECT in diskimage-builder heat instack instack-undercloud ironic ironic-discoverd os-cloud-config python-ironic-inspector-client python-tripleoclient tripleo-common tripleo-heat-templates tripleo-image-elements tuskar-ui-extras ; do
     if ! echo " $ZUUL_CHANGES " | grep " $PROJECT " ; then
         ZUUL_CHANGES="$ZUUL_CHANGES $PROJECT "
     fi
@@ -245,7 +245,7 @@ echo /usr/lib64/nosync/nosync.so > /etc/ld.so.preload
 yum install -y --nogpg https://rdo.fedorapeople.org/openstack-kilo/rdo-release-kilo.rpm
 yum install -y yum-plugin-priorities
 
-yum install -y python-rdomanager-oscplugin
+yum install -y python-tripleoclient
 
 # We need python-ironic-inspector-client but the package conflicts with discovery client so install form pip until we have moved over to inspector completly
 yum install -y --nogpg python-pip
