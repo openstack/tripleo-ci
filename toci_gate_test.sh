@@ -27,7 +27,7 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
             # In ci our overcloud nodes don't have access to an external netwrok
             # --ntp-server is here to make the deploy command happy, the ci env
             # is on virt so the clocks should be in sync without it.
-            DEPLOYFLAGS="--control-scale 3 --ntp-server 0.centos.pool.ntp.org"
+            DEPLOYFLAGS="--control-scale 3 --ntp-server 0.centos.pool.ntp.org -e /usr/share/openstack-tripleo-heat-templates/environments/puppet-pacemaker.yaml"
             ;;
     esac
 done
