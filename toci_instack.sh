@@ -71,6 +71,10 @@ cd $TRIPLEO_ROOT/delorean
 sudo rm -rf data *.sqlite
 mkdir -p data
 
+# Delorean has changed the way it references its dependencies, until we figure
+# out how best to deal with the new delorean pin it.
+git reset --hard 1916092770b35c0b0b6e81b85dd4b41cdf0a293f
+
 sudo semanage fcontext -a -t svirt_sandbox_file_t "$TRIPLEO_ROOT/delorean/data(/.)?"
 sudo semanage fcontext -a -t svirt_sandbox_file_t "$TRIPLEO_ROOT/delorean/scripts(/.)?"
 sudo restorecon -R "$TRIPLEO_ROOT/delorean"
