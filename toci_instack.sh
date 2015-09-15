@@ -149,9 +149,6 @@ for PROJ in $ZUUL_CHANGES ; do
     done
     popd
 
-    # Try the delorean build twice, it too much fails on network blips
-    # TODO: make use of better mirrirs (or our own)
-    ./venv/bin/delorean --config-file projects.ini --head-only --package-name $MAPPED_PROJ --local --build-env DELOREAN_DEV=1 --build-env http_proxy=$http_proxy --info-repo rdoinfo || \
     ./venv/bin/delorean --config-file projects.ini --head-only --package-name $MAPPED_PROJ --local --build-env DELOREAN_DEV=1 --build-env http_proxy=$http_proxy --info-repo rdoinfo
 
 done
