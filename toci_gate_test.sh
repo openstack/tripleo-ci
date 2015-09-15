@@ -7,6 +7,10 @@ sudo yum clean all
 # cd to toci directory so relative paths work (below and in toci_devtest.sh)
 cd $(dirname $0)
 
+# Mirrors
+# This Fedora Mirror is in the same data center as our CI rack
+export FEDORA_MIRROR=http://dl.fedoraproject.org/pub/fedora/linux
+
 export http_proxy=http://192.168.1.100:3128/
 export GEARDSERVER=192.168.1.1
 export PYPIMIRROR=192.168.1.101
@@ -34,6 +38,9 @@ done
 
 # print the final values of control variables to console
 env | grep -E "(TOCI_JOBTYPE)="
+
+# Set the fedora mirror, this is more reliable then relying on the repolist returned by metalink
+sudo sed -i -e "s|^#baseurl=http://download.fedoraproject.org/pub/fedora/linux|baseurl=$FEDORA_MIRROR|;/^metalink/d" /etc/yum.repos.d/fedora*.repo
 
 # Allow the instack node to have traffic forwards through here
 sudo iptables -A FORWARD -i eth0 -o eth1 -m state --state RELATED,ESTABLISHED -j ACCEPT
