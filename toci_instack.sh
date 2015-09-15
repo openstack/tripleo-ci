@@ -209,10 +209,6 @@ function destroy_vms(){
 # TODO : Remove the need for this from instack-undercloud
 ls /home/jenkins/.ssh/id_rsa_virt_power || ssh-keygen -f /home/jenkins/.ssh/id_rsa_virt_power -P ""
 
-# TODO : Fix instack-undercloud so TE_DATAFILE can be absolute
-cp $TE_DATAFILE instackenv.json
-export TE_DATAFILE=instackenv.json
-
 export ANSWERSFILE=/usr/share/instack-undercloud/undercloud.conf.sample
 export UNDERCLOUD_VM_NAME=instack
 export ELEMENTS_PATH=/usr/share/instack-undercloud
