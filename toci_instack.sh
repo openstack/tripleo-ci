@@ -105,7 +105,7 @@ function postci(){
         # bit much for the log server, maybe when we are building less
         find $TRIPLEO_ROOT/delorean/data/repos -name rpmbuild.log | XZ_OPT=-3 xargs tar -cJf $WORKSPACE/logs/delorean_repos.tar.xz
     fi
-    if [ "${HOST_IP}" != "" ] ; then
+    if [ "${SEED_IP:-}" != "" ] ; then
         # Generate extra state information from the running undercloud
         ssh root@${SEED_IP} /tmp/get_host_info.sh
 
@@ -183,7 +183,6 @@ cd $TRIPLEO_ROOT
 sudo yum install -y diskimage-builder instack-undercloud os-apply-config
 
 PRIV_SSH_KEY=$(OS_CONFIG_FILES=$TE_DATAFILE os-apply-config --key ssh-key --type raw)
-SEED_IP=$(OS_CONFIG_FILES=$TE_DATAFILE os-apply-config --key seed-ip --type netaddress --key-default '')
 SSH_USER=$(OS_CONFIG_FILES=$TE_DATAFILE os-apply-config --key ssh-user --type username)
 HOST_IP=$(OS_CONFIG_FILES=$TE_DATAFILE os-apply-config --key host-ip --type netaddress)
 ENV_NUM=$(OS_CONFIG_FILES=$TE_DATAFILE os-apply-config --key env-num --type int)
@@ -230,6 +229,8 @@ destroy_vms
 dd if=$UNDERCLOUD_VM_NAME.qcow2 | ssh $SSHOPTS root@${HOST_IP} copyseed $ENV_NUM
 ssh $SSHOPTS root@${HOST_IP} virsh start seed_$ENV_NUM
 
+# Set SEED_IP here to prevent postci ssh'ing to the undercloud before its up and running
+SEED_IP=$(OS_CONFIG_FILES=$TE_DATAFILE os-apply-config --key seed-ip --type netaddress --key-default '')
 tripleo wait_for -d 5 -l 20 scp /etc/yum.repos.d/delorean* root@${SEED_IP}:/etc/yum.repos.d
 
 # copy in required ci files
