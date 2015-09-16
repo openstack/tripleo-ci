@@ -26,8 +26,7 @@ cherrypick puppet-glance refs/changes/11/221411/1
 cherrypick tripleo-heat-templates refs/changes/97/219697/2
 
 # ===== Start : Yum repository setup ====
-[ -d $TRIPLEO_ROOT/delorean ] || git clone https://github.com/derekhiggins/delorean.git --branch tripleo-edition $TRIPLEO_ROOT/delorean
-[ -d $TRIPLEO_ROOT/ironic-discoverd ] || git clone https://github.com/rdo-management/ironic-discoverd $TRIPLEO_ROOT/ironic-discoverd
+[ -d $TRIPLEO_ROOT/delorean ] || git clone https://github.com/openstack-packages/delorean.git $TRIPLEO_ROOT/delorean
 
 # Now that we have setup all of our git repositories we need to build packages from them
 # If this is a job to test master of everything we get a list of all git repo's
@@ -36,16 +35,6 @@ if [ -z "${ZUUL_CHANGES:-}" ] ; then
     ZUUL_CHANGES=$(find $TRIPLEO_ROOT -maxdepth 2 -type d -name .git -printf "%h ")
 fi
 ZUUL_CHANGES=${ZUUL_CHANGES//^/ }
-
-# We build a rpm for each of the projects in this list on every test, for
-# everything else we are using whatever delorean repository we're using
-# Note: see BUILDPACKAGES in toci_functions it holds a list of projects
-# we are capable of building
-for PROJECT in diskimage-builder heat instack instack-undercloud ironic ironic-discoverd os-cloud-config python-ironic-inspector-client python-tripleoclient tripleo-common tripleo-heat-templates tripleo-image-elements ; do
-    if ! echo " $ZUUL_CHANGES " | grep " $PROJECT " ; then
-        ZUUL_CHANGES="$ZUUL_CHANGES $PROJECT "
-    fi
-done
 
 # prep delorean
 # "docker build" with 1.7.1-3 appears to be broken on F21
@@ -71,11 +60,8 @@ curl http://${PYPIMIRROR}/buildimages/centos-20150910-1.tar | docker load
 # We have a custom delorean that uses "docker exec" to reuse the same build
 # container for each package, so we need to start the build container now
 docker rm -f builder-centos || true
-docker run -d --volume=$PWD/data:/data --volume=$PWD/scripts:/scripts --env DELOREAN_DEV=1 \
-           --env http_proxy=http://192.168.1.100:3128/ --name builder-centos delorean/centos sleep infinity
 
 sed -i -e "s%target=.*%target=centos%" projects.ini
-sed -i -e "s%baseurl=.*%baseurl=http://$MY_IP:8766/%" projects.ini
 sed -i -e "s%reponame=.*%reponame=delorean-ci%" projects.ini
 # Remove the rpm install test to speed up delorean (our ci test will to this)
 # TODO: and an option for this in delorean
@@ -123,6 +109,12 @@ trap "postci" EXIT
 for PROJ in $ZUUL_CHANGES ; do
 
     PROJ=$(filterref $PROJ)
+
+    # If ci is being run for a change to ci its ok not to have a ci repository
+    if [ "$PROJ" == "tripleo-ci" ] ; then
+        NO_CI_REPO_OK=1
+    fi
+
     buildpackage $PROJ || continue
 
     PROJDIR=$TRIPLEO_ROOT/$PROJ
@@ -139,9 +131,15 @@ for PROJ in $ZUUL_CHANGES ; do
     done
     popd
 
-    ./venv/bin/delorean --config-file projects.ini --head-only --package-name $MAPPED_PROJ --local --info-repo rdoinfo
-
+    ./venv/bin/delorean --config-file projects.ini --head-only --package-name $MAPPED_PROJ --local --build-env DELOREAN_DEV=1 --build-env http_proxy=$http_proxy --info-repo rdoinfo
 done
+
+# If this was a ci job for a change to ci then we do not have a ci repository (no packages to build)
+# Create a dummy repository file so ci can proceed as normal
+if [ "${NO_CI_REPO_OK:-}" == 1 ] ; then
+    mkdir -p data/repos/current
+    touch data/repos/current/delorean-ci.repo
+fi
 
 # kill the http server if its already running
 ps -ef | grep -i python | grep SimpleHTTPServer | awk '{print $2}' | xargs kill -9 || true
@@ -152,12 +150,25 @@ python -m SimpleHTTPServer 8766 1>$WORKSPACE/logs/yum_mirror.log 2>$WORKSPACE/lo
 # On top of the distro repositories we layer two othere
 # 1. A recent version of rdo trunk, we should eventually switch to /current
 # 2. Trunk packages we built above, this repo has highest priority
-sudo wget http://trunk.rdoproject.org/centos7/df/03/df0377d64e1ef0b53c4e78a8ff6a50159de5131a_733f1417/delorean.repo -O /etc/yum.repos.d/delorean.repo
+sudo rm -f /etc/yum.repos.d/*delorean*
+sudo wget http://trunk.rdoproject.org/centos7/8b/ef/8befab055f74ee9e701e333585defcc022ee32cf_2e30451e/delorean.repo -O /etc/yum.repos.d/delorean.repo
+sudo wget http://trunk.rdoproject.org/centos7/current/delorean.repo -O /etc/yum.repos.d/delorean-current.repo
 sudo wget http://$MY_IP:8766/current/delorean-ci.repo -O /etc/yum.repos.d/delorean-ci.repo
+# rewrite the baseurl in delorean-ci.repo as its currently pointing a http://trunk.rdoproject.org/..
+sudo sed -i -e "s%baseurl=.*%baseurl=http://$MY_IP:8766/current/%" /etc/yum.repos.d/delorean-ci.repo
 
 # The repository we have just generated should get priority
-sudo sed -i -e 's%priority=.*%priority=20%' /etc/yum.repos.d/delorean.repo
 sudo sed -i -e 's%priority=.*%priority=1%' /etc/yum.repos.d/delorean-ci.repo
+# Followed by delorean current (for a subset of packages)
+sudo sed -i -e 's%priority=.*%priority=10%' /etc/yum.repos.d/delorean-current.repo
+sudo sed -i 's/\[delorean\]/\[delorean-current\]/' /etc/yum.repos.d/delorean-current.repo
+sudo /bin/bash -c "cat <<EOF>>/etc/yum.repos.d/delorean-current.repo
+
+includepkgs=diskimage-builder,openstack-heat,instack,instack-undercloud,openstack-ironic,openstack-ironic-inspector,os-cloud-config,python-ironic-inspector-client,python-tripleoclient,tripleo-common,openstack-tripleo-heat-templates,openstack-tripleo-image-elements,openstack-tuskar-ui-extras,openstack-puppet-modules
+EOF"
+# Finally the pinned delorean repo has the lowest priority
+sudo sed -i -e 's%priority=.*%priority=20%' /etc/yum.repos.d/delorean.repo
+
 
 # Remove everything installed from a delorean repository (only requred if ci nodes are being reused)
 TOBEREMOVED=$(yumdb search from_repo "*delorean*" | grep -v -e from_repo -e "Loaded plugins" || true)
@@ -237,14 +248,12 @@ export no_proxy=192.0.2.1,$MY_IP
 yum install -y nosync
 echo /usr/lib64/nosync/nosync.so > /etc/ld.so.preload
 
-yum install -y --nogpg https://rdo.fedorapeople.org/openstack-kilo/rdo-release-kilo.rpm
+curl -o /etc/yum.repos.d/delorean-deps.repo http://trunk.rdoproject.org/centos7/delorean-deps.repo
+# Need to give delorean-deps a lower priority than everything else
+sudo sed -i -e 's%priority=.*%priority=30%' /etc/yum.repos.d/delorean-deps.repo
 yum install -y yum-plugin-priorities
 
 yum install -y python-tripleoclient
-
-# We need python-ironic-inspector-client but the package conflicts with discovery client so install form pip until we have moved over to inspector completly
-yum install -y --nogpg python-pip
-pip install python-ironic-inspector-client
 
 # From here down everything runs as the stack user
 dd of=/tmp/runasstack <<-EOS
@@ -252,7 +261,7 @@ dd of=/tmp/runasstack <<-EOS
 set -eux
 
 export http_proxy=$http_proxy
-export no_proxy=192.0.2.1,$MY_IP
+export no_proxy=192.0.2.1,$MY_IP,$SEED_IP
 
 # This sets all the DIB_.*puppet variables for undercloud and overcloud installation
 source /tmp/puppet.env
@@ -260,6 +269,7 @@ source /tmp/puppet.env
 # Disable installation of tuskar on the undercloud
 cp /usr/share/instack-undercloud/undercloud.conf.sample ~/undercloud.conf
 sudo sed -i -e 's/.*enable_tuskar.*/enable_tuskar = false/' ~/undercloud.conf
+sudo sed -i -e 's/.*enable_tempest.*/enable_tempest = false/' ~/undercloud.conf
 
 openstack undercloud install
 
@@ -269,8 +279,8 @@ source stackrc
 # This could be in jq but I don't know how
 python -c 'import simplejson ; d = simplejson.loads(open("instackenv.json").read()) ; del d["nodes"][$NODECOUNT:] ; print simplejson.dumps(d)' > instackenv_reduced.json
 
-export DIB_YUM_REPO_CONF="/etc/yum.repos.d/delorean.repo /etc/yum.repos.d/delorean-ci.repo"
 export DIB_DISTRIBUTION_MIRROR=$CENTOS_MIRROR
+export DIB_YUM_REPO_CONF="/etc/yum.repos.d/delorean.repo /etc/yum.repos.d/delorean-current.repo /etc/yum.repos.d/delorean-ci.repo /etc/yum.repos.d/delorean-deps.repo"
 
 # Ensure our ci repository is given priority over the others when building the image
 echo -e '#!/bin/bash\nyum install -y yum-plugin-priorities' | sudo tee /usr/share/diskimage-builder/elements/yum/pre-install.d/99-tmphacks
@@ -279,12 +289,21 @@ sudo chmod +x /usr/share/diskimage-builder/elements/yum/pre-install.d/99-tmphack
 # Directing the output of this command to a file as its extreemly verbose
 echo "INFO: Check /var/log/image_build.txt for image build output"
 openstack overcloud image build --all 2>&1 | sudo dd of=/var/log/image_build.txt
+# TODO: remove this when Image create in openstackclient supports the v2 API
+export OS_IMAGE_API_VERSION=1
 openstack overcloud image upload
 openstack baremetal import --json instackenv_reduced.json
 openstack baremetal configure boot
-openstack baremetal introspection bulk start
+
+# introspection is failing right now, so we will not run it
+# TODO(trown) add a non-voting job with introspection on to continue troubleshooting it
+# openstack baremetal introspection bulk start
+
+# it takes a bit for nova to update the hypervisor stats, so sleep for a bit to be safe
+sleep 60
+
 openstack flavor create --id auto --ram 4096 --disk 40 --vcpus 1 baremetal
-openstack flavor set --property "cpu_arch"="x86_64" --property "capabilities:boot_option"="local" baremetal
+openstack flavor set --property "capabilities:boot_option"="local" baremetal
 openstack overcloud deploy --templates $DEPLOYFLAGS
 source ~/overcloudrc
 nova list

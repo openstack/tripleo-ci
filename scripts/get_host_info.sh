@@ -27,4 +27,6 @@ if [ -e ~/stackrc ] ; then
     heat stack-show overcloud
     heat resource-list overcloud
     heat event-list overcloud
+    # useful to see what failed when puppet fails
+    for failed_deployment in $(heat resource-list --nested-depth 5 overcloud | grep FAILED | grep 'StructuredDeployment ' | cut -d '|' -f3); do heat deployment-show $failed_deployment; done;
 fi
