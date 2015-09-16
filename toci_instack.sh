@@ -213,6 +213,7 @@ export TE_DATAFILE=instackenv.json
 export ANSWERSFILE=/usr/share/instack-undercloud/undercloud.conf.sample
 export UNDERCLOUD_VM_NAME=instack
 export ELEMENTS_PATH=/usr/share/instack-undercloud
+export DIB_DISTRIBUTION_MIRROR=$CENTOS_MIRROR
 
 # create DIB environment for puppet variables
 echo "export DIB_INSTALLTYPE_puppet_modules=source" > $TRIPLEO_ROOT/puppet.env
@@ -279,6 +280,7 @@ source stackrc
 python -c 'import simplejson ; d = simplejson.loads(open("instackenv.json").read()) ; del d["nodes"][$NODECOUNT:] ; print simplejson.dumps(d)' > instackenv_reduced.json
 
 export DIB_YUM_REPO_CONF="/etc/yum.repos.d/delorean.repo /etc/yum.repos.d/delorean-ci.repo"
+export DIB_DISTRIBUTION_MIRROR=$CENTOS_MIRROR
 
 # Ensure our ci repository is given priority over the others when building the image
 echo -e '#!/bin/bash\nyum install -y yum-plugin-priorities' | sudo tee /usr/share/diskimage-builder/elements/yum/pre-install.d/99-tmphacks
