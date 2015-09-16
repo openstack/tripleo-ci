@@ -25,10 +25,6 @@ cherrypick puppet-glance refs/changes/11/221411/1
 # Disable horizon on the overcloud. Bug: #1492416
 cherrypick tripleo-heat-templates refs/changes/97/219697/2
 
-# Revert https://review.openstack.org/#/c/217753/ bug 1494747
-temprevert heat f180cf9e1c106b58c52139a7c999794a7b2e7465 1494747
-
-
 # ===== Start : Yum repository setup ====
 # Some repositories used here are not yet pulled into the openstack infrastructure
 # Until this happens we have to grab them separately
