@@ -26,18 +26,9 @@ cherrypick puppet-glance refs/changes/11/221411/1
 cherrypick tripleo-heat-templates refs/changes/97/219697/2
 
 # ===== Start : Yum repository setup ====
-# Some repositories used here are not yet pulled into the openstack infrastructure
-# Until this happens we have to grab them separately
 [ -d $TRIPLEO_ROOT/delorean ] || git clone https://github.com/derekhiggins/delorean.git --branch tripleo-edition $TRIPLEO_ROOT/delorean
-[ -d $TRIPLEO_ROOT/instack-undercloud ] || git clone https://git.openstack.org/openstack/instack-undercloud $TRIPLEO_ROOT/instack-undercloud
-[ -d $TRIPLEO_ROOT/instack ] || git clone https://git.openstack.org/openstack/instack $TRIPLEO_ROOT/instack
-[ -d $TRIPLEO_ROOT/python-tripleoclient ] || git clone https://git.openstack.org/openstack/python-tripleoclient $TRIPLEO_ROOT/python-tripleoclient
-[ -d $TRIPLEO_ROOT/tripleo-common ] || git clone https://git.openstack.org/openstack/tripleo-common $TRIPLEO_ROOT/tripleo-common
-[ -d $TRIPLEO_ROOT/tuskar ] || git clone https://git.openstack.org/openstack/tuskar $TRIPLEO_ROOT/tuskar
-[ -d $TRIPLEO_ROOT/python-tuskarclient ] || git clone https://git.openstack.org/openstack/python-tuskarclient $TRIPLEO_ROOT/python-tuskarclient
 [ -d $TRIPLEO_ROOT/ironic-discoverd ] || git clone https://github.com/rdo-management/ironic-discoverd $TRIPLEO_ROOT/ironic-discoverd
 [ -d $TRIPLEO_ROOT/tuskar-ui-extras ] || git clone https://github.com/rdo-management/tuskar-ui-extras $TRIPLEO_ROOT/tuskar-ui-extras
-[ -d $TRIPLEO_ROOT/python-ironic-inspector-client ] || git clone https://github.com/openstack/python-ironic-inspector-client $TRIPLEO_ROOT/python-ironic-inspector-client
 
 # Now that we have setup all of our git repositories we need to build packages from them
 # If this is a job to test master of everything we get a list of all git repo's
