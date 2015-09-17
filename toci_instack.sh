@@ -28,7 +28,6 @@ cherrypick tripleo-heat-templates refs/changes/97/219697/2
 # ===== Start : Yum repository setup ====
 [ -d $TRIPLEO_ROOT/delorean ] || git clone https://github.com/derekhiggins/delorean.git --branch tripleo-edition $TRIPLEO_ROOT/delorean
 [ -d $TRIPLEO_ROOT/ironic-discoverd ] || git clone https://github.com/rdo-management/ironic-discoverd $TRIPLEO_ROOT/ironic-discoverd
-[ -d $TRIPLEO_ROOT/tuskar-ui-extras ] || git clone https://github.com/rdo-management/tuskar-ui-extras $TRIPLEO_ROOT/tuskar-ui-extras
 
 # Now that we have setup all of our git repositories we need to build packages from them
 # If this is a job to test master of everything we get a list of all git repo's
@@ -42,7 +41,7 @@ ZUUL_CHANGES=${ZUUL_CHANGES//^/ }
 # everything else we are using whatever delorean repository we're using
 # Note: see BUILDPACKAGES in toci_functions it holds a list of projects
 # we are capable of building
-for PROJECT in diskimage-builder heat instack instack-undercloud ironic ironic-discoverd os-cloud-config python-ironic-inspector-client python-tripleoclient tripleo-common tripleo-heat-templates tripleo-image-elements tuskar-ui-extras ; do
+for PROJECT in diskimage-builder heat instack instack-undercloud ironic ironic-discoverd os-cloud-config python-ironic-inspector-client python-tripleoclient tripleo-common tripleo-heat-templates tripleo-image-elements ; do
     if ! echo " $ZUUL_CHANGES " | grep " $PROJECT " ; then
         ZUUL_CHANGES="$ZUUL_CHANGES $PROJECT "
     fi
