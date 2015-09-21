@@ -66,13 +66,3 @@ function filterref(){
     PROJ=${PROJ##*/}
     echo $PROJ
 }
-
-# This is the list of projects we are capable of testing master of
-# tripleo-ci should not be added to projects outside of this list without
-# ensuring we can build and use its packages in this test
-# NB. keep the leading and trailing spaces, keeps the matching simpler
-BUILDPACKAGES=" diskimage-builder heat instack instack-undercloud ironic ironic-discoverd neutron nova openstack-puppet-modules os-apply-config os-cloud-config os-collect-config os-refresh-config python-ironic-inspector-client python-tripleoclient python-tuskarclient tripleo-common tripleo-heat-templates tripleo-image-elements tuskar tuskar-ui-extras "
-function buildpackage(){
-    [[ "$BUILDPACKAGES" =~ " $1 "  ]] && return 0
-    return 1
-}
