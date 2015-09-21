@@ -12,6 +12,8 @@ cd $(dirname $0)
 export FEDORA_MIRROR=http://dl.fedoraproject.org/pub/fedora/linux
 # This Mirror has resonable latency and throughput to our rack
 export CENTOS_MIRROR=http://mirror.hmc.edu/centos
+# This EPEL Mirror is in the same data center as our CI rack
+export EPEL_MIRROR=http://dl.fedoraproject.org/pub/epel
 
 export http_proxy=http://192.168.1.100:3128/
 export GEARDSERVER=192.168.1.1

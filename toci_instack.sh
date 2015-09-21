@@ -55,7 +55,7 @@ MY_IP=$(ip addr show dev eth1 | awk '/inet / {gsub("/.*", "") ; print $2}')
 sudo chown :$(id -g) /var/run/docker.sock
 # Download a prebuilt build image instead of building on
 # Image built as usual then exported using "docker save delorean/centos > centos-$date-$x.tar"
-curl http://${PYPIMIRROR}/buildimages/centos-20150910-1.tar | docker load
+curl http://${PYPIMIRROR}/buildimages/centos-20150921-1.tar | docker load
 
 # We have a custom delorean that uses "docker exec" to reuse the same build
 # container for each package, so we need to start the build container now
@@ -215,6 +215,7 @@ export ANSWERSFILE=/usr/share/instack-undercloud/undercloud.conf.sample
 export UNDERCLOUD_VM_NAME=instack
 export ELEMENTS_PATH=/usr/share/instack-undercloud
 export DIB_DISTRIBUTION_MIRROR=$CENTOS_MIRROR
+export DIB_EPEL_MIRROR=$EPEL_MIRROR
 
 # create DIB environment for puppet variables
 echo "export DIB_INSTALLTYPE_puppet_modules=source" > $TRIPLEO_ROOT/puppet.env
