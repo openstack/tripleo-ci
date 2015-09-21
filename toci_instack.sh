@@ -208,11 +208,18 @@ export OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS"
 # Directing the output of this command to a file as its extreemly verbose
 echo "INFO: Check /var/log/image_build.txt for image build output"
 /tmp/tripleo.sh --overcloud-images | sudo dd of=/var/log/image_build.txt
+
 /tmp/tripleo.sh --register-nodes
 
-# Introspection currently disabled should be re-enabled by:
-# https://review.openstack.org/#/c/225934/
-# /tmp/tripleo.sh --introspect-nodes
+if [ $INTROSPECT == 1 ] ; then
+    # Lower the timeout for introspection to decrease failure time
+    # It should not take more than 10 minutes with IPA ramdisk and no extra collectors
+    sudo sed -i '2itimeout = 600' /etc/ironic-inspector/inspector.conf
+    sudo systemctl restart openstack-ironic-inspector
+    sleep 5
+
+   /tmp/tripleo.sh --introspect-nodes
+fi
 
 sleep 60
 /tmp/tripleo.sh --flavors
