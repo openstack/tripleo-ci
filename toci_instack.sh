@@ -120,12 +120,14 @@ for PROJ in $ZUUL_CHANGES ; do
     MAPPED_PROJ=$(./venv/bin/python scripts/map-project-name $PROJ || true)
     [ -e data/$MAPPED_PROJ ] && continue
     cp -r $TRIPLEO_ROOT/$PROJ data/$MAPPED_PROJ
-
-    # Delorean reads master so set it to be the same as ZUUL has given us
     pushd data/$MAPPED_PROJ
     GITHASH=$(git rev-parse HEAD)
-    git checkout -b master || git checkout master
-    git reset --hard $GITHASH
+
+    # Set the branches delorean reads to the same git hash as ZUUL has left for us
+    for BRANCH in master origin/master ; do
+        git checkout -b $BRANCH || git checkout $BRANCH
+        git reset --hard $GITHASH
+    done
     popd
 
     ./venv/bin/delorean --config-file projects.ini --head-only --package-name $MAPPED_PROJ --local --build-env DELOREAN_DEV=1 --build-env http_proxy=$http_proxy --info-repo rdoinfo
