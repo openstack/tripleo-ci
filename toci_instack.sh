@@ -109,7 +109,8 @@ for PROJ in $ZUUL_CHANGES ; do
     PROJ=$(filterref $PROJ)
 
     # If ci is being run for a change to ci its ok not to have a ci repository
-    if [ "$PROJ" == "tripleo-ci" ] ; then
+    # We also don't build packages for puppet repositories, we use them from source
+    if [ "$PROJ" == "tripleo-ci" ] || [[ "$PROJ" =~ puppet-* ]] ; then
         NO_CI_REPO_OK=1
     fi
 
