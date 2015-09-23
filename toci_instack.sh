@@ -306,6 +306,10 @@ sleep 60
 openstack flavor create --id auto --ram 4096 --disk 40 --vcpus 1 baremetal
 openstack flavor set --property "capabilities:boot_option"="local" baremetal
 openstack overcloud deploy --templates $DEPLOYFLAGS
+
+# Sanity test we deployed what we said we would
+[ "$NODECOUNT" != \\\$(nova list | grep ACTIVE | wc -l | cut -f1 -d " ") ] && echo "Wrong number of nodes deployed" && exit 1
+
 source ~/overcloudrc
 nova list
 
