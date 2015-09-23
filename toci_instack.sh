@@ -281,6 +281,7 @@ source stackrc
 python -c 'import simplejson ; d = simplejson.loads(open("instackenv.json").read()) ; del d["nodes"][$NODECOUNT:] ; print simplejson.dumps(d)' > instackenv_reduced.json
 
 export DIB_DISTRIBUTION_MIRROR=$CENTOS_MIRROR
+export DIB_EPEL_MIRROR=$EPEL_MIRROR
 export DIB_YUM_REPO_CONF="/etc/yum.repos.d/delorean.repo /etc/yum.repos.d/delorean-current.repo /etc/yum.repos.d/delorean-ci.repo /etc/yum.repos.d/delorean-deps.repo"
 
 # Ensure our ci repository is given priority over the others when building the image
