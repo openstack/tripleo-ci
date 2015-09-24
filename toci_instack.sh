@@ -104,14 +104,18 @@ trap "postci" EXIT
 # loop through each of the projects listed in ZUUL_CHANGES if it is a project we
 # are capable of building an rpm for then build it.
 # e.g. ZUUL_CHANGES=openstack/cinder:master:refs/changes/61/71461/4^opensta...
-for PROJ in $ZUUL_CHANGES ; do
+for PROJFULLREF in $ZUUL_CHANGES ; do
 
-    PROJ=$(filterref $PROJ)
+    PROJ=$(filterref $PROJFULLREF)
 
     # If ci is being run for a change to ci its ok not to have a ci repository
     # We also don't build packages for puppet repositories, we use them from source
     if [ "$PROJ" == "tripleo-ci" ] || [[ "$PROJ" =~ puppet-* ]] ; then
         NO_CI_REPO_OK=1
+        if [[ "$PROJ" =~ puppet-* ]] ; then
+            # openstack/puppet-nova:master:refs/changes/02/213102/5 -> refs/changes/02/213102/5
+            export DIB_REPOREF_${PROJ//-/_}=${PROJFULLREF##*:}
+        fi
     fi
 
     MAPPED_PROJ=$(./venv/bin/python scripts/map-project-name $PROJ || true)
