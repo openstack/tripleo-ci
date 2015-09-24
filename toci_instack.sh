@@ -114,10 +114,6 @@ for PROJ in $ZUUL_CHANGES ; do
         NO_CI_REPO_OK=1
     fi
 
-    buildpackage $PROJ || continue
-
-    PROJDIR=$TRIPLEO_ROOT/$PROJ
-
     MAPPED_PROJ=$(./venv/bin/python scripts/map-project-name $PROJ || true)
     [ -e data/$MAPPED_PROJ ] && continue
     cp -r $TRIPLEO_ROOT/$PROJ data/$MAPPED_PROJ
