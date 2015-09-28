@@ -15,3 +15,4 @@ Tools to help run CI jobs for TripleO. Includes things like:
   broker nodes.
 * Heat templates to help deploy and maintain test environment nodes
   using an undercloud.
+* Helper script(s) to generate CI status reports. (tox -ecireport -- -f)
