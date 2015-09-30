@@ -20,7 +20,7 @@ export GEARDSERVER=192.168.1.1
 export PYPIMIRROR=192.168.1.101
 
 export NODECOUNT=2
-export DEPLOYFLAGS=
+export OVERCLOUD_DEPLOY_ARGS=
 # Switch defaults based on the job name
 for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
     case $JOB_TYPE_PART in
@@ -28,14 +28,14 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
             ;;
         ceph)
             NODECOUNT=4
-            DEPLOYFLAGS="--ceph-storage-scale 2 -e /usr/share/openstack-tripleo-heat-templates/environments/puppet-ceph-devel.yaml"
+            OVERCLOUD_DEPLOY_ARGS="--ceph-storage-scale 2 -e /usr/share/openstack-tripleo-heat-templates/environments/puppet-ceph-devel.yaml"
             ;;
         ha)
             NODECOUNT=4
             # In ci our overcloud nodes don't have access to an external netwrok
             # --ntp-server is here to make the deploy command happy, the ci env
             # is on virt so the clocks should be in sync without it.
-            DEPLOYFLAGS="--control-scale 3 --ntp-server 0.centos.pool.ntp.org -e /usr/share/openstack-tripleo-heat-templates/environments/puppet-pacemaker.yaml"
+            OVERCLOUD_DEPLOY_ARGS="--control-scale 3 --ntp-server 0.centos.pool.ntp.org -e /usr/share/openstack-tripleo-heat-templates/environments/puppet-pacemaker.yaml"
             ;;
     esac
 done
