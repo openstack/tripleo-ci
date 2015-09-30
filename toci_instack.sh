@@ -243,7 +243,6 @@ source /tmp/puppet.env
 
 export http_proxy=$http_proxy
 export no_proxy=192.0.2.1,$MY_IP,$SEED_IP
-export DIB_DISTRIBUTION_MIRROR=$CENTOS_MIRROR
 export OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS"
 
 /tmp/tripleo.sh --undercloud
