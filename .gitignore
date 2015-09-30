@@ -1,4 +1,5 @@
-index.html
-result_cache.html
+tripleo-jobs.db
+tripleo-jobs.html
+tripleo-jobs.html-table
 *.swp
 *~

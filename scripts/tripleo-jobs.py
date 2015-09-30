@@ -34,7 +34,6 @@ class Job(Base):
     url = Column(String)
 
 job_names = [
-    'gate-tripleo-ironic-overcloud-f21-nonha',
     'gate-tripleo-ironic-overcloud-f21puppet-nonha',
     'gate-tripleo-ironic-overcloud-f21puppet-ha',
     'gate-tripleo-ironic-overcloud-f21puppet-ceph',
@@ -105,13 +104,13 @@ def get_data(stop_after):
             session.commit()
 
 
-def gen_html(html_file, stats_hours):
+def gen_html(html_file, table_file, stats_hours):
     refs_done = []
-    fp = open(html_file, "w")
-    fp.write('<html><head/><body><table border="1">')
-    fp.write("<tr><td/>")
+    fp = open(table_file, "w")
+    fp.write('<table border="1">')
+    fp.write("<tr class='headers'><td>&nbsp;</td>")
     for job_name in job_names:
-        fp.write("<td><b>%s</b></td>" % job_name.replace("gate-tripleo-ironic-", ""))
+        fp.write("<td class='headers'><b>%s</b></td>" % job_name.replace("gate-tripleo-ironic-", ""))
     fp.write("</tr>")
     count = 0
     for job in session.query(Job).order_by(desc(Job.dt)):
@@ -154,7 +153,10 @@ def gen_html(html_file, stats_hours):
 
                 job_columns += '</font><br/>'
             job_columns += "</td>"
-        fp.write("<tr><td>")
+        if (count % 2) == 1:
+            fp.write("<tr class='tr0'><td>")
+        else:
+            fp.write("<tr class='tr1'><td>")
         project = ""
         if job.zuul_project:
             project = job.zuul_project.split("/")[-1]
@@ -162,7 +164,13 @@ def gen_html(html_file, stats_hours):
                  % (this_gerrit_ref.replace(",", "/"), this_gerrit_ref, project))
         fp.write(job_columns)
         fp.write("</tr>")
-    fp.write("<table></body></html>")
+    fp.write("<table>")
+    fp.close()
+
+    with open(html_file, "w") as f:
+        f.write('<html><head/><body>')
+        f.write(open(table_file).read())
+        f.write("<table></body></html>")
 
 def parse_logs(logurl):
     if not os.path.isdir("./log"):
@@ -193,7 +201,7 @@ def main(args=sys.argv[1:]):
 
     if opts.f:
         get_data(opts.n)
-    gen_html(opts.o, 24)
+    gen_html(opts.o, "%s-table" % opts.o, 24)
 
 if __name__ == '__main__':
     exit(main())
