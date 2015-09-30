@@ -119,8 +119,8 @@ for PROJFULLREF in $ZUUL_CHANGES ; do
     fi
 
     # There is no tripleo-incubator package, so we need to translate the project name to tripleo
-    if [ "$PROJ" == "tripleo-incubator"] ; then
-        $PROJ = "tripleo"
+    if [ "$PROJ" == "tripleo-incubator" ] ; then
+        PROJ="tripleo"
     fi
 
     MAPPED_PROJ=$(./venv/bin/python scripts/map-project-name $PROJ || true)
