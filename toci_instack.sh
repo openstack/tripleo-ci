@@ -59,8 +59,9 @@ curl http://${PYPIMIRROR}/buildimages/centos-20150921-1.tar | docker load
 # container for each package, so we need to start the build container now
 docker rm -f builder-centos || true
 
-sed -i -e "s%target=.*%target=centos%" projects.ini
 sed -i -e "s%reponame=.*%reponame=delorean-ci%" projects.ini
+sed -i -e "s%target=.*%target=centos%" projects.ini
+sed -i -e "s%baseurl=.*%baseurl=https://trunk.rdoproject.org/centos7%" projects.ini
 # Remove the rpm install test to speed up delorean (our ci test will to this)
 # TODO: and an option for this in delorean
 sed -i -e 's%.*installed.*%touch $OUTPUT_DIRECTORY/installed%' scripts/build_rpm.sh
