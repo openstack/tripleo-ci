@@ -6,14 +6,14 @@ if [ ! -e "$TE_DATAFILE" ] ; then
     exit 1
 fi
 
-export PATH=/sbin:/usr/sbin:$PATH
-source toci_functions.sh
-
 export TRIPLEO_ROOT=/opt/stack/new
+export PATH=/sbin:/usr/sbin:$PATH
+
+source $TRIPLEO_ROOT/tripleo-common/scripts/common_functions.sh
+
 mkdir -p $WORKSPACE/logs
 
-# ===== Start : Yum repository setup ====
-[ -d $TRIPLEO_ROOT/delorean ] || git clone https://github.com/openstack-packages/delorean.git $TRIPLEO_ROOT/delorean
+MY_IP=$(ip addr show dev eth1 | awk '/inet / {gsub("/.*", "") ; print $2}')
 
 # Now that we have setup all of our git repositories we need to build packages from them
 # If this is a job to test master of everything we get a list of all git repo's
@@ -23,42 +23,8 @@ if [ -z "${ZUUL_CHANGES:-}" ] ; then
 fi
 ZUUL_CHANGES=${ZUUL_CHANGES//^/ }
 
-# prep delorean
-sudo yum install -y docker-io createrepo yum-plugin-priorities yum-utils
-sudo systemctl start docker
-
-cd $TRIPLEO_ROOT/delorean
-
-# Delorean upstream is using mock and we're not yet setup to use it
-# pin delorean while we have a chance to make the changes
-git reset --hard a35a58207e4004d202daa6fe4bed3cf03b7f8440
-
-sudo rm -rf data *.sqlite
-mkdir -p data
-
-sudo semanage fcontext -a -t svirt_sandbox_file_t "$TRIPLEO_ROOT/delorean/data(/.)?"
-sudo semanage fcontext -a -t svirt_sandbox_file_t "$TRIPLEO_ROOT/delorean/scripts(/.)?"
-sudo restorecon -R "$TRIPLEO_ROOT/delorean"
-
-MY_IP=$(ip addr show dev eth1 | awk '/inet / {gsub("/.*", "") ; print $2}')
-
-sudo chown :$(id -g) /var/run/docker.sock
-# Download a prebuilt build image instead of building one.
-# Image built as usual then exported using "docker save delorean/centos > centos-$date-$x.tar"
-curl http://${PYPIMIRROR}/buildimages/centos-20150921-1.tar | docker load
-
-docker rm -f builder-centos || true
-
-sed -i -e "s%reponame=.*%reponame=delorean-ci%" projects.ini
-sed -i -e "s%target=.*%target=centos%" projects.ini
-sed -i -e "s%baseurl=.*%baseurl=https://trunk.rdoproject.org/centos7%" projects.ini
-# Remove the rpm install test to speed up delorean (our ci test will to this)
-# TODO: and an option for this in delorean
-sed -i -e 's%.*installed.*%touch $OUTPUT_DIRECTORY/installed%' scripts/build_rpm.sh
-
-virtualenv venv
-./venv/bin/pip install -r requirements.txt
-./venv/bin/python setup.py install
+# Setup delorean
+$TRIPLEO_ROOT/tripleo-common/scripts/tripleo.sh --delorean-setup
 
 # post ci chores to run at the end of ci
 SSH_OPTIONS='-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=Verbose -o PasswordAuthentication=no'
@@ -91,50 +57,31 @@ function postci(){
 }
 trap "postci" EXIT
 
-# build packages
-# loop through each of the projects listed in ZUUL_CHANGES if it is a project we
-# are capable of building an rpm for then build it.
-# e.g. ZUUL_CHANGES=openstack/cinder:master:refs/changes/61/71461/4^opensta...
+DELOREAN_BUILD_REFS=
 for PROJFULLREF in $ZUUL_CHANGES ; do
-
     PROJ=$(filterref $PROJFULLREF)
-
-    # If ci is being run for a change to ci its ok not to have a ci repository
+    # If ci is being run for a change to ci its ok not to have a ci produced repository
     # We also don't build packages for puppet repositories, we use them from source
     if [ "$PROJ" == "tripleo-ci" ] || [[ "$PROJ" =~ puppet-* ]] ; then
-        NO_CI_REPO_OK=1
+        mkdir -p $TRIPLEO_ROOT/delorean/data/repos/current
+        touch $TRIPLEO_ROOT/delorean/data/repos/current/delorean-ci.repo
         if [[ "$PROJ" =~ puppet-* ]] ; then
             # openstack/puppet-nova:master:refs/changes/02/213102/5 -> refs/changes/02/213102/5
             export DIB_REPOREF_${PROJ//-/_}=${PROJFULLREF##*:}
         fi
+    else
+        DELOREAN_BUILD_REFS="$DELOREAN_BUILD_REFS $PROJ"
     fi
-
-    MAPPED_PROJ=$(./venv/bin/python scripts/map-project-name $PROJ || true)
-    [ -e data/$MAPPED_PROJ ] && continue
-    cp -r $TRIPLEO_ROOT/$PROJ data/$MAPPED_PROJ
-    pushd data/$MAPPED_PROJ
-    GITHASH=$(git rev-parse HEAD)
-
-    # Set the branches delorean reads to the same git hash as ZUUL has left for us
-    for BRANCH in master origin/master ; do
-        git checkout -b $BRANCH || git checkout $BRANCH
-        git reset --hard $GITHASH
-    done
-    popd
-
-    ./venv/bin/delorean --config-file projects.ini --head-only --package-name $MAPPED_PROJ --local --build-env DELOREAN_DEV=1 --build-env http_proxy=$http_proxy --info-repo rdoinfo
 done
 
-# If this was a ci job for a change to ci then we do not have a ci repository (no packages to build)
-# Create a dummy repository file so ci can proceed as normal
-if [ "${NO_CI_REPO_OK:-}" == 1 ] ; then
-    mkdir -p data/repos/current
-    touch data/repos/current/delorean-ci.repo
+# Build packages
+if [ -n "$DELOREAN_BUILD_REFS" ] ; then
+    $TRIPLEO_ROOT/tripleo-common/scripts/tripleo.sh --delorean-build $DELOREAN_BUILD_REFS
 fi
 
 # kill the http server if its already running
 ps -ef | grep -i python | grep SimpleHTTPServer | awk '{print $2}' | xargs kill -9 || true
-cd data/repos
+cd $TRIPLEO_ROOT/delorean/data/repos
 sudo iptables -I INPUT -p tcp --dport 8766 -i eth1 -j ACCEPT
 python -m SimpleHTTPServer 8766 1>$WORKSPACE/logs/yum_mirror.log 2>$WORKSPACE/logs/yum_mirror_error.log &
 
