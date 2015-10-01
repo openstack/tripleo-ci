@@ -139,7 +139,7 @@ sudo iptables -I INPUT -p tcp --dport 8766 -i eth1 -j ACCEPT
 python -m SimpleHTTPServer 8766 1>$WORKSPACE/logs/yum_mirror.log 2>$WORKSPACE/logs/yum_mirror_error.log &
 
 # Install all of the repositories we need
-sudo $TRIPLEO_ROOT/tripleo-common/scripts/tripleo.sh --repo-setup
+$TRIPLEO_ROOT/tripleo-common/scripts/tripleo.sh --repo-setup
 
 # Layer the ci repository on top of it
 sudo wget http://$MY_IP:8766/current/delorean-ci.repo -O /etc/yum.repos.d/delorean-ci.repo
