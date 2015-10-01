@@ -28,6 +28,11 @@ sudo yum install -y docker-io createrepo yum-plugin-priorities yum-utils
 sudo systemctl start docker
 
 cd $TRIPLEO_ROOT/delorean
+
+# Delorean upstream is using mock and we're not yet setup to use it
+# pin delorean while we have a chance to make the changes
+git reset --hard a35a58207e4004d202daa6fe4bed3cf03b7f8440
+
 sudo rm -rf data *.sqlite
 mkdir -p data
 
