@@ -33,6 +33,7 @@ class Job(Base):
     status = Column(String)
     url = Column(String)
 
+
 job_names = [
     'gate-tripleo-ironic-overcloud-f21puppet-nonha',
     'gate-tripleo-ironic-overcloud-f21puppet-ha',
@@ -42,7 +43,8 @@ job_names = [
 
 now = datetime.datetime.now()
 
-def get_data(stop_after):
+
+def get_data(session, stop_after):
     for jenkinsnumber in range(1, 8):
         jurl = 'https://jenkins%02d.openstack.org' % jenkinsnumber
         jrequester = Requester(None, None, baseurl=jurl, ssl_verify=False)
@@ -61,11 +63,11 @@ def get_data(stop_after):
             builds = job.get_build_dict().items()
             builds.sort()
             builds.reverse()
-            numhits = 0
             for buildnumber, buildurl in builds:
                 thisjob = session.query(Job).filter(Job.url == buildurl).all()
                 # these are finised no need to hit jenkins again
-                if thisjob and thisjob[0].status in ["SUCCESS","FAILURE","ABORTED"]:
+                if thisjob and thisjob[0].status in ["SUCCESS", "FAILURE",
+                                                     "ABORTED"]:
                     continue
                 time.sleep(.3)
                 print "Checking", buildurl
@@ -104,13 +106,14 @@ def get_data(stop_after):
             session.commit()
 
 
-def gen_html(html_file, table_file, stats_hours):
+def gen_html(session, html_file, table_file, stats_hours):
     refs_done = []
     fp = open(table_file, "w")
     fp.write('<table border="1">')
     fp.write("<tr class='headers'><td>&nbsp;</td>")
     for job_name in job_names:
-        fp.write("<td class='headers'><b>%s</b></td>" % job_name.replace("gate-tripleo-ironic-", ""))
+        fp.write("<td class='headers'><b>%s</b></td>" %
+                 job_name.replace("gate-tripleo-ironic-", ""))
     fp.write("</tr>")
     count = 0
     for job in session.query(Job).order_by(desc(Job.dt)):
@@ -122,7 +125,8 @@ def gen_html(html_file, table_file, stats_hours):
         count += 1
 
         job_columns = ""
-        # Don't need this in a few days 19/2/2015 (once jobs being reported are new format)
+        # Don't need this in a few days 19/2/2015
+        # (once jobs being reported are new format)
         this_gerrit_ref = job.gerrit_ref.split(" ")[-1]
         this_gerrit_num = this_gerrit_ref.split(",")[0]
         for job_name in job_names:
@@ -133,10 +137,13 @@ def gen_html(html_file, table_file, stats_hours):
                     order_by(desc(Job.dt)).all():
 
                 # For recent completed jobs get the logs
-                if job.status in ["SUCCESS","FAILURE","ABORTED"] and "ironic-undercloud" not in job.log_path:
+                if job.status in ["SUCCESS", "FAILURE", "ABORTED"] and \
+                        "ironic-undercloud" not in job.log_path:
                     td = now - job.dt
-                    if (td.seconds + (td.days*24*60*60)) < (stats_hours * (60*60)):
-                        parse_logs('http://logs.openstack.org/%s/console.html' % job.log_path)
+                    if ((td.seconds + (td.days*24*60*60)) <
+                            (stats_hours * (60*60))):
+                        parse_logs('http://logs.openstack.org/%s/console.html'
+                                   % job.log_path)
 
                 color = colors.get(job.status, "#999999")
                 job_columns += '<font color="%s">' % color
@@ -147,8 +154,18 @@ def gen_html(html_file, table_file, stats_hours):
                 job_columns += 'href="http://logs.openstack.org/%s">log</a>' %\
                                job.log_path
 
-                successes = len(session.query(Job).filter(Job.status == "SUCCESS").filter(Job.name == job_name).filter(Job.gerrit_ref.like("%s,%%" % (this_gerrit_num))).all())
-                failures = len(session.query(Job).filter(Job.status == "FAILURE").filter(Job.name == job_name).filter(Job.gerrit_ref.like("%s,%%" % (this_gerrit_num))).all())
+                successes = len(session.query(Job).
+                                filter(Job.status == "SUCCESS").
+                                filter(Job.name == job_name).
+                                filter(Job.gerrit_ref.like("%s,%%" %
+                                                           (this_gerrit_num))).
+                                all())
+                failures = len(session.query(Job).
+                               filter(Job.status == "FAILURE").
+                               filter(Job.name == job_name).
+                               filter(Job.gerrit_ref.like("%s,%%" %
+                                                          (this_gerrit_num))).
+                               all())
                 job_columns += ' %d/%d' % (successes, (successes+failures))
 
                 job_columns += '</font><br/>'
@@ -160,8 +177,10 @@ def gen_html(html_file, table_file, stats_hours):
         project = ""
         if job.zuul_project:
             project = job.zuul_project.split("/")[-1]
-        fp.write("<a href=\"https://review.openstack.org/#/c/%s\">%s %s</a></td>"
-                 % (this_gerrit_ref.replace(",", "/"), this_gerrit_ref, project))
+        fp.write("<a href=\"https://review.openstack.org/#/"
+                 "c/%s\">%s %s</a></td>"
+                 % (this_gerrit_ref.replace(",", "/"),
+                    this_gerrit_ref, project))
         fp.write(job_columns)
         fp.write("</tr>")
     fp.write("<table>")
@@ -172,12 +191,14 @@ def gen_html(html_file, table_file, stats_hours):
         f.write(open(table_file).read())
         f.write("<table></body></html>")
 
+
 def parse_logs(logurl):
     if not os.path.isdir("./log"):
         os.mkdir("./log")
     logfile = os.path.join("./log", logurl.replace("/", "_").replace(":", "_"))
     if not os.path.isfile(logfile):
         urllib.urlretrieve(logurl, logfile)
+
 
 def main(args=sys.argv[1:]):
     parser = argparse.ArgumentParser(
@@ -196,12 +217,11 @@ def main(args=sys.argv[1:]):
     engine = create_engine('sqlite:///%s' % opts.d)
     Base.metadata.create_all(engine)
     Session = sessionmaker(bind=engine)
-    global session
     session = Session()
 
     if opts.f:
-        get_data(opts.n)
-    gen_html(opts.o, "%s-table" % opts.o, 24)
+        get_data(session, opts.n)
+    gen_html(session, opts.o, "%s-table" % opts.o, 24)
 
 if __name__ == '__main__':
     exit(main())
