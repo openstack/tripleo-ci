@@ -109,7 +109,7 @@ def get_data(session, stop_after):
 def gen_html(session, html_file, table_file, stats_hours):
     refs_done = []
     fp = open(table_file, "w")
-    fp.write('<table border="1">')
+    fp.write('<table border="1" cellspacing="0">')
     fp.write("<tr class='headers'><td>&nbsp;</td>")
     for job_name in job_names:
         fp.write("<td class='headers'><b>%s</b></td>" %
