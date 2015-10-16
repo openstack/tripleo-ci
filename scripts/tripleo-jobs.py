@@ -35,9 +35,9 @@ class Job(Base):
 
 
 job_names = [
-    'gate-tripleo-ironic-overcloud-f21puppet-nonha',
-    'gate-tripleo-ironic-overcloud-f21puppet-ha',
-    'gate-tripleo-ironic-overcloud-f21puppet-ceph',
+    'gate-tripleo-ci-ironic-overcloud-f21puppet-nonha',
+    'gate-tripleo-ci-ironic-overcloud-f21puppet-ha',
+    'gate-tripleo-ci-ironic-overcloud-f21puppet-ceph',
 ]
 
 
