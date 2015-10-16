@@ -50,6 +50,7 @@ sudo sed -i -e "s|^#baseurl=http://download.fedoraproject.org/pub/fedora/linux|b
 sudo iptables -A FORWARD -i eth0 -o eth1 -m state --state RELATED,ESTABLISHED -j ACCEPT
 sudo iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
 sudo iptables -A FORWARD -i eth1 -o eth0 -j ACCEPT
+echo 1 | sudo dd of=/proc/sys/net/ipv4/ip_forward
 
 TIMEOUT_SECS=$((DEVSTACK_GATE_TIMEOUT*60))
 # ./testenv-client kill everything in its own process group it it hits a timeout
