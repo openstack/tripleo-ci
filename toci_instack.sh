@@ -62,10 +62,10 @@ for PROJFULLREF in $ZUUL_CHANGES ; do
     PROJ=$(filterref $PROJFULLREF)
     # If ci is being run for a change to ci its ok not to have a ci produced repository
     # We also don't build packages for puppet repositories, we use them from source
-    if [ "$PROJ" == "tripleo-ci" ] || [[ "$PROJ" =~ puppet-* ]] ; then
+    if [ "$PROJ" == "tripleo-ci" ] || [[ "$PROJ" =~ ^puppet-* ]] ; then
         mkdir -p $TRIPLEO_ROOT/delorean/data/repos/current
         touch $TRIPLEO_ROOT/delorean/data/repos/current/delorean-ci.repo
-        if [[ "$PROJ" =~ puppet-* ]] ; then
+        if [[ "$PROJ" =~ ^puppet-* ]] ; then
             # openstack/puppet-nova:master:refs/changes/02/213102/5 -> refs/changes/02/213102/5
             export DIB_REPOREF_${PROJ//-/_}=${PROJFULLREF##*:}
         fi
