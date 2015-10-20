@@ -147,8 +147,8 @@ done
 
 # Build and deploy our undercloud instance
 SSHOPTS="-o StrictHostKeyChecking=no -o PasswordAuthentication=no"
-disk-image-create --image-size 30 -a amd64 centos7 instack-vm -o $UNDERCLOUD_VM_NAME
 destroy_vms
+disk-image-create --image-size 30 -a amd64 centos7 instack-vm -o $UNDERCLOUD_VM_NAME
 dd if=$UNDERCLOUD_VM_NAME.qcow2 | ssh $SSHOPTS root@${HOST_IP} copyseed $ENV_NUM
 ssh $SSHOPTS root@${HOST_IP} virsh start seed_$ENV_NUM
 
