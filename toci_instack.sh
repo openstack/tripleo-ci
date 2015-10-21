@@ -76,10 +76,6 @@ for PROJFULLREF in $ZUUL_CHANGES ; do
     if [ "$PROJ" == "tripleo-ci" ] || [[ "$PROJ" =~ ^puppet-* ]] ; then
         mkdir -p $TRIPLEO_ROOT/delorean/data/repos/current
         touch $TRIPLEO_ROOT/delorean/data/repos/current/delorean-ci.repo
-        if [[ "$PROJ" =~ ^puppet-* ]] ; then
-            # openstack/puppet-nova:master:refs/changes/02/213102/5 -> refs/changes/02/213102/5
-            export DIB_REPOREF_${PROJ//-/_}=${PROJFULLREF##*:}
-        fi
     else
         DELOREAN_BUILD_REFS="$DELOREAN_BUILD_REFS $PROJ"
     fi
@@ -147,11 +143,16 @@ export ELEMENTS_PATH=/usr/share/instack-undercloud
 export DIB_DISTRIBUTION_MIRROR=$CENTOS_MIRROR
 export DIB_EPEL_MIRROR=$EPEL_MIRROR
 
-# create DIB environment for puppet variables
+# create DIB environment variables for all the puppet modules, $TRIPLEO_ROOT
+# has all of the openstack modules with the correct HEAD. Set the DIB_REPO*
+# variables so they are used (and not cloned from github)
 # Note DIB_INSTALLTYPE_puppet_modules is set in tripleo.sh
-touch $TRIPLEO_ROOT/puppet.env
-for X in $(env | grep DIB.*puppet); do
-    echo "export $X" >> $TRIPLEO_ROOT/puppet.env
+for PROJDIR in $TRIPLEO_ROOT/puppet-*; do
+    REV=$(git --git-dir=$PROJDIR/.git rev-parse HEAD)
+    X=${PROJDIR//-/_}
+    PROJ=${X##*/}
+    echo "export DIB_REPOREF_$PROJ=$REV" >> $TRIPLEO_ROOT/puppet.env
+    echo "export DIB_REPOLOCATION_$PROJ=$PROJDIR" >> $TRIPLEO_ROOT/puppet.env
 done
 
 # Build and deploy our undercloud instance
@@ -168,6 +169,8 @@ tripleo wait_for -d 5 -l 20 scp /etc/yum.repos.d/delorean* root@${SEED_IP}:/etc/
 # copy in required ci files
 cd $TRIPLEO_ROOT
 scp puppet.env tripleo-ci/scripts/get_host_info.sh $TRIPLEO_ROOT/tripleo-common/scripts/tripleo.sh root@$SEED_IP:/tmp/
+# Copy the puppet modules to the undercloud where we are building the images
+tar -czf - /opt/stack/new/puppet-*/.git | ssh root@$SEED_IP tar -C / -xzf -
 
 ssh $SSHOPTS root@${SEED_IP} <<-EOF
 
