@@ -57,9 +57,7 @@ function postci(){
 }
 trap "postci" EXIT
 
-# Force build of tripleo-puppet-elements to fix puppet-ceph git URL.
-# Drop this once we bump Delorean URL
-DELOREAN_BUILD_REFS="openstack/tripleo-puppet-elements"
+DELOREAN_BUILD_REFS=
 for PROJFULLREF in $ZUUL_CHANGES ; do
     PROJ=$(filterref $PROJFULLREF)
     # If ci is being run for a change to ci its ok not to have a ci produced repository
