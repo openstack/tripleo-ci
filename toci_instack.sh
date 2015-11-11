@@ -207,7 +207,7 @@ echo "INFO: Check /var/log/image_build.txt for image build output"
 
 sleep 60
 /tmp/tripleo.sh --flavors
-/tmp/tripleo.sh --overcloud-deploy
+/tmp/tripleo.sh --overcloud-deploy ${TRIPLEO_SH_ARGS:-}
 
 # Sanity test we deployed what we said we would
 source ~/stackrc

@@ -37,6 +37,9 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
             # is on virt so the clocks should be in sync without it.
             OVERCLOUD_DEPLOY_ARGS="--control-scale 3 --ntp-server 0.centos.pool.ntp.org -e /usr/share/openstack-tripleo-heat-templates/environments/puppet-pacemaker.yaml"
             ;;
+        containers)
+            TRIPLEO_SH_ARGS="--use-containers"
+            ;;
     esac
 done
 
