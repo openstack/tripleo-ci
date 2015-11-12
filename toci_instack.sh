@@ -23,6 +23,17 @@ if [ -z "${ZUUL_CHANGES:-}" ] ; then
 fi
 ZUUL_CHANGES=${ZUUL_CHANGES//^/ }
 
+# Periodic stable jobs set OVERRIDE_ZUUL_BRANCH, gate stable jobs
+# just have the branch they're proposed to, e.g ZUUL_BRANCH, in both
+# cases we need to set STABLE_RELEASE to match for tripleo.sh
+if [[ $ZUUL_BRANCH =~ ^stable/ ]]; then
+    export STABLE_RELEASE=${ZUUL_BRANCH#stable/}
+fi
+
+if [[ $OVERRIDE_ZUUL_BRANCH =~ ^stable/ ]]; then
+    export STABLE_RELEASE=${OVERRIDE_ZUUL_BRANCH#stable/}
+fi
+
 # Setup delorean
 $TRIPLEO_ROOT/tripleo-common/scripts/tripleo.sh --delorean-setup
 
