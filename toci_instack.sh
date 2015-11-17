@@ -148,7 +148,8 @@ export DIB_DISTRIBUTION_MIRROR=$CENTOS_MIRROR
 export DIB_EPEL_MIRROR=$EPEL_MIRROR
 
 # create DIB environment for puppet variables
-echo "export DIB_INSTALLTYPE_puppet_modules=source" > $TRIPLEO_ROOT/puppet.env
+# Note DIB_INSTALLTYPE_puppet_modules is set in tripleo.sh
+touch $TRIPLEO_ROOT/puppet.env
 for X in $(env | grep DIB.*puppet); do
     echo "export $X" >> $TRIPLEO_ROOT/puppet.env
 done
@@ -204,6 +205,7 @@ export http_proxy=$http_proxy
 export no_proxy=192.0.2.1,$MY_IP,$SEED_IP
 export OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS"
 
+export STABLE_RELEASE=${STABLE_RELEASE:-}
 /tmp/tripleo.sh --undercloud
 if [ $INTROSPECT == 1 ] ; then
     # Lower the timeout for introspection to decrease failure time
