@@ -205,6 +205,13 @@ export no_proxy=192.0.2.1,$MY_IP,$SEED_IP
 export OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS"
 
 /tmp/tripleo.sh --undercloud
+if [ $INTROSPECT == 1 ] ; then
+    # Lower the timeout for introspection to decrease failure time
+    # It should not take more than 10 minutes with IPA ramdisk and no extra collectors
+    sudo sed -i '2itimeout = 600' /etc/ironic-inspector/inspector.conf
+    sudo systemctl restart openstack-ironic-inspector
+fi
+
 # Directing the output of this command to a file as its extreemly verbose
 echo "INFO: Check /var/log/image_build.txt for image build output"
 /tmp/tripleo.sh --overcloud-images | sudo dd of=/var/log/image_build.txt
@@ -212,12 +219,6 @@ echo "INFO: Check /var/log/image_build.txt for image build output"
 /tmp/tripleo.sh --register-nodes
 
 if [ $INTROSPECT == 1 ] ; then
-    # Lower the timeout for introspection to decrease failure time
-    # It should not take more than 10 minutes with IPA ramdisk and no extra collectors
-    sudo sed -i '2itimeout = 600' /etc/ironic-inspector/inspector.conf
-    sudo systemctl restart openstack-ironic-inspector
-    sleep 5
-
    /tmp/tripleo.sh --introspect-nodes
 fi
 
