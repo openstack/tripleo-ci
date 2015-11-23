@@ -203,6 +203,7 @@ source /tmp/puppet.env
 export http_proxy=$http_proxy
 export no_proxy=192.0.2.1,$MY_IP,$SEED_IP
 export OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS"
+export TRIPLEO_SH_ARGS="$TRIPLEO_SH_ARGS"
 
 /tmp/tripleo.sh --undercloud
 if [ $INTROSPECT == 1 ] ; then
