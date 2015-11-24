@@ -81,7 +81,10 @@ for PROJFULLREF in $ZUUL_CHANGES ; do
             export DIB_REPOREF_${PROJ//-/_}=${PROJFULLREF##*:}
         fi
     else
-        DELOREAN_BUILD_REFS="$DELOREAN_BUILD_REFS $PROJ"
+        # Note we only add the project once for it to be built
+        if ! echo $DELOREAN_BUILD_REFS | egrep "( |^)$PROJ( |$)"; then
+            DELOREAN_BUILD_REFS="$DELOREAN_BUILD_REFS $PROJ"
+        fi
     fi
 done
 
