@@ -35,9 +35,9 @@ class Job(Base):
 
 
 job_names = [
-    'gate-tripleo-ci-f21-nonha',
-    'gate-tripleo-ci-f21-ha',
-    'gate-tripleo-ci-f21-ceph',
+    'gate-tripleo-ci-f22-nonha',
+    'gate-tripleo-ci-f22-ha',
+    'gate-tripleo-ci-f22-ceph',
 ]
 
 
