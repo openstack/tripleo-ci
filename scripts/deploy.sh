@@ -71,6 +71,11 @@ nova flavor-key baremetal set capabilities:boot_option=local
 export OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS -e /tmp/tripleo-ci/test-environments/worker-config.yaml"
 http_proxy= /tmp/tripleo-ci/scripts/tripleo.sh --overcloud-deploy ${TRIPLEO_SH_ARGS:-}
 
+if [ -n "${OVERCLOUD_UPDATE_ARGS:-}" ] ; then
+    export OVERCLOUD_UPDATE_ARGS="$OVERCLOUD_UPDATE_ARGS -e /tmp/tripleo-ci/test-environments/worker-config.yaml"
+    http_proxy= /tmp/tripleo-ci/scripts/tripleo.sh --overcloud-update ${TRIPLEO_SH_ARGS:-}
+fi
+
 # Sanity test we deployed what we said we would
 source ~/stackrc
 [ "$NODECOUNT" != $(nova list | grep ACTIVE | wc -l | cut -f1 -d " ") ] && echo "Wrong number of nodes deployed" && exit 1
