@@ -1,0 +1,54 @@
+#!/bin/bash
+
+# Helper script for downloading tripleo-ci logs, it then prompts the users for
+# file they want to download, unzips them into a tmp directory and changes into
+# the tmp directory, while in the tmp directory run "getthelogs" with no params
+# to download any log files you hadn't previously downloaded
+# Run it like this
+# getthelogs http://logs.openstack.org/68/237568/5/check-tripleo/gate-tripleo-ci-f22-ha/dd8f61d/
+
+set -eu
+
+BASEURL=$1
+TDIR=${BASEURL//\//}
+
+# We do not clean up this directory, so data doesn't need to be downloaded a second time
+# if the script is rerun again with the same url
+TDIR=~/tmp/ci-${TDIR//\//-}
+
+mkdir -p $TDIR
+cd $TDIR
+
+echo $BASEURL > BASEURL
+
+function _getfile(){
+    URL=$1
+    BASENAME=$(basename $1)
+
+    if [[ $BASENAME =~ .*(tar|console).* && ! -e $BASENAME ]] ; then
+        read -p "Want $BASENAME? " X
+        if [ "$X" = "y" ] ; then
+            curl -O $URL || curl -O ${URL}.gz
+            if [[ $BASENAME =~ .*(\.tar).* ]] ; then
+                mkdir ${BASENAME}_
+                tar -xf $BASENAME -C ${BASENAME}_
+            fi
+        fi
+    fi
+}
+
+FILES="$BASEURL/console.html"
+for FILE in $(curl $BASEURL/logs/ 2> /dev/null | grep href | sed -e 's/.*href="\([^"]*\)".*/\1/g' ) ; do
+    FILES="$FILES $BASEURL/logs/$FILE"
+done
+
+function getthelogs(){
+    for FILE in $FILES ; do
+        _getfile $FILE
+    done
+}
+getthelogs
+
+export FILES
+export -f getthelogs _getfile
+PS1="JOBLOGS ]\$  " bash
