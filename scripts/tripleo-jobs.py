@@ -5,7 +5,6 @@ import datetime
 import os
 import sys
 import time
-import urllib
 
 from jenkinsapi.jenkins import Jenkins
 from jenkinsapi.utils.requester import Requester
