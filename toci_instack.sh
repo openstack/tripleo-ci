@@ -172,7 +172,7 @@ tripleo wait_for -d 5 -l 20 scp /etc/yum.repos.d/delorean* root@${SEED_IP}:/etc/
 
 # copy in required ci files
 cd $TRIPLEO_ROOT
-scp puppet.env tripleo-ci/scripts/get_host_info.sh $TRIPLEO_ROOT/tripleo-common/scripts/tripleo.sh root@$SEED_IP:/tmp/
+scp -r puppet.env tripleo-ci/scripts/get_host_info.sh $TRIPLEO_ROOT/tripleo-common root@$SEED_IP:/tmp/
 # Copy the puppet modules to the undercloud where we are building the images
 tar -czf - /opt/stack/new/puppet-*/.git | ssh root@$SEED_IP tar -C / -xzf -
 
@@ -214,7 +214,7 @@ export OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS"
 export TRIPLEO_SH_ARGS="$TRIPLEO_SH_ARGS"
 
 export STABLE_RELEASE=${STABLE_RELEASE:-}
-/tmp/tripleo.sh --undercloud
+/tmp/tripleo-common/scripts/tripleo.sh --undercloud
 if [ $INTROSPECT == 1 ] ; then
     # Lower the timeout for introspection to decrease failure time
     # It should not take more than 10 minutes with IPA ramdisk and no extra collectors
@@ -226,23 +226,23 @@ fi
 export DIB_NO_TMPFS=1
 # Directing the output of this command to a file as its extreemly verbose
 echo "INFO: Check /var/log/image_build.txt for image build output"
-/tmp/tripleo.sh --overcloud-images | sudo dd of=/var/log/image_build.txt
+/tmp/tripleo-common/scripts/tripleo.sh --overcloud-images | sudo dd of=/var/log/image_build.txt
 
-/tmp/tripleo.sh --register-nodes
+/tmp/tripleo-common/scripts/tripleo.sh --register-nodes
 
 if [ $INTROSPECT == 1 ] ; then
-   /tmp/tripleo.sh --introspect-nodes
+   /tmp/tripleo-common/scripts/tripleo.sh --introspect-nodes
 fi
 
 sleep 60
-/tmp/tripleo.sh --overcloud-deploy ${TRIPLEO_SH_ARGS:-}
+/tmp/tripleo-common/scripts/tripleo.sh --overcloud-deploy ${TRIPLEO_SH_ARGS:-}
 
 # Sanity test we deployed what we said we would
 source ~/stackrc
 [ "$NODECOUNT" != \\\$(nova list | grep ACTIVE | wc -l | cut -f1 -d " ") ] && echo "Wrong number of nodes deployed" && exit 1
 
 source ~/overcloudrc
-nova list
+/tmp/tripleo-common/scripts/tripleo.sh --overcloud-pingtest
 
 EOS
 su -l -c "bash /tmp/runasstack" stack
