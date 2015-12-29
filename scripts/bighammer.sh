@@ -58,9 +58,9 @@ if !  nova image-list | grep $TEMPLATENAME ; then
 
         mkdir tmp
         sudo yum install -y git || sudo apt-get install -y git
-        git clone https://github.com/openstack-infra/config tmp/config
+        git clone https://git.openstack.org/openstack-infra/project-config tmp/config
 
-        sudo cp -r tmp/config/modules/openstack_project/files/nodepool/scripts /opt/nodepool-scripts
+        sudo cp -r tmp/config/nodepool/scripts /opt/nodepool-scripts
         sudo chmod -R a+rx /opt/nodepool-scripts
 
         cd /opt/nodepool-scripts
