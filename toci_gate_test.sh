@@ -46,6 +46,13 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
         containers)
             TRIPLEO_SH_ARGS="--use-containers"
             ;;
+        periodic)
+            export DELOREAN_REPO_URL=http://trunk.rdoproject.org/centos7/current
+            ;;
+        liberty)
+            # This is handled in tripleo.sh (it always uses centos7-liberty/current)
+            unset DELOREAN_REPO_URL
+            ;;
     esac
 done
 
