@@ -15,11 +15,12 @@ mkdir -p $WORKSPACE/logs
 
 MY_IP=$(ip addr show dev eth1 | awk '/inet / {gsub("/.*", "") ; print $2}')
 
-# Now that we have setup all of our git repositories we need to build packages from them
-# If this is a job to test master of everything we get a list of all git repo's
+# If we have no ZUUL_CHANGES then this is a periodic job, we wont be
+# building a ci repo, create a dummy one.
 if [ -z "${ZUUL_CHANGES:-}" ] ; then
-    echo "No change ids specified, building all projects in $TRIPLEO_ROOT"
-    ZUUL_CHANGES=$(find $TRIPLEO_ROOT -maxdepth 2 -type d -name .git -printf "%h ")
+    ZUUL_CHANGES=${ZUUL_CHANGES:-}
+    mkdir -p $TRIPLEO_ROOT/delorean/data/repos/current
+    touch $TRIPLEO_ROOT/delorean/data/repos/current/delorean-ci.repo
 fi
 ZUUL_CHANGES=${ZUUL_CHANGES//^/ }
 
