@@ -179,9 +179,9 @@ def gen_html(session, html_file, table_file, stats_hours):
         if job.zuul_project:
             project = job.zuul_project.split("/")[-1]
         fp.write("<a href=\"https://review.openstack.org/#/"
-                 "c/%s\">%s %s</a></td>"
+                 "c/%s\">%s</a> %s/%s</td>"
                  % (this_gerrit_ref.replace(",", "/"),
-                    this_gerrit_ref, project))
+                    this_gerrit_ref, project, job.zuul_ref.split("/")[-2]))
         fp.write(job_columns)
         fp.write("</tr>")
     fp.write("<table>")
