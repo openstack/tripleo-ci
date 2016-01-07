@@ -15,7 +15,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import desc
 
-colors = {"SUCCESS": "#0d941d", "FAILURE": "#FF0000", "ABORTED": "#000000"}
+colors = {"SUCCESS": "#008800", "FAILURE": "#FF0000", "ABORTED": "#000000"}
 Base = declarative_base()
 
 
@@ -146,7 +146,7 @@ def gen_html(session, html_file, table_file, stats_hours):
                         parse_logs('http://logs.openstack.org/%s/console.html'
                                    % job.log_path)
 
-                color = colors.get(job.status, "#999999")
+                color = colors.get(job.status, "#666666")
                 job_columns += '<font color="%s">' % color
                 job_columns += '<a STYLE="color : %s" href="%s">%s</a>' % \
                                (color, job.url, job.dt.strftime("%m-%d %H:%M"))
