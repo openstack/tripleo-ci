@@ -78,7 +78,10 @@ for PROJFULLREF in $ZUUL_CHANGES ; do
         mkdir -p $TRIPLEO_ROOT/delorean/data/repos/current
         touch $TRIPLEO_ROOT/delorean/data/repos/current/delorean-ci.repo
     else
-        DELOREAN_BUILD_REFS="$DELOREAN_BUILD_REFS $PROJ"
+        # Note we only add the project once for it to be built
+        if ! echo $DELOREAN_BUILD_REFS | egrep "( |^)$PROJ( |$)"; then
+            DELOREAN_BUILD_REFS="$DELOREAN_BUILD_REFS $PROJ"
+        fi
     fi
 done
 
