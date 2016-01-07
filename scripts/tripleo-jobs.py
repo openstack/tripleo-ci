@@ -137,15 +137,6 @@ def gen_html(session, html_file, table_file, stats_hours):
                     filter(Job.name == job_name).\
                     order_by(desc(Job.dt)).all():
 
-                # For recent completed jobs get the logs
-                if job.status in ["SUCCESS", "FAILURE", "ABORTED"] and \
-                        "ironic-undercloud" not in job.log_path:
-                    td = now - job.dt
-                    if ((td.seconds + (td.days*24*60*60)) <
-                            (stats_hours * (60*60))):
-                        parse_logs('http://logs.openstack.org/%s/console.html'
-                                   % job.log_path)
-
                 color = colors.get(job.status, "#666666")
                 job_columns += '<font color="%s">' % color
                 job_columns += '<a STYLE="color : %s" href="%s">%s</a>' % \
@@ -191,14 +182,6 @@ def gen_html(session, html_file, table_file, stats_hours):
         f.write('<html><head/><body>')
         f.write(open(table_file).read())
         f.write("<table></body></html>")
-
-
-def parse_logs(logurl):
-    if not os.path.isdir("./log"):
-        os.mkdir("./log")
-    logfile = os.path.join("./log", logurl.replace("/", "_").replace(":", "_"))
-    if not os.path.isfile(logfile):
-        urllib.urlretrieve(logurl, logfile)
 
 
 def main(args=sys.argv[1:]):
