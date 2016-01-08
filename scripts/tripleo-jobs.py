@@ -126,9 +126,7 @@ def gen_html(session, html_file, table_file, stats_hours):
         count += 1
 
         job_columns = ""
-        # Don't need this in a few days 19/2/2015
-        # (once jobs being reported are new format)
-        this_gerrit_ref = job.gerrit_ref.split(" ")[-1]
+        this_gerrit_ref = job.gerrit_ref
         this_gerrit_num = this_gerrit_ref.split(",")[0]
         for job_name in job_names:
             job_columns += "<td>"
