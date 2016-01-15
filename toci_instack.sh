@@ -243,11 +243,6 @@ source ~/stackrc
 source ~/overcloudrc
 nova list
 
-# Delete the deployed overcloud
-source ~/stackrc
-/tmp/tripleo.sh --overcloud-delete
-
-
 EOS
 su -l -c "bash /tmp/runasstack" stack
 EOF
