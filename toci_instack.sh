@@ -222,6 +222,8 @@ if [ $INTROSPECT == 1 ] ; then
     sudo systemctl restart openstack-ironic-inspector
 fi
 
+# Our ci underclouds don't have enough RAM to allow us to use a tmpfs
+export DIB_NO_TMPFS=1
 # Directing the output of this command to a file as its extreemly verbose
 echo "INFO: Check /var/log/image_build.txt for image build output"
 /tmp/tripleo.sh --overcloud-images | sudo dd of=/var/log/image_build.txt
