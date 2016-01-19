@@ -235,7 +235,6 @@ if [ $INTROSPECT == 1 ] ; then
 fi
 
 sleep 60
-/tmp/tripleo.sh --flavors || echo 'Flavor creation failed'
 /tmp/tripleo.sh --overcloud-deploy ${TRIPLEO_SH_ARGS:-}
 
 # Sanity test we deployed what we said we would
