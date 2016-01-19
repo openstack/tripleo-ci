@@ -39,7 +39,7 @@ fi
 $TRIPLEO_ROOT/tripleo-common/scripts/tripleo.sh --delorean-setup
 
 # post ci chores to run at the end of ci
-SSH_OPTIONS='-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=Verbose -o PasswordAuthentication=no'
+SSH_OPTIONS='-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=Verbose -o PasswordAuthentication=no -o ConnectionAttempts=32'
 TARCMD="sudo XZ_OPT=-3 tar -cJf - --exclude=udev/hwdb.bin --exclude=etc/services --exclude=selinux/targeted --exclude=etc/services --exclude=etc/pki /var/log /etc"
 function postci(){
     set +e
@@ -59,9 +59,9 @@ function postci(){
         for INSTANCE in $(ssh root@${SEED_IP} cat /tmp/nova-list.txt | grep ACTIVE | awk '{printf"%s=%s\n", $4, $12}') ; do
             IP=${INSTANCE//*=}
             NAME=${INSTANCE//=*}
-            ssh root@${SEED_IP} su stack -c \"scp $SSH_OPTIONS /tmp/get_host_info.sh heat-admin@$IP:/tmp\"
-            ssh root@${SEED_IP} su stack -c \"ssh $SSH_OPTIONS heat-admin@$IP sudo /tmp/get_host_info.sh\"
-            ssh root@${SEED_IP} su stack -c \"ssh $SSH_OPTIONS heat-admin@$IP $TARCMD\" > $WORKSPACE/logs/${NAME}.tar.xz
+            ssh $SSH_OPTIONS root@${SEED_IP} su stack -c \"scp $SSH_OPTIONS /tmp/get_host_info.sh heat-admin@$IP:/tmp\"
+            ssh $SSH_OPTIONS root@${SEED_IP} su stack -c \"ssh $SSH_OPTIONS heat-admin@$IP sudo /tmp/get_host_info.sh\"
+            ssh $SSH_OPTIONS root@${SEED_IP} su stack -c \"ssh $SSH_OPTIONS heat-admin@$IP $TARCMD\" > $WORKSPACE/logs/${NAME}.tar.xz
         done
         destroy_vms &> $WORKSPACE/logs/destroy_vms.log
     fi
@@ -132,9 +132,9 @@ cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
 # Kill any VM's in the test env that we may have started, freeing up RAM
 # for other tests running on the TE host.
 function destroy_vms(){
-    ssh $SSH_USER@$HOST_IP virsh destroy seed_${ENV_NUM} || true
+    ssh $SSH_OPTIONS $SSH_USER@$HOST_IP virsh destroy seed_${ENV_NUM} || true
     for i in $(seq 0 14) ; do
-        ssh $SSH_USER@$HOST_IP virsh destroy baremetalbrbm${ENV_NUM}_${i} || true
+        ssh $SSH_OPTIONS $SSH_USER@$HOST_IP virsh destroy baremetalbrbm${ENV_NUM}_${i} || true
     done
 }
 
@@ -160,23 +160,23 @@ for PROJDIR in $TRIPLEO_ROOT/puppet-*; do
 done
 
 # Build and deploy our undercloud instance
-SSHOPTS="-o StrictHostKeyChecking=no -o PasswordAuthentication=no"
 destroy_vms
 disk-image-create --image-size 30 -a amd64 centos7 instack-vm -o $UNDERCLOUD_VM_NAME
-dd if=$UNDERCLOUD_VM_NAME.qcow2 | ssh $SSHOPTS root@${HOST_IP} copyseed $ENV_NUM
-ssh $SSHOPTS root@${HOST_IP} virsh start seed_$ENV_NUM
+dd if=$UNDERCLOUD_VM_NAME.qcow2 | ssh $SSH_OPTIONS root@${HOST_IP} copyseed $ENV_NUM
+ssh $SSH_OPTIONS root@${HOST_IP} virsh start seed_$ENV_NUM
 
 # Set SEED_IP here to prevent postci ssh'ing to the undercloud before its up and running
 SEED_IP=$(OS_CONFIG_FILES=$TE_DATAFILE os-apply-config --key seed-ip --type netaddress --key-default '')
-tripleo wait_for -d 5 -l 20 scp /etc/yum.repos.d/delorean* root@${SEED_IP}:/etc/yum.repos.d
+tripleo wait_for -d 5 -l 20 -- scp $SSH_OPTIONS /etc/yum.repos.d/delorean* root@${SEED_IP}:/etc/yum.repos.d
 
 # copy in required ci files
-cd $TRIPLEO_ROOT
-scp -r puppet.env tripleo-ci/scripts/get_host_info.sh $TRIPLEO_ROOT/tripleo-common root@$SEED_IP:/tmp/
+cd "$TRIPLEO_ROOT"
+scp $SSH_OPTIONS puppet.env tripleo-ci/scripts/get_host_info.sh root@$SEED_IP:/tmp/
+tar -cf - tripleo-common | ssh $SSH_OPTIONS root@$SEED_IP tar -C /tmp -xf -
 # Copy the puppet modules to the undercloud where we are building the images
-tar -czf - /opt/stack/new/puppet-*/.git | ssh root@$SEED_IP tar -C / -xzf -
+tar -czf - /opt/stack/new/puppet-*/.git | ssh $SSH_OPTIONS root@$SEED_IP tar -C / -xzf -
 
-ssh $SSHOPTS root@${SEED_IP} <<-EOF
+ssh $SSH_OPTIONS root@${SEED_IP} <<-EOF
 
 set -eux
 
