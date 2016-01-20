@@ -12,6 +12,7 @@ sudo iptables-save
 sudo ovs-vsctl show
 ip addr
 free -h
+top -n 1 -o RES
 rpm -qa
 sudo os-collect-config --print
 which pcs &> /dev/null && sudo pcs status --full
