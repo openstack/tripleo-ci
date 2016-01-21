@@ -191,6 +191,14 @@ echo /usr/lib64/nosync/nosync.so > /etc/ld.so.preload
 
 yum install -y yum-plugin-priorities
 
+# https://bugs.launchpad.net/tripleo/+bug/1536136
+# Add some swap to the undercloud, this is only a temp solution
+# to see if it improves CI fail rates, we need to come to a concensus
+# on how much RAM is acceptable as a minimum and stick to it
+dd if=/dev/zero of=/swapfile count=1k bs=1M
+mkswap /swapfile
+swapon /swapfile
+
 # From here down everything runs as the stack user
 dd of=/tmp/runasstack <<-EOS
 
