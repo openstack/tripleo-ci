@@ -86,7 +86,14 @@ def get_data(session, stop_after):
                         zuul_project = param["value"]
                     elif param['name'] == "LOG_PATH":
                         log_path = param["value"]
-                if zuul_ref is None or gerrit_ref is None or log_path is None:
+
+                # These are blank if it was a periodic job
+                # we need a common zuul_ref for each trigger so we can put results in the same
+                # table row, the best we have is the date
+                zuul_ref = zuul_ref or str(build.get_timestamp().date())
+                gerrit_ref = gerrit_ref or ""
+
+                if log_path is None:
                     continue
 
                 if thisjob:
@@ -167,10 +174,14 @@ def gen_html(session, html_file, table_file, stats_hours):
         project = ""
         if job.zuul_project:
             project = job.zuul_project.split("/")[-1]
-        fp.write("<a href=\"https://review.openstack.org/#/"
+        if this_gerrit_ref:
+            fp.write("<a href=\"https://review.openstack.org/#/"
                  "c/%s\">%s</a> %s/%s</td>"
                  % (this_gerrit_ref.replace(",", "/"),
                     this_gerrit_ref, project, job.zuul_ref.split("/")[-2]))
+        else:
+            fp.write("</td>")
+
         fp.write(job_columns)
         fp.write("</tr>")
     fp.write("<table>")
