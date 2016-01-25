@@ -9,7 +9,7 @@ fi
 export TRIPLEO_ROOT=/opt/stack/new
 export PATH=/sbin:/usr/sbin:$PATH
 
-source $TRIPLEO_ROOT/tripleo-common/scripts/common_functions.sh
+source $TRIPLEO_ROOT/tripleo-ci/scripts/common_functions.sh
 
 mkdir -p $WORKSPACE/logs
 
@@ -30,7 +30,7 @@ if [[ $OVERRIDE_ZUUL_BRANCH =~ ^stable/ ]]; then
 fi
 
 # Setup delorean
-$TRIPLEO_ROOT/tripleo-common/scripts/tripleo.sh --delorean-setup
+$TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --delorean-setup
 
 # If we have no ZUUL_CHANGES then this is a periodic job, we wont be
 # building a ci repo, create a dummy one.
@@ -53,7 +53,7 @@ function postci(){
     fi
     if [ "${SEED_IP:-}" != "" ] ; then
         # Generate extra state information from the running undercloud
-        ssh root@${SEED_IP} /tmp/get_host_info.sh
+        ssh root@${SEED_IP} /tmp/tripleo-ci/scripts/get_host_info.sh
 
         # Get logs from the undercloud
         ssh root@${SEED_IP} $TARCMD > $WORKSPACE/logs/undercloud.tar.xz
@@ -62,8 +62,8 @@ function postci(){
         for INSTANCE in $(ssh root@${SEED_IP} cat /tmp/nova-list.txt | grep ACTIVE | awk '{printf"%s=%s\n", $4, $12}') ; do
             IP=${INSTANCE//*=}
             NAME=${INSTANCE//=*}
-            ssh $SSH_OPTIONS root@${SEED_IP} su stack -c \"scp $SSH_OPTIONS /tmp/get_host_info.sh heat-admin@$IP:/tmp\"
-            ssh $SSH_OPTIONS root@${SEED_IP} su stack -c \"ssh $SSH_OPTIONS heat-admin@$IP sudo /tmp/get_host_info.sh\"
+            ssh $SSH_OPTIONS root@${SEED_IP} su stack -c \"scp $SSH_OPTIONS /tmp/tripleo-ci/scripts/get_host_info.sh heat-admin@$IP:/tmp\"
+            ssh $SSH_OPTIONS root@${SEED_IP} su stack -c \"ssh $SSH_OPTIONS heat-admin@$IP sudo /tmp/tripleo-ci/scripts/get_host_info.sh\"
             ssh $SSH_OPTIONS root@${SEED_IP} su stack -c \"ssh $SSH_OPTIONS heat-admin@$IP $TARCMD\" > $WORKSPACE/logs/${NAME}.tar.xz
         done
         destroy_vms &> $WORKSPACE/logs/destroy_vms.log
@@ -90,7 +90,7 @@ done
 
 # Build packages
 if [ -n "$DELOREAN_BUILD_REFS" ] ; then
-    $TRIPLEO_ROOT/tripleo-common/scripts/tripleo.sh --delorean-build $DELOREAN_BUILD_REFS
+    $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --delorean-build $DELOREAN_BUILD_REFS
 fi
 
 # kill the http server if its already running
@@ -100,7 +100,7 @@ sudo iptables -I INPUT -p tcp --dport 8766 -i eth1 -j ACCEPT
 python -m SimpleHTTPServer 8766 1>$WORKSPACE/logs/yum_mirror.log 2>$WORKSPACE/logs/yum_mirror_error.log &
 
 # Install all of the repositories we need
-$TRIPLEO_ROOT/tripleo-common/scripts/tripleo.sh --repo-setup
+$TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --repo-setup
 
 # Layer the ci repository on top of it
 sudo wget http://$MY_IP:8766/current/delorean-ci.repo -O /etc/yum.repos.d/delorean-ci.repo
@@ -179,8 +179,8 @@ done
 
 # copy in required ci files
 cd "$TRIPLEO_ROOT"
-scp $SSH_OPTIONS deploy.env tripleo-ci/scripts/deploy.sh tripleo-ci/scripts/get_host_info.sh tripleo-ci/test-environments/* root@$SEED_IP:/tmp/
-tar -cf - tripleo-common | ssh $SSH_OPTIONS root@$SEED_IP tar -C /tmp -xf -
+scp $SSH_OPTIONS deploy.env root@$SEED_IP:/tmp/
+tar -cf - tripleo-ci | ssh $SSH_OPTIONS root@$SEED_IP tar -C /tmp -xf -
 # Copy the puppet modules to the undercloud where we are building the images
 tar -czf - /opt/stack/new/puppet-*/.git | ssh $SSH_OPTIONS root@$SEED_IP tar -C / -xzf -
 
@@ -209,7 +209,7 @@ mkswap /swapfile
 swapon /swapfile
 
 # Run the deployment as the stack user
-su -l -c "bash /tmp/deploy.sh" stack
+su -l -c "bash /tmp/tripleo-ci/scripts/deploy.sh" stack
 EOF
 
 exit 0

@@ -8,7 +8,7 @@ export DIB_DISTRIBUTION_MIRROR=$CENTOS_MIRROR
 export DIB_EPEL_MIRROR=$EPEL_MIRROR
 
 echo "INFO: Check /var/log/undercloud_install.txt for undercloud install output"
-/tmp/tripleo-common/scripts/tripleo.sh --undercloud 2>&1 | sudo dd of=/var/log/undercloud_install.txt
+/tmp/tripleo-ci/scripts/tripleo.sh --undercloud 2>&1 | sudo dd of=/var/log/undercloud_install.txt
 if [ $INTROSPECT == 1 ] ; then
     # I'm removing most of the nodes in the env to speed up discovery
     # This could be in jq but I don't know how
@@ -52,12 +52,12 @@ fi
 export DIB_NO_TMPFS=1
 # Directing the output of this command to a file as its extreemly verbose
 echo "INFO: Check /var/log/image_build.txt for image build output"
-/tmp/tripleo-common/scripts/tripleo.sh --overcloud-images | sudo dd of=/var/log/image_build.txt
+/tmp/tripleo-ci/scripts/tripleo.sh --overcloud-images | sudo dd of=/var/log/image_build.txt
 
-/tmp/tripleo-common/scripts/tripleo.sh --register-nodes
+/tmp/tripleo-ci/scripts/tripleo.sh --register-nodes
 
 if [ $INTROSPECT == 1 ] ; then
-   /tmp/tripleo-common/scripts/tripleo.sh --introspect-nodes
+   /tmp/tripleo-ci/scripts/tripleo.sh --introspect-nodes
 fi
 
 sleep 60
@@ -68,8 +68,8 @@ nova flavor-delete baremetal
 nova flavor-create --swap 1024 baremetal auto 4096 39 1
 nova flavor-key baremetal set capabilities:boot_option=local
 
-export OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS -e /tmp/worker-config.yaml"
-http_proxy= /tmp/tripleo-common/scripts/tripleo.sh --overcloud-deploy ${TRIPLEO_SH_ARGS:-}
+export OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS -e /tmp/tripleo-ci/test-environments/worker-config.yaml"
+http_proxy= /tmp/tripleo-ci/scripts/tripleo.sh --overcloud-deploy ${TRIPLEO_SH_ARGS:-}
 
 # Sanity test we deployed what we said we would
 source ~/stackrc
@@ -85,4 +85,4 @@ if [ $PACEMAKER == 1 ] ; then
 fi
 
 source ~/overcloudrc
-OVERCLOUD_PINGTEST_OLD_HEATCLIENT=0 /tmp/tripleo-common/scripts/tripleo.sh --overcloud-pingtest
+OVERCLOUD_PINGTEST_OLD_HEATCLIENT=0 /tmp/tripleo-ci/scripts/tripleo.sh --overcloud-pingtest
