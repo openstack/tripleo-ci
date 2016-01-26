@@ -250,7 +250,7 @@ source ~/stackrc
 [ "$NODECOUNT" != \\\$(nova list | grep ACTIVE | wc -l | cut -f1 -d " ") ] && echo "Wrong number of nodes deployed" && exit 1
 
 source ~/overcloudrc
-/tmp/tripleo-common/scripts/tripleo.sh --overcloud-pingtest
+OVERCLOUD_PINGTEST_OLD_HEATCLIENT=0 /tmp/tripleo-common/scripts/tripleo.sh --overcloud-pingtest
 
 EOS
 su -l -c "bash /tmp/runasstack" stack
