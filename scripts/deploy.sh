@@ -9,6 +9,11 @@ export DIB_DISTRIBUTION_MIRROR=$CENTOS_MIRROR
 export DIB_EPEL_MIRROR=$EPEL_MIRROR
 export STABLE_RELEASE=${STABLE_RELEASE:-""}
 
+if [ $UNDERCLOUD_SSL == 1 ] ; then
+    echo '[DEFAULT]' > ~/undercloud.conf
+    echo 'generate_service_certificate = True' >> ~/undercloud.conf
+fi
+
 echo "INFO: Check /var/log/undercloud_install.txt for undercloud install output"
 echo "INFO: This file can be found in logs/undercloud.tar.xz in the directory containing console.log"
 start_metric "tripleo.undercloud.install.seconds"

@@ -46,6 +46,7 @@ OVERCLOUD_DEPLOY_TIMEOUT=$((DEVSTACK_GATE_TIMEOUT-90))
 export OVERCLOUD_DEPLOY_ARGS="--libvirt-type=qemu -t $OVERCLOUD_DEPLOY_TIMEOUT"
 export OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS -e /opt/stack/new/tripleo-ci/test-environments/swap-partition.yaml"
 export OVERCLOUD_UPDATE_ARGS=
+export UNDERCLOUD_SSL=0
 export TRIPLEO_SH_ARGS=
 export NETISO_V4=0
 export NETISO_V6=0
@@ -85,6 +86,7 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
             OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS -e /opt/stack/new/tripleo-ci/test-environments/enable-tls.yaml -e /opt/stack/new/tripleo-ci/test-environments/inject-trust-anchor.yaml --ceph-storage-scale 1 -e /usr/share/openstack-tripleo-heat-templates/environments/puppet-ceph-devel.yaml"
             INTROSPECT=1
             NODECOUNT=3
+            UNDERCLOUD_SSL=1
             ;;
         containers)
             # TODO : remove this when the containers job is passing again
