@@ -243,6 +243,31 @@ if [ $INTROSPECT == 1 ] ; then
 fi
 
 sleep 60
+
+# Set most service workers to 1 to minimise memory usage on
+# the deployed overcloud as we are running with minimal memory
+# in CI.
+cat > /tmp/deploy_env.yaml << EOENV
+parameter_defaults:
+  # HeatWorkers doesn't modify num_engine_workers, so handle
+  # via heat::config
+  controllerExtraConfig:
+    heat::config::heat_config:
+      DEFAULT/num_engine_workers:
+        value: 1
+    heat::api_cloudwatch::enabled: false
+    heat::api_cfn::enabled: false
+  HeatWorkers: 1
+  CeilometerWorkers: 1
+  CinderWorkers: 1
+  GlanceWorkers: 1
+  KeystoneWorkers: 1
+  NeutronWorkers: 1
+  NovaWorkers: 1
+  SwiftWorkers: 1
+EOENV
+
+OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS -e /tmp/deploy_env.yaml"
 /tmp/tripleo-common/scripts/tripleo.sh --overcloud-deploy ${TRIPLEO_SH_ARGS:-}
 
 # Sanity test we deployed what we said we would
