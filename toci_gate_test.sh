@@ -11,7 +11,10 @@ cd $(dirname $0)
 # This Fedora Mirror is in the same data center as our CI rack
 export FEDORA_MIRROR=http://dl.fedoraproject.org/pub/fedora/linux
 # This Mirror has resonable latency and throughput to our rack
-export CENTOS_MIRROR=http://mirror.hmc.edu/centos
+#export CENTOS_MIRROR=http://mirror.hmc.edu/centos
+# The CentOS mirror above is down right now.  Pinning to the master
+# one until it comes back.
+export CENTOS_MIRROR=http://mirror.centos.org/centos
 # This EPEL Mirror is in the same data center as our CI rack
 export EPEL_MIRROR=http://dl.fedoraproject.org/pub/epel
 
