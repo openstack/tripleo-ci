@@ -10,11 +10,15 @@ cd $(dirname $0)
 # Mirrors
 # This Fedora Mirror is in the same data center as our CI rack
 export FEDORA_MIRROR=http://dl.fedoraproject.org/pub/fedora/linux
-# This Mirror has resonable latency and throughput to our rack
-#export CENTOS_MIRROR=http://mirror.hmc.edu/centos
-# The CentOS mirror above is down right now.  Pinning to the master
-# one until it comes back.
-export CENTOS_MIRROR=http://mirror.centos.org/centos
+# We don't seem to have a CentOS mirror in the data center, so we need to pick
+# one that has reasonable connectivity to our rack.  Provide a few options in
+# case one of them goes down.
+for mirror in http://mirror.hmc.edu/centos/ http://mirrors.usc.edu/pub/linux/distributions/centos/ http://mirror.centos.org/centos/; do
+    if curl -L -f -m 10 $mirror > /dev/null 2>&1; then
+        export CENTOS_MIRROR=$mirror
+        break
+    fi
+done
 # This EPEL Mirror is in the same data center as our CI rack
 export EPEL_MIRROR=http://dl.fedoraproject.org/pub/epel
 
