@@ -15,15 +15,6 @@ mkdir -p $WORKSPACE/logs
 
 MY_IP=$(ip addr show dev eth1 | awk '/inet / {gsub("/.*", "") ; print $2}')
 
-# If we have no ZUUL_CHANGES then this is a periodic job, we wont be
-# building a ci repo, create a dummy one.
-if [ -z "${ZUUL_CHANGES:-}" ] ; then
-    ZUUL_CHANGES=${ZUUL_CHANGES:-}
-    mkdir -p $TRIPLEO_ROOT/delorean/data/repos/current
-    touch $TRIPLEO_ROOT/delorean/data/repos/current/delorean-ci.repo
-fi
-ZUUL_CHANGES=${ZUUL_CHANGES//^/ }
-
 # Periodic stable jobs set OVERRIDE_ZUUL_BRANCH, gate stable jobs
 # just have the branch they're proposed to, e.g ZUUL_BRANCH, in both
 # cases we need to set STABLE_RELEASE to match for tripleo.sh
@@ -37,6 +28,15 @@ fi
 
 # Setup delorean
 $TRIPLEO_ROOT/tripleo-common/scripts/tripleo.sh --delorean-setup
+
+# If we have no ZUUL_CHANGES then this is a periodic job, we wont be
+# building a ci repo, create a dummy one.
+if [ -z "${ZUUL_CHANGES:-}" ] ; then
+    ZUUL_CHANGES=${ZUUL_CHANGES:-}
+    mkdir -p $TRIPLEO_ROOT/delorean/data/repos/current
+    touch $TRIPLEO_ROOT/delorean/data/repos/current/delorean-ci.repo
+fi
+ZUUL_CHANGES=${ZUUL_CHANGES//^/ }
 
 # post ci chores to run at the end of ci
 SSH_OPTIONS='-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=Verbose -o PasswordAuthentication=no'
