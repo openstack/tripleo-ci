@@ -34,7 +34,7 @@ class Job(Base):
     url = Column(String)
 
 
-job_names = [
+default_job_names = [
     'gate-tripleo-ci-f22-nonha',
     'gate-tripleo-ci-f22-ha',
     'gate-tripleo-ci-f22-ceph',
@@ -45,7 +45,7 @@ job_names = [
 now = datetime.datetime.now()
 
 
-def get_data(session, stop_after):
+def get_data(session, stop_after, job_names):
     for jenkinsnumber in range(1, 8):
         jurl = 'https://jenkins%02d.openstack.org' % jenkinsnumber
         jrequester = Requester(None, None, baseurl=jurl, ssl_verify=False)
@@ -114,7 +114,7 @@ def get_data(session, stop_after):
             session.commit()
 
 
-def gen_html(session, html_file, table_file, stats_hours):
+def gen_html(session, html_file, table_file, stats_hours, job_names):
     refs_done = []
     fp = open(table_file, "w")
     fp.write('<table border="1" cellspacing="0">')
@@ -205,6 +205,8 @@ def main(args=sys.argv[1:]):
                              'database i.e. assume we already have the rest.')
     parser.add_argument('-o', default="tripleo-jobs.html", help="html file")
     parser.add_argument('-d', default="tripleo-jobs.db", help="sqlite file")
+    parser.add_argument('-j', default=",".join(default_job_names), help=
+                             'comma seperated list of jobs to monitor.')
     opts = parser.parse_args(args)
 
     engine = create_engine('sqlite:///%s' % opts.d)
@@ -212,9 +214,11 @@ def main(args=sys.argv[1:]):
     Session = sessionmaker(bind=engine)
     session = Session()
 
+    job_names = opts.j.split(",")
+
     if opts.f:
-        get_data(session, opts.n)
-    gen_html(session, opts.o, "%s-table" % opts.o, 24)
+        get_data(session, opts.n, job_names)
+    gen_html(session, opts.o, "%s-table" % opts.o, 24, job_names)
 
 if __name__ == '__main__':
     exit(main())
