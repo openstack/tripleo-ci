@@ -7,6 +7,13 @@ sudo yum clean all
 # cd to toci directory so relative paths work (below and in toci_devtest.sh)
 cd $(dirname $0)
 
+# start dstat early
+
+sudo yum install -y dstat # TODO add it to the gate image building
+mkdir -p "$WORKSPACE/logs"
+dstat -tcmndrylpg --output "$WORKSPACE/logs/dstat-csv.log" >/dev/null &
+disown
+
 # Mirrors
 # This Fedora Mirror is in the same data center as our CI rack
 export FEDORA_MIRROR=http://dl.fedoraproject.org/pub/fedora/linux

@@ -185,11 +185,12 @@ echo "nameserver 8.8.8.8" > /etc/resolv.conf
 export http_proxy=$http_proxy
 export no_proxy=192.0.2.1,$MY_IP
 
-# Setting up nosync first to abolish time taken during disk io sync's
-yum install -y nosync
-echo /usr/lib64/nosync/nosync.so > /etc/ld.so.preload
+# installing basic utils
+yum install -y python-simplejson dstat yum-plugin-priorities
 
-yum install -y yum-plugin-priorities
+# Add a simple system utilisation logger process
+dstat -tcmndrylpg --output /var/log/dstat-csv.log >/dev/null &
+disown
 
 # https://bugs.launchpad.net/tripleo/+bug/1536136
 # Add some swap to the undercloud, this is only a temp solution
@@ -206,7 +207,6 @@ set -eux
 
 # I'm removing most of the nodes in the env to speed up discovery
 # This could be in jq but I don't know how
-sudo yum -y install python-simplejson
 python -c 'import simplejson ; d = simplejson.loads(open("instackenv.json").read()) ; del d["nodes"][$NODECOUNT:] ; print simplejson.dumps(d)' > instackenv_reduced.json
 mv instackenv_reduced.json instackenv.json
 
