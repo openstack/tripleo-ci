@@ -31,6 +31,7 @@ export PYPIMIRROR=192.168.1.101
 
 export NODECOUNT=2
 export INTROSPECT=0
+export PACEMAKER=0
 export OVERCLOUD_DEPLOY_ARGS="--libvirt-type=qemu"
 export TRIPLEO_SH_ARGS=
 
@@ -49,6 +50,7 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
             # --ntp-server is here to make the deploy command happy, the ci env
             # is on virt so the clocks should be in sync without it.
             OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS --control-scale 3 --ntp-server 0.centos.pool.ntp.org -e /usr/share/openstack-tripleo-heat-templates/environments/puppet-pacemaker.yaml"
+            PACEMAKER=1
             ;;
         nonha)
             INTROSPECT=1
