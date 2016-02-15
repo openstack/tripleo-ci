@@ -1,0 +1,17 @@
+parameter_defaults:
+  # HeatWorkers doesn't modify num_engine_workers, so handle
+  # via heat::config
+  controllerExtraConfig:
+    heat::config::heat_config:
+      DEFAULT/num_engine_workers:
+        value: 1
+    heat::api_cloudwatch::enabled: false
+    heat::api_cfn::enabled: false
+  HeatWorkers: 1
+  CeilometerWorkers: 1
+  CinderWorkers: 1
+  GlanceWorkers: 1
+  KeystoneWorkers: 1
+  NeutronWorkers: 1
+  NovaWorkers: 1
+  SwiftWorkers: 1

@@ -179,7 +179,7 @@ done
 
 # copy in required ci files
 cd "$TRIPLEO_ROOT"
-scp $SSH_OPTIONS deploy.env tripleo-ci/scripts/deploy.sh tripleo-ci/scripts/get_host_info.sh root@$SEED_IP:/tmp/
+scp $SSH_OPTIONS deploy.env tripleo-ci/scripts/deploy.sh tripleo-ci/scripts/get_host_info.sh tripleo-ci/test-environments/* root@$SEED_IP:/tmp/
 tar -cf - tripleo-common | ssh $SSH_OPTIONS root@$SEED_IP tar -C /tmp -xf -
 # Copy the puppet modules to the undercloud where we are building the images
 tar -czf - /opt/stack/new/puppet-*/.git | ssh $SSH_OPTIONS root@$SEED_IP tar -C / -xzf -
