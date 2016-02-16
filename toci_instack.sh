@@ -211,6 +211,10 @@ dd if=/dev/zero of=/swapfile count=2k bs=1M
 mkswap /swapfile
 swapon /swapfile
 
+# Install our test cert so SSL tests work
+cp /tmp/tripleo-ci/test-environments/overcloud-cacert.pem /etc/pki/ca-trust/source/anchors/
+update-ca-trust extract
+
 # Run the deployment as the stack user
 su -l -c "bash /tmp/tripleo-ci/scripts/deploy.sh" stack
 EOF
