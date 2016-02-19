@@ -3,7 +3,7 @@
 sudo bash <<-EOF &> /var/log/host_info.txt
 set -x
 export PATH=\$PATH:/sbin
-ps -efZ
+ps -eaufxZ
 ls -Z /var/run/
 df -h
 uptime
