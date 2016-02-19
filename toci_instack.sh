@@ -196,7 +196,7 @@ disown
 # Add some swap to the undercloud, this is only a temp solution
 # to see if it improves CI fail rates, we need to come to a concensus
 # on how much RAM is acceptable as a minimum and stick to it
-dd if=/dev/zero of=/swapfile count=1k bs=1M
+dd if=/dev/zero of=/swapfile count=2k bs=1M
 mkswap /swapfile
 swapon /swapfile
 
