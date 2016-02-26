@@ -32,7 +32,13 @@ export PYPIMIRROR=192.168.1.101
 export NODECOUNT=2
 export INTROSPECT=0
 export PACEMAKER=0
-export OVERCLOUD_DEPLOY_ARGS="--libvirt-type=qemu"
+# NOTE(bnemec): At this time, the undercloud install + image build is taking from
+# 1 hour to 1 hour and 15 minutes on the jobs I checked.  The devstack gate timeout
+# is 170 minutes, so subtracting 90 should leave us an hour and 20 minutes for
+# the deploy.  Hopefully that's enough, while still leaving some cushion to come
+# in under the gate timeout so we can collect logs.
+OVERCLOUD_DEPLOY_TIMEOUT=$((DEVSTACK_GATE_TIMEOUT-90))
+export OVERCLOUD_DEPLOY_ARGS="--libvirt-type=qemu -t $OVERCLOUD_DEPLOY_TIMEOUT"
 export TRIPLEO_SH_ARGS=
 
 # Switch defaults based on the job name
