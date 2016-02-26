@@ -222,7 +222,8 @@ export OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS"
 export TRIPLEO_SH_ARGS="$TRIPLEO_SH_ARGS"
 
 export STABLE_RELEASE=${STABLE_RELEASE:-}
-/tmp/tripleo-common/scripts/tripleo.sh --undercloud
+echo "INFO: Check /var/log/undercloud_install.txt for undercloud install output"
+/tmp/tripleo-common/scripts/tripleo.sh --undercloud 2>&1 | sudo dd of=/var/log/undercloud_install.txt
 if [ $INTROSPECT == 1 ] ; then
     # Lower the timeout for introspection to decrease failure time
     # It should not take more than 10 minutes with IPA ramdisk and no extra collectors
