@@ -26,8 +26,9 @@ export http_proxy=http://192.168.1.100:3128/
 export GEARDSERVER=192.168.1.1
 export MIRRORSERVER=192.168.1.101
 
-export NODECOUNT=2
+export CACHEUPLOAD=0
 export INTROSPECT=0
+export NODECOUNT=2
 export PACEMAKER=0
 # NOTE(bnemec): At this time, the undercloud install + image build is taking from
 # 1 hour to 1 hour and 15 minutes on the jobs I checked.  The devstack gate timeout
@@ -79,6 +80,7 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
             ;;
         periodic)
             export DELOREAN_REPO_URL=http://trunk.rdoproject.org/centos7/consistent
+            CACHEUPLOAD=1
             ;;
         liberty)
             # This is handled in tripleo.sh (it always uses centos7-liberty/current)

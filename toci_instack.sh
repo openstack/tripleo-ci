@@ -105,6 +105,9 @@ python -m SimpleHTTPServer 8766 1>$WORKSPACE/logs/yum_mirror.log 2>$WORKSPACE/lo
 # Install all of the repositories we need
 $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --repo-setup
 
+# Find the path to the trunk repository used
+TRUNKREPOUSED=$(grep -Eo "[0-9a-z]{2}/[0-9a-z]{2}/[0-9a-z]{40}_[0-9a-z]+" /etc/yum.repos.d/delorean.repo)
+
 # Layer the ci repository on top of it
 sudo wget http://$MY_IP:8766/current/delorean-ci.repo -O /etc/yum.repos.d/delorean-ci.repo
 # rewrite the baseurl in delorean-ci.repo as its currently pointing a http://trunk.rdoproject.org/..
@@ -228,6 +231,12 @@ update-ca-trust extract
 # Run the deployment as the stack user
 su -l -c "bash /tmp/tripleo-ci/scripts/deploy.sh" stack
 EOF
+
+# If we got this far and its a periodic job, declare success and upload build artifacts
+if [ $CACHEUPLOAD == 1 ] ; then
+    curl http://$MIRRORSERVER/cgi-bin/upload.cgi  -F "repohash=$TRUNKREPOUSED" -F "upload=@$TRIPLEO_ROOT/$UNDERCLOUD_VM_NAME.qcow2;filename=$UNDERCLOUD_VM_NAME.qcow2"
+    curl http://$MIRRORSERVER/cgi-bin/upload.cgi  -F "repohash=$TRUNKREPOUSED" -F "$JOB_NAME=SUCCESS"
+fi
 
 exit 0
 echo 'Run completed.'
