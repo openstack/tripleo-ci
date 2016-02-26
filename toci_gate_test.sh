@@ -24,7 +24,7 @@ export EPEL_MIRROR=http://dl.fedoraproject.org/pub/epel
 
 export http_proxy=http://192.168.1.100:3128/
 export GEARDSERVER=192.168.1.1
-export PYPIMIRROR=192.168.1.101
+export MIRRORSERVER=192.168.1.101
 
 export NODECOUNT=2
 export INTROSPECT=0

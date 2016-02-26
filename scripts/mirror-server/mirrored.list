@@ -23,7 +23,6 @@ puppetlabs_xinetd https://github.com/puppetlabs/puppetlabs-xinetd.git
 puppet_memcached https://github.com/saz/puppet-memcached.git
 puppet_module_keepalived https://github.com/Unyonsys/puppet-module-keepalived.git
 puppet_nssdb https://github.com/rcritten/puppet-nssdb.git
-puppet_pacemaker https://github.com/redhat-openstack/puppet-pacemaker.git
 puppet_puppet https://github.com/purpleidea/puppet-puppet.git
 puppet_qpid https://github.com/dprince/puppet-qpid.git
 puppet_redis https://github.com/arioch/puppet-redis.git

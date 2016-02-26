@@ -18,7 +18,7 @@ mkdir -p $WORKSPACE/logs
 
 MY_IP=$(ip addr show dev eth1 | awk '/inet / {gsub("/.*", "") ; print $2}')
 
-export no_proxy=192.0.2.1,$MY_IP
+export no_proxy=192.0.2.1,$MY_IP,$MIRRORSERVER
 
 # Periodic stable jobs set OVERRIDE_ZUUL_BRANCH, gate stable jobs
 # just have the branch they're proposed to, e.g ZUUL_BRANCH, in both
@@ -152,6 +152,7 @@ export UNDERCLOUD_VM_NAME=instack
 export ELEMENTS_PATH=/usr/share/instack-undercloud
 export DIB_DISTRIBUTION_MIRROR=$CENTOS_MIRROR
 export DIB_EPEL_MIRROR=$EPEL_MIRROR
+export DIB_CLOUD_IMAGES=http://$MIRRORSERVER/cloud.centos.org/centos/7/images
 
 # create DIB environment variables for all the puppet modules, $TRIPLEO_ROOT
 # has all of the openstack modules with the correct HEAD. Set the DIB_REPO*
@@ -165,6 +166,14 @@ for PROJDIR in $TRIPLEO_ROOT/puppet-*; do
     echo "export DIB_REPOLOCATION_$PROJ=$PROJDIR" >> $TRIPLEO_ROOT/deploy.env
 done
 
+IFS=$'\n'
+# For the others we use local mirror server
+for REPO in $(cat $TRIPLEO_ROOT/tripleo-ci/scripts/mirror-server/mirrored.list | grep -v "^#"); do
+    RDIR=${REPO%% *}
+    echo "export DIB_REPOLOCATION_$RDIR=http://$MIRRORSERVER/repos/$RDIR" >> $TRIPLEO_ROOT/deploy.env
+done
+IFS=$' \t\n'
+
 # Build and deploy our undercloud instance
 destroy_vms
 disk-image-create --image-size 30 -a amd64 centos7 instack-vm -o $UNDERCLOUD_VM_NAME
@@ -173,6 +182,7 @@ ssh $SSH_OPTIONS root@${HOST_IP} virsh start seed_$ENV_NUM
 
 # Set SEED_IP here to prevent postci ssh'ing to the undercloud before its up and running
 SEED_IP=$(OS_CONFIG_FILES=$TE_DATAFILE os-apply-config --key seed-ip --type netaddress --key-default '')
+export no_proxy=$no_proxy,$SEED_IP
 tripleo wait_for -d 5 -l 20 -- scp $SSH_OPTIONS /etc/yum.repos.d/delorean* root@${SEED_IP}:/etc/yum.repos.d
 
 # Iterate over a list of variables we want defined on the undercloud
