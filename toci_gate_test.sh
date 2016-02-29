@@ -7,13 +7,6 @@ sudo yum clean all
 # cd to toci directory so relative paths work (below and in toci_devtest.sh)
 cd $(dirname $0)
 
-# start dstat early
-
-sudo yum install -y dstat # TODO add it to the gate image building
-mkdir -p "$WORKSPACE/logs"
-dstat -tcmndrylpg --output "$WORKSPACE/logs/dstat-csv.log" >/dev/null &
-disown
-
 # Mirrors
 # This Fedora Mirror is in the same data center as our CI rack
 export FEDORA_MIRROR=http://dl.fedoraproject.org/pub/fedora/linux
@@ -40,6 +33,15 @@ export PACEMAKER=0
 OVERCLOUD_DEPLOY_TIMEOUT=$((DEVSTACK_GATE_TIMEOUT-90))
 export OVERCLOUD_DEPLOY_ARGS="--libvirt-type=qemu -t $OVERCLOUD_DEPLOY_TIMEOUT"
 export TRIPLEO_SH_ARGS=
+
+# Set the fedora mirror, this is more reliable then relying on the repolist returned by metalink
+sudo sed -i -e "s|^#baseurl=http://download.fedoraproject.org/pub/fedora/linux|baseurl=$FEDORA_MIRROR|;/^metalink/d" /etc/yum.repos.d/fedora*.repo
+
+# start dstat early
+sudo yum install -y dstat # TODO add it to the gate image building
+mkdir -p "$WORKSPACE/logs"
+dstat -tcmndrylpg --output "$WORKSPACE/logs/dstat-csv.log" >/dev/null &
+disown
 
 # Switch defaults based on the job name
 for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
@@ -76,9 +78,6 @@ done
 
 # print the final values of control variables to console
 env | grep -E "(TOCI_JOBTYPE)="
-
-# Set the fedora mirror, this is more reliable then relying on the repolist returned by metalink
-sudo sed -i -e "s|^#baseurl=http://download.fedoraproject.org/pub/fedora/linux|baseurl=$FEDORA_MIRROR|;/^metalink/d" /etc/yum.repos.d/fedora*.repo
 
 # Allow the instack node to have traffic forwards through here
 sudo iptables -A FORWARD -i eth0 -o eth1 -m state --state RELATED,ESTABLISHED -j ACCEPT
