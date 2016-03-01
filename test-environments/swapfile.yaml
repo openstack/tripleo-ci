@@ -1,0 +1,2 @@
+resource_registry:
+  OS::TripleO::AllNodesExtraConfig: /usr/share/openstack-tripleo-heat-templates/extraconfig/all_nodes/swap.yaml

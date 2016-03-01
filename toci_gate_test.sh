@@ -32,6 +32,7 @@ export PACEMAKER=0
 # in under the gate timeout so we can collect logs.
 OVERCLOUD_DEPLOY_TIMEOUT=$((DEVSTACK_GATE_TIMEOUT-90))
 export OVERCLOUD_DEPLOY_ARGS="--libvirt-type=qemu -t $OVERCLOUD_DEPLOY_TIMEOUT"
+export OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS -e /tmp/swapfile.yaml"
 export TRIPLEO_SH_ARGS=
 
 # Set the fedora mirror, this is more reliable then relying on the repolist returned by metalink
