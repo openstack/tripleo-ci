@@ -64,6 +64,8 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
             INTROSPECT=1
             ;;
         containers)
+            # TODO : remove this when the containers job is passing again
+            exit 1
             TRIPLEO_SH_ARGS="--use-containers"
             ;;
         periodic)
