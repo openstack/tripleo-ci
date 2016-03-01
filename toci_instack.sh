@@ -15,9 +15,12 @@ mkdir -p $WORKSPACE/logs
 
 MY_IP=$(ip addr show dev eth1 | awk '/inet / {gsub("/.*", "") ; print $2}')
 
+export no_proxy=192.0.2.1,$MY_IP
+
 # Periodic stable jobs set OVERRIDE_ZUUL_BRANCH, gate stable jobs
 # just have the branch they're proposed to, e.g ZUUL_BRANCH, in both
 # cases we need to set STABLE_RELEASE to match for tripleo.sh
+export STABLE_RELEASE=
 if [[ $ZUUL_BRANCH =~ ^stable/ ]]; then
     export STABLE_RELEASE=${ZUUL_BRANCH#stable/}
 fi
@@ -155,8 +158,8 @@ for PROJDIR in $TRIPLEO_ROOT/puppet-*; do
     REV=$(git --git-dir=$PROJDIR/.git rev-parse HEAD)
     X=${PROJDIR//-/_}
     PROJ=${X##*/}
-    echo "export DIB_REPOREF_$PROJ=$REV" >> $TRIPLEO_ROOT/puppet.env
-    echo "export DIB_REPOLOCATION_$PROJ=$PROJDIR" >> $TRIPLEO_ROOT/puppet.env
+    echo "export DIB_REPOREF_$PROJ=$REV" >> $TRIPLEO_ROOT/deploy.env
+    echo "export DIB_REPOLOCATION_$PROJ=$PROJDIR" >> $TRIPLEO_ROOT/deploy.env
 done
 
 # Build and deploy our undercloud instance
@@ -169,9 +172,14 @@ ssh $SSH_OPTIONS root@${HOST_IP} virsh start seed_$ENV_NUM
 SEED_IP=$(OS_CONFIG_FILES=$TE_DATAFILE os-apply-config --key seed-ip --type netaddress --key-default '')
 tripleo wait_for -d 5 -l 20 -- scp $SSH_OPTIONS /etc/yum.repos.d/delorean* root@${SEED_IP}:/etc/yum.repos.d
 
+# Iterate over a list of variables we want defined on the undercloud
+for VAR in CENTOS_MIRROR EPEL_MIRROR http_proxy INTROSPECT MY_IP no_proxy NODECOUNT OVERCLOUD_DEPLOY_ARGS PACEMAKER SSH_OPTIONS STABLE_RELEASE TRIPLEO_SH_ARGS ; do
+    echo "export $VAR=\"${!VAR}\"" >> $TRIPLEO_ROOT/deploy.env
+done
+
 # copy in required ci files
 cd "$TRIPLEO_ROOT"
-scp $SSH_OPTIONS puppet.env tripleo-ci/scripts/get_host_info.sh root@$SEED_IP:/tmp/
+scp $SSH_OPTIONS deploy.env tripleo-ci/scripts/get_host_info.sh root@$SEED_IP:/tmp/
 tar -cf - tripleo-common | ssh $SSH_OPTIONS root@$SEED_IP tar -C /tmp -xf -
 # Copy the puppet modules to the undercloud where we are building the images
 tar -czf - /opt/stack/new/puppet-*/.git | ssh $SSH_OPTIONS root@$SEED_IP tar -C / -xzf -
@@ -180,10 +188,10 @@ ssh $SSH_OPTIONS root@${SEED_IP} <<-EOF
 
 set -eux
 
+source /tmp/deploy.env
+
 ip route add 0.0.0.0/0 dev eth0 via $MY_IP
 echo "nameserver 8.8.8.8" > /etc/resolv.conf
-export http_proxy=$http_proxy
-export no_proxy=192.0.2.1,$MY_IP
 
 # installing basic utils
 yum install -y python-simplejson dstat yum-plugin-priorities
@@ -214,14 +222,8 @@ export DIB_DISTRIBUTION_MIRROR=$CENTOS_MIRROR
 export DIB_EPEL_MIRROR=$EPEL_MIRROR
 
 # This sets all the DIB_.*puppet variables for undercloud and overcloud installation
-source /tmp/puppet.env
+source /tmp/deploy.env
 
-export http_proxy=$http_proxy
-export no_proxy=192.0.2.1,$MY_IP,$SEED_IP
-export OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS"
-export TRIPLEO_SH_ARGS="$TRIPLEO_SH_ARGS"
-
-export STABLE_RELEASE=${STABLE_RELEASE:-}
 echo "INFO: Check /var/log/undercloud_install.txt for undercloud install output"
 /tmp/tripleo-common/scripts/tripleo.sh --undercloud 2>&1 | sudo dd of=/var/log/undercloud_install.txt
 if [ $INTROSPECT == 1 ] ; then
@@ -268,7 +270,7 @@ parameter_defaults:
   SwiftWorkers: 1
 EOENV
 
-OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS -e /tmp/deploy_env.yaml"
+export OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS -e /tmp/deploy_env.yaml"
 /tmp/tripleo-common/scripts/tripleo.sh --overcloud-deploy ${TRIPLEO_SH_ARGS:-}
 
 # Sanity test we deployed what we said we would
