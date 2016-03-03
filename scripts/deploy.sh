@@ -20,6 +20,34 @@ if [ $INTROSPECT == 1 ] ; then
     sudo systemctl restart openstack-ironic-inspector
 fi
 
+if [ $NETISO_V4 -eq 1 ]; then
+
+    # Update our floating range to use a 10. /24
+    export FLOATING_IP_CIDR=${FLOATING_IP_CIDR:-"10.0.0.0/24"}
+    export FLOATING_IP_START=${FLOATING_IP_START:-"10.0.0.100"}
+    export FLOATING_IP_END=${FLOATING_IP_END:-"10.0.0.200"}
+    export EXTERNAL_NETWORK_GATEWAY=${EXTERNAL_NETWORK_GATEWAY:-"10.0.0.1"}
+
+    # Update our private tenant network to use a 10.0.1 /24 private range
+    export TENANT_STACK_DEPLOY_ARGS=${TENANT_STACK_DEPLOY_ARGS:-"-P private_net_cidr=10.0.1.0/24 -P private_net_gateway=10.0.1.1 -P private_net_pool_start=10.0.1.10 -P private_net_pool_end=10.0.1.20"}
+
+# Make our undercloud act as the external gateway
+# eth6 should line up with the "external" network port per the
+# tripleo-heat-template/network/config/multiple-nics templates.
+# NOTE: seed uses eth0 for the local network.
+cat >> /tmp/eth6.cfg <<EOF_CAT
+network_config:
+  -
+    type: interface
+    name: eth6
+    use_dhcp: false
+    addresses:
+    -
+      ip_netmask: 10.0.0.1/24
+EOF_CAT
+sudo os-net-config -c /tmp/eth6.cfg -v
+fi
+
 # Our ci underclouds don't have enough RAM to allow us to use a tmpfs
 export DIB_NO_TMPFS=1
 # Directing the output of this command to a file as its extreemly verbose
@@ -34,6 +62,7 @@ fi
 
 sleep 60
 
+unset http_proxy
 export OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS -e /tmp/worker-config.yaml"
 /tmp/tripleo-common/scripts/tripleo.sh --overcloud-deploy ${TRIPLEO_SH_ARGS:-}
 
