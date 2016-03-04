@@ -137,7 +137,7 @@ cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
 function destroy_vms(){
     ssh $SSH_OPTIONS $SSH_USER@$HOST_IP virsh destroy seed_${ENV_NUM} || true
     for i in $(seq 0 14) ; do
-        ssh $SSH_OPTIONS $SSH_USER@$HOST_IP virsh destroy baremetalbrbm${ENV_NUM}_${i} || true
+        ssh $SSH_OPTIONS $SSH_USER@$HOST_IP virsh destroy baremetal${ENV_NUM}brbm_one${ENV_NUM}_${i} || true
     done
 }
 
