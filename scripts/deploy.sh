@@ -63,6 +63,13 @@ fi
 sleep 60
 
 unset http_proxy
+
+# Recreate the baremetal flavor to add a swap partition
+source stackrc
+nova flavor-delete baremetal
+nova flavor-create --swap 1024 baremetal auto 4096 39 1
+nova flavor-key baremetal set capabilities:boot_option=local
+
 export OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS -e /tmp/worker-config.yaml"
 /tmp/tripleo-common/scripts/tripleo.sh --overcloud-deploy ${TRIPLEO_SH_ARGS:-}
 

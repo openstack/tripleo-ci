@@ -32,7 +32,7 @@ export PACEMAKER=0
 # in under the gate timeout so we can collect logs.
 OVERCLOUD_DEPLOY_TIMEOUT=$((DEVSTACK_GATE_TIMEOUT-90))
 export OVERCLOUD_DEPLOY_ARGS="--libvirt-type=qemu -t $OVERCLOUD_DEPLOY_TIMEOUT"
-export OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS -e /tmp/swapfile.yaml"
+export OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS -e /tmp/swap-partition.yaml"
 export TRIPLEO_SH_ARGS=
 export NETISO_V4=0
 
