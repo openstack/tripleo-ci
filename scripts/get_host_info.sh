@@ -27,7 +27,7 @@ if [ -e ~/stackrc ] ; then
 
     nova list | tee /tmp/nova-list.txt
     heat stack-show overcloud
-    heat resource-list overcloud
+    heat resource-list -n5 overcloud
     heat event-list overcloud
     # useful to see what failed when puppet fails
     for failed_deployment in $(heat resource-list --nested-depth 5 overcloud | grep FAILED | grep 'StructuredDeployment ' | cut -d '|' -f3); do heat deployment-show $failed_deployment; done;
