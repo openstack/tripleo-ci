@@ -28,9 +28,6 @@ if [ $NETISO_V4 -eq 1 ]; then
     export FLOATING_IP_END=${FLOATING_IP_END:-"10.0.0.200"}
     export EXTERNAL_NETWORK_GATEWAY=${EXTERNAL_NETWORK_GATEWAY:-"10.0.0.1"}
 
-    # Update our private tenant network to use a 10.0.1 /24 private range
-    export TENANT_STACK_DEPLOY_ARGS=${TENANT_STACK_DEPLOY_ARGS:-"-P private_net_cidr=10.0.1.0/24 -P private_net_gateway=10.0.1.1 -P private_net_pool_start=10.0.1.10 -P private_net_pool_end=10.0.1.20"}
-
 # Make our undercloud act as the external gateway
 # eth6 should line up with the "external" network port per the
 # tripleo-heat-template/network/config/multiple-nics templates.
