@@ -199,7 +199,7 @@ export no_proxy=$no_proxy,$SEED_IP
 tripleo wait_for -d 5 -l 20 -- scp $SSH_OPTIONS /etc/yum.repos.d/delorean* root@${SEED_IP}:/etc/yum.repos.d
 
 # Iterate over a list of variables we want defined on the undercloud
-for VAR in CENTOS_MIRROR EPEL_MIRROR http_proxy INTROSPECT MY_IP no_proxy NODECOUNT OVERCLOUD_DEPLOY_ARGS OVERCLOUD_UPDATE_ARGS PACEMAKER SSH_OPTIONS STABLE_RELEASE TRIPLEO_SH_ARGS NETISO_V4; do
+for VAR in CENTOS_MIRROR EPEL_MIRROR http_proxy INTROSPECT MY_IP no_proxy NODECOUNT OVERCLOUD_DEPLOY_ARGS OVERCLOUD_UPDATE_ARGS PACEMAKER SSH_OPTIONS STABLE_RELEASE TRIPLEO_SH_ARGS NETISO_V4 NETISO_V6; do
     echo "export $VAR=\"${!VAR}\"" >> $TRIPLEO_ROOT/deploy.env
 done
 

@@ -23,7 +23,7 @@ if [ $INTROSPECT == 1 ] ; then
     sudo systemctl restart openstack-ironic-inspector
 fi
 
-if [ $NETISO_V4 -eq 1 ]; then
+if [ $NETISO_V4 -eq 1 ] || [ $NETISO_V6 -eq 1 ]; then
 
     # Update our floating range to use a 10. /24
     export FLOATING_IP_CIDR=${FLOATING_IP_CIDR:-"10.0.0.0/24"}
@@ -35,17 +35,20 @@ if [ $NETISO_V4 -eq 1 ]; then
 # eth6 should line up with the "external" network port per the
 # tripleo-heat-template/network/config/multiple-nics templates.
 # NOTE: seed uses eth0 for the local network.
-cat >> /tmp/eth6.cfg <<EOF_CAT
+    cat >> /tmp/eth6.cfg <<EOF_CAT
 network_config:
-  -
-    type: interface
-    name: eth6
-    use_dhcp: false
-    addresses:
-    -
-      ip_netmask: 10.0.0.1/24
+    - type: interface
+      name: eth6
+      use_dhcp: false
+      addresses:
+        - ip_netmask: 10.0.0.1/24
 EOF_CAT
-sudo os-net-config -c /tmp/eth6.cfg -v
+    if [ $NETISO_V6 -eq 1 ]; then
+        cat >> /tmp/eth6.cfg <<EOF_CAT
+        - ip_netmask: 2001:db8:fd00:1000::1/64
+EOF_CAT
+    fi
+    sudo os-net-config -c /tmp/eth6.cfg -v
 fi
 
 # Our ci underclouds don't have enough RAM to allow us to use a tmpfs
