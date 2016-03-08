@@ -3,17 +3,19 @@ set -eux
 # This sets all the environment variables for undercloud and overcloud installation
 source /tmp/deploy.env
 
-# I'm removing most of the nodes in the env to speed up discovery
-# This could be in jq but I don't know how
-python -c "import simplejson ; d = simplejson.loads(open(\"instackenv.json\").read()) ; del d[\"nodes\"][$NODECOUNT:] ; print simplejson.dumps(d)" > instackenv_reduced.json
-mv instackenv_reduced.json instackenv.json
-
 export DIB_DISTRIBUTION_MIRROR=$CENTOS_MIRROR
 export DIB_EPEL_MIRROR=$EPEL_MIRROR
 
 echo "INFO: Check /var/log/undercloud_install.txt for undercloud install output"
 /tmp/tripleo-common/scripts/tripleo.sh --undercloud 2>&1 | sudo dd of=/var/log/undercloud_install.txt
 if [ $INTROSPECT == 1 ] ; then
+    # I'm removing most of the nodes in the env to speed up discovery
+    # This could be in jq but I don't know how
+    # Only do this for jobs that use introspection, as it makes the likelihood
+    # of hitting https://bugs.launchpad.net/tripleo/+bug/1341420 much higher
+    python -c "import simplejson ; d = simplejson.loads(open(\"instackenv.json\").read()) ; del d[\"nodes\"][$NODECOUNT:] ; print simplejson.dumps(d)" > instackenv_reduced.json
+    mv instackenv_reduced.json instackenv.json
+
     # Lower the timeout for introspection to decrease failure time
     # It should not take more than 10 minutes with IPA ramdisk and no extra collectors
     sudo sed -i '2itimeout = 600' /etc/ironic-inspector/inspector.conf
