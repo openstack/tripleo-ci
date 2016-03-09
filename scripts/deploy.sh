@@ -1,4 +1,5 @@
 set -eux
+set -o pipefail
 
 # This sets all the environment variables for undercloud and overcloud installation
 source /tmp/deploy.env
