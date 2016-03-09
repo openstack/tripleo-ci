@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 set -eux
 
+## Signal to toci_gate_test.sh we've started
+touch /tmp/toci.started
+
 if [ ! -e "$TE_DATAFILE" ] ; then
     echo "Couldn't find data file"
     exit 1

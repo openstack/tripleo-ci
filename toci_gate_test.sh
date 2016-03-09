@@ -95,4 +95,6 @@ TIMEOUT_SECS=$((DEVSTACK_GATE_TIMEOUT*60))
 # ./testenv-client kill everything in its own process group it it hits a timeout
 # run it in a separate group to avoid getting killed along with it
 set -m
+# Kill the whole job if it doesn't get a testenv in 20 minutes as it likely will timout in zuul
+( sleep 1200 ; [ ! -e /tmp/toci.started ] && sudo kill -9 $$ ) &
 ./testenv-client -b $GEARDSERVER:4730 -t $TIMEOUT_SECS -- ./toci_instack.sh
