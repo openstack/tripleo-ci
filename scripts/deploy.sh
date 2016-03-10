@@ -3,13 +3,16 @@ set -o pipefail
 
 # This sets all the environment variables for undercloud and overcloud installation
 source /opt/stack/new/tripleo-ci/deploy.env
+source /opt/stack/new/tripleo-ci/scripts/metrics.bash
 
 export DIB_DISTRIBUTION_MIRROR=$CENTOS_MIRROR
 export DIB_EPEL_MIRROR=$EPEL_MIRROR
 
 echo "INFO: Check /var/log/undercloud_install.txt for undercloud install output"
 echo "INFO: This file can be found in logs/undercloud.tar.xz in the directory containing console.log"
+start_metric "tripleo.undercloud.install.seconds"
 $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --undercloud 2>&1 | sudo dd of=/var/log/undercloud_install.txt || (tail -n 50 /var/log/undercloud_install.txt && false)
+stop_metric "tripleo.undercloud.install.seconds"
 if [ $INTROSPECT == 1 ] ; then
     # I'm removing most of the nodes in the env to speed up discovery
     # This could be in jq but I don't know how
@@ -57,12 +60,21 @@ export DIB_NO_TMPFS=1
 # Directing the output of this command to a file as its extreemly verbose
 echo "INFO: Check /var/log/image_build.txt for image build output"
 echo "INFO: This file can be found in logs/undercloud.tar.xz in the directory containing console.log"
+start_metric "tripleo.overcloud.${TOCI_JOBTYPE}.images.seconds"
 $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --overcloud-images | sudo dd of=/var/log/image_build.txt || (tail -n 50 /var/log/image_build.txt && false)
+stop_metric "tripleo.overcloud.${TOCI_JOBTYPE}.images.seconds"
 
+OVERCLOUD_IMAGE_MB=$(du -hs overcloud-full.qcow2 | cut -f 1 | sed 's|.$||')
+record_metric "tripleo.overcloud.${TOCI_JOBTYPE}.image.size_mb" "$OVERCLOUD_IMAGE_MB"
+
+start_metric "tripleo.register.nodes.seconds"
 $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --register-nodes
+stop_metric "tripleo.register.nodes.seconds"
 
 if [ $INTROSPECT == 1 ] ; then
+   start_metric "tripleo.introspect.seconds"
    $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --introspect-nodes
+   stop_metric "tripleo.introspect.seconds"
 fi
 
 sleep 60
@@ -83,7 +95,9 @@ if [ -n "${OVERCLOUD_UPDATE_ARGS:-}" ] ; then
 fi
 
 export OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS -e $TRIPLEO_ROOT/tripleo-ci/test-environments/worker-config.yaml"
+start_metric "tripleo.overcloud.${TOCI_JOBTYPE}.deploy.seconds"
 http_proxy= $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --overcloud-deploy ${TRIPLEO_SH_ARGS:-}
+stop_metric "tripleo.overcloud.${TOCI_JOBTYPE}.deploy.seconds"
 
 if [ -n "${OVERCLOUD_UPDATE_ARGS:-}" ] ; then
     # Reinstall openstack-tripleo-heat-templates, this will pick up the version
@@ -106,9 +120,13 @@ if [ $PACEMAKER == 1 ] ; then
     # available. heat-{api,engine} are the best candidates since due to the
     # constraint ordering they are typically started last. We'll wait up to
     # 180s.
+    start_metric "tripleo.overcloud.${TOCI_JOBTYPE}.settle.seconds"
     timeout -k 10 180 ssh $SSH_OPTIONS heat-admin@$(nova list | grep controller-0 | awk '{print $12}' | cut -d'=' -f2) sudo crm_resource -r openstack-heat-api --wait
     timeout -k 10 180 ssh $SSH_OPTIONS heat-admin@$(nova list | grep controller-0 | awk '{print $12}' | cut -d'=' -f2) sudo crm_resource -r openstack-heat-engine --wait
+    stop_metric "tripleo.overcloud.${TOCI_JOBTYPE}.settle.seconds"
 fi
 
 source ~/overcloudrc
+start_metric "tripleo.overcloud.${TOCI_JOBTYPE}.ping_test.seconds"
 OVERCLOUD_PINGTEST_OLD_HEATCLIENT=0 $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --overcloud-pingtest
+stop_metric "tripleo.overcloud.${TOCI_JOBTYPE}.ping_test.seconds"

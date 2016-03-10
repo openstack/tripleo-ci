@@ -13,6 +13,9 @@ export TRIPLEO_ROOT=/opt/stack/new
 export PATH=/sbin:/usr/sbin:$PATH
 
 source $TRIPLEO_ROOT/tripleo-ci/scripts/common_functions.sh
+source $TRIPLEO_ROOT/tripleo-ci/scripts/metrics.bash
+stop_metric "tripleo.testenv.wait.seconds" # start_metric in toci_gate_test.sh
+start_metric "tripleo.ci.total.seconds"
 
 mkdir -p $WORKSPACE/logs
 
@@ -49,6 +52,7 @@ SSH_OPTIONS='-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogL
 TARCMD="sudo XZ_OPT=-3 tar -cJf - --exclude=udev/hwdb.bin --exclude=etc/services --exclude=selinux/targeted --exclude=etc/services --exclude=etc/pki /var/log /etc"
 function postci(){
     set +e
+    stop_metric "tripleo.ci.total.seconds"
     if [ -e $TRIPLEO_ROOT/delorean/data/repos/ ] ; then
         # I'd like to tar up repos/current but tar'ed its about 8M it may be a
         # bit much for the log server, maybe when we are building less
@@ -69,6 +73,10 @@ function postci(){
             ssh $SSH_OPTIONS root@${SEED_IP} su stack -c \"ssh $SSH_OPTIONS heat-admin@$IP sudo /tmp/get_host_info.sh\"
             ssh $SSH_OPTIONS root@${SEED_IP} su stack -c \"ssh $SSH_OPTIONS heat-admin@$IP $TARCMD\" > $WORKSPACE/logs/${NAME}.tar.xz
         done
+        # post metrics
+        scp $SSH_OPTIONS root@${SEED_IP}:${METRICS_DATA_FILE} /tmp/seed-metrics
+        cat /tmp/seed-metrics >> ${METRICS_DATA_FILE}
+        metrics_to_graphite "23.253.94.71" #Dan's temp graphite server
         destroy_vms &> $WORKSPACE/logs/destroy_vms.log
     fi
     return 0
@@ -210,7 +218,7 @@ SEED_IP=$(OS_CONFIG_FILES=$TE_DATAFILE os-apply-config --key seed-ip --type neta
 echo -e "nameserver 10.1.8.10\nnameserver 8.8.8.8" > /tmp/resolv.conf
 tripleo wait_for -d 5 -l 20 -- scp $SSH_OPTIONS /tmp/resolv.conf root@${SEED_IP}:/etc/resolv.conf
 
-for VAR in CENTOS_MIRROR EPEL_MIRROR http_proxy INTROSPECT MY_IP no_proxy NODECOUNT OVERCLOUD_DEPLOY_ARGS OVERCLOUD_UPDATE_ARGS PACEMAKER SSH_OPTIONS STABLE_RELEASE TRIPLEO_ROOT TRIPLEO_SH_ARGS NETISO_V4 NETISO_V6; do
+for VAR in CENTOS_MIRROR EPEL_MIRROR http_proxy INTROSPECT MY_IP no_proxy NODECOUNT OVERCLOUD_DEPLOY_ARGS OVERCLOUD_UPDATE_ARGS PACEMAKER SSH_OPTIONS STABLE_RELEASE TRIPLEO_ROOT TRIPLEO_SH_ARGS NETISO_V4 NETISO_V6 TOCI_JOBTYPE; do
     echo "export $VAR=\"${!VAR}\"" >> $TRIPLEO_ROOT/tripleo-ci/deploy.env
 done
 
