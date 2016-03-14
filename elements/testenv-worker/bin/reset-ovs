@@ -1,0 +1,22 @@
+#!/bin/bash
+# Not including set -e here as we always want to finish up by starting
+# ovs and the testenvs regardless of what happens.
+set -x
+
+# Gracfully stop all envs
+/usr/local/bin/testenv-ctl stop_jobs
+
+# Wait for upto 3 hours for the envs to finish processing
+for x in $(seq 180) ; do
+    if [ $(virsh list --name | grep seed_ | wc -l) == 0 ] ; then
+        break
+    fi
+    sleep 60
+done
+
+# Do the ovs reset
+systemctl stop openvswitch
+cp /etc/openvswitch/conf.db_testenv /etc/openvswitch/conf.db
+systemctl start openvswitch
+
+/usr/local/bin/testenv-ctl start_jobs
