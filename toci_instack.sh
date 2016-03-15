@@ -52,7 +52,7 @@ function postci(){
     if [ -e $TRIPLEO_ROOT/delorean/data/repos/ ] ; then
         # I'd like to tar up repos/current but tar'ed its about 8M it may be a
         # bit much for the log server, maybe when we are building less
-        find $TRIPLEO_ROOT/delorean/data/repos -name rpmbuild.log | XZ_OPT=-3 xargs tar -cJf $WORKSPACE/logs/delorean_repos.tar.xz
+        find $TRIPLEO_ROOT/delorean/data/repos -name "*.log" | XZ_OPT=-3 xargs tar -cJf $WORKSPACE/logs/delorean_repos.tar.xz
     fi
     if [ "${SEED_IP:-}" != "" ] ; then
         # Generate extra state information from the running undercloud
