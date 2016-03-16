@@ -19,7 +19,7 @@ parameters:
   flavor:
     type: string
     description: Flavor to use for servers
-    default: 'm1.demo'
+    default: 'm1.small'
   public_net_name:
     type: string
     default: 'nova'
