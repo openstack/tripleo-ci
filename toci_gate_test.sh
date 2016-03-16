@@ -77,6 +77,7 @@ export OVERCLOUD_DEPLOY_ARGS=${OVERCLOUD_DEPLOY_ARGS:-""}
 export OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS --libvirt-type=qemu -t $OVERCLOUD_DEPLOY_TIMEOUT"
 export OVERCLOUD_UPDATE_ARGS=
 export UNDERCLOUD_SSL=0
+export UNDERCLOUD_IDEMPOTENT=0
 export TRIPLEO_SH_ARGS=
 export NETISO_V4=0
 export NETISO_V6=0
@@ -155,6 +156,7 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
         periodic)
             export DELOREAN_REPO_URL=http://trunk.rdoproject.org/centos7/consistent
             CACHEUPLOAD=1
+            UNDERCLOUD_IDEMPOTENT=1
             ;;
         liberty|mitaka)
             # This is handled in tripleo.sh (it always uses centos7-$STABLE_RELEASE/current)

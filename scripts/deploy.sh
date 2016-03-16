@@ -131,6 +131,12 @@ start_metric "tripleo.overcloud.${TOCI_JOBTYPE}.deploy.seconds"
 http_proxy= $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --overcloud-deploy ${TRIPLEO_SH_ARGS:-}
 stop_metric "tripleo.overcloud.${TOCI_JOBTYPE}.deploy.seconds"
 
+if [ $UNDERCLOUD_IDEMPOTENT == 1 ]; then
+    echo "INFO: Check /var/log/undercloud_install_idempotent.txt for undercloud install output"
+    echo "INFO: This file can be found in logs/undercloud.tar.xz in the directory containing console.log"
+    $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --undercloud 2>&1 | sudo dd of=/var/log/undercloud_install_idempotent.txt || (tail -n 50 /var/log/undercloud_install_idempotent.txt && false)
+fi
+
 if [ -n "${OVERCLOUD_UPDATE_ARGS:-}" ] ; then
     # Reinstall openstack-tripleo-heat-templates, this will pick up the version
     # from the delorean-ci repo if the patch being tested is from
