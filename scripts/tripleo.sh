@@ -464,6 +464,8 @@ function overcloud_deploy {
             wget --progress=dot:mega $ATOMIC_URL
             glance image-create --name atomic-image --file `basename $ATOMIC_URL` --disk-format qcow2 --container-format bare
         fi
+        #TODO: When container job is changed to network-isolation remove this
+        neutron subnet-update $(neutron net-list | grep ctlplane | cut  -d ' ' -f 6) --dns-nameserver 8.8.8.8
         OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS $CONTAINER_ARGS"
     fi
 
