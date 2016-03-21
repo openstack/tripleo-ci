@@ -1,0 +1,96 @@
+parameter_defaults:
+  # Because we don't have DNS, the certificate relies on the VIP
+  # being consistent.
+  ControlFixedIPs: [{'ip_address':'192.0.2.6'}]
+  SSLCertificate: |
+    -----BEGIN CERTIFICATE-----
+    MIIDdzCCAl+gAwIBAgIJAK42bWhJ6IsnMA0GCSqGSIb3DQEBBQUAMFIxCzAJBgNV
+    BAYTAlVTMQswCQYDVQQIDAJOQzEQMA4GA1UEBwwHUmFsZWlnaDEQMA4GA1UECgwH
+    UmVkIEhhdDESMBAGA1UEAwwJMTkyLjAuMi42MB4XDTE2MDIxNjIyMDExMFoXDTI2
+    MDIxMzIyMDExMFowUjELMAkGA1UEBhMCVVMxCzAJBgNVBAgMAk5DMRAwDgYDVQQH
+    DAdSYWxlaWdoMRAwDgYDVQQKDAdSZWQgSGF0MRIwEAYDVQQDDAkxOTIuMC4yLjYw
+    ggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQC7HYlA6wxqe/srQJsZDuvn
+    jhuizqFdWC05LvDHR6s7rm/Q7b1ym6zeDc4bubiQr+UbxlmwSmS84TCF/w7tx9Oz
+    owI3DtTXHGX17lBiCUuRx/AoxreZ8j8HjJLhezOdDQlDk4liEQkcazc19gpIPf1Z
+    bhqusuIt78tIigaDFtl4BQfk+uwN+2TjFm4is99W7ZjIqP/nygcUuVzw5dunhkvv
+    gDHl9j7BGOVlMogS15KWIhYIz+laxUQGrjQ6LRjvcHgxnzAxLzxiYaZH3Kwu/j57
+    CEENf+xLJ8tIRxSJEqbJZnjeB+Y+Hr0pRPuaDXQ4EWqGberwllfdbUQ0/LeMW1f1
+    AgMBAAGjUDBOMB0GA1UdDgQWBBQcJgxHlP+is/ea5jhX/IC2HA4U3TAfBgNVHSME
+    GDAWgBQcJgxHlP+is/ea5jhX/IC2HA4U3TAMBgNVHRMEBTADAQH/MA0GCSqGSIb3
+    DQEBBQUAA4IBAQCetlOkdufgpQrmUH3ILyaEWzrS43kZ+5HvEvqIU1P8/q+Zk9ZF
+    P3C0wpSw63fMFEB85mxEbAOdCLpivuivdpjht1nJD7tqfCto0LU9Jh0wWPwxXxg1
+    lMRD3ssUcKL4nOF8pyzG3MohiAKDzsrGNM0NKLHD5FVvZu5eT5KgFlC/6OsksIXP
+    36FG7xyBQnv1Bf9rzza1X1HVd2EGJWFxEIXBQ6jXPKHGZFqOdwT9oTMbTNOAWhSG
+    TB5HLL6XfixahKErUTplaPxApBsJD51YtEeso3e+qr+JrwPrvkhI6gLrZywLP6op
+    HP4cL1a+lV9Q3j+MRs2mq9ziRjdp2BRedqCk
+    -----END CERTIFICATE-----
+  SSLIntermediateCertificate: ''
+  SSLKey: |
+    -----BEGIN RSA PRIVATE KEY-----
+    MIIEpQIBAAKCAQEAux2JQOsManv7K0CbGQ7r544bos6hXVgtOS7wx0erO65v0O29
+    cpus3g3OG7m4kK/lG8ZZsEpkvOEwhf8O7cfTs6MCNw7U1xxl9e5QYglLkcfwKMa3
+    mfI/B4yS4XsznQ0JQ5OJYhEJHGs3NfYKSD39WW4arrLiLe/LSIoGgxbZeAUH5Prs
+    Dftk4xZuIrPfVu2YyKj/58oHFLlc8OXbp4ZL74Ax5fY+wRjlZTKIEteSliIWCM/p
+    WsVEBq40Oi0Y73B4MZ8wMS88YmGmR9ysLv4+ewhBDX/sSyfLSEcUiRKmyWZ43gfm
+    Ph69KUT7mg10OBFqhm3q8JZX3W1ENPy3jFtX9QIDAQABAoIBAQCd4n9E4tBYLYMy
+    7NGyJDAT84oIJzhrbhLCtIQAcs3ejwLUlTYMtaT4vUdTh7NfirvUYtqc8TjtU0pB
+    VoU/SCSu5/XfhUk8tT6ndE4pWtSEDuPrVDnp0Ukz0n7BedaER1KwzZXXxK4eZ61v
+    f8sPSBc1Vb13+YL15eduruBtzmLzbEGi6mqJ0dhtePeWqb6nsCqVKTO5Tnby4s33
+    toxsR8FQ3ErJ4kRv2paDNjGQVmOnUQ5UexBh0YUvdz9lAN+ut3flJb2eE/JPKjrq
+    9NyxXBLxrjqwvr6qUFNDEwxNQKSfZ6T03Fe1MrdB577MAbjM4FvUAD6t/g2QHkAA
+    BhSNwSchAoGBAOP5vhNUsf3omdFth8+1P3TRmJOAMkuJNRJWhCFLnF175/vjBkCz
+    l3fQ5n02I5eHsTw3pIZni93uTnr0CUZXiNIIJbrOvKmYtKpU24VD+JsXhAYDRAnp
+    eGEQYaoEkIci2LdjIxtrsUEMUsLFwYF8LWxeJgglVklGYAmsEBBPC8gNAoGBANId
+    8pk3hNLlpepIrluqxx1fEGtbJxbhiVCh+xWyjUH+vdqlLtudP2bzcP7DWlB15kbT
+    wpZYk1264IJRRbhrt33POyTAOhV74GNu+cPhd9M4efTRKmIjZZ/k5jOK1280zKYa
+    rOKg3RQY6fp7YebOT2Z/S1TnA4s3fP/0FI0cry2JAoGAJu6nfzWfj/UBD7rczqPt
+    Sk3g+I+UB0JPRepwdh8rfOuEGogSsUn6PAP42Lk+KsqJgfceqbVVNXlU/bpfOxwH
+    yZaKmvRjU7M4Zz5GnuOUuSey7DPykp7EaA8cHqTY6bsRt3++pxglFS69k3WiLjK+
+    rxsE868spSbXj89Kjv5wzKECgYEAgQ3t3Nex2Es/Lfg4R4tMQykJj7br+mzKh2EG
+    NBx4EKnjeHDup+scbyJlK8VXKoZPyv7zzJ5Y3UAT91btyMk4aain/fmnc1yjxM77
+    z6kjjPNqTMlQC/kLyTqxfcTwb5hxfjByMbx2LYrj43p29mmPcTgMT/iYP6D0QM1s
+    9gNBQWkCgYEAtsjGeYsfA8Xf7U3UJbwQzxRgImC9SHKlPOi3HnDsjaI0J3aZxVFm
+    0dMVw1E6PyE0Q9FWewU1Qd5O6Y8ChxiZfM0CKlNVplnMCKGLIm1g/eA8q+bap5vg
+    +t2+IqGWUrZ3qs6+0/+yYOjfYtCJiu7GXd5tS9IJVkD30wjJbfIZfb4=
+    -----END RSA PRIVATE KEY-----
+  EndpointMap:
+    CeilometerAdmin: {protocol: 'http', port: '8777', host: 'IP_ADDRESS'}
+    CeilometerInternal: {protocol: 'http', port: '8777', host: 'IP_ADDRESS'}
+    CeilometerPublic: {protocol: 'https', port: '13777', host: 'IP_ADDRESS'}
+    CinderAdmin: {protocol: 'http', port: '8776', host: 'IP_ADDRESS'}
+    CinderInternal: {protocol: 'http', port: '8776', host: 'IP_ADDRESS'}
+    CinderPublic: {protocol: 'https', port: '13776', host: 'IP_ADDRESS'}
+    GlanceAdmin: {protocol: 'http', port: '9292', host: 'IP_ADDRESS'}
+    GlanceInternal: {protocol: 'http', port: '9292', host: 'IP_ADDRESS'}
+    GlancePublic: {protocol: 'https', port: '13292', host: 'IP_ADDRESS'}
+    GlanceRegistryAdmin: {protocol: 'http', port: '9191', host: 'IP_ADDRESS'}
+    GlanceRegistryInternal: {protocol: 'http', port: '9191', host: 'IP_ADDRESS'}
+    GlanceRegistryPublic: {protocol: 'https', port: '9191', host: 'IP_ADDRESS'} # Not set on the loadbalancer yet.
+    HeatAdmin: {protocol: 'http', port: '8004', host: 'IP_ADDRESS'}
+    HeatInternal: {protocol: 'http', port: '8004', host: 'IP_ADDRESS'}
+    HeatPublic: {protocol: 'https', port: '13004', host: 'IP_ADDRESS'}
+    HorizonPublic: {protocol: 'https', port: '443', host: 'IP_ADDRESS'}
+    KeystoneAdmin: {protocol: 'http', port: '35357', host: 'IP_ADDRESS'}
+    KeystoneInternal: {protocol: 'http', port: '5000', host: 'IP_ADDRESS'}
+    KeystonePublic: {protocol: 'https', port: '13000', host: 'IP_ADDRESS'}
+    KeystoneV3Admin: {protocol: 'http', port: '35357', host: 'IP_ADDRESS'}
+    KeystoneV3Internal: {protocol: 'http', port: '5000', host: 'IP_ADDRESS'}
+    KeystoneV3Public: {protocol: 'https', port: '13000', host: 'IP_ADDRESS'}
+    NeutronAdmin: {protocol: 'http', port: '9696', host: 'IP_ADDRESS'}
+    NeutronInternal: {protocol: 'http', port: '9696', host: 'IP_ADDRESS'}
+    NeutronPublic: {protocol: 'https', port: '13696', host: 'IP_ADDRESS'}
+    NovaAdmin: {protocol: 'http', port: '8774', host: 'IP_ADDRESS'}
+    NovaInternal: {protocol: 'http', port: '8774', host: 'IP_ADDRESS'}
+    NovaPublic: {protocol: 'https', port: '13774', host: 'IP_ADDRESS'}
+    NovaEC2Admin: {protocol: 'http', port: '8773', host: 'IP_ADDRESS'}
+    NovaEC2Internal: {protocol: 'http', port: '8773', host: 'IP_ADDRESS'}
+    NovaEC2Public: {protocol: 'https', port: '13773', host: 'IP_ADDRESS'}
+    SaharaAdmin: {protocol: 'http', port: '8386', host: 'IP_ADDRESS'}
+    SaharaInternal: {protocol: 'http', port: '8386', host: 'IP_ADDRESS'}
+    SaharaPublic: {protocol: 'https', port: '13786', host: 'IP_ADDRESS'}
+    SwiftAdmin: {protocol: 'http', port: '8080', host: 'IP_ADDRESS'}
+    SwiftInternal: {protocol: 'http', port: '8080', host: 'IP_ADDRESS'}
+    SwiftPublic: {protocol: 'https', port: '13808', host: 'IP_ADDRESS'}
+
+resource_registry:
+  OS::TripleO::NodeTLSData: /usr/share/openstack-tripleo-heat-templates/puppet/extraconfig/tls/tls-cert-inject.yaml

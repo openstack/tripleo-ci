@@ -69,6 +69,7 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
             PACEMAKER=1
             ;;
         nonha)
+            OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS -e /tmp/tripleo-ci/test-environments/enable-tls.yaml -e /tmp/tripleo-ci/test-environments/inject-trust-anchor.yaml"
             INTROSPECT=1
             ;;
         containers)
