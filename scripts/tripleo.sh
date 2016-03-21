@@ -537,7 +537,7 @@ function cleanup_pingtest {
     log "Overcloud pingtest, starting cleanup"
     overcloudrc_check
     heat stack-delete -y tenant-stack || heat stack-delete tenant-stack
-    if $(tripleo wait_for -w 300 -d 10 -s "Stack not found" -- "heat stack-show tenant-stack" ); then
+    if tripleo wait_for -w 300 -d 10 -s "Stack not found" -- "heat stack-show tenant-stack"; then
         log "Overcloud pingtest - deleted the tenant-stack heat stack"
     else
         log "Overcloud pingtest - time out waiting to delete tenant heat stack, please check manually"
