@@ -86,3 +86,9 @@ done
 for NUM in $(seq 1 $NUMENVS) ; do
     ensure-test-env $HOSTIP $OVSBRIDGE $NUM
 done
+
+# Take a copy of the ovs config db, this will be refreshed nightly to prevent ovs loosing track of itself
+cp /etc/openvswitch/conf.db /etc/openvswitch/conf.db_testenv
+
+# Reset the ovs config nightly
+echo "49 $(( ( $RANDOM % 6 ) + 2 )) * * * root /usr/local/bin/reset-ovs" > /etc/cron.d/reset-ovs
