@@ -30,8 +30,10 @@ def saveform(form, storagedir):
             fp.close()
             shutil.move(fp.name, filename)
         else:
-            fp = open(os.path.join(storagedir, "metadata.txt"), "a")
-            fp.write("%s=%s\n" % (entry.name, entry.value))
+            line = "%s=%s\n" % (entry.name, entry.value)
+            fp = open(os.path.join(storagedir, "metadata.txt"), "a+")
+            if line not in fp.read():
+                fp.write(line)
             fp.close()
 
 def run():
