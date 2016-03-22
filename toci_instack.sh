@@ -66,7 +66,7 @@ function postci(){
             IP=${INSTANCE//*=}
             NAME=${INSTANCE//=*}
             ssh $SSH_OPTIONS root@${SEED_IP} su stack -c \"scp $SSH_OPTIONS /tmp/tripleo-ci/scripts/get_host_info.sh heat-admin@$IP:/tmp\"
-            ssh $SSH_OPTIONS root@${SEED_IP} su stack -c \"ssh $SSH_OPTIONS heat-admin@$IP sudo /tmp/tripleo-ci/scripts/get_host_info.sh\"
+            ssh $SSH_OPTIONS root@${SEED_IP} su stack -c \"ssh $SSH_OPTIONS heat-admin@$IP sudo /tmp/get_host_info.sh\"
             ssh $SSH_OPTIONS root@${SEED_IP} su stack -c \"ssh $SSH_OPTIONS heat-admin@$IP $TARCMD\" > $WORKSPACE/logs/${NAME}.tar.xz
         done
         destroy_vms &> $WORKSPACE/logs/destroy_vms.log
