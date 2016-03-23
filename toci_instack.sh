@@ -73,7 +73,7 @@ function postci(){
     fi
     return 0
 }
-trap "postci" EXIT
+trap "[ \$? != 0 ] && echo ERROR DURING PREVIOUS COMMAND ^^^ ; postci > $WORKSPACE/logs/postci.log 2>&1" EXIT
 
 DELOREAN_BUILD_REFS=
 for PROJFULLREF in $ZUUL_CHANGES ; do
