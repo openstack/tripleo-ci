@@ -8,6 +8,7 @@ export DIB_DISTRIBUTION_MIRROR=$CENTOS_MIRROR
 export DIB_EPEL_MIRROR=$EPEL_MIRROR
 
 echo "INFO: Check /var/log/undercloud_install.txt for undercloud install output"
+echo "INFO: This file can be found in logs/undercloud.tar.xz in the directory above this file"
 /tmp/tripleo-ci/scripts/tripleo.sh --undercloud 2>&1 | sudo dd of=/var/log/undercloud_install.txt
 if [ $INTROSPECT == 1 ] ; then
     # I'm removing most of the nodes in the env to speed up discovery
@@ -52,6 +53,7 @@ fi
 export DIB_NO_TMPFS=1
 # Directing the output of this command to a file as its extreemly verbose
 echo "INFO: Check /var/log/image_build.txt for image build output"
+echo "INFO: This file can be found in logs/undercloud.tar.xz in the directory above this file"
 /tmp/tripleo-ci/scripts/tripleo.sh --overcloud-images | sudo dd of=/var/log/image_build.txt
 
 /tmp/tripleo-ci/scripts/tripleo.sh --register-nodes
