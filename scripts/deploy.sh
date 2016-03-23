@@ -224,3 +224,7 @@ if [ $RUN_TEMPEST_TESTS == 1 ] ; then
     bash $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --run-tempest
     stop_metric "tripleo.overcloud.${TOCI_JOBTYPE}.tempest.seconds"
 fi
+if [ $TEST_OVERCLOUD_DELETE -eq 1 ] ; then
+    source ~/stackrc
+    $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --overcloud-delete
+fi

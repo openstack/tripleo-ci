@@ -84,6 +84,7 @@ export MULTINODE=0
 export CONTROLLER_HOSTS=
 export COMPUTE_HOSTS=
 export SUBNODES_SSH_KEY=
+export TEST_OVERCLOUD_DELETE=0
 
 # start dstat early
 # TODO add it to the gate image building
@@ -153,6 +154,7 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
             export DELOREAN_REPO_URL=http://trunk.rdoproject.org/centos7/consistent
             CACHEUPLOAD=1
             UNDERCLOUD_IDEMPOTENT=1
+            TEST_OVERCLOUD_DELETE=1
             ;;
         liberty|mitaka)
             # This is handled in tripleo.sh (it always uses centos7-$STABLE_RELEASE/current)
