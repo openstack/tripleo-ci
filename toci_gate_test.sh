@@ -82,8 +82,9 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
             export DELOREAN_REPO_URL=http://trunk.rdoproject.org/centos7/consistent
             CACHEUPLOAD=1
             ;;
-        liberty)
-            # This is handled in tripleo.sh (it always uses centos7-liberty/current)
+        liberty|mitaka)
+            # This is handled in tripleo.sh (it always uses centos7-$STABLE_RELEASE/current)
+            # where $STABLE_RELEASE is derived in toci_instack.sh
             unset DELOREAN_REPO_URL
             ;;
     esac
