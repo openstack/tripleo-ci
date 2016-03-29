@@ -75,9 +75,12 @@ function postci(){
 }
 trap "postci" EXIT
 
+CANUSE_INSTACK_QCOW2=1
 DELOREAN_BUILD_REFS=
 for PROJFULLREF in $ZUUL_CHANGES ; do
     PROJ=$(filterref $PROJFULLREF)
+    [ "PROJ" == "instack-undercloud" ] && CANUSE_INSTACK_QCOW2=0
+    [ "PROJ" == "diskimage-builder" ] && CANUSE_INSTACK_QCOW2=0
     # If ci is being run for a change to ci its ok not to have a ci produced repository
     # We also don't build packages for puppet repositories, we use them from source
     if [ "$PROJ" == "tripleo-ci" ] || [[ "$PROJ" =~ ^puppet-* ]] ; then
@@ -179,7 +182,14 @@ IFS=$' \t\n'
 
 # Build and deploy our undercloud instance
 destroy_vms
-disk-image-create --image-size 30 -a amd64 centos7 instack-vm -o $UNDERCLOUD_VM_NAME
+
+if [ CANUSE_INSTACK_QCOW2 == 1 ] ; then
+    wget http://$MIRRORSERVER/builds/tripleo-current/$UNDERCLOUD_VM_NAME.qcow2
+fi
+
+if [ ! -e $UNDERCLOUD_VM_NAME.qcow2 ] ; then
+    disk-image-create --image-size 30 -a amd64 centos7 instack-vm -o $UNDERCLOUD_VM_NAME
+fi
 dd if=$UNDERCLOUD_VM_NAME.qcow2 | ssh $SSH_OPTIONS root@${HOST_IP} copyseed $ENV_NUM
 ssh $SSH_OPTIONS root@${HOST_IP} virsh start seed_$ENV_NUM
 
