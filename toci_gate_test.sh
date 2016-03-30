@@ -55,11 +55,6 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
     case $JOB_TYPE_PART in
         overcloud)
             ;;
-        ceph)
-            NODECOUNT=4
-            OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS --ceph-storage-scale 2 -e /usr/share/openstack-tripleo-heat-templates/environments/puppet-ceph-devel.yaml -e /usr/share/openstack-tripleo-heat-templates/environments/network-isolation.yaml -e /usr/share/openstack-tripleo-heat-templates/environments/net-multiple-nics.yaml -e /tmp/tripleo-ci/test-environments/net-iso.yaml"
-            export NETISO_V4=1
-            ;;
         ha)
             NODECOUNT=4
             # In ci our overcloud nodes don't have access to an external netwrok
@@ -70,8 +65,9 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
             PACEMAKER=1
             ;;
         nonha)
-            OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS -e /tmp/tripleo-ci/test-environments/enable-tls.yaml -e /tmp/tripleo-ci/test-environments/inject-trust-anchor.yaml"
+            OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS -e /tmp/tripleo-ci/test-environments/enable-tls.yaml -e /tmp/tripleo-ci/test-environments/inject-trust-anchor.yaml --ceph-storage-scale 1 -e /usr/share/openstack-tripleo-heat-templates/environments/puppet-ceph-devel.yaml"
             INTROSPECT=1
+            NODECOUNT=3
             ;;
         containers)
             # TODO : remove this when the containers job is passing again
