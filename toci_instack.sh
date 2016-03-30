@@ -79,8 +79,8 @@ CANUSE_INSTACK_QCOW2=1
 DELOREAN_BUILD_REFS=
 for PROJFULLREF in $ZUUL_CHANGES ; do
     PROJ=$(filterref $PROJFULLREF)
-    [ "PROJ" == "instack-undercloud" ] && CANUSE_INSTACK_QCOW2=0
-    [ "PROJ" == "diskimage-builder" ] && CANUSE_INSTACK_QCOW2=0
+    [ "$PROJ" == "instack-undercloud" ] && CANUSE_INSTACK_QCOW2=0
+    [ "$PROJ" == "diskimage-builder" ] && CANUSE_INSTACK_QCOW2=0
     # If ci is being run for a change to ci its ok not to have a ci produced repository
     # We also don't build packages for puppet repositories, we use them from source
     if [ "$PROJ" == "tripleo-ci" ] || [[ "$PROJ" =~ ^puppet-* ]] ; then
@@ -183,8 +183,11 @@ IFS=$' \t\n'
 # Build and deploy our undercloud instance
 destroy_vms
 
-if [ CANUSE_INSTACK_QCOW2 == 1 ] ; then
-    wget http://$MIRRORSERVER/builds/tripleo-current/$UNDERCLOUD_VM_NAME.qcow2
+# Don't get a file from cache if CACHEUPLOAD=1 (periodic job)
+# If this 404's it wont error just continue without a file created
+if [ "$CANUSE_INSTACK_QCOW2" == 1 ] && [ "$CACHEUPLOAD" == 0 ] ; then
+    wget --progress=dot:mega http://$MIRRORSERVER/builds/current-tripleo/$UNDERCLOUD_VM_NAME.qcow2 || true
+    [ -f $PWD/$UNDERCLOUD_VM_NAME.qcow2 ] && update_qcow2 $PWD/$UNDERCLOUD_VM_NAME.qcow2
 fi
 
 if [ ! -e $UNDERCLOUD_VM_NAME.qcow2 ] ; then
