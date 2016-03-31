@@ -93,3 +93,27 @@ function update_qcow2(){
     sudo qemu-nbd --disconnect /dev/nbd0
     rm -rf $MOUNTDIR
 }
+
+# Decide if a particular cached artifact can be used in this CI test
+# Takes a single argument representing the name of the artifact being checked.
+function canusecache(){
+    # If we are uploading to the cache then we shouldn't use it
+    [ "$CACHEUPLOAD" == 1 ] && return 1
+
+    # We're not currently caching artifacts for stable jobs
+    [ -n "$STABLE_RELEASE" ] && return 1
+
+    CACHEDOBJECT=$1
+
+    for PROJFULLREF in $ZUUL_CHANGES ; do
+        PROJ=$(filterref $PROJFULLREF)
+
+        case $CACHEDOBJECT in
+            ${UNDERCLOUD_VM_NAME}.qcow2)
+                [[ "$PROJ" =~ instack-undercloud|diskimage-builder ]] && return 1
+                ;;
+        esac
+
+    done
+    return 0
+}
