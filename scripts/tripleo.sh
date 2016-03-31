@@ -96,7 +96,7 @@ DELOREAN_REPO_URL=${DELOREAN_REPO_URL:-"\
     http://trunk.rdoproject.org/centos7/current-tripleo/"}
 DELOREAN_STABLE_REPO_URL=${DELOREAN_STABLE_REPO_URL:-"\
     https://trunk.rdoproject.org/centos7-$STABLE_RELEASE/current/"}
-ATOMIC_URL=${ATOMIC_URL:-"https://download.fedoraproject.org/pub/fedora/linux/releases/22/Cloud/x86_64/Images/Fedora-Cloud-Atomic-22-20150521.x86_64.qcow2"}
+ATOMIC_URL=${ATOMIC_URL:-"https://download.fedoraproject.org/pub/alt/atomic/stable/Cloud-Images/x86_64/Images/Fedora-Cloud-Atomic-23-20160308.x86_64.qcow2"}
 INSTACKENV_JSON_PATH=${INSTACKENV_JSON_PATH:-"$HOME/instackenv.json"}
 INTROSPECT_NODES=${INTROSPECT_NODES:-""}
 REGISTER_NODES=${REGISTER_NODES:-""}
