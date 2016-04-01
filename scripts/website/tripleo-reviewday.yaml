@@ -1,0 +1,29 @@
+projects:
+  - name: dib-utils
+    launchpad_project: diskimage-builder
+  - name: diskimage-builder
+  - name: instack
+    launchpad_project: tripleo
+  - name: instack-undercloud
+    launchpad_project: tripleo
+  - name: os-apply-config
+  - name: os-cloud-config
+  - name: os-collect-config
+  - name: os-net-config
+  - name: os-refresh-config
+  - name: python-tripleoclient
+    launchpad_project: tripleo
+  - name: tripleo-common
+    launchpad_project: tripleo
+  - name: tripleo-docs
+    launchpad_project: tripleo
+  - name: tripleo-heat-templates
+    launchpad_project: tripleo
+  - name: tripleo-image-elements
+    launchpad_project: tripleo
+  - name: tripleo-incubator
+    launchpad_project: tripleo
+  - name: tripleo-puppet-elements
+    launchpad_project: tripleo
+  - name: tripleo-specs
+    launchpad_project: tripleo
