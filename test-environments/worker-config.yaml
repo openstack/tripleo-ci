@@ -7,6 +7,7 @@ parameter_defaults:
         value: 1
     heat::api_cloudwatch::enabled: false
     heat::api_cfn::enabled: false
+    heat::rpc_response_timeout: 600
   HeatWorkers: 1
   CeilometerWorkers: 1
   CinderWorkers: 1
