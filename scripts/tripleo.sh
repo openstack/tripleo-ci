@@ -159,6 +159,21 @@ while true ; do
 done
 
 
+##Begin TODO ccamacho: Remove when Liberty EOL: 2016-11-17
+function openstack {
+    if [ "$1" == "stack" ] ; then
+        if [ -z "$STABLE_RELEASE" ]; then
+            /usr/bin/openstack $@
+         else
+            heat stack-${@:2:$#}
+        fi
+    else
+       /usr/bin/openstack $@
+    fi
+}
+##End TODO
+
+
 function log {
     echo "#################"
     echo -n "$SCRIPT_NAME -- "
@@ -528,15 +543,15 @@ function overcloud_delete {
 
     # We delete the stack via heat, then wait for it to be deleted
     # This should be fairly quick, but we poll for OVERCLOUD_DELETE_TIMEOUT
-    heat stack-delete "$OVERCLOUD_NAME"
+    yes | openstack stack delete "$OVERCLOUD_NAME"
     # Note, we need the ID, not the name, as stack-show will only return
     # soft-deleted stacks by ID (not name, as it may be reused)
-    OVERCLOUD_ID=$(heat stack-list | grep "$OVERCLOUD_NAME" | awk '{print $2}')
-    if $(tripleo wait_for -w $OVERCLOUD_DELETE_TIMEOUT -d 10 -s "DELETE_COMPLETE" -- "heat stack-show $OVERCLOUD_ID"); then
+    OVERCLOUD_ID=$(openstack stack list | grep "$OVERCLOUD_NAME" | awk '{print $2}')
+    if $(tripleo wait_for -w $OVERCLOUD_DELETE_TIMEOUT -d 10 -s "DELETE_COMPLETE" -- "openstack stack show $OVERCLOUD_ID"); then
        log "Overcloud $OVERCLOUD_ID DELETE_COMPLETE"
     else
        log "Overcloud $OVERCLOUD_ID delete failed or timed out:"
-       heat stack-show $OVERCLOUD_ID
+       openstack stack show $OVERCLOUD_ID
        exit 1
     fi
 }
@@ -545,8 +560,8 @@ function cleanup_pingtest {
 
     log "Overcloud pingtest; cleaning environment"
     overcloudrc_check
-    yes | heat stack-delete tenant-stack || true
-    if tripleo wait_for -w 300 -d 10 -s "Stack not found" -- "heat stack-show tenant-stack"; then
+    yes | openstack stack delete tenant-stack || true
+    if tripleo wait_for -w 300 -d 10 -s "Stack not found" -- "openstack stack show tenant-stack"; then
         log "Overcloud pingtest - deleted the tenant-stack heat stack"
     else
         log "Overcloud pingtest - time out waiting to delete tenant heat stack, please check manually"
