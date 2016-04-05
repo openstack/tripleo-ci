@@ -544,6 +544,8 @@ function cleanup_pingtest {
     fi
     log "Overcloud pingtest - cleaning demo network 'nova' and 'pingtest_image' image"
     glance image-delete pingtest_image
+    glance image-delete pingtest_kernel
+    glance image-delete pingtest_initramfs
     neutron net-delete nova
     log "Overcloud pingtest - DONE"
 }
@@ -556,13 +558,22 @@ function overcloud_pingtest {
 
     overcloudrc_check
 
-    IMAGE_PATH=$OVERCLOUD_IMAGES_PATH/fedora-user.qcow2
-    if [ ! -e $IMAGE_PATH ]; then
-        log "Overcloud pingtest, trying to download Fedora image"
-        curl -L -o $IMAGE_PATH http://cloud.fedoraproject.org/fedora-21.x86_64.qcow2
+    # NOTE(bnemec): We have to use the split cirros image here to avoid
+    # https://bugs.launchpad.net/cirros/+bug/1312199  With the separate
+    # kernel and ramdisk Nova will add the necessary kernel param for us.
+    IMAGE_PATH=$OVERCLOUD_IMAGES_PATH/cirros.img
+    INITRAMFS_PATH=$OVERCLOUD_IMAGES_PATH/cirros.initramfs
+    KERNEL_PATH=$OVERCLOUD_IMAGES_PATH/cirros.kernel
+    if [ ! -e $IMAGE_PATH -o ! -e $INITRAMFS_PATH -o ! -e $KERNEL_PATH ]; then
+        log "Overcloud pingtest, trying to download Cirros image"
+        curl -L -o $IMAGE_PATH http://download.cirros-cloud.net/0.3.4/cirros-0.3.4-x86_64-disk.img
+        curl -L -o $INITRAMFS_PATH http://download.cirros-cloud.net/0.3.4/cirros-0.3.4-x86_64-initramfs
+        curl -L -o $KERNEL_PATH http://download.cirros-cloud.net/0.3.4/cirros-0.3.4-x86_64-kernel
     fi
     log "Overcloud pingtest, uploading demo tenant image to glance"
-    glance image-create --progress --name pingtest_image --is-public True --disk-format qcow2 --container-format bare --file $IMAGE_PATH
+    ramdisk_id=$(openstack image create pingtest_initramfs --public --container-format ari --disk-format ari --file $INITRAMFS_PATH | grep ' id ' | awk '{print $4}')
+    kernel_id=$(openstack image create pingtest_kernel --public --container-format aki --disk-format aki --file $KERNEL_PATH | grep ' id ' | awk '{print $4}')
+    openstack image create pingtest_image --public --container-format ami --disk-format ami --property kernel_id=$kernel_id --property ramdisk_id=$ramdisk_id --file $IMAGE_PATH
 
     log "Overcloud pingtest, creating demo tenant keypair and external network"
     if ! nova keypair-show default 2>/dev/null; then tripleo user-config; fi
