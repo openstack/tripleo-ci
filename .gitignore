@@ -3,3 +3,8 @@ tripleo-jobs.html
 tripleo-jobs.html-table
 *.swp
 *~
+scripts/website/out_html/
+scripts/website/reviewday/
+scripts/website/tripleo-ci/
+scripts/website/tripleo-docs/
+scripts/website/tripleosphinx/
