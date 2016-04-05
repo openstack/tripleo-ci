@@ -580,7 +580,7 @@ function overcloud_pingtest {
     fi
     log "Overcloud pingtest, creating tenant-stack heat stack:"
     heat stack-create -f $TENANT_PINGTEST_TEMPLATE $TENANT_STACK_DEPLOY_ARGS tenant-stack || exitval=1
-    if tripleo wait_for -w 360 -d 10 -s "CREATE_COMPLETE" -- "heat stack-list | grep tenant-stack"; then
+    if tripleo wait_for -w 1200 -d 10 -s "CREATE_COMPLETE" -- "heat stack-list | grep tenant-stack"; then
         log "Overcloud pingtest, heat stack CREATE_COMPLETE";
 
         vm1_ip=`heat output-show tenant-stack server1_public_ip -F raw`
