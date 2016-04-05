@@ -191,11 +191,10 @@ IFS=$' \t\n'
 # Build and deploy our undercloud instance
 destroy_vms
 
-# Don't get a file from cache if CACHEUPLOAD=1 (periodic job)
 # If this 404's it wont error just continue without a file created
 if canusecache $UNDERCLOUD_VM_NAME.qcow2 ; then
     wget --progress=dot:mega http://$MIRRORSERVER/builds/current-tripleo/$UNDERCLOUD_VM_NAME.qcow2 || true
-    [ -f $PWD/$UNDERCLOUD_VM_NAME.qcow2 ] && update_qcow2 $PWD/$UNDERCLOUD_VM_NAME.qcow2
+    [ -f $PWD/$UNDERCLOUD_VM_NAME.qcow2 ] && update_image $PWD/$UNDERCLOUD_VM_NAME.qcow2
 fi
 
 # We're adding some packages to the image build here so when using a cached image
@@ -222,6 +221,17 @@ done
 
 # Copy the required CI resources to the undercloud were we use them
 tar -czf - $TRIPLEO_ROOT/tripleo-ci $TRIPLEO_ROOT/puppet-*/.git /etc/yum.repos.d/delorean* | ssh $SSH_OPTIONS root@$SEED_IP tar -C / -xzf -
+
+# Don't get a file from cache if CACHEUPLOAD=1 (periodic job)
+# If this 404's it wont error just continue without a file created
+if canusecache ipa_images.tar ; then
+    wget --progress=dot:mega http://$MIRRORSERVER/builds/current-tripleo/ipa_images.tar || true
+    if [ -f ipa_images.tar ] ; then
+        tar -xf ipa_images.tar
+        update_image $PWD/ironic-python-agent.initramfs
+        scp $SSH_OPTIONS ironic-python-agent.* root@$SEED_IP:/home/stack
+    fi
+fi
 
 ssh $SSH_OPTIONS root@${SEED_IP} <<-EOF
 
