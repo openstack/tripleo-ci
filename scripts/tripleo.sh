@@ -303,7 +303,9 @@ function delorean_build {
             fi
         fi
 
-        MAPPED_PROJ=$(./venv/bin/python scripts/map-project-name $PROJ || true)
+        # Work around inconsistency where map-project-name expects oslo-*
+        MAPPED_NAME=$(echo $PROJ | sed "s/oslo./oslo-/")
+        MAPPED_PROJ=$(./venv/bin/python scripts/map-project-name $MAPPED_NAME || true)
         [ -e data/$MAPPED_PROJ ] && continue
         cp -r $TRIPLEO_ROOT/$PROJ data/$MAPPED_PROJ
         pushd data/$MAPPED_PROJ
