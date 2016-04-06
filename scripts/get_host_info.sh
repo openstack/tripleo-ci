@@ -11,6 +11,8 @@ sudo netstat -lpn
 sudo iptables-save
 sudo ovs-vsctl show
 ip addr
+ip route
+ip -6 route
 free -h
 top -n 1 -b -o RES
 rpm -qa
