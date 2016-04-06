@@ -90,8 +90,8 @@ if [ $PACEMAKER == 1 ] ; then
     # available. heat-{api,engine} are the best candidates since due to the
     # constraint ordering they are typically started last. We'll wait up to
     # 180s.
-    tripleo wait_for -w 180 --delay 1 -- ssh $SSH_OPTIONS heat-admin@$(nova list | grep controller-0 | awk '{print $12}' | cut -d'=' -f2) sudo crm_resource -r openstack-heat-api --wait
-    tripleo wait_for -w 180 --delay 1 -- ssh $SSH_OPTIONS heat-admin@$(nova list | grep controller-0 | awk '{print $12}' | cut -d'=' -f2) sudo crm_resource -r openstack-heat-engine --wait
+    timeout -k 10 180 ssh $SSH_OPTIONS heat-admin@$(nova list | grep controller-0 | awk '{print $12}' | cut -d'=' -f2) sudo crm_resource -r openstack-heat-api --wait
+    timeout -k 10 180 ssh $SSH_OPTIONS heat-admin@$(nova list | grep controller-0 | awk '{print $12}' | cut -d'=' -f2) sudo crm_resource -r openstack-heat-engine --wait
 fi
 
 source ~/overcloudrc
