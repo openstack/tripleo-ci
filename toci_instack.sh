@@ -56,7 +56,7 @@ function postci(){
     fi
     if [ "${SEED_IP:-}" != "" ] ; then
         # Generate extra state information from the running undercloud
-        ssh root@${SEED_IP} /tmp/tripleo-ci/scripts/get_host_info.sh
+        ssh root@${SEED_IP} /opt/stack/new/tripleo-ci/scripts/get_host_info.sh
 
         # Get logs from the undercloud
         ssh root@${SEED_IP} $TARCMD > $WORKSPACE/logs/undercloud.tar.xz
@@ -65,7 +65,7 @@ function postci(){
         for INSTANCE in $(ssh root@${SEED_IP} cat /tmp/nova-list.txt | grep ACTIVE | awk '{printf"%s=%s\n", $4, $12}') ; do
             IP=${INSTANCE//*=}
             NAME=${INSTANCE//=*}
-            ssh $SSH_OPTIONS root@${SEED_IP} su stack -c \"scp $SSH_OPTIONS /tmp/tripleo-ci/scripts/get_host_info.sh heat-admin@$IP:/tmp\"
+            ssh $SSH_OPTIONS root@${SEED_IP} su stack -c \"scp $SSH_OPTIONS $TRIPLEO_ROOT/tripleo-ci/scripts/get_host_info.sh heat-admin@$IP:/tmp\"
             ssh $SSH_OPTIONS root@${SEED_IP} su stack -c \"ssh $SSH_OPTIONS heat-admin@$IP sudo /tmp/get_host_info.sh\"
             ssh $SSH_OPTIONS root@${SEED_IP} su stack -c \"ssh $SSH_OPTIONS heat-admin@$IP $TARCMD\" > $WORKSPACE/logs/${NAME}.tar.xz
         done
@@ -168,8 +168,8 @@ for PROJDIR in $TRIPLEO_ROOT/puppet-*; do
     REV=$(git --git-dir=$PROJDIR/.git rev-parse HEAD)
     X=${PROJDIR//-/_}
     PROJ=${X##*/}
-    echo "export DIB_REPOREF_$PROJ=$REV" >> $TRIPLEO_ROOT/deploy.env
-    echo "export DIB_REPOLOCATION_$PROJ=$PROJDIR" >> $TRIPLEO_ROOT/deploy.env
+    echo "export DIB_REPOREF_$PROJ=$REV" >> $TRIPLEO_ROOT/tripleo-ci/deploy.env
+    echo "export DIB_REPOLOCATION_$PROJ=$PROJDIR" >> $TRIPLEO_ROOT/tripleo-ci/deploy.env
 done
 
 IFS=$'\n'
@@ -195,29 +195,26 @@ ssh $SSH_OPTIONS root@${HOST_IP} virsh start seed_$ENV_NUM
 
 # Set SEED_IP here to prevent postci ssh'ing to the undercloud before its up and running
 SEED_IP=$(OS_CONFIG_FILES=$TE_DATAFILE os-apply-config --key seed-ip --type netaddress --key-default '')
-export no_proxy=$no_proxy,$SEED_IP
-tripleo wait_for -d 5 -l 20 -- scp $SSH_OPTIONS /etc/yum.repos.d/delorean* root@${SEED_IP}:/etc/yum.repos.d
 
-# Iterate over a list of variables we want defined on the undercloud
-for VAR in CENTOS_MIRROR EPEL_MIRROR http_proxy INTROSPECT MY_IP no_proxy NODECOUNT OVERCLOUD_DEPLOY_ARGS OVERCLOUD_UPDATE_ARGS PACEMAKER SSH_OPTIONS STABLE_RELEASE TRIPLEO_SH_ARGS NETISO_V4 NETISO_V6; do
-    echo "export $VAR=\"${!VAR}\"" >> $TRIPLEO_ROOT/deploy.env
+# The very first thing we should do is put a valid dns server in /etc/resolv.conf, without it
+# all ssh connections hit a 20 second delay until a reverse dns lookup hits a timeout
+echo "nameserver 8.8.8.8" > /tmp/resolv.conf
+tripleo wait_for -d 5 -l 20 -- scp $SSH_OPTIONS /tmp/resolv.conf root@${SEED_IP}:/etc/resolv.conf
+
+for VAR in CENTOS_MIRROR EPEL_MIRROR http_proxy INTROSPECT MY_IP no_proxy NODECOUNT OVERCLOUD_DEPLOY_ARGS OVERCLOUD_UPDATE_ARGS PACEMAKER SSH_OPTIONS STABLE_RELEASE TRIPLEO_ROOT TRIPLEO_SH_ARGS NETISO_V4 NETISO_V6; do
+    echo "export $VAR=\"${!VAR}\"" >> $TRIPLEO_ROOT/tripleo-ci/deploy.env
 done
 
-# copy in required ci files
-cd "$TRIPLEO_ROOT"
-scp $SSH_OPTIONS deploy.env root@$SEED_IP:/tmp/
-tar -cf - tripleo-ci | ssh $SSH_OPTIONS root@$SEED_IP tar -C /tmp -xf -
-# Copy the puppet modules to the undercloud where we are building the images
-tar -czf - /opt/stack/new/puppet-*/.git | ssh $SSH_OPTIONS root@$SEED_IP tar -C / -xzf -
+# Copy the required CI resources to the undercloud were we use them
+tar -czf - $TRIPLEO_ROOT/tripleo-ci $TRIPLEO_ROOT/puppet-*/.git /etc/yum.repos.d/delorean* | ssh $SSH_OPTIONS root@$SEED_IP tar -C / -xzf -
 
 ssh $SSH_OPTIONS root@${SEED_IP} <<-EOF
 
 set -eux
 
-source /tmp/deploy.env
+source /opt/stack/new/tripleo-ci/deploy.env
 
 ip route add 0.0.0.0/0 dev eth0 via $MY_IP
-echo "nameserver 8.8.8.8" > /etc/resolv.conf
 
 # installing basic utils
 yum install -y python-simplejson dstat yum-plugin-priorities
@@ -235,11 +232,11 @@ mkswap /swapfile
 swapon /swapfile
 
 # Install our test cert so SSL tests work
-cp /tmp/tripleo-ci/test-environments/overcloud-cacert.pem /etc/pki/ca-trust/source/anchors/
+cp $TRIPLEO_ROOT/tripleo-ci/test-environments/overcloud-cacert.pem /etc/pki/ca-trust/source/anchors/
 update-ca-trust extract
 
 # Run the deployment as the stack user
-su -l -c "bash /tmp/tripleo-ci/scripts/deploy.sh" stack
+su -l -c "bash $TRIPLEO_ROOT/tripleo-ci/scripts/deploy.sh" stack
 EOF
 
 # If we got this far and its a periodic job, declare success and upload build artifacts

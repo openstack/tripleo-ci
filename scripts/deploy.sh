@@ -2,14 +2,14 @@ set -eux
 set -o pipefail
 
 # This sets all the environment variables for undercloud and overcloud installation
-source /tmp/deploy.env
+source /opt/stack/new/tripleo-ci/deploy.env
 
 export DIB_DISTRIBUTION_MIRROR=$CENTOS_MIRROR
 export DIB_EPEL_MIRROR=$EPEL_MIRROR
 
 echo "INFO: Check /var/log/undercloud_install.txt for undercloud install output"
 echo "INFO: This file can be found in logs/undercloud.tar.xz in the directory above this file"
-/tmp/tripleo-ci/scripts/tripleo.sh --undercloud 2>&1 | sudo dd of=/var/log/undercloud_install.txt
+$TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --undercloud 2>&1 | sudo dd of=/var/log/undercloud_install.txt
 if [ $INTROSPECT == 1 ] ; then
     # I'm removing most of the nodes in the env to speed up discovery
     # This could be in jq but I don't know how
@@ -57,12 +57,12 @@ export DIB_NO_TMPFS=1
 # Directing the output of this command to a file as its extreemly verbose
 echo "INFO: Check /var/log/image_build.txt for image build output"
 echo "INFO: This file can be found in logs/undercloud.tar.xz in the directory above this file"
-/tmp/tripleo-ci/scripts/tripleo.sh --overcloud-images | sudo dd of=/var/log/image_build.txt
+$TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --overcloud-images | sudo dd of=/var/log/image_build.txt
 
-/tmp/tripleo-ci/scripts/tripleo.sh --register-nodes
+$TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --register-nodes
 
 if [ $INTROSPECT == 1 ] ; then
-   /tmp/tripleo-ci/scripts/tripleo.sh --introspect-nodes
+   $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --introspect-nodes
 fi
 
 sleep 60
@@ -73,12 +73,12 @@ nova flavor-delete baremetal
 nova flavor-create --swap 1024 baremetal auto 4096 39 1
 nova flavor-key baremetal set capabilities:boot_option=local
 
-export OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS -e /tmp/tripleo-ci/test-environments/worker-config.yaml"
-http_proxy= /tmp/tripleo-ci/scripts/tripleo.sh --overcloud-deploy ${TRIPLEO_SH_ARGS:-}
+export OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS -e $TRIPLEO_ROOT/tripleo-ci/test-environments/worker-config.yaml"
+http_proxy= $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --overcloud-deploy ${TRIPLEO_SH_ARGS:-}
 
 if [ -n "${OVERCLOUD_UPDATE_ARGS:-}" ] ; then
-    export OVERCLOUD_UPDATE_ARGS="$OVERCLOUD_UPDATE_ARGS -e /tmp/tripleo-ci/test-environments/worker-config.yaml"
-    http_proxy= /tmp/tripleo-ci/scripts/tripleo.sh --overcloud-update ${TRIPLEO_SH_ARGS:-}
+    export OVERCLOUD_UPDATE_ARGS="$OVERCLOUD_UPDATE_ARGS -e $TRIPLEO_ROOT/tripleo-ci/test-environments/worker-config.yaml"
+    http_proxy= $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --overcloud-update ${TRIPLEO_SH_ARGS:-}
 fi
 
 # Sanity test we deployed what we said we would
@@ -95,4 +95,4 @@ if [ $PACEMAKER == 1 ] ; then
 fi
 
 source ~/overcloudrc
-OVERCLOUD_PINGTEST_OLD_HEATCLIENT=0 /tmp/tripleo-ci/scripts/tripleo.sh --overcloud-pingtest
+OVERCLOUD_PINGTEST_OLD_HEATCLIENT=0 $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --overcloud-pingtest
