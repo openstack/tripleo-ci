@@ -356,6 +356,12 @@ function undercloud {
 
     sudo yum install -y python-tripleoclient
 
+    # Mistral currently is working with trunk oslo_messaging
+    # https://bugs.launchpad.net/tripleo/+bug/1567493
+    # exporting ENABLE_MISTRAL=false isn't working so bruteforcing it our with sed
+    sudo yum install -y --nogpg instack-undercloud
+    sudo sed -i -e 's/enable_mistral:.*/enable_mistral: false/g' /usr/share/instack-undercloud/puppet-stack-config/puppet-stack-config.yaml.template
+
     if [ ! -f ~/undercloud.conf ]; then
         cp -b -f $UNDERCLOUD_CONF ~/undercloud.conf
     else
