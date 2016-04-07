@@ -68,3 +68,28 @@ function filterref(){
     PROJ=${PROJ##*/}
     echo $PROJ
 }
+
+# Mount a qcow image, copy in the delorean repositories and update the packages
+function update_qcow2(){
+    sudo modprobe nbd max_part=8
+    sudo qemu-nbd --connect=/dev/nbd0 $1
+    MOUNTDIR=$(mktemp -d)
+    sudo mount -o seclabel /dev/nbd0p1 $MOUNTDIR
+
+    # Copy in resources specific to the environment running this test
+    # instack-undercloud does this, but for cached images it wont be correct
+    sudo cp ~/.ssh/authorized_keys $MOUNTDIR/root/.ssh/authorized_keys
+    sudo cp $TE_DATAFILE $MOUNTDIR/home/stack/instackenv.json
+
+    # Update the installed packages on the image
+    sudo cp /etc/yum.repos.d/delorean* $MOUNTDIR/etc/yum.repos.d
+    sudo chroot $MOUNTDIR /bin/yum update -y
+    sudo rm -f $MOUNTDIR/etc/yum.repos.d/delorean*
+
+    # The yum update inside a chroot breaks selinux file contexts, fix them
+    sudo chroot $MOUNTDIR setfiles /etc/selinux/targeted/contexts/files/file_contexts /
+
+    sudo umount $MOUNTDIR
+    sudo qemu-nbd --disconnect /dev/nbd0
+    rm -rf $MOUNTDIR
+}
