@@ -17,7 +17,7 @@ parameters:
   flavor:
     type: string
     description: Flavor to use for servers
-    default: 'm1.small'
+    default: 'm1.tiny'
   public_net_name:
     type: string
     default: 'nova'
@@ -78,7 +78,7 @@ resources:
     properties:
       name: Volume1
       image: { get_param: image }
-      size: 10
+      size: 1
 
   server1:
     type: OS::Nova::Server
