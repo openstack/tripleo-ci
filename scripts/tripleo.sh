@@ -354,9 +354,6 @@ function undercloud {
     # pin for https://bugs.launchpad.net/tripleo/+bug/1539797
     export DIB_REPOREF_puppetlabs_concat=f3de395019928ceaca479a830a9fa63909941736
 
-    # Pin for https://bugs.launchpad.net/tripleo/+bug/1567831
-    export DIB_REPOREF_puppetlabs_mongodb=ae8fda9ab7dcabe46d05e82bd5071d3a2f572faa
-
     sudo yum install -y python-tripleoclient
 
     if [ ! -f ~/undercloud.conf ]; then
@@ -392,9 +389,6 @@ function overcloud_images {
 
     # pin for https://bugs.launchpad.net/tripleo/+bug/1539797
     export DIB_REPOREF_puppetlabs_concat=f3de395019928ceaca479a830a9fa63909941736
-
-    # Pin for https://bugs.launchpad.net/tripleo/+bug/1567831
-    export DIB_REPOREF_puppetlabs_mongodb=ae8fda9ab7dcabe46d05e82bd5071d3a2f572faa
 
     # (slagle) TODO: This needs to be fixed in python-tripleoclient or
     # diskimage-builder!
