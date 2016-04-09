@@ -14,10 +14,6 @@ parameters:
     type: string
     description: Name of image to use for servers
     default: 'pingtest_image'
-  flavor:
-    type: string
-    description: Flavor to use for servers
-    default: 'm1.tiny'
   public_net_name:
     type: string
     default: 'nova'
@@ -88,7 +84,7 @@ resources:
       block_device_mapping:
         - device_name: vda
           volume_id: { get_resource: volume1 }
-      flavor: { get_param: flavor }
+      flavor: { get_resource: test_flavor }
       key_name: { get_param: key_name }
       networks:
         - port: { get_resource: server1_port }
@@ -119,6 +115,12 @@ resources:
           port_range_max: 22
         - remote_ip_prefix: 0.0.0.0/0
           protocol: icmp
+
+  test_flavor:
+    type: OS::Nova::Flavor
+    properties:
+      ram: 512
+      vcpus: 1
 
 outputs:
   server1_private_ip:
