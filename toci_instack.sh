@@ -190,8 +190,11 @@ if [ "$CANUSE_INSTACK_QCOW2" == 1 ] && [ "$CACHEUPLOAD" == 0 ] ; then
     [ -f $PWD/$UNDERCLOUD_VM_NAME.qcow2 ] && update_qcow2 $PWD/$UNDERCLOUD_VM_NAME.qcow2
 fi
 
+# We're adding some packages to the image build here so when using a cached image
+# less has to be installed during the undercloud install
 if [ ! -e $UNDERCLOUD_VM_NAME.qcow2 ] ; then
-    disk-image-create --image-size 30 -a amd64 centos7 instack-vm -o $UNDERCLOUD_VM_NAME
+    DIB_YUM_REPO_CONF=$(ls /etc/yum.repos.d/delorean*) \
+    disk-image-create --image-size 30 -a amd64 centos7 instack-vm -o $UNDERCLOUD_VM_NAME -p automake,docker-registry,dstat,gcc-c++,ipxe-bootimgs,libxslt-devel,mariadb-devel,mariadb-server,memcached,mod_wsgi,openstack-aodh-api,openstack-aodh-evaluator,openstack-aodh-listener,openstack-aodh-notifier,openstack-ceilometer-api,openstack-ceilometer-central,openstack-ceilometer-collector,openstack-glance,openstack-heat-api,openstack-heat-api-cfn,openstack-heat-engine,openstack-ironic-api,openstack-ironic-conductor,openstack-ironic-inspector,openstack-keystone,openstack-neutron,openstack-neutron-ml2,openstack-neutron-openvswitch,openstack-nova-api,openstack-nova-cert,openstack-nova-compute,openstack-nova-conductor,openstack-nova-scheduler,openstack-selinux,openstack-swift-account,openstack-swift-object,openstack-swift-proxy,openstack-tempest,openwsman-python,os-apply-config,os-cloud-config,os-collect-config,os-net-config,os-refresh-config,puppet,python-pip,python-virtualenv,rabbitmq-server,tftp-server,xinetd,yum-plugin-priorities
 fi
 dd if=$UNDERCLOUD_VM_NAME.qcow2 | ssh $SSH_OPTIONS root@${HOST_IP} copyseed $ENV_NUM
 ssh $SSH_OPTIONS root@${HOST_IP} virsh start seed_$ENV_NUM
