@@ -247,6 +247,10 @@ EOF
 
 # If we got this far and its a periodic job, declare success and upload build artifacts
 if [ $CACHEUPLOAD == 1 ] ; then
+    # Get the IPA images for caching
+    ssh root@$SEED_IP tar -C /home/stack -cf - ironic-python-agent.initramfs ironic-python-agent.vmlinuz ironic-python-agent.kernel > ipa_images.tar
+
+    curl http://$MIRRORSERVER/cgi-bin/upload.cgi  -F "repohash=$TRUNKREPOUSED" -F "upload=@ipa_images.tar;filename=ipa_images.tar"
     curl http://$MIRRORSERVER/cgi-bin/upload.cgi  -F "repohash=$TRUNKREPOUSED" -F "upload=@$TRIPLEO_ROOT/$UNDERCLOUD_VM_NAME.qcow2;filename=$UNDERCLOUD_VM_NAME.qcow2"
     curl http://$MIRRORSERVER/cgi-bin/upload.cgi  -F "repohash=$TRUNKREPOUSED" -F "$JOB_NAME=SUCCESS"
 fi
