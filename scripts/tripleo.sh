@@ -50,22 +50,23 @@ function show_options {
     echo "variables."
     echo
     echo "Options:"
-    echo "      --repo-setup         -- Perform repository setup."
-    echo "      --delorean-setup     -- Install local delorean build environment."
-    echo "      --delorean-build     -- Build a delorean package locally"
-    echo "      --undercloud         -- Install the undercloud."
-    echo "      --overcloud-images   -- Build and load overcloud images."
-    echo "      --register-nodes     -- Register and configure nodes."
-    echo "      --introspect-nodes   -- Introspect nodes."
-    echo "      --overcloud-deploy   -- Deploy an overcloud."
-    echo "      --overcloud-update   -- Update a deployed overcloud."
-    echo "      --overcloud-delete   -- Delete the overcloud."
-    echo "      --use-containers     -- Use a containerized compute node."
-    echo "      --enable-check       -- Enable checks on update."
-    echo "      --overcloud-pingtest -- Run a tenant vm, attach and ping floating IP."
-    echo "      --all, -a            -- Run all of the above commands."
-    echo "      -x                   -- enable tracing"
-    echo "      --help, -h           -- Print this help message."
+    echo "      --repo-setup            -- Perform repository setup."
+    echo "      --delorean-setup        -- Install local delorean build environment."
+    echo "      --delorean-build        -- Build a delorean package locally"
+    echo "      --undercloud            -- Install the undercloud."
+    echo "      --overcloud-images      -- Build and load overcloud images."
+    echo "      --register-nodes        -- Register and configure nodes."
+    echo "      --introspect-nodes      -- Introspect nodes."
+    echo "      --overcloud-deploy      -- Deploy an overcloud."
+    echo "      --overcloud-update      -- Update a deployed overcloud."
+    echo "      --overcloud-delete      -- Delete the overcloud."
+    echo "      --use-containers        -- Use a containerized compute node."
+    echo "      --enable-check          -- Enable checks on update."
+    echo "      --overcloud-pingtest    -- Run a tenant vm, attach and ping floating IP."
+    echo "      --skip-pingtest-cleanup -- For debuging purposes, do not delete the created resources when performing a pingtest."
+    echo "      --all, -a               -- Run all of the above commands."
+    echo "      -x                      -- enable tracing"
+    echo "      --help, -h              -- Print this help message."
     echo
     exit 1
 }
@@ -76,7 +77,7 @@ if [ ${#@} = 0 ]; then
 fi
 
 TEMP=$(getopt -o ,h \
-        -l,help,repo-setup,delorean-setup,delorean-build,undercloud,overcloud-images,register-nodes,introspect-nodes,overcloud-deploy,overcloud-update,overcloud-delete,use-containers,overcloud-pingtest,all,enable-check \
+        -l,help,repo-setup,delorean-setup,delorean-build,undercloud,overcloud-images,register-nodes,introspect-nodes,overcloud-deploy,overcloud-update,overcloud-delete,use-containers,overcloud-pingtest,skip-pingtest-cleanup,all,enable-check \
         -o,x,h,a \
         -n $SCRIPT_NAME -- "$@")
 
@@ -112,6 +113,7 @@ OVERCLOUD_IMAGES_PATH=${OVERCLOUD_IMAGES_PATH:-"$HOME"}
 OVERCLOUD_IMAGES=${OVERCLOUD_IMAGES:-""}
 OVERCLOUD_IMAGES_ARGS=${OVERCLOUD_IMAGES_ARGS='--all'}
 OVERCLOUD_NAME=${OVERCLOUD_NAME:-"overcloud"}
+SKIP_PINGTEST_CLEANUP=${SKIP_PINGTEST_CLEANUP:-""}
 OVERCLOUD_PINGTEST=${OVERCLOUD_PINGTEST:-""}
 REPO_SETUP=${REPO_SETUP:-""}
 REPO_PREFIX=${REPO_PREFIX:-"/etc/yum.repos.d/"}
@@ -144,6 +146,7 @@ while true ; do
         --overcloud-delete) OVERCLOUD_DELETE="1"; shift 1;;
         --overcloud-images) OVERCLOUD_IMAGES="1"; shift 1;;
         --overcloud-pingtest) OVERCLOUD_PINGTEST="1"; shift 1;;
+        --skip-pingtest-cleanup) SKIP_PINGTEST_CLEANUP="1"; shift 1;;
         --repo-setup) REPO_SETUP="1"; shift 1;;
         --delorean-setup) DELOREAN_SETUP="1"; shift 1;;
         --delorean-build) DELOREAN_BUILD="1"; shift 1;;
@@ -540,20 +543,18 @@ function overcloud_delete {
 
 function cleanup_pingtest {
 
-    log "Overcloud pingtest, starting cleanup"
+    log "Overcloud pingtest; cleaning environment"
     overcloudrc_check
-    heat stack-delete -y tenant-stack || heat stack-delete tenant-stack
+    yes | heat stack-delete tenant-stack || true
     if tripleo wait_for -w 300 -d 10 -s "Stack not found" -- "heat stack-show tenant-stack"; then
         log "Overcloud pingtest - deleted the tenant-stack heat stack"
     else
         log "Overcloud pingtest - time out waiting to delete tenant heat stack, please check manually"
     fi
-    log "Overcloud pingtest - cleaning demo network 'nova' and 'pingtest_image' image"
-    glance image-delete pingtest_image
-    glance image-delete pingtest_kernel
-    glance image-delete pingtest_initramfs
-    neutron net-delete nova
-    log "Overcloud pingtest - DONE"
+    log "Overcloud pingtest - cleaning all 'pingtest_*' images"
+    openstack image list | grep pingtest | awk '{print $2}' | xargs -n1 openstack image delete || true
+    log "Overcloud pingtest - cleaning demo network 'nova'"
+    neutron net-delete nova || true
 }
 
 
@@ -563,6 +564,8 @@ function overcloud_pingtest {
     exitval=0
 
     overcloudrc_check
+
+    cleanup_pingtest
 
     # NOTE(bnemec): We have to use the split cirros image here to avoid
     # https://bugs.launchpad.net/cirros/+bug/1312199  With the separate
@@ -628,7 +631,13 @@ function overcloud_pingtest {
         log "Overcloud pingtest, failed to create heat stack, trying cleanup"
         exitval=1
     fi
-    cleanup_pingtest
+    if [ "$SKIP_PINGTEST_CLEANUP" != 1 ]; then
+        cleanup_pingtest
+    else
+        log "Overcloud pingtest, the resources created by the pingtest will remain until a new pingtest is executed."
+    fi
+    log "Overcloud pingtest - DONE"
+
     exit $exitval
 }
 
