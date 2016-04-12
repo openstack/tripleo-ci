@@ -636,8 +636,11 @@ function overcloud_pingtest {
     else
         log "Overcloud pingtest, the resources created by the pingtest will remain until a new pingtest is executed."
     fi
-    log "Overcloud pingtest - DONE"
-
+    if [ $exitval -eq 0 ]; then
+        log "Overcloud pingtest SUCCEEDED"
+    else
+        log "Overcloud pingtest FAILED"
+    fi
     exit $exitval
 }
 
