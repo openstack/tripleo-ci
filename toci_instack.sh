@@ -204,7 +204,7 @@ SEED_IP=$(OS_CONFIG_FILES=$TE_DATAFILE os-apply-config --key seed-ip --type neta
 
 # The very first thing we should do is put a valid dns server in /etc/resolv.conf, without it
 # all ssh connections hit a 20 second delay until a reverse dns lookup hits a timeout
-echo "nameserver 8.8.8.8" > /tmp/resolv.conf
+echo -e "nameserver 10.1.8.10\nnameserver 8.8.8.8" > /tmp/resolv.conf
 tripleo wait_for -d 5 -l 20 -- scp $SSH_OPTIONS /tmp/resolv.conf root@${SEED_IP}:/etc/resolv.conf
 
 for VAR in CENTOS_MIRROR EPEL_MIRROR http_proxy INTROSPECT MY_IP no_proxy NODECOUNT OVERCLOUD_DEPLOY_ARGS OVERCLOUD_UPDATE_ARGS PACEMAKER SSH_OPTIONS STABLE_RELEASE TRIPLEO_ROOT TRIPLEO_SH_ARGS NETISO_V4 NETISO_V6; do
