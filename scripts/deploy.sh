@@ -73,10 +73,26 @@ nova flavor-delete baremetal
 nova flavor-create --swap 1024 baremetal auto 4096 39 1
 nova flavor-key baremetal set capabilities:boot_option=local
 
+if [ -n "${OVERCLOUD_UPDATE_ARGS:-}" ] ; then
+    # Reinstall openstack-tripleo-heat-templates from delorean-current.
+    # Since we're testing updates, we want to remove any version we may have
+    # installed from the delorean-ci repo and install from delorean-current,
+    # or just delorean in the case of stable branches.
+    sudo rpm -ev --nodeps openstack-tripleo-heat-templates
+    sudo yum -y --disablerepo=* --enablerepo=delorean,delorean-current install openstack-tripleo-heat-templates
+fi
+
 export OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS -e $TRIPLEO_ROOT/tripleo-ci/test-environments/worker-config.yaml"
 http_proxy= $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --overcloud-deploy ${TRIPLEO_SH_ARGS:-}
 
 if [ -n "${OVERCLOUD_UPDATE_ARGS:-}" ] ; then
+    # Reinstall openstack-tripleo-heat-templates, this will pick up the version
+    # from the delorean-ci repo if the patch being tested is from
+    # tripleo-heat-templates, otherwise it will just reinstall from
+    # delorean-current.
+    sudo rpm -ev --nodeps openstack-tripleo-heat-templates
+    sudo yum -y install openstack-tripleo-heat-templates
+
     export OVERCLOUD_UPDATE_ARGS="$OVERCLOUD_UPDATE_ARGS -e $TRIPLEO_ROOT/tripleo-ci/test-environments/worker-config.yaml"
     http_proxy= $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --overcloud-update ${TRIPLEO_SH_ARGS:-}
 fi
