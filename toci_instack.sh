@@ -176,7 +176,10 @@ IFS=$'\n'
 # For the others we use local mirror server
 for REPO in $(cat $TRIPLEO_ROOT/tripleo-ci/scripts/mirror-server/mirrored.list | grep -v "^#"); do
     RDIR=${REPO%% *}
-    echo "export DIB_REPOLOCATION_$RDIR=http://$MIRRORSERVER/repos/$RDIR" >> $TRIPLEO_ROOT/tripleo-ci/deploy.env
+    REPOLOCATION=http://$MIRRORSERVER/repos/$RDIR
+    if curl -sf ${REPOLOCATION}/HEAD ; then
+        echo "export DIB_REPOLOCATION_$RDIR=$REPOLOCATION" >> $TRIPLEO_ROOT/tripleo-ci/deploy.env
+    fi
 done
 IFS=$' \t\n'
 
