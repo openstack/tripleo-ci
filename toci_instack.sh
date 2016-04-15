@@ -77,7 +77,9 @@ function postci(){
         scp $SSH_OPTIONS root@${SEED_IP}:${METRICS_DATA_FILE} /tmp/seed-metrics
         cat /tmp/seed-metrics >> ${METRICS_DATA_FILE}
         metrics_to_graphite "23.253.94.71" #Dan's temp graphite server
-        destroy_vms &> $WORKSPACE/logs/destroy_vms.log
+        if [ -z "${LEAVE_RUNNING:-}" ] ; then
+            destroy_vms &> $WORKSPACE/logs/destroy_vms.log
+        fi
     fi
     return 0
 }
