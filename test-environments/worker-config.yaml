@@ -2,9 +2,6 @@ parameter_defaults:
   # HeatWorkers doesn't modify num_engine_workers, so handle
   # via heat::config
   controllerExtraConfig:
-    heat::config::heat_config:
-      DEFAULT/num_engine_workers:
-        value: 1
     heat::api_cloudwatch::enabled: false
     heat::api_cfn::enabled: false
     heat::rpc_response_timeout: 600
