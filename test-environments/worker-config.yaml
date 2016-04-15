@@ -1,6 +1,4 @@
 parameter_defaults:
-  # HeatWorkers doesn't modify num_engine_workers, so handle
-  # via heat::config
   controllerExtraConfig:
     heat::api_cloudwatch::enabled: false
     heat::api_cfn::enabled: false

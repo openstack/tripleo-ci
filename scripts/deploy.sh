@@ -7,6 +7,7 @@ source /opt/stack/new/tripleo-ci/scripts/metrics.bash
 
 export DIB_DISTRIBUTION_MIRROR=$CENTOS_MIRROR
 export DIB_EPEL_MIRROR=$EPEL_MIRROR
+export STABLE_RELEASE=${STABLE_RELEASE:-""}
 
 echo "INFO: Check /var/log/undercloud_install.txt for undercloud install output"
 echo "INFO: This file can be found in logs/undercloud.tar.xz in the directory containing console.log"
@@ -95,6 +96,9 @@ if [ -n "${OVERCLOUD_UPDATE_ARGS:-}" ] ; then
 fi
 
 export OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS -e $TRIPLEO_ROOT/tripleo-ci/test-environments/worker-config.yaml"
+if [[ "${STABLE_RELEASE}" =~ ^(liberty|mitaka)$ ]] ; then
+    OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS -e $TRIPLEO_ROOT/tripleo-ci/test-environments/worker-config-mitaka-and-below.yaml"
+fi
 start_metric "tripleo.overcloud.${TOCI_JOBTYPE}.deploy.seconds"
 http_proxy= $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --overcloud-deploy ${TRIPLEO_SH_ARGS:-}
 stop_metric "tripleo.overcloud.${TOCI_JOBTYPE}.deploy.seconds"
@@ -108,6 +112,9 @@ if [ -n "${OVERCLOUD_UPDATE_ARGS:-}" ] ; then
     sudo yum -y install openstack-tripleo-heat-templates
 
     export OVERCLOUD_UPDATE_ARGS="$OVERCLOUD_UPDATE_ARGS -e $TRIPLEO_ROOT/tripleo-ci/test-environments/worker-config.yaml"
+    if [[ "${STABLE_RELEASE}" =~ ^(liberty|mitaka)$ ]] ; then
+        OVERCLOUD_UPDATE_ARGS="$OVERCLOUD_UPDATE_ARGS -e $TRIPLEO_ROOT/tripleo-ci/test-environments/worker-config-mitaka-and-below.yaml"
+    fi
     http_proxy= $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --overcloud-update ${TRIPLEO_SH_ARGS:-}
 fi
 
