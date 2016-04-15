@@ -47,7 +47,8 @@ export NETISO_V6=0
 sudo sed -i -e "s|^#baseurl=http://download.fedoraproject.org/pub/fedora/linux|baseurl=$FEDORA_MIRROR|;/^metalink/d" /etc/yum.repos.d/fedora*.repo
 
 # start dstat early
-sudo yum install -y dstat # TODO add it to the gate image building
+# TODO add it to the gate image building
+sudo yum install -y dstat nmap-ncat #nc is for metrics
 mkdir -p "$WORKSPACE/logs"
 dstat -tcmndrylpg --output "$WORKSPACE/logs/dstat-csv.log" >/dev/null &
 disown
@@ -108,6 +109,9 @@ TIMEOUT_SECS=$((DEVSTACK_GATE_TIMEOUT*60))
 # ./testenv-client kill everything in its own process group it it hits a timeout
 # run it in a separate group to avoid getting killed along with it
 set -m
+
+source /opt/stack/new/tripleo-ci/scripts/metrics.bash
+start_metric "tripleo.testenv.wait.seconds"
 # Kill the whole job if it doesn't get a testenv in 20 minutes as it likely will timout in zuul
 ( sleep 1200 ; [ ! -e /tmp/toci.started ] && sudo kill -9 $$ ) &
 ./testenv-client -b $GEARDSERVER:4730 -t $TIMEOUT_SECS -- ./toci_instack.sh
