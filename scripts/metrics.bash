@@ -55,12 +55,14 @@ function metrics_to_graphite {
     local METRIC_VAL
     local DTS
 
+    set +e #ignore errors posting metrics results
     for X in $(cat $METRICS_DATA_FILE); do
         METRIC_NAME=$(echo $X | cut -d ":" -f 1)
         METRIC_VAL=$(echo $X | cut -d ":" -f 2)
         DTS=$(echo $X | cut -d ":" -f 3)
         echo "$METRIC_NAME $METRIC_VAL $DTS" | nc ${SERVER} ${PORT}
     done
+    set -e
     # reset the existing data file and start times
     echo "" > METRICS_START_TIMES
     echo "" > METRICS_DATA_FILE
