@@ -1,0 +1,7 @@
+parameter_defaults:
+  # HeatWorkers doesn't modify num_engine_workers, so handle
+  # via heat::config
+  controllerExtraConfig:
+    heat::config::heat_config:
+      DEFAULT/num_engine_workers:
+        value: 1
