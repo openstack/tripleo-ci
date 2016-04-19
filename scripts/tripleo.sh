@@ -218,7 +218,7 @@ EOF"
 
         # Enable delorean current for the stable version
         sudo curl -o $REPO_PREFIX/delorean.repo $DELOREAN_STABLE_REPO_URL/$DELOREAN_REPO_FILE
-        sudo sed -i -e 's%priority=.*%priority=20%' /etc/yum.repos.d/delorean.repo
+        sudo sed -i -e 's%priority=.*%priority=20%' $REPO_PREFIX/delorean.repo
 
         # Create empty delorean-current for dib image building
         sudo sh -c "> $REPO_PREFIX/delorean-current.repo"
