@@ -81,7 +81,7 @@ function postci(){
     fi
     return 0
 }
-trap "postci" EXIT
+trap "[ \$? != 0 ] && echo ERROR DURING PREVIOUS COMMAND ^^^ ; postci > $WORKSPACE/logs/postci.log 2>&1" EXIT
 
 CANUSE_INSTACK_QCOW2=1
 DELOREAN_BUILD_REFS=
