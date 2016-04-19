@@ -110,7 +110,7 @@ function canusecache(){
 
         case $CACHEDOBJECT in
             ${UNDERCLOUD_VM_NAME}.qcow2)
-                [[ "$PROJ" =~ instack-undercloud|diskimage-builder ]] && return 1
+                [[ "$PROJ" =~ instack-undercloud|diskimage-builder|tripleo-image-elements|tripleo-puppet-elements ]] && return 1
                 ;;
         esac
 
