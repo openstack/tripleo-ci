@@ -112,6 +112,10 @@ set -m
 
 source /opt/stack/new/tripleo-ci/scripts/metrics.bash
 start_metric "tripleo.testenv.wait.seconds"
-# Kill the whole job if it doesn't get a testenv in 20 minutes as it likely will timout in zuul
-( sleep 1200 ; [ ! -e /tmp/toci.started ] && sudo kill -9 $$ ) &
-./testenv-client -b $GEARDSERVER:4730 -t $TIMEOUT_SECS -- ./toci_instack.sh
+if [ -z ${TE_DATAFILE:-} ] ; then
+    # Kill the whole job if it doesn't get a testenv in 20 minutes as it likely will timout in zuul
+    ( sleep 1200 ; [ ! -e /tmp/toci.started ] && sudo kill -9 $$ ) &
+    ./testenv-client -b $GEARDSERVER:4730 -t $TIMEOUT_SECS -- ./toci_instack.sh
+else
+    LEAVE_RUNNING=1 ./toci_instack.sh
+fi
