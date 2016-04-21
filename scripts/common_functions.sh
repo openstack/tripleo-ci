@@ -70,28 +70,44 @@ function filterref(){
 }
 
 # Mount a qcow image, copy in the delorean repositories and update the packages
-function update_qcow2(){
-    sudo modprobe nbd max_part=8
-    sudo qemu-nbd --connect=/dev/nbd0 $1
+function update_image(){
+    IMAGE=$1
     MOUNTDIR=$(mktemp -d)
-    sudo mount -o seclabel /dev/nbd0p1 $MOUNTDIR
+    case ${IMAGE##*.} in
+        qcow2)
+            sudo modprobe nbd max_part=8
+            sudo qemu-nbd --connect=/dev/nbd0 $IMAGE
+            sudo mount -o seclabel /dev/nbd0p1 $MOUNTDIR
+            ;;
+        initramfs)
+            pushd $MOUNTDIR
+            gunzip -c $IMAGE | sudo cpio -i
+            ;;
+    esac
 
-    # Copy in resources specific to the environment running this test
+    # Overwrite resources specific to the environment running this test
     # instack-undercloud does this, but for cached images it wont be correct
-    sudo cp ~/.ssh/authorized_keys $MOUNTDIR/root/.ssh/authorized_keys
-    sudo cp $TE_DATAFILE $MOUNTDIR/home/stack/instackenv.json
+    sudo test -f $MOUNTDIR/root/.ssh/authorized_keys && sudo cp ~/.ssh/authorized_keys $MOUNTDIR/root/.ssh/authorized_keys
+    sudo test -f $MOUNTDIR/home/stack/instackenv.json && sudo cp $TE_DATAFILE $MOUNTDIR/home/stack/instackenv.json
 
     # Update the installed packages on the image
     sudo cp /etc/yum.repos.d/delorean* $MOUNTDIR/etc/yum.repos.d
     sudo chroot $MOUNTDIR /bin/yum update -y
     sudo rm -f $MOUNTDIR/etc/yum.repos.d/delorean*
 
-    # The yum update inside a chroot breaks selinux file contexts, fix them
-    sudo chroot $MOUNTDIR setfiles /etc/selinux/targeted/contexts/files/file_contexts /
-
-    sudo umount $MOUNTDIR
-    sudo qemu-nbd --disconnect /dev/nbd0
-    rm -rf $MOUNTDIR
+    case ${IMAGE##*.} in
+        qcow2)
+            # The yum update inside a chroot breaks selinux file contexts, fix them
+            sudo chroot $MOUNTDIR setfiles /etc/selinux/targeted/contexts/files/file_contexts /
+            sudo umount $MOUNTDIR
+            sudo qemu-nbd --disconnect /dev/nbd0
+            ;;
+        initramfs)
+            sudo find . -print | sudo cpio -o -H newc | gzip > $IMAGE
+            popd
+            ;;
+    esac
+    sudo rm -rf $MOUNTDIR
 }
 
 # Decide if a particular cached artifact can be used in this CI test
@@ -111,6 +127,9 @@ function canusecache(){
         case $CACHEDOBJECT in
             ${UNDERCLOUD_VM_NAME}.qcow2)
                 [[ "$PROJ" =~ instack-undercloud|diskimage-builder|tripleo-image-elements|tripleo-puppet-elements ]] && return 1
+                ;;
+            ipa_images.tar)
+                [[ "$PROJ" =~ diskimage-builder ]] && return 1
                 ;;
         esac
 
