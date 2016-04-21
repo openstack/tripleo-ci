@@ -58,6 +58,8 @@ fi
 
 # Our ci underclouds don't have enough RAM to allow us to use a tmpfs
 export DIB_NO_TMPFS=1
+# Override the default repositories set by tripleo.sh, to add the delorean-ci repository
+export OVERCLOUD_IMAGES_DIB_YUM_REPO_CONF=$(ls /etc/yum.repos.d/delorean*)
 # Directing the output of this command to a file as its extreemly verbose
 echo "INFO: Check /var/log/image_build.txt for image build output"
 echo "INFO: This file can be found in logs/undercloud.tar.xz in the directory containing console.log"
