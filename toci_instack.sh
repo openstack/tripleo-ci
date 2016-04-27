@@ -125,7 +125,7 @@ sudo sed -i -e "s%baseurl=.*%baseurl=http://$MY_IP:8766/current/%" /etc/yum.repo
 sudo sed -i -e 's%priority=.*%priority=1%' /etc/yum.repos.d/delorean-ci.repo
 
 # Remove everything installed from a delorean repository (only requred if ci nodes are being reused)
-TOBEREMOVED=$(yumdb search from_repo "*delorean*" | grep -v -e from_repo -e "Loaded plugins" || true)
+TOBEREMOVED=$(yumdb search from_repo delorean delorean-current delorean-ci | grep -v -e from_repo -e "Loaded plugins" || true)
 [ "$TOBEREMOVED" != "" ] &&  sudo yum remove -y $TOBEREMOVED
 sudo yum clean all
 
