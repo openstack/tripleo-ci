@@ -9,7 +9,7 @@ parameters:
   key_name:
     type: string
     description: Name of keypair to assign to servers
-    default: 'default'
+    default: 'pingtest_key'
   image:
     type: string
     description: Name of image to use for servers
@@ -41,6 +41,12 @@ parameters:
     description: End of private network IP address allocation pool
 
 resources:
+
+  key_pair:
+    type: OS::Nova::KeyPair
+    properties:
+      save_private_key: true
+      name: {get_param: key_name }
 
   private_net:
     type: OS::Neutron::Net
@@ -85,7 +91,7 @@ resources:
         - device_name: vda
           volume_id: { get_resource: volume1 }
       flavor: { get_resource: test_flavor }
-      key_name: { get_param: key_name }
+      key_name: { get_resource: key_pair }
       networks:
         - port: { get_resource: server1_port }
 

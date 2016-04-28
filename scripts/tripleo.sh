@@ -595,8 +595,7 @@ function overcloud_pingtest {
     kernel_id=$(openstack image create pingtest_kernel --public --container-format aki --disk-format aki --file $KERNEL_PATH | grep ' id ' | awk '{print $4}')
     openstack image create pingtest_image --public --container-format ami --disk-format ami --property kernel_id=$kernel_id --property ramdisk_id=$ramdisk_id --file $IMAGE_PATH
 
-    log "Overcloud pingtest, creating demo tenant keypair and external network"
-    if ! nova keypair-show default 2>/dev/null; then tripleo user-config; fi
+    log "Overcloud pingtest, creating external network"
     neutron net-create nova --shared --router:external=True --provider:network_type flat \
   --provider:physical_network datacentre
     FLOATING_IP_CIDR=${FLOATING_IP_CIDR:-"192.0.2.0/24"}
