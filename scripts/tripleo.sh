@@ -254,6 +254,9 @@ function delorean_setup {
     # Install delorean as per combination of toci-instack and delorean docs
     sudo yum install -y createrepo git mock python-virtualenv rpm-build yum-plugin-priorities yum-utils gcc
 
+    # Workaround until https://review.openstack.org/#/c/311734/ is merged and a new image is built
+    sudo yum install -y libffi-devel openssl-devel
+
     # Add the current user to the mock group
     sudo usermod -G mock -a $(id -nu)
 
