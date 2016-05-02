@@ -54,6 +54,9 @@ parameter_defaults:
     +t2+IqGWUrZ3qs6+0/+yYOjfYtCJiu7GXd5tS9IJVkD30wjJbfIZfb4=
     -----END RSA PRIVATE KEY-----
   EndpointMap:
+    AodhAdmin: {protocol: 'http', port: '8042', host: 'IP_ADDRESS'}
+    AodhInternal: {protocol: 'http', port: '8042', host: 'IP_ADDRESS'}
+    AodhPublic: {protocol: 'https', port: '13042', host: 'IP_ADDRESS'}
     CeilometerAdmin: {protocol: 'http', port: '8777', host: 'IP_ADDRESS'}
     CeilometerInternal: {protocol: 'http', port: '8777', host: 'IP_ADDRESS'}
     CeilometerPublic: {protocol: 'https', port: '13777', host: 'IP_ADDRESS'}
