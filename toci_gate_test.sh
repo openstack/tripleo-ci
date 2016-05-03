@@ -7,6 +7,10 @@ sudo yum clean all
 # Remove metrics from a previous run
 rm -f /tmp/metric-start-times /tmp/metrics-data
 
+# In order to save space remove some of the largest git repos
+# mirrored on the jenkins slave, together these make up 2G(of 4.6G)
+sudo rm -rf /opt/git/openstack/openstack-manuals /opt/git/openstack/daisycloud-core /opt/git/openstack/fuel-* /opt/git/openstack-infra/activity-board
+
 # cd to toci directory so relative paths work (below and in toci_devtest.sh)
 cd $(dirname $0)
 
