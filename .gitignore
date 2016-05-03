@@ -8,3 +8,5 @@ scripts/website/reviewday/
 scripts/website/tripleo-ci/
 scripts/website/tripleo-docs/
 scripts/website/tripleosphinx/
+scripts/website/planet-2.0/
+scripts/website/planet.html.tmplc
