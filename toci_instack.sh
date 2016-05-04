@@ -189,6 +189,7 @@ for REPO in $(cat $TRIPLEO_ROOT/tripleo-ci/scripts/mirror-server/mirrored.list |
     fi
 done
 IFS=$' \t\n'
+source $TRIPLEO_ROOT/tripleo-ci/deploy.env
 
 # Build and deploy our undercloud instance
 destroy_vms
@@ -233,6 +234,17 @@ if canusecache ipa_images.tar ; then
         update_image $PWD/ironic-python-agent.initramfs
         scp $SSH_OPTIONS ironic-python-agent.* root@$SEED_IP:/home/stack
         rm ipa_images.tar ironic-python-agent.*
+    fi
+fi
+
+# Same thing for the overcloud image
+if canusecache overcloud-full.tar ; then
+    wget --progress=dot:mega http://$MIRRORSERVER/builds/current-tripleo/overcloud-full.tar || true
+    if [ -f overcloud-full.tar ] ; then
+        tar -xf overcloud-full.tar
+        update_image $PWD/overcloud-full.qcow2
+        scp $SSH_OPTIONS overcloud-full.qcow2 overcloud-full.initrd overcloud-full.vmlinuz root@$SEED_IP:/home/stack
+        rm overcloud-full.*
     fi
 fi
 
