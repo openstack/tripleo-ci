@@ -207,22 +207,6 @@ while true ; do
     esac
 done
 
-
-##Begin TODO ccamacho: Remove when Liberty EOL: 2016-11-17
-function openstack {
-    if [ "$1" == "stack" ] ; then
-        if [ -z "$STABLE_RELEASE" ]; then
-            /usr/bin/openstack $@
-         else
-            heat stack-${@:2:$#}
-        fi
-    else
-       /usr/bin/openstack $@
-    fi
-}
-##End TODO
-
-
 function log {
     echo "#################"
     echo -n "$SCRIPT_NAME -- "
@@ -481,10 +465,6 @@ function overcloud_images {
 
     log "Overcloud images"
 
-    if [[ "${STABLE_RELEASE}" =~ ^(liberty)$ ]] ; then
-        export FS_TYPE=ext4
-    fi
-
     # (slagle) TODO: This needs to be fixed in python-tripleoclient or
     # diskimage-builder!
     # Ensure yum-plugin-priorities is installed
@@ -633,13 +613,13 @@ function overcloud_update {
         OVERCLOUD_UPDATE_ARGS="$OVERCLOUD_UPDATE_ARGS --templates"
     fi
     stackrc_check
-    if heat stack-show "$OVERCLOUD_NAME" | grep "stack_status " | egrep "(CREATE|UPDATE)_COMPLETE"; then
+    if openstack stack show "$OVERCLOUD_NAME" | grep "stack_status " | egrep "(CREATE|UPDATE)_COMPLETE"; then
         FILE_PREFIX=$(date "+overcloud-update-resources-%s")
         BEFORE_FILE="/tmp/${FILE_PREFIX}-before.txt"
         AFTER_FILE="/tmp/${FILE_PREFIX}-after.txt"
         # This is an update, so if enabled, compare the before/after resource lists
         if [ ! -z "$OVERCLOUD_UPDATE_CHECK" ]; then
-            heat resource-list -n5 overcloud | awk '{print $2, $4, $6}' | sort > $BEFORE_FILE
+            openstack stack resource list -n5 overcloud | awk '{print $2, $4, $6}' | sort > $BEFORE_FILE
         fi
 
         log "Overcloud update started."
@@ -653,7 +633,7 @@ function overcloud_update {
         log "Overcloud update - DONE."
 
         if [ ! -z "$OVERCLOUD_UPDATE_CHECK" ]; then
-            heat resource-list -n5 overcloud | awk '{print $2, $4, $6}' | sort > $AFTER_FILE
+            openstack stack resource list -n5 overcloud | awk '{print $2, $4, $6}' | sort > $AFTER_FILE
             diff_rsrc=$(diff $BEFORE_FILE $AFTER_FILE)
             if [ ! -z "$diff_rsrc" ]; then
                 log "Overcloud update - Completed but unexpected resource differences: $diff_rsrc"
@@ -676,28 +656,9 @@ function overcloud_delete {
 
     stackrc_check
 
-    # We delete the stack via heat, then wait for it to be deleted
-    # This should be fairly quick, but we poll for OVERCLOUD_DELETE_TIMEOUT
-    # NOTE(bnemec): We can't use the openstack function here because we need
-    # different behavior from what it does - we want to use the openstack
-    # command on everything except Liberty, and in Liberty we just
-    # call 'heat stack-delete --yes', on the versions that it's supported,
-    # or 'heat stack-delete' in the versions that don't support that flag.
-
-    # Note, we need the ID, not the name, as stack-show will only return
-    # soft-deleted stacks by ID (not name, as it may be reused)
     OVERCLOUD_ID=$(openstack stack list | grep "$OVERCLOUD_NAME" | awk '{print $2}')
-    if [ "$STABLE_RELEASE" != "liberty" ]; then
-        wait_command="openstack stack show $OVERCLOUD_ID"
-        /usr/bin/openstack stack delete --yes "$OVERCLOUD_NAME"
-    else
-        wait_command="heat stack-show $OVERCLOUD_ID"
-        if heat stack-delete --help | grep -q "\-\-yes"; then
-            heat stack-delete --yes "$OVERCLOUD_NAME"
-        else
-            heat stack-delete "$OVERCLOUD_NAME"
-        fi
-    fi
+    wait_command="openstack stack show $OVERCLOUD_ID"
+    openstack stack delete --yes "$OVERCLOUD_NAME"
     if $(tripleo wait_for -w $OVERCLOUD_DELETE_TIMEOUT -d 10 -s "DELETE_COMPLETE" -- "$wait_command"); then
        log "Overcloud $OVERCLOUD_ID DELETE_COMPLETE"
     else
@@ -711,22 +672,8 @@ function cleanup_pingtest {
 
     log "Overcloud pingtest; cleaning environment"
     overcloudrc_check
-    # NOTE(bnemec): We can't use the openstack function here because we need
-    # different behavior from what it does - we want to use the openstack
-    # command on everything except Liberty, and in Liberty we just
-    # call 'heat stack-delete --yes', on the versions that it's supported,
-    # or 'heat stack-delete' in the versions that don't support that flag.
-    if [ "$STABLE_RELEASE" != "liberty" ]; then
-        wait_command="openstack stack show tenant-stack"
-        /usr/bin/openstack stack delete --yes tenant-stack || true
-    else
-        wait_command="heat stack-show tenant-stack"
-        if heat stack-delete --help | grep -q "\-\-yes"; then
-            heat stack-delete --yes tenant-stack || true
-        else
-            heat stack-delete tenant-stack || true
-        fi
-    fi
+    wait_command="openstack stack show tenant-stack"
+    openstack stack delete --yes tenant-stack || true
     if tripleo wait_for -w 300 -d 10 -s "Stack not found" -- "$wait_command"; then
         log "Overcloud pingtest - deleted the tenant-stack heat stack"
     else
@@ -789,7 +736,9 @@ function overcloud_pingtest {
       fi
     fi
     log "Overcloud pingtest, creating tenant-stack heat stack:"
-    heat stack-create -f $TENANT_PINGTEST_TEMPLATE $TENANT_STACK_DEPLOY_ARGS tenant-stack || exitval=1
+    openstack stack create -f yaml -t $TENANT_PINGTEST_TEMPLATE $TENANT_STACK_DEPLOY_ARGS tenant-stack || exitval=1
+
+    WAIT_FOR_COMMAND="openstack stack list | grep tenant-stack"
 
     # No point in waiting if the previous command failed.
     if [ ${exitval} -eq 0 ]; then
@@ -799,15 +748,10 @@ function overcloud_pingtest {
         # some key services *might* work for 'fail faster', but where things
         # can be so slow already it might just cause more pain.
         #
-        if tripleo wait_for -w 300 -d 10 -s "CREATE_COMPLETE" -f "CREATE_FAILED" -- "heat stack-list | grep tenant-stack"; then
+        if tripleo wait_for -w 300 -d 10 -s "CREATE_COMPLETE" -f "CREATE_FAILED" -- $WAIT_FOR_COMMAND; then
             log "Overcloud pingtest, heat stack CREATE_COMPLETE";
 
-            vm1_ip=`heat output-show tenant-stack server1_public_ip -F raw`
-            # On new Heat clients the above command returns a big long string.
-            # If the resulting value is longer than an IP address we need the alternate command.
-            if [ ${#vm1_ip} -gt 15 ]; then
-                vm1_ip=`heat output-show tenant-stack server1_public_ip -F raw -v`
-            fi
+            vm1_ip=`openstack stack output show tenant-stack server1_public_ip | grep value | awk '{print $4}'`
 
             log "Overcloud pingtest, trying to ping the floating IPs $vm1_ip"
 
@@ -824,9 +768,9 @@ function overcloud_pingtest {
                 exitval=1
             fi
         else
-            heat stack-show tenant-stack || :
-            heat event-list tenant-stack || :
-            heat resource-list -n 5 tenant-stack || :
+            openstack stack show tenant-stack || :
+            openstack stack event list -f table tenant-stack || :
+            openstack stack resource list -n5 tenant-stack || :
             openstack stack failures list tenant-stack || :
             log "Overcloud pingtest, failed to create heat stack, trying cleanup"
             exitval=1
