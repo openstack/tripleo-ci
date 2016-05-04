@@ -67,7 +67,7 @@ start_metric "tripleo.overcloud.${TOCI_JOBTYPE}.images.seconds"
 $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --overcloud-images | sudo dd of=/var/log/image_build.txt || (tail -n 50 /var/log/image_build.txt && false)
 stop_metric "tripleo.overcloud.${TOCI_JOBTYPE}.images.seconds"
 
-OVERCLOUD_IMAGE_MB=$(du -hs overcloud-full.qcow2 | cut -f 1 | sed 's|.$||')
+OVERCLOUD_IMAGE_MB=$(du -ms overcloud-full.qcow2 | cut -f 1 | sed 's|.$||')
 record_metric "tripleo.overcloud.${TOCI_JOBTYPE}.image.size_mb" "$OVERCLOUD_IMAGE_MB"
 
 start_metric "tripleo.register.nodes.seconds"
