@@ -1,15 +1,29 @@
 #!/usr/bin/env bash
 set -eux
 
+LSBRELEASE=`lsb_release -i -s`
+
 # Clean any cached yum metadata, it maybe stale
 sudo yum clean all
+
+# NOTE(pabelanger): Current hack to make centos-7 dib work.
+if [ $LSBRELEASE == 'CentOS' ]; then
+    # TODO(pabelanger): remove reinstall once
+    # https://review.openstack.org/#/c/304399/ lands.
+    sudo yum reinstall -y glibc glibc-common
+    # TODO(pabelanger): Why is python-requests installed from pip?
+    sudo rm -rf /usr/lib/python2.7/site-packages/requests
+fi
 
 # Remove metrics from a previous run
 rm -f /tmp/metric-start-times /tmp/metrics-data
 
 # In order to save space remove some of the largest git repos
 # mirrored on the jenkins slave, together these make up 2G(of 4.6G)
-sudo rm -rf /opt/git/openstack/openstack-manuals /opt/git/openstack/daisycloud-core /opt/git/openstack/fuel-* /opt/git/openstack-infra/activity-board
+# NOTE(pabelanger): We've bumped centos-7 to 80GB, so only do this on Fedora.
+if [ $LSBRELEASE == 'Fedora' ]; then
+    sudo rm -rf /opt/git/openstack/openstack-manuals /opt/git/openstack/daisycloud-core /opt/git/openstack/fuel-* /opt/git/openstack-infra/activity-board
+fi
 
 # cd to toci directory so relative paths work (below and in toci_devtest.sh)
 cd $(dirname $0)
@@ -52,7 +66,12 @@ export NETISO_V4=0
 export NETISO_V6=0
 
 # Set the fedora mirror, this is more reliable then relying on the repolist returned by metalink
-sudo sed -i -e "s|^#baseurl=http://download.fedoraproject.org/pub/fedora/linux|baseurl=$FEDORA_MIRROR|;/^metalink/d" /etc/yum.repos.d/fedora*.repo
+# NOTE(pabelanger): Once we bring AFS mirrors online, we no longer need to do this.
+if [ $LSBRELEASE == 'Fedora' ]; then
+    sudo sed -i -e "s|^#baseurl=http://download.fedoraproject.org/pub/fedora/linux|baseurl=$FEDORA_MIRROR|;/^metalink/d" /etc/yum.repos.d/fedora*.repo
+else
+    sudo sed -i -e "s|^#baseurl=http://mirror.centos.org/centos/|baseurl=$CENTOS_MIRROR|;/^mirrorlist/d" /etc/yum.repos.d/CentOS-Base.repo
+fi
 
 # start dstat early
 # TODO add it to the gate image building
@@ -122,6 +141,11 @@ set -m
 source /opt/stack/new/tripleo-ci/scripts/metrics.bash
 start_metric "tripleo.testenv.wait.seconds"
 if [ -z ${TE_DATAFILE:-} ] ; then
+    # NOTE(pabelanger): We need gear for testenv, but this really should be
+    # handled by tox.
+    if [ $LSBRELEASE == 'CentOS' ]; then
+        sudo yum install -y python-gear
+    fi
     # Kill the whole job if it doesn't get a testenv in 20 minutes as it likely will timout in zuul
     ( sleep 1200 ; [ ! -e /tmp/toci.started ] && sudo kill -9 $$ ) &
     ./testenv-client -b $GEARDSERVER:4730 -t $TIMEOUT_SECS -- ./toci_instack.sh
