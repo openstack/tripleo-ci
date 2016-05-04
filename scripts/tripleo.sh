@@ -161,38 +161,15 @@ done
 
 ##Begin TODO ccamacho: Remove when Liberty EOL: 2016-11-17
 function openstack {
-    case $1 in
-        stack)
-            if [ -z "$STABLE_RELEASE" ]; then
-                /usr/bin/openstack $@
-             else
-                case $2 in
-                    delete|list|show)
-                        heat stack-${@:2:$#}
-                        ;;
-                    create)
-                        heat stack-create -f ${@:6:$#}
-                        ;;
-                    output)
-                        heat output-show $4 $5 -F raw
-                        ;;
-                    resource)
-                        if [ $3 == list ]; then
-                            heat resource-list ${@:4:$#}
-                        fi
-                    ;;
-                    event)
-                        if [ $3 == list ]; then
-                            heat event-list ${@:6:$#}
-                        fi
-                    ;;
-                esac
-            fi
-            ;;
-        *)
+    if [ "$1" == "stack" ] ; then
+        if [ -z "$STABLE_RELEASE" ]; then
             /usr/bin/openstack $@
-        ;;
-    esac
+         else
+            heat stack-${@:2:$#}
+        fi
+    else
+       /usr/bin/openstack $@
+    fi
 }
 ##End TODO
 
@@ -529,13 +506,13 @@ function overcloud_update {
         OVERCLOUD_UPDATE_ARGS="$OVERCLOUD_UPDATE_ARGS --templates"
     fi
     stackrc_check
-    if openstack stack show "$OVERCLOUD_NAME" | grep "stack_status " | egrep "(CREATE|UPDATE)_COMPLETE"; then
+    if heat stack-show "$OVERCLOUD_NAME" | grep "stack_status " | egrep "(CREATE|UPDATE)_COMPLETE"; then
         FILE_PREFIX=$(date "+overcloud-update-resources-%s")
         BEFORE_FILE="/tmp/${FILE_PREFIX}-before.txt"
         AFTER_FILE="/tmp/${FILE_PREFIX}-after.txt"
         # This is an update, so if enabled, compare the before/after resource lists
         if [ ! -z "$OVERCLOUD_UPDATE_CHECK" ]; then
-            openstack stack resource list -n5 overcloud | awk '{print $2, $4, $6}' | sort > $BEFORE_FILE
+            heat resource-list -n5 overcloud | awk '{print $2, $4, $6}' | sort > $BEFORE_FILE
         fi
 
         log "Overcloud update started."
@@ -543,7 +520,7 @@ function overcloud_update {
         log "Overcloud update - DONE."
 
         if [ ! -z "$OVERCLOUD_UPDATE_CHECK" ]; then
-            openstack stack resource list -n5 overcloud | awk '{print $2, $4, $6}' | sort > $AFTER_FILE
+            heat resource-list -n5 overcloud | awk '{print $2, $4, $6}' | sort > $AFTER_FILE
             diff_rsrc=$(diff $BEFORE_FILE $AFTER_FILE)
             if [ ! -z "$diff_rsrc" ]; then
                 log "Overcloud update - Completed but unexpected resource differences: $diff_rsrc"
@@ -639,18 +616,17 @@ function overcloud_pingtest {
         TENANT_PINGTEST_TEMPLATE=$(dirname `readlink -f -- $0`)/../templates/tenantvm_floatingip.yaml
     fi
     log "Overcloud pingtest, creating tenant-stack heat stack:"
-    openstack stack create -f yaml -t $TENANT_PINGTEST_TEMPLATE $TENANT_STACK_DEPLOY_ARGS tenant-stack || exitval=1
-    if tripleo wait_for -w 1200 -d 10 -s "CREATE_COMPLETE" -- "openstack stack list | grep tenant-stack"; then
+    heat stack-create -f $TENANT_PINGTEST_TEMPLATE $TENANT_STACK_DEPLOY_ARGS tenant-stack || exitval=1
+    if tripleo wait_for -w 1200 -d 10 -s "CREATE_COMPLETE" -- "heat stack-list | grep tenant-stack"; then
         log "Overcloud pingtest, heat stack CREATE_COMPLETE";
 
-        vm1_ip=`openstack stack output show tenant-stack server1_public_ip  | grep value | awk '{print $4}'`
-        # Begin TODO ccamacho: Remove when Liberty EOL: 2016-11-17
+        vm1_ip=`heat output-show tenant-stack server1_public_ip -F raw`
         # On new Heat clients the above command returns a big long string.
         # If the resulting value is longer than an IP address we need the alternate command.
         if [ ${#vm1_ip} -gt 15 ]; then
             vm1_ip=`heat output-show tenant-stack server1_public_ip -F raw -v`
         fi
-        # End TODO
+
         log "Overcloud pingtest, trying to ping the floating IPs $vm1_ip"
 
         if tripleo wait_for -w 360 -d 10 -s "bytes from $vm1_ip" -- "ping -c 1 $vm1_ip" ; then
@@ -666,9 +642,9 @@ function overcloud_pingtest {
             exitval=1
         fi
     else
-        openstack stack show tenant-stack || :
-        openstack stack event list -f table tenant-stack || :
-        openstack stack resource list -n5 tenant-stack || :
+        heat stack-show tenant-stack || :
+        heat event-list tenant-stack || :
+        heat resource-list -n 5 tenant-stack || :
         log "Overcloud pingtest, failed to create heat stack, trying cleanup"
         exitval=1
     fi
