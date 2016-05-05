@@ -135,9 +135,17 @@ if [ $PACEMAKER == 1 ] ; then
     # constraint ordering they are typically started last. We'll wait up to
     # 180s.
     start_metric "tripleo.overcloud.${TOCI_JOBTYPE}.settle.seconds"
-    timeout -k 10 180 ssh $SSH_OPTIONS heat-admin@$(nova list | grep controller-0 | awk '{print $12}' | cut -d'=' -f2) sudo crm_resource -r openstack-heat-api --wait
-    timeout -k 10 180 ssh $SSH_OPTIONS heat-admin@$(nova list | grep controller-0 | awk '{print $12}' | cut -d'=' -f2) sudo crm_resource -r openstack-heat-engine --wait
-    stop_metric "tripleo.overcloud.${TOCI_JOBTYPE}.settle.seconds"
+    timeout -k 10 240 ssh $SSH_OPTIONS heat-admin@$(nova list | grep controller-0 | awk '{print $12}' | cut -d'=' -f2) sudo crm_resource -r openstack-heat-api --wait || {
+        exitcode=$?
+        echo "crm_resource for openstack-heat-api has failed!"
+        exit $exitcode
+        }
+    timeout -k 10 240 ssh $SSH_OPTIONS heat-admin@$(nova list | grep controller-0 | awk '{print $12}' | cut -d'=' -f2) sudo crm_resource -r openstack-heat-engine --wait|| {
+        exitcode=$?
+        echo "crm_resource for openstack-heat-engine has failed!"
+        exit $exitcode
+        }
+     stop_metric "tripleo.overcloud.${TOCI_JOBTYPE}.settle.seconds"
 fi
 
 source ~/overcloudrc
