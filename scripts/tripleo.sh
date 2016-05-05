@@ -64,6 +64,7 @@ function show_options {
     echo "      --enable-check          -- Enable checks on update."
     echo "      --overcloud-pingtest    -- Run a tenant vm, attach and ping floating IP."
     echo "      --skip-pingtest-cleanup -- For debuging purposes, do not delete the created resources when performing a pingtest."
+    echo "      --run-tempest           -- Run tempest tests."
     echo "      --all, -a               -- Run all of the above commands."
     echo "      -x                      -- enable tracing"
     echo "      --help, -h              -- Print this help message."
@@ -77,7 +78,7 @@ if [ ${#@} = 0 ]; then
 fi
 
 TEMP=$(getopt -o ,h \
-        -l,help,repo-setup,delorean-setup,delorean-build,undercloud,overcloud-images,register-nodes,introspect-nodes,overcloud-deploy,overcloud-update,overcloud-delete,use-containers,overcloud-pingtest,skip-pingtest-cleanup,all,enable-check \
+        -l,help,repo-setup,delorean-setup,delorean-build,undercloud,overcloud-images,register-nodes,introspect-nodes,overcloud-deploy,overcloud-update,overcloud-delete,use-containers,overcloud-pingtest,skip-pingtest-cleanup,all,enable-check,run-tempest \
         -o,x,h,a \
         -n $SCRIPT_NAME -- "$@")
 
@@ -128,6 +129,10 @@ UNDERCLOUD=${UNDERCLOUD:-""}
 UNDERCLOUD_CONF=${UNDERCLOUD_CONF:-"/usr/share/instack-undercloud/undercloud.conf.sample"}
 TRIPLEO_ROOT=${TRIPLEO_ROOT:-$HOME/tripleo}
 USE_CONTAINERS=${USE_CONTAINERS:-""}
+TEMPEST_RUN=${TEMPEST_RUN:-""}
+TEMPEST_ARGS=${TEMPEST_ARGS:-"--parallel --subunit"}
+TEMPEST_ADD_CONFIG=${TEMPEST_ADD_CONFIG:-}
+TEMPEST_REGEX=${TEMPEST_REGEX:-"^(?=(.*smoke))(?!(tempest.api.orchestration.stacks|tempest.scenario.test_volume_boot_pattern|tempest.api.telemetry))"}
 
 # TODO: remove this when Image create in openstackclient supports the v2 API
 export OS_IMAGE_API_VERSION=1
@@ -147,6 +152,7 @@ while true ; do
         --overcloud-images) OVERCLOUD_IMAGES="1"; shift 1;;
         --overcloud-pingtest) OVERCLOUD_PINGTEST="1"; shift 1;;
         --skip-pingtest-cleanup) SKIP_PINGTEST_CLEANUP="1"; shift 1;;
+        --run-tempest) TEMPEST_RUN="1"; shift 1;;
         --repo-setup) REPO_SETUP="1"; shift 1;;
         --delorean-setup) DELOREAN_SETUP="1"; shift 1;;
         --delorean-build) DELOREAN_BUILD="1"; shift 1;;
@@ -651,6 +657,61 @@ function overcloud_pingtest {
     exit $exitval
 }
 
+function clean_tempest {
+    neutron net-delete nova || echo "Cleaning tempest: no networks were created"
+}
+
+function tempest_run {
+
+    log "Running tempest"
+
+    overcloudrc_check
+    clean_tempest
+    root_dir=$(realpath $(dirname ${BASH_SOURCE[0]:-$0}))
+    [[ ! -e $HOME/tempest ]] && git clone https://github.com/openstack/tempest $HOME/tempest
+    pushd $HOME/tempest
+    FLOATING_IP_CIDR=${FLOATING_IP_CIDR:-"192.0.2.0/24"};
+    FLOATING_IP_START=${FLOATING_IP_START:-"192.0.2.50"};
+    FLOATING_IP_END=${FLOATING_IP_END:-"192.0.2.64"};
+    export EXTERNAL_NETWORK_GATEWAY=${EXTERNAL_NETWORK_GATEWAY:-"192.0.2.1"};
+    neutron net-create nova --shared --router:external=True --provider:network_type flat --provider:physical_network datacentre;
+    neutron subnet-create --name ext-subnet --allocation-pool start=$FLOATING_IP_START,end=$FLOATING_IP_END --disable-dhcp --gateway $EXTERNAL_NETWORK_GATEWAY nova $FLOATING_IP_CIDR;
+    sudo yum install -y libffi-devel openssl-devel
+    virtualenv --no-site-packages .venv
+    $HOME/tempest/tools/with_venv.sh pip install -U pip setuptools
+    $HOME/tempest/tools/with_venv.sh pip install junitxml httplib2 -r test-requirements.txt -r requirements.txt
+    cp $root_dir/config_tempest.py $HOME/tempest/tools/
+    cp $root_dir/api_discovery.py $HOME/tempest/tempest/common/
+    cp $root_dir/default-overrides.conf $HOME/tempest/etc/
+    sudo mkdir -p /var/log/tempest/ ||:
+    sudo chown stack:stack -R /var/log/tempest/
+    $HOME/tempest/tools/with_venv.sh python $HOME/tempest/tools/config_tempest.py \
+        --out etc/tempest.conf \
+        --debug \
+        --create \
+        --deployer-input ~/tempest-deployer-input.conf \
+        identity.uri $OS_AUTH_URL \
+        compute.allow_tenant_isolation true \
+        identity.admin_password $OS_PASSWORD \
+        compute.build_timeout 500 \
+        compute.image_ssh_user cirros \
+        compute.ssh_user cirros \
+        network.build_timeout 500 \
+        volume.build_timeout 500 \
+        DEFAULT.log_file "/var/log/tempest/tempest.log" \
+        scenario.ssh_user cirros $TEMPEST_ADD_CONFIG
+    sudo cp $HOME/tempest/etc/tempest.conf /etc/tempest/tempest.conf
+    [[ ! -e $HOME/tempest/.testrepository ]] && $HOME/tempest/tools/with_venv.sh testr init
+    $HOME/tempest/tools/with_venv.sh testr run \
+        $TEMPEST_ARGS \
+        $TEMPEST_REGEX | \
+        tee >( subunit2junitxml --output-to=/var/log/tempest/tempest.xml ) | \
+        subunit-trace --no-failure-debug -f 2>&1 | \
+        tee /var/log/tempest/tempest_console.log && exitval=0 || exitval=$?
+    subunit2html $(find $HOME/tempest/.testrepository -name [0-9] | head -1) /var/log/tempest/tempest.html
+    exit ${exitval}
+}
+
 if [ "$REPO_SETUP" = 1 ]; then
     repo_setup
 fi
@@ -703,6 +764,10 @@ fi
 
 if [ "$OVERCLOUD_PINGTEST" = 1 ]; then
     overcloud_pingtest
+fi
+
+if [ "$TEMPEST_RUN" = 1 ]; then
+    tempest_run
 fi
 
 if [ "$ALL" = 1 ]; then
