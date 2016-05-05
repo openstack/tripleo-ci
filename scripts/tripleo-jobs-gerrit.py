@@ -31,17 +31,21 @@ DEFAULT_PROJECTS = [
     'openstack/tripleo-image-elements',
     'openstack/tripleo-incubator',
     'openstack/tripleo-puppet-elements',
+    '^openstack/puppet-.*',
 ]
 
 COLORS = {"SUCCESS": "#008800", "FAILURE": "#FF0000", "ABORTED": "#000000"}
 
 
-def get_gerrit_reviews(project, status="open", branch="master", limit="200"):
+def get_gerrit_reviews(project, status="open", branch="master", limit="30"):
     arr = []
-    cmd = 'ssh review gerrit' \
-          ' query "status: %s project: %s branch: %s" --comments' \
+    status_query = ''
+    if status:
+        status_query = 'status: %s' % status
+    cmd = 'ssh review.openstack.org gerrit' \
+          ' query "%s project: %s branch: %s" --comments' \
           ' --format JSON limit: %s --patch-sets --current-patch-set'\
-          % (status, project, branch,limit)
+          % (status_query, project, branch,limit)
     p = subprocess.Popen([cmd], shell=True, stdin=subprocess.PIPE,
                          stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     stdout = p.stdout
@@ -57,6 +61,10 @@ def get_jenkins_comment_message(review):
     for comment in review['comments']:
         if 'name' in comment['reviewer']:
             if comment['reviewer']['name'] == 'Jenkins':
+                if "NOT_REGISTERED" in comment['message']:
+                    continue
+                if "check-tripleo pipeline" not in comment['message']:
+                    continue
                 jenkins_messages[comment['timestamp']] = comment['message']
     return jenkins_messages
 
@@ -67,6 +75,7 @@ def process_jenkins_comment_message(message, job_names):
         if line and line[0] == '-':
             split = line.split(" ",6)
             if split[1] in job_names:
+                split[6] = " ".join(split[6].split()[:2])
                 job_results[split[1]] = {'log_url': split[2],
                                          'status': split[4],
                                          'duration': split[6]}
@@ -85,7 +94,7 @@ def gen_html(data, html_file, table_file, stats_hours, job_names, options):
 
     for ts in reversed(sorted(data.iterkeys())):
         result = data[ts]
-        if count > 200:
+        if count > 300:
             break
         if not result['ci_results']:
             continue
@@ -152,9 +161,9 @@ def main(args=sys.argv[1:]):
                         help='comma separated list of projects to use.')
     parser.add_argument('-j', default=",".join(DEFAULT_JOB_NAMES),
                         help='comma separated list of jobs to monitor.')
-    parser.add_argument('-s', default="open", help="status")
+    parser.add_argument('-s', default="", help="status")
     parser.add_argument('-b', default="master", help="branch")
-    parser.add_argument('-l', default="200", help="limit")
+    parser.add_argument('-l', default="30", help="limit")
     opts = parser.parse_args(args)
 
     job_names = opts.j.split(",")
