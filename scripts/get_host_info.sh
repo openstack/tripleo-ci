@@ -31,6 +31,9 @@ if [ -e ~/stackrc ] ; then
     heat stack-show overcloud
     heat resource-list -n5 overcloud
     heat event-list overcloud
+    # --nested-depth 2 seems to get us a reasonable list of resources without
+    # taking an excessive amount of time
+    openstack stack event list --nested-depth 2 -f json overcloud | /opt/stack/new/tripleo-ci/scripts/heat-deploy-times.py || echo 'Failed to process resource deployment times. This is expected for stable/liberty.'
     # useful to see what failed when puppet fails
     for failed_deployment in $(heat resource-list --nested-depth 5 overcloud | grep FAILED | grep 'StructuredDeployment ' | cut -d '|' -f3); do heat deployment-show $failed_deployment; done;
 fi
