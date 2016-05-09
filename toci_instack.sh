@@ -53,6 +53,14 @@ sudo yum install -y moreutils
 # post ci chores to run at the end of ci
 SSH_OPTIONS='-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=Verbose -o PasswordAuthentication=no -o ConnectionAttempts=32'
 TARCMD="sudo XZ_OPT=-3 tar -cJf - --exclude=udev/hwdb.bin --exclude=etc/services --exclude=selinux/targeted --exclude=etc/services --exclude=etc/pki /var/log /etc"
+
+function extract_logs(){
+    local name=$1
+    mkdir -p $WORKSPACE/logs/$name
+    # Exclude journal files because they're large and not useful in a browser
+    tar -C $WORKSPACE/logs/$name -xf $WORKSPACE/logs/$name.tar.xz var --exclude=journal
+}
+
 function postci(){
     set +e
     stop_metric "tripleo.ci.total.seconds"
@@ -60,6 +68,7 @@ function postci(){
         # I'd like to tar up repos/current but tar'ed its about 8M it may be a
         # bit much for the log server, maybe when we are building less
         find $TRIPLEO_ROOT/delorean/data/repos -name "*.log" | XZ_OPT=-3 xargs tar -cJf $WORKSPACE/logs/delorean_repos.tar.xz
+        extract_logs delorean_repos
     fi
     if [ "${SEED_IP:-}" != "" ] ; then
         # Generate extra state information from the running undercloud
@@ -67,6 +76,7 @@ function postci(){
 
         # Get logs from the undercloud
         ssh root@${SEED_IP} $TARCMD > $WORKSPACE/logs/undercloud.tar.xz
+        extract_logs undercloud
 
         # when we ran get_host_info.sh on the undercloud it left the output of nova list in /tmp for us
         for INSTANCE in $(ssh root@${SEED_IP} cat /tmp/nova-list.txt | grep ACTIVE | awk '{printf"%s=%s\n", $4, $12}') ; do
@@ -75,6 +85,7 @@ function postci(){
             ssh $SSH_OPTIONS root@${SEED_IP} su stack -c \"scp $SSH_OPTIONS $TRIPLEO_ROOT/tripleo-ci/scripts/get_host_info.sh heat-admin@$IP:/tmp\"
             ssh $SSH_OPTIONS root@${SEED_IP} su stack -c \"ssh $SSH_OPTIONS heat-admin@$IP sudo /tmp/get_host_info.sh\"
             ssh $SSH_OPTIONS root@${SEED_IP} su stack -c \"ssh $SSH_OPTIONS heat-admin@$IP $TARCMD\" > $WORKSPACE/logs/${NAME}.tar.xz
+            extract_logs $NAME
         done
         # post metrics
         scp $SSH_OPTIONS root@${SEED_IP}:${METRICS_DATA_FILE} /tmp/seed-metrics
