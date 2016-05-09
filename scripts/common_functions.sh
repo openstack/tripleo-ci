@@ -230,6 +230,12 @@ function postci(){
         # post metrics
         scp $SSH_OPTIONS root@${SEED_IP}:${METRICS_DATA_FILE} /tmp/seed-metrics
         cat /tmp/seed-metrics >> ${METRICS_DATA_FILE}
+        while read line; do
+            # $line should look like "ResourceName 123.0", so concatenating all
+            # of this together we should end up with a call that looks like:
+            # record_metric tripleo.overcloud.ha.resources.ResourceName 123.0
+            record_metric tripleo.overcloud.${TOCI_JOBTYPE}.resources.${line}
+        done <$WORKSPACE/logs/undercloud/var/log/heat-deploy-times.log
         metrics_to_graphite "23.253.94.71" #Dan's temp graphite server
         if [ -z "${LEAVE_RUNNING:-}" ] && [ -n "${HOST_IP:-}" ] ; then
             destroy_vms &> $WORKSPACE/logs/destroy_vms.log
