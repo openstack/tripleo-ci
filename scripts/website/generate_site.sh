@@ -17,7 +17,7 @@
 SCRIPT_DIR=${SCRIPT_DIR:-$(dirname $0)}
 SUDO_CP=${SUDO_CP:-''} # useful if you'd like to inject a SUDO command for cp
 OUT_HTML=${OUT_HTML:-'out_html'}
-REVIEWDAY_INPUT_FILE="${SCRIPT_DIR}/tripleo-reviewday.yaml"
+REVIEWDAY_INPUT_FILE=${REVIEWDAY_INPUT_FILE:-"${SCRIPT_DIR}/tripleo-reviewday.yaml"}
 SKIP_REVIEWDAY=${SKIP_REVIEWDAY:-''}
 SKIP_CI_REPORTS=${SKIP_CI_REPORTS:-''}
 SKIP_BLOG=${SKIP_BLOG:-''}
