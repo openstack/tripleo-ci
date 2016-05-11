@@ -20,6 +20,7 @@ OUT_HTML=${OUT_HTML:-'out_html'}
 REVIEWDAY_INPUT_FILE="${SCRIPT_DIR}/tripleo-reviewday.yaml"
 SKIP_REVIEWDAY=${SKIP_REVIEWDAY:-''}
 SKIP_CI_REPORTS=${SKIP_CI_REPORTS:-''}
+SKIP_BLOG=${SKIP_BLOG:-''}
 
 # TRIPLEO-DOCS
 if [ ! -d tripleo-docs ]; then
@@ -73,6 +74,13 @@ else
   popd
 fi
 
+#Planet (Blog Feed Aggregator)
+if [ ! -d planet-2.0 ]; then
+  wget http://www.planetplanet.org/download/planet-2.0.tar.bz2
+  tar xvf planet-2.0.tar.bz2
+  rm planet-2.0.tar.bz2
+fi
+
 #-----------------------------------------
 source tripleo-docs/.tox/docs/bin/activate
 pushd tripleosphinx
@@ -99,7 +107,7 @@ if [ -z "$SKIP_REVIEWDAY" ]; then
   echo "<h1>TripleO Reviews</h1>" >> $OUT_FILE
   sed -e "s|<title>.*|<title>TripleO: Reviews</title>|" -i $OUT_FILE # custom title
   sed -e "s|<title>.*|<title>TripleO: Reviews</title><meta name='description' content='OpenStack Deployment Program Reviews'/>|" -i $OUT_FILE # custom title
-  echo $DATA >> $OUT_FILE
+  echo "$DATA" >> $OUT_FILE
   sed -n '/.*Custom Content Here/,$p' $TEMPLATE_FILE >> $OUT_FILE #second half
 fi
 
@@ -116,7 +124,24 @@ if [ -z "$SKIP_CI_REPORTS" ]; then
   sed -n '1,/.*Custom Content Here/p' $TEMPLATE_FILE > $OUT_FILE #first half
   echo "<h1>TripleO CI Status</h1>" >> $OUT_FILE
   sed -e "s|<title>.*|<title>TripleO: CI Status</title><meta name='description' content='OpenStack Deployment Program CI Status results'/>|" -i $OUT_FILE # custom title
-  echo $DATA >> $OUT_FILE
+  echo "$DATA" >> $OUT_FILE
+  sed -n '/.*Custom Content Here/,$p' $TEMPLATE_FILE >> $OUT_FILE #second half
+fi
+
+# Planet
+if [ -z "$SKIP_BLOG" ]; then
+  cp $SCRIPT_DIR/tripleo-ci/scripts/website/planet* $SCRIPT_DIR/planet-2.0/
+  pushd $SCRIPT_DIR/planet-2.0
+  mkdir output
+  python planet.py planet.config.ini
+  popd
+  DATA=$(cat planet-2.0/output/planet.html)
+  OUT_FILE=$SCRIPT_DIR/tripleo-docs/doc/build/html/planet.html
+  TEMPLATE_FILE=$SCRIPT_DIR/tripleosphinx/doc/build/html/blank.html
+  sed -n '1,/.*Custom Content Here/p' $TEMPLATE_FILE > $OUT_FILE #first half
+  echo "<h1>Planet TripleO</h1>" >> $OUT_FILE
+  sed -e "s|<title>.*|<title>Planet TripleO</title><meta name='description' content='OpenStack Deployment Program Planet'/>|" -i $OUT_FILE # custom title
+  echo "$DATA" >> $OUT_FILE
   sed -n '/.*Custom Content Here/,$p' $TEMPLATE_FILE >> $OUT_FILE #second half
 fi
 
