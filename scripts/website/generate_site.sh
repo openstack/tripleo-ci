@@ -116,7 +116,7 @@ if [ -z "$SKIP_CI_REPORTS" ]; then
   pushd tripleo-ci
 
   # jobs report
-  tox -ecireport --
+  tox -ecireport -- -b '^.*'
   DATA=$(cat tripleo-jobs.html-table)
   popd
   OUT_FILE=$SCRIPT_DIR/tripleo-docs/doc/build/html/cistatus.html
