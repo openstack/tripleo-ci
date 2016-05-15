@@ -132,7 +132,7 @@ sudo yum clean all
 # ===== End : Yum repository setup ====
 
 cd $TRIPLEO_ROOT
-sudo yum install -y diskimage-builder instack-undercloud os-apply-config
+sudo yum install -y diskimage-builder instack-undercloud os-apply-config qemu-kvm
 
 PRIV_SSH_KEY=$(OS_CONFIG_FILES=$TE_DATAFILE os-apply-config --key ssh-key --type raw)
 SSH_USER=$(OS_CONFIG_FILES=$TE_DATAFILE os-apply-config --key ssh-user --type username)
