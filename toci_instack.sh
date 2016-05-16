@@ -47,6 +47,9 @@ if [ -z "${ZUUL_CHANGES:-}" ] ; then
 fi
 ZUUL_CHANGES=${ZUUL_CHANGES//^/ }
 
+# install moreutils for timestamping postci.log with ts
+sudo yum install -y moreutils
+
 # post ci chores to run at the end of ci
 SSH_OPTIONS='-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=Verbose -o PasswordAuthentication=no -o ConnectionAttempts=32'
 TARCMD="sudo XZ_OPT=-3 tar -cJf - --exclude=udev/hwdb.bin --exclude=etc/services --exclude=selinux/targeted --exclude=etc/services --exclude=etc/pki /var/log /etc"
@@ -83,7 +86,7 @@ function postci(){
     fi
     return 0
 }
-trap "[ \$? != 0 ] && echo ERROR DURING PREVIOUS COMMAND ^^^ && echo 'See postci.txt in the logs directory for debugging details'; postci > $WORKSPACE/logs/postci.log 2>&1" EXIT
+trap "[ \$? != 0 ] && echo ERROR DURING PREVIOUS COMMAND ^^^ && echo 'See postci.txt in the logs directory for debugging details'; postci 2>&1 | ts '%Y-%m-%d %H:%M:%S.000 |' > $WORKSPACE/logs/postci.log 2>&1" EXIT
 
 DELOREAN_BUILD_REFS=
 for PROJFULLREF in $ZUUL_CHANGES ; do
