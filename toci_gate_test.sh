@@ -20,10 +20,7 @@ rm -f /tmp/metric-start-times /tmp/metrics-data
 
 # In order to save space remove some of the largest git repos
 # mirrored on the jenkins slave, together these make up 2G(of 4.6G)
-# NOTE(pabelanger): We've bumped centos-7 to 80GB, so only do this on Fedora.
-if [ $LSBRELEASE == 'Fedora' ]; then
-    sudo rm -rf /opt/git/openstack/openstack-manuals /opt/git/openstack/daisycloud-core /opt/git/openstack/fuel-* /opt/git/openstack-infra/activity-board
-fi
+sudo rm -rf /opt/git/openstack/openstack-manuals /opt/git/openstack/daisycloud-core /opt/git/openstack/fuel-* /opt/git/openstack-infra/activity-board
 
 # cd to toci directory so relative paths work (below and in toci_devtest.sh)
 cd $(dirname $0)
