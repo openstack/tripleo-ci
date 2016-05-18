@@ -8,9 +8,6 @@ sudo yum clean all
 
 # NOTE(pabelanger): Current hack to make centos-7 dib work.
 if [ $LSBRELEASE == 'CentOS' ]; then
-    # TODO(pabelanger): remove reinstall once
-    # https://review.openstack.org/#/c/304399/ lands.
-    sudo yum reinstall -y glibc glibc-common
     # TODO(pabelanger): Why is python-requests installed from pip?
     sudo rm -rf /usr/lib/python2.7/site-packages/requests
 fi
