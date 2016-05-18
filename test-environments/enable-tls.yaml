@@ -66,12 +66,10 @@ parameter_defaults:
     GlanceAdmin: {protocol: 'http', port: '9292', host: 'IP_ADDRESS'}
     GlanceInternal: {protocol: 'http', port: '9292', host: 'IP_ADDRESS'}
     GlancePublic: {protocol: 'https', port: '13292', host: 'IP_ADDRESS'}
+    GlanceRegistryInternal: {protocol: 'http', port: '9191', host: 'IP_ADDRESS'}
     GnocchiAdmin: {protocol: 'http', port: '8041', host: 'IP_ADDRESS'}
     GnocchiInternal: {protocol: 'http', port: '8041', host: 'IP_ADDRESS'}
     GnocchiPublic: {protocol: 'https', port: '13041', host: 'IP_ADDRESS'}
-    GlanceRegistryAdmin: {protocol: 'http', port: '9191', host: 'IP_ADDRESS'}
-    GlanceRegistryInternal: {protocol: 'http', port: '9191', host: 'IP_ADDRESS'}
-    GlanceRegistryPublic: {protocol: 'https', port: '9191', host: 'IP_ADDRESS'} # Not set on the loadbalancer yet.
     HeatAdmin: {protocol: 'http', port: '8004', host: 'IP_ADDRESS'}
     HeatInternal: {protocol: 'http', port: '8004', host: 'IP_ADDRESS'}
     HeatPublic: {protocol: 'https', port: '13004', host: 'IP_ADDRESS'}
@@ -79,21 +77,18 @@ parameter_defaults:
     KeystoneAdmin: {protocol: 'http', port: '35357', host: 'IP_ADDRESS'}
     KeystoneInternal: {protocol: 'http', port: '5000', host: 'IP_ADDRESS'}
     KeystonePublic: {protocol: 'https', port: '13000', host: 'IP_ADDRESS'}
-    KeystoneV3Admin: {protocol: 'http', port: '35357', host: 'IP_ADDRESS'}
-    KeystoneV3Internal: {protocol: 'http', port: '5000', host: 'IP_ADDRESS'}
-    KeystoneV3Public: {protocol: 'https', port: '13000', host: 'IP_ADDRESS'}
     NeutronAdmin: {protocol: 'http', port: '9696', host: 'IP_ADDRESS'}
     NeutronInternal: {protocol: 'http', port: '9696', host: 'IP_ADDRESS'}
     NeutronPublic: {protocol: 'https', port: '13696', host: 'IP_ADDRESS'}
     NovaAdmin: {protocol: 'http', port: '8774', host: 'IP_ADDRESS'}
     NovaInternal: {protocol: 'http', port: '8774', host: 'IP_ADDRESS'}
     NovaPublic: {protocol: 'https', port: '13774', host: 'IP_ADDRESS'}
-    NovaEC2Admin: {protocol: 'http', port: '8773', host: 'IP_ADDRESS'}
-    NovaEC2Internal: {protocol: 'http', port: '8773', host: 'IP_ADDRESS'}
-    NovaEC2Public: {protocol: 'https', port: '13773', host: 'IP_ADDRESS'}
+    NovaVNCProxyAdmin: {protocol: 'http', port: '6080', host: 'IP_ADDRESS'}
+    NovaVNCProxyInternal: {protocol: 'http', port: '6080', host: 'IP_ADDRESS'}
+    NovaVNCProxyPublic: {protocol: 'https', port: '13080', host: 'IP_ADDRESS'}
     SaharaAdmin: {protocol: 'http', port: '8386', host: 'IP_ADDRESS'}
     SaharaInternal: {protocol: 'http', port: '8386', host: 'IP_ADDRESS'}
-    SaharaPublic: {protocol: 'https', port: '13786', host: 'IP_ADDRESS'}
+    SaharaPublic: {protocol: 'https', port: '13386', host: 'IP_ADDRESS'}
     SwiftAdmin: {protocol: 'http', port: '8080', host: 'IP_ADDRESS'}
     SwiftInternal: {protocol: 'http', port: '8080', host: 'IP_ADDRESS'}
     SwiftPublic: {protocol: 'https', port: '13808', host: 'IP_ADDRESS'}
