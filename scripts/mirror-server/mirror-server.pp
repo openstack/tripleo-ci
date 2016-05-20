@@ -21,8 +21,6 @@ file { "/etc/sysconfig/network-scripts/ifcfg-eth1":
 }
 
 class { "apache":
-    # As we don't have auth, only listen on the test network
-    ip => "$ipaddress_eth1",
 } ->
 file {"/var/www/cgi-bin/upload.cgi":
     ensure => "link",
