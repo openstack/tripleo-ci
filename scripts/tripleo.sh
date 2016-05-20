@@ -513,7 +513,13 @@ function overcloud_deploy {
     fi
 
     log "Overcloud create started."
-    openstack overcloud deploy $OVERCLOUD_DEPLOY_ARGS
+    exitval=0
+    openstack overcloud deploy $OVERCLOUD_DEPLOY_ARGS || exitval=1
+    if [ $exitval -eq 1 ];
+    then
+        log "Overcloud create - FAILED!"
+        exit 1
+    fi
     log "Overcloud create - DONE."
 }
 
@@ -533,7 +539,13 @@ function overcloud_update {
         fi
 
         log "Overcloud update started."
-        openstack overcloud deploy $OVERCLOUD_UPDATE_ARGS
+        exitval=0
+        openstack overcloud deploy $OVERCLOUD_UPDATE_ARGS || exitval=1
+        if [ $exitval -eq 1 ];
+        then
+            log "Overcloud update - FAILED!"
+            exit 1
+        fi
         log "Overcloud update - DONE."
 
         if [ ! -z "$OVERCLOUD_UPDATE_CHECK" ]; then
