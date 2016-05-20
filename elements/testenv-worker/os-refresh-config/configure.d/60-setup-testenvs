@@ -16,7 +16,7 @@
 # under the License.
 #
 
-set -e
+set -ex
 
 # We don't want this running twice, even if it fails
 # We'll end up with lots of stuff duplicated
@@ -33,7 +33,18 @@ NUMENVS=$(($ENVS < $NUMENVS ? $ENVS : $NUMENVS))
 
 DISKTOTAL=$(df /var/lib/libvirt/images/ | awk '/^\// {print $2}')
 ENVS=$(expr $DISKTOTAL / 1024 / 1024 / $(os-apply-config --key gearman-worker.disk-per-env --key-default 100))
-NUMENVS=$(($ENVS < $NUMENVS ? $ENVS : $NUMENVS))
+
+# Hardcoding to 3
+NUMENVS=3
+
+# Deploy 5 hosts per testenv
+export NODE_CNT=5
+
+# Mount the rh1 ssd's to the libvirt images dir
+# assume the SSD is the last drive on the list
+SSD=$(ls /dev/sd[a-z] | sort | tail -n 1)
+mkfs.ext4 -F $SSD
+mount -t ext4 $SSD /var/lib/libvirt/images
 
 echo "Setting up $NUMENVS test environments"
 
@@ -62,7 +73,7 @@ export OS_USERNAME=$(os-apply-config --key gearman-worker.auth_user --type raw)
 export OS_TENANT_NAME=$(os-apply-config --key gearman-worker.auth_tenant --type raw)
 
 # Give this host an IP on tripleo-bm-test
-# Create a internal port on the public bridge, this will have an IP on the overcloud
+# Create a internel port on the public bridge, this will have an IP on the overcloud
 DUMMYDEVICE=tedev
 ovs-vsctl add-port $OVSBRIDGE $DUMMYDEVICE -- set Interface $DUMMYDEVICE type=internal
 MAC=$(ip link show ${DUMMYDEVICE} | awk 'NR==2 {print $2}')
@@ -72,11 +83,9 @@ echo "$PORTOUTPUT"
 export HOSTIP=$(echo "$PORTOUTPUT" | grep -E -o "([0-9]+\.){3}[0-9]+")
 
 # TODO : make this persist across reboots
-SUBNETID=$(awk '/subnet_id/ { print $2}' <<< "$PORTOUTPUT" | sed s/[,\\\"]//g )
-CIDR=$(neutron subnet-show $SUBNETID | awk '/cidr/ {print $4}' | awk -F "/" '{print $2}')
-
+# TODO : Get prefix length
 ip link set up dev $DUMMYDEVICE
-ip addr add $HOSTIP/$CIDR dev $DUMMYDEVICE
+ip addr add $HOSTIP/24 dev $DUMMYDEVICE
 
 killall -9 testenv-worker || true
 for port in $(neutron port-list | awk "\$4~\"te_$(hostname)_.*\" {print \$2}") ; do
