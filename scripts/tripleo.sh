@@ -279,7 +279,7 @@ function delorean_setup {
 
     # Remove the rpm install test to speed up delorean (our ci test will to this)
     # TODO: add an option for this in delorean
-    sed -i -e 's%.*installed.*%touch $OUTPUT_DIRECTORY/installed%' scripts/build_rpm.sh
+    sed -i -e 's%--postinstall%%' scripts/build_rpm.sh
 
     virtualenv venv
     # NOTE(pabelanger): We need to update setuptools to the latest version for
