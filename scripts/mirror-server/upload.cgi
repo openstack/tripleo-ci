@@ -37,6 +37,11 @@ def saveform(form, storagedir):
             fp.close()
 
 def run():
+
+    if not os.environ.get("REMOTE_ADDR", "").startswith("192.168.1."):
+        print("File uploads only allowed from the tripleo test network")
+        return 1
+
     form = cgi.FieldStorage()
     try:
         repohash = form["repohash"].value
