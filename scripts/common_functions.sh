@@ -183,7 +183,7 @@ function canusecache(){
                 [[ "$PROJ" =~ diskimage-builder ]] && return 1
                 ;;
             overcloud-full.tar)
-                [[ "$PROJ" =~ diskimage-builder|tripleo-image-elements|tripleo-puppet-elements ]] && return 1
+                [[ "$PROJ" =~ diskimage-builder|tripleo-image-elements|tripleo-puppet-elements|instack-undercloud ]] && return 1
                 ;;
             *)
                 return 1
