@@ -14,10 +14,11 @@ if [ $UNDERCLOUD_SSL == 1 ] ; then
     echo 'generate_service_certificate = True' >> ~/undercloud.conf
 fi
 
+sudo yum install -y moreutils
 echo "INFO: Check /var/log/undercloud_install.txt for undercloud install output"
 echo "INFO: This file can be found in logs/undercloud.tar.xz in the directory containing console.log"
 start_metric "tripleo.undercloud.install.seconds"
-$TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --undercloud 2>&1 | sudo dd of=/var/log/undercloud_install.txt || (tail -n 50 /var/log/undercloud_install.txt && false)
+$TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --undercloud 2>&1 | ts '%Y-%m-%d %H:%M:%S.000 |' | sudo dd of=/var/log/undercloud_install.txt || (tail -n 50 /var/log/undercloud_install.txt && false)
 stop_metric "tripleo.undercloud.install.seconds"
 if [ $INTROSPECT == 1 ] ; then
     # I'm removing most of the nodes in the env to speed up discovery
@@ -69,7 +70,7 @@ export OVERCLOUD_IMAGES_DIB_YUM_REPO_CONF=$(ls /etc/yum.repos.d/delorean*)
 echo "INFO: Check /var/log/image_build.txt for image build output"
 echo "INFO: This file can be found in logs/undercloud.tar.xz in the directory containing console.log"
 start_metric "tripleo.overcloud.${TOCI_JOBTYPE}.images.seconds"
-$TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --overcloud-images | sudo dd of=/var/log/image_build.txt || (tail -n 50 /var/log/image_build.txt && false)
+$TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --overcloud-images | ts '%Y-%m-%d %H:%M:%S.000 |' | sudo dd of=/var/log/image_build.txt || (tail -n 50 /var/log/image_build.txt && false)
 stop_metric "tripleo.overcloud.${TOCI_JOBTYPE}.images.seconds"
 
 OVERCLOUD_IMAGE_MB=$(du -ms overcloud-full.qcow2 | cut -f 1 | sed 's|.$||')
