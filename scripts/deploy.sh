@@ -149,6 +149,14 @@ if [ $PACEMAKER == 1 ] ; then
 fi
 
 source ~/overcloudrc
-start_metric "tripleo.overcloud.${TOCI_JOBTYPE}.ping_test.seconds"
-OVERCLOUD_PINGTEST_OLD_HEATCLIENT=0 $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --overcloud-pingtest
-stop_metric "tripleo.overcloud.${TOCI_JOBTYPE}.ping_test.seconds"
+if [ $RUN_PING_TEST == 1 ] ; then
+    start_metric "tripleo.overcloud.${TOCI_JOBTYPE}.ping_test.seconds"
+    OVERCLOUD_PINGTEST_OLD_HEATCLIENT=0 $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --overcloud-pingtest
+    stop_metric "tripleo.overcloud.${TOCI_JOBTYPE}.ping_test.seconds"
+fi
+if [ $RUN_TEMPEST_TESTS == 1 ] ; then
+    start_metric "tripleo.overcloud.${TOCI_JOBTYPE}.tempest.seconds"
+    export TEMPEST_REGEX="^(?=(.*smoke))(?!(tempest.api.orchestration.stacks|tempest.scenario.test_volume_boot_pattern|tempest.api.telemetry))"
+    bash $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --run-tempest
+    stop_metric "tripleo.overcloud.${TOCI_JOBTYPE}.tempest.seconds"
+fi
