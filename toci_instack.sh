@@ -299,9 +299,16 @@ if [ $CACHEUPLOAD == 1 ] ; then
     ssh root@$SEED_IP tar -C /home/stack -cf - ironic-python-agent.initramfs ironic-python-agent.vmlinuz ironic-python-agent.kernel > ipa_images.tar
     ssh root@$SEED_IP tar -C /home/stack -cf - overcloud-full.qcow2 overcloud-full.initrd overcloud-full.vmlinuz > overcloud-full.tar
 
+    md5sum overcloud-full.tar > overcloud-full.tar.md5
+    md5sum ipa_images.tar > ipa_images.tar.md5
+    md5sum $TRIPLEO_ROOT/$UNDERCLOUD_VM_NAME.qcow2 > $UNDERCLOUD_VM_NAME.qcow2.md5
+
     curl http://$MIRRORSERVER/cgi-bin/upload.cgi  -F "repohash=$TRUNKREPOUSED" -F "upload=@ipa_images.tar;filename=ipa_images.tar"
     curl http://$MIRRORSERVER/cgi-bin/upload.cgi  -F "repohash=$TRUNKREPOUSED" -F "upload=@overcloud-full.tar;filename=overcloud-full.tar"
     curl http://$MIRRORSERVER/cgi-bin/upload.cgi  -F "repohash=$TRUNKREPOUSED" -F "upload=@$TRIPLEO_ROOT/$UNDERCLOUD_VM_NAME.qcow2;filename=$UNDERCLOUD_VM_NAME.qcow2"
+    curl http://$MIRRORSERVER/cgi-bin/upload.cgi  -F "repohash=$TRUNKREPOUSED" -F "upload=@ipa_images.tar.md5;filename=ipa_images.tar.md5"
+    curl http://$MIRRORSERVER/cgi-bin/upload.cgi  -F "repohash=$TRUNKREPOUSED" -F "upload=@overcloud-full.tar.md5;filename=overcloud-full.tar.md5"
+    curl http://$MIRRORSERVER/cgi-bin/upload.cgi  -F "repohash=$TRUNKREPOUSED" -F "upload=@$UNDERCLOUD_VM_NAME.qcow2.md5;filename=$UNDERCLOUD_VM_NAME.qcow2.md5"
     curl http://$MIRRORSERVER/cgi-bin/upload.cgi  -F "repohash=$TRUNKREPOUSED" -F "$JOB_NAME=SUCCESS"
 fi
 
