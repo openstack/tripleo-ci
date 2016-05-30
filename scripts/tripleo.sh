@@ -620,36 +620,48 @@ function overcloud_pingtest {
     fi
     log "Overcloud pingtest, creating tenant-stack heat stack:"
     heat stack-create -f $TENANT_PINGTEST_TEMPLATE $TENANT_STACK_DEPLOY_ARGS tenant-stack || exitval=1
-    if tripleo wait_for -w 1200 -d 10 -s "CREATE_COMPLETE" -- "heat stack-list | grep tenant-stack"; then
-        log "Overcloud pingtest, heat stack CREATE_COMPLETE";
 
-        vm1_ip=`heat output-show tenant-stack server1_public_ip -F raw`
-        # On new Heat clients the above command returns a big long string.
-        # If the resulting value is longer than an IP address we need the alternate command.
-        if [ ${#vm1_ip} -gt 15 ]; then
-            vm1_ip=`heat output-show tenant-stack server1_public_ip -F raw -v`
-        fi
+    # No point in waiting if the previous command failed.
+    if [ ${exitval} -eq 0 ]; then
+        # TODO(beagles): While the '-f' flag will short-circuit fail us, we'll
+        # likely have to wait for service operations to timeout before the
+        # stack gets marked as failed anyways. A CI oriented configuration for
+        # some key services *might* work for 'fail faster', but where things
+        # can be so slow already it might just cause more pain.
+        #
+        if tripleo wait_for -w 1200 -d 10 -s "CREATE_COMPLETE" -f "CREATE_FAILED" -- "heat stack-list | grep tenant-stack"; then
+            log "Overcloud pingtest, heat stack CREATE_COMPLETE";
 
-        log "Overcloud pingtest, trying to ping the floating IPs $vm1_ip"
+            vm1_ip=`heat output-show tenant-stack server1_public_ip -F raw`
+            # On new Heat clients the above command returns a big long string.
+            # If the resulting value is longer than an IP address we need the alternate command.
+            if [ ${#vm1_ip} -gt 15 ]; then
+                vm1_ip=`heat output-show tenant-stack server1_public_ip -F raw -v`
+            fi
 
-        if tripleo wait_for -w 360 -d 10 -s "bytes from $vm1_ip" -- "ping -c 1 $vm1_ip" ; then
-            ping -c 1 $vm1_ip
-            log "Overcloud pingtest, SUCCESS"
+            log "Overcloud pingtest, trying to ping the floating IPs $vm1_ip"
+
+            if tripleo wait_for -w 360 -d 10 -s "bytes from $vm1_ip" -- "ping -c 1 $vm1_ip" ; then
+                ping -c 1 $vm1_ip
+                log "Overcloud pingtest, SUCCESS"
+            else
+                ping -c 1 $vm1_ip || :
+                nova show Server1 || :
+                nova service-list || :
+                neutron agent-list || :
+                nova console-log Server1 || :
+                log "Overcloud pingtest, FAIL"
+                exitval=1
+            fi
         else
-            ping -c 1 $vm1_ip || :
-            nova show Server1 || :
-            nova service-list || :
-            neutron agent-list || :
-            nova console-log Server1 || :
-            log "Overloud pingtest, FAIL"
+            heat stack-show tenant-stack || :
+            heat event-list tenant-stack || :
+            heat resource-list -n 5 tenant-stack || :
+            log "Overcloud pingtest, failed to create heat stack, trying cleanup"
             exitval=1
         fi
     else
-        heat stack-show tenant-stack || :
-        heat event-list tenant-stack || :
-        heat resource-list -n 5 tenant-stack || :
-        log "Overcloud pingtest, failed to create heat stack, trying cleanup"
-        exitval=1
+        log "Overcloud pingtest, stack create command failed immediately"
     fi
     if [ "$SKIP_PINGTEST_CLEANUP" != 1 ]; then
         cleanup_pingtest
