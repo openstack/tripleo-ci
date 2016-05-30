@@ -459,7 +459,10 @@ function register_nodes {
     stackrc_check
     openstack baremetal import --json $INSTACKENV_JSON_PATH
     ironic node-list
-    openstack baremetal configure boot
+    if [[ "${STABLE_RELEASE}" =~ ^(liberty|mitaka)$ ]] ; then
+        # This step is a part of the import command from Newton on
+        openstack baremetal configure boot
+    fi
 
     log "Register nodes - DONE."
 
