@@ -3,7 +3,7 @@
 # Here be the promote script
 # 1. Find all metadata files newer then the one currently promoted
 # 2. If any of them have all the jobs reported back that we're interested in then promote it
-#    o Bumb current-tripleo on the delorean server
+#    o Bumb current-tripleo on the dlrn server
 #    o Bump current-tripleo on this server
 # ./promote.sh linkname jobname [jobname] ...
 
@@ -12,10 +12,11 @@
 BASEDIR=/var/www/html/builds
 CURRENT=$BASEDIR/$1
 CURRENT_META=$BASEDIR/current-tripleo/metadata.txt
+JOB_URL=https://ci.centos.org/job/tripleo-dlrn-promote/buildWithParameters
 
 shift
 
-# Working with reletive paths is easier as we need to set reletive links on the delorean server
+# Working with relative paths is easier as we need to set relative links on the dlrn server
 cd $BASEDIR
 
 if [ -f $CURRENT_META ] ; then
@@ -34,7 +35,13 @@ for DIR in $DIRS2TEST ; do
     [ $OK == 1 ] && continue
 
     DIR=$(dirname $DIR)
-    ssh -t -o StrictHostKeyChecking=no -p 3300 promoter@trunk.rdoproject.org sudo /usr/local/bin/promote.sh $(basename $DIR) centos-master current-tripleo
+    #(trown) Do not echo the curl command so we can keep the RDO_PROMOTE_TOKEN
+    # relatively secret. The token only provides access to promote the current-tripleo
+    # symlink, and is easy to change, but better to not advertise it in the logs.
+    set +x
+    source ~/.promoterc
+    curl $JOB_URL?token=$RDO_PROMOTE_TOKEN\&tripleo_dlrn_promote_hash=$(basename $DIR)
+    set -x
     ln -snf $DIR $CURRENT
     break
 done
