@@ -61,6 +61,8 @@ export UNDERCLOUD_SSL=0
 export TRIPLEO_SH_ARGS=
 export NETISO_V4=0
 export NETISO_V6=0
+export RUN_PING_TEST=1
+export RUN_TEMPEST_TESTS=0
 
 # Set the fedora mirror, this is more reliable then relying on the repolist returned by metalink
 # NOTE(pabelanger): Once we bring AFS mirrors online, we no longer need to do this.
@@ -117,6 +119,10 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
             # This is handled in tripleo.sh (it always uses centos7-$STABLE_RELEASE/current)
             # where $STABLE_RELEASE is derived in toci_instack.sh
             unset DELOREAN_REPO_URL
+            ;;
+        tempest)
+            export RUN_TEMPEST_TESTS=1
+            export RUN_PING_TEST=0
             ;;
     esac
 done
