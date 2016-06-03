@@ -258,7 +258,13 @@ function delorean_setup {
     log "Delorean setup"
 
     # Install delorean as per combination of toci-instack and delorean docs
-    sudo yum install -y createrepo git mock python-virtualenv rpm-build yum-plugin-priorities yum-utils gcc
+    sudo yum install -y createrepo git mock rpm-build yum-plugin-priorities yum-utils gcc
+
+    # NOTE(pabelanger): Check if virtualenv is already install, if not install
+    # from packages.
+    if ! command -v virtualenv ; then
+        sudo yum install -y python-virtualenv
+    fi
 
     # Workaround until https://review.openstack.org/#/c/311734/ is merged and a new image is built
     sudo yum install -y libffi-devel openssl-devel
