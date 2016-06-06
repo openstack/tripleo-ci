@@ -34,10 +34,10 @@ class Job(Base):
 
 
 default_job_names = [
-    'gate-tripleo-ci-f22-nonha',
-    'gate-tripleo-ci-f22-ha',
-    'gate-tripleo-ci-f22-upgrades',
-    'gate-tripleo-ci-f22-containers',
+    'gate-tripleo-ci-centos-7-nonha',
+    'gate-tripleo-ci-centos-7-ha',
+    'gate-tripleo-ci-centos-7-upgrades',
+    'gate-tripleo-ci-centos-7-containers',
 ]
 
 

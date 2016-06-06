@@ -48,6 +48,6 @@ cron {"mirror-repos":
 }
 
 cron {"promote":
-    command => "timeout 10m /opt/stack/tripleo-ci/scripts/mirror-server/promote.sh current-tripleo periodic-tripleo-ci-f22-nonha periodic-tripleo-ci-f22-ha",
+    command => "timeout 10m /opt/stack/tripleo-ci/scripts/mirror-server/promote.sh current-tripleo periodic-tripleo-ci-centos-7-nonha periodic-tripleo-ci-centos-7-ha",
     minute  => "40"
 }
