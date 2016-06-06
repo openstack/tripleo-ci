@@ -42,7 +42,7 @@ def get_gerrit_reviews(project, status="open", branch="master", limit="30"):
     status_query = ''
     if status:
         status_query = 'status: %s' % status
-    cmd = 'ssh review.openstack.org gerrit' \
+    cmd = 'ssh review.openstack.org -p29418 gerrit' \
           ' query "%s project: %s branch: %s" --comments' \
           ' --format JSON limit: %s --patch-sets --current-patch-set'\
           % (status_query, project, branch,limit)
