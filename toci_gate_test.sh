@@ -1,5 +1,13 @@
 #!/usr/bin/env bash
 set -eux
+# Mirrors
+# NOTE(pabelanger): We have access to AFS mirrors, lets use them.
+source /etc/nodepool/provider
+
+NODEPOOL_MIRROR_HOST=${NODEPOOL_MIRROR_HOST:-mirror.$NODEPOOL_REGION.$NODEPOOL_CLOUD.openstack.org}
+NODEPOOL_MIRROR_HOST=$(echo $NODEPOOL_MIRROR_HOST|tr '[:upper:]' '[:lower:]')
+export CENTOS_MIRROR=http://$NODEPOOL_MIRROR_HOST/centos
+export EPEL_MIRROR=http://$NODEPOOL_MIRROR_HOST/epel
 
 # FIXME(derekh) This needs to be removed
 # We pin this in tripleo-puppet-elements, but the stuff in toci_* overrides it
@@ -40,19 +48,6 @@ sudo rm -rf /opt/git /opt/stack/cache/files/mysql.qcow2 /opt/stack/cache/files/u
 # cd to toci directory so relative paths work
 cd $(dirname $0)
 
-# Mirrors
-# We don't seem to have a CentOS mirror in the data center, so we need to pick
-# one that has reasonable connectivity to our rack.  Provide a few options in
-# case one of them goes down.
-for mirror in http://mirror.hmc.edu/centos/ http://mirrors.usc.edu/pub/linux/distributions/centos/ http://mirror.centos.org/centos/; do
-    if curl -L -f -m 10 $mirror > /dev/null 2>&1; then
-        export CENTOS_MIRROR=$mirror
-        break
-    fi
-done
-# This EPEL Mirror is in the same data center as our CI rack
-export EPEL_MIRROR=http://dl.fedoraproject.org/pub/epel
-
 # Only define $http_proxy if it is unset (use "-" instead of ":-" in the
 # parameter expansion). This will allow an external script to override using a
 # proxy by setting export http_proxy=""
@@ -89,9 +84,6 @@ export MULTINODE=0
 export CONTROLLER_HOSTS=
 export COMPUTE_HOSTS=
 export SUBNODES_SSH_KEY=
-
-# NOTE(pabelanger): Once we bring AFS mirrors online, we no longer need to do this.
-sudo sed -i -e "s|^#baseurl=http://mirror.centos.org/centos/|baseurl=$CENTOS_MIRROR|;/^mirrorlist/d" /etc/yum.repos.d/CentOS-Base.repo
 
 # start dstat early
 # TODO add it to the gate image building
