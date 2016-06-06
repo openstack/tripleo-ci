@@ -356,7 +356,7 @@ function delorean_build {
         popd
 
         while true; do
-            DELOREANCMD="./venv/bin/delorean --config-file projects.ini --head-only --package-name $MAPPED_PROJ --local --build-env DELOREAN_DEV=1 --build-env http_proxy=${http_proxy:-} --info-repo rdoinfo"
+            DELOREANCMD="./venv/bin/dlrn --config-file projects.ini --head-only --package-name $MAPPED_PROJ --local --build-env DELOREAN_DEV=1 --build-env http_proxy=${http_proxy:-} --info-repo rdoinfo"
             # Using sudo to su a command as ourselves to run the command with a new login
             # to ensure the addition to the mock group has taken effect.
             sudo su $(id -nu) -c "$DELOREANCMD" || true
