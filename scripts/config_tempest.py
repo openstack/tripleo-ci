@@ -61,7 +61,7 @@ from tempest.services.identity.v2.json import tenants_client
 from tempest.services.identity.v2.json import users_client
 from tempest.services.identity.v3.json  \
     import identity_client as identity_v3_client
-from tempest.services.image.v2.json import images_client
+from tempest.lib.services.image.v2 import images_client
 
 LOG = logging.getLogger(__name__)
 LOG_FORMAT = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
@@ -159,7 +159,12 @@ def main():
         clients.auth_provider,
         clients.identity_region,
         object_store_discovery=conf.get_bool_value(swift_discover),
-        api_version=api_version)
+        api_version=api_version,
+        disable_ssl_certificate_validation=conf.get_defaulted(
+            'identity',
+            'disable_ssl_certificate_validation'
+        )
+    )
     if args.create and not args.use_test_accounts:
         create_tempest_users(clients.tenants, clients.roles, clients.users,
                              conf, services)
@@ -374,7 +379,7 @@ class ClientManager(object):
             endpoint_type='adminURL',
             **default_params)
 
-        self.images = images_client.ImagesClientV2(
+        self.images = images_client.ImagesClient(
             _auth,
             conf.get_defaulted('image', 'catalog_type'),
             self.identity_region,
@@ -752,6 +757,11 @@ def configure_discovered_services(conf, services):
     :param services: dictionary of discovered services - expects each service
         to have a dictionary containing 'extensions' and 'versions' keys
     """
+    # check if volume service is disabled
+    if conf.has_section('services') and conf.has_option('services', 'volume'):
+        if not conf.getboolean('services', 'volume'):
+            SERVICE_NAMES.pop('volume')
+            SERVICE_VERSIONS.pop('volume')
     # set service availability
     for service, codename in SERVICE_NAMES.iteritems():
         # ceilometer is still transitioning from metering to telemetry
