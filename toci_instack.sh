@@ -169,6 +169,7 @@ function destroy_vms(){
     for i in $(seq 0 14) ; do
         ssh $SSH_OPTIONS $SSH_USER@$HOST_IP virsh destroy baremetal${ENV_NUM}brbm_one${ENV_NUM}_${i} || true
     done
+    ssh $SSH_OPTIONS $SSH_USER@$HOST_IP purge_env ${ENV_NUM} || true
 }
 
 # TODO : Remove the need for this from instack-undercloud

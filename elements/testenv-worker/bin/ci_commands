@@ -48,12 +48,17 @@ def copyseed(params):
 
     return rv
 
+def purge_env(params):
+    rv1 = subprocess.call(["find", "/var/lib/libvirt/images", "-name", "baremetal%s*" % (params[0]), "-exec", "qemu-img", "create", "-f", "qcow2", "{}", "41G", ";"])
+    rv2 = subprocess.call(["qemu-img", "create", "-f", "qcow2", "/var/lib/libvirt/images/seed_%s.qcow2" % (params[0]), "41G", ";"])
+    return (rv1 | rv2)
 
 COMMANDS = {
     'virsh start': virsh_start,
     'virsh destroy': virsh_destroy,
     'virsh list': virsh_list,
     'copyseed': copyseed,
+    'purge_env': purge_env,
 }
 
 
