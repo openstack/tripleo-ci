@@ -88,12 +88,6 @@ fi
 
 sleep 60
 
-# Recreate the baremetal flavor to add a swap partition
-source stackrc
-nova flavor-delete baremetal
-nova flavor-create --swap 1024 baremetal auto 4096 39 1
-nova flavor-key baremetal set capabilities:boot_option=local
-
 if [ -n "${OVERCLOUD_UPDATE_ARGS:-}" ] ; then
     # Reinstall openstack-tripleo-heat-templates from delorean-current.
     # Since we're testing updates, we want to remove any version we may have

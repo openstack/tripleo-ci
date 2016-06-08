@@ -52,7 +52,6 @@ export PACEMAKER=0
 # in under the gate timeout so we can collect logs.
 OVERCLOUD_DEPLOY_TIMEOUT=$((DEVSTACK_GATE_TIMEOUT-90))
 export OVERCLOUD_DEPLOY_ARGS="--libvirt-type=qemu -t $OVERCLOUD_DEPLOY_TIMEOUT"
-export OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS -e /opt/stack/new/tripleo-ci/test-environments/swap-partition.yaml"
 export OVERCLOUD_UPDATE_ARGS=
 export UNDERCLOUD_SSL=0
 export TRIPLEO_SH_ARGS=
