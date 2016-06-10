@@ -59,6 +59,7 @@ function extract_logs(){
     mkdir -p $WORKSPACE/logs/$name
     # Exclude journal files because they're large and not useful in a browser
     tar -C $WORKSPACE/logs/$name -xf $WORKSPACE/logs/$name.tar.xz var --exclude=journal
+    find $WORKSPACE/logs/$name -type f | xargs chmod 644
 }
 
 function postci(){
