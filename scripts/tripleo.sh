@@ -423,6 +423,10 @@ function overcloud_images {
         export DIB_INSTALLTYPE_puppet_modules=${DIB_INSTALLTYPE_puppet_modules:-}
     fi
 
+    if [[ "${STABLE_RELEASE}" =~ ^(liberty)$ ]] ; then
+        export FS_TYPE=ext4
+    fi
+
     # (slagle) TODO: This needs to be fixed in python-tripleoclient or
     # diskimage-builder!
     # Ensure yum-plugin-priorities is installed
