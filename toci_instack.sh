@@ -227,7 +227,9 @@ if [ ! -e $UNDERCLOUD_VM_NAME.qcow2 ] ; then
     if [ -z "$STABLE_RELEASE" ] ; then
         PREINSTALLPACKAGES="-p automake,docker-registry,dstat,gcc-c++,ipxe-bootimgs,libxslt-devel,mariadb-devel,mariadb-server,memcached,mod_wsgi,openstack-aodh-api,openstack-aodh-evaluator,openstack-aodh-listener,openstack-aodh-notifier,openstack-ceilometer-api,openstack-ceilometer-central,openstack-ceilometer-collector,openstack-glance,openstack-heat-api,openstack-heat-api-cfn,openstack-heat-engine,openstack-ironic-api,openstack-ironic-conductor,openstack-ironic-inspector,openstack-keystone,openstack-neutron,openstack-neutron-ml2,openstack-neutron-openvswitch,openstack-nova-api,openstack-nova-cert,openstack-nova-compute,openstack-nova-conductor,openstack-nova-scheduler,openstack-selinux,openstack-swift-account,openstack-swift-object,openstack-swift-proxy,openstack-tempest,openwsman-python,os-apply-config,os-cloud-config,os-collect-config,os-net-config,os-refresh-config,puppet,python-pip,python-virtualenv,rabbitmq-server,tftp-server,xinetd,yum-plugin-priorities"
     fi
-    disk-image-create --image-size 30 -a amd64 centos7 instack-vm -o $UNDERCLOUD_VM_NAME $PREINSTALLPACKAGES 2>&1 | sudo dd of=$WORKSPACE/logs/instack-build.txt || (tail -n 50 $WORKSPACE/logs/instack-build.txt && false)
+    # NOTE(pabelanger): Create both qcow2 and raw formats, but once we removed
+    # Fedora 22 support, we can stop building qcow2 images.
+    disk-image-create --image-size 30 -t qcow2,raw -a amd64 centos7 instack-vm -o $UNDERCLOUD_VM_NAME $PREINSTALLPACKAGES 2>&1 | sudo dd of=$WORKSPACE/logs/instack-build.txt || (tail -n 50 $WORKSPACE/logs/instack-build.txt && false)
 fi
 dd if=$UNDERCLOUD_VM_NAME.qcow2 | ssh $SSH_OPTIONS root@${HOST_IP} copyseed $ENV_NUM
 ssh $SSH_OPTIONS root@${HOST_IP} virsh start seed_$ENV_NUM
@@ -313,7 +315,9 @@ if [ $CACHEUPLOAD == 1 ] ; then
 
     curl http://$MIRRORSERVER/cgi-bin/upload.cgi  -F "repohash=$TRUNKREPOUSED" -F "upload=@ipa_images.tar;filename=ipa_images.tar"
     curl http://$MIRRORSERVER/cgi-bin/upload.cgi  -F "repohash=$TRUNKREPOUSED" -F "upload=@overcloud-full.tar;filename=overcloud-full.tar"
+    # TODO(pabelanger): Remove qcow2 format, since centos-7 cannot mount nbd with the default kernel.
     curl http://$MIRRORSERVER/cgi-bin/upload.cgi  -F "repohash=$TRUNKREPOUSED" -F "upload=@$TRIPLEO_ROOT/$UNDERCLOUD_VM_NAME.qcow2;filename=$UNDERCLOUD_VM_NAME.qcow2"
+    curl http://$MIRRORSERVER/cgi-bin/upload.cgi  -F "repohash=$TRUNKREPOUSED" -F "upload=@$TRIPLEO_ROOT/$UNDERCLOUD_VM_NAME.raw;filename=$UNDERCLOUD_VM_NAME.raw"
     curl http://$MIRRORSERVER/cgi-bin/upload.cgi  -F "repohash=$TRUNKREPOUSED" -F "upload=@ipa_images.tar.md5;filename=ipa_images.tar.md5"
     curl http://$MIRRORSERVER/cgi-bin/upload.cgi  -F "repohash=$TRUNKREPOUSED" -F "upload=@overcloud-full.tar.md5;filename=overcloud-full.tar.md5"
     curl http://$MIRRORSERVER/cgi-bin/upload.cgi  -F "repohash=$TRUNKREPOUSED" -F "upload=@$UNDERCLOUD_VM_NAME.qcow2.md5;filename=$UNDERCLOUD_VM_NAME.qcow2.md5"
