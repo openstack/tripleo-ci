@@ -2,7 +2,7 @@ cassandra https://github.com/locp/cassandra.git
 konstantin_fluentd https://github.com/soylent/konstantin-fluentd.git
 puppet_aviator https://github.com/aimonb/puppet_aviator.git
 puppet_cassandra https://github.com/locp/cassandra.git
-puppet_certmonger https://github.com/rcritten/puppet-certmonger.git
+puppet_certmonger https://github.com/earsdown/puppet-certmonger.git
 puppet_common https://github.com/purpleidea/puppet-common.git
 puppet_contrail https://github.com/redhat-cip/puppet-contrail.git
 puppet_datacat https://github.com/richardc/puppet-datacat.git
