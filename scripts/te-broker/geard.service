@@ -1,0 +1,6 @@
+[Unit]
+Description=Geard deamon
+
+[Service]
+ExecStart=/bin/geard -d
+

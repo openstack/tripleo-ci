@@ -1,0 +1,28 @@
+#!/bin/bash
+set -xe
+
+# If we hit any problem then pause this env so it stops
+# trying to dish out testenvs
+trap "echo There was a problem, going to sleep ; sleep infinity" ERR
+
+ENVNUM=${1:-$(date +%s)}
+PROVISIONNET=provision_${ENVNUM}
+ENVFILE=env_${ENVNUM}.yaml
+
+rm -f /opt/stack/openstack-virtual-baremetal/env_${ENVNUM}.yaml
+
+source /etc/nodepoolrc
+while heat stack-show baremetal_${ENVNUM} 2>&1 > /dev/null ; do
+    # keep calling delete until its gone
+    heat stack-delete -y baremetal_${ENVNUM} || true
+    sleep 20
+done
+
+# Delete the port that has been attached to the undercloud
+SUBNETID=$(neutron subnet-show provision_subnet_${ENVNUM} | awk '$2=="id" {print $4}')
+for PORT in $(neutron port-list | grep $SUBNETID | awk '{print $2}') ; do
+    neutron port-delete $PORT
+done
+
+neutron subnet-delete provision_subnet_${ENVNUM}
+neutron net-delete $PROVISIONNET

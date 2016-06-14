@@ -1,7 +1,7 @@
 Exec { path => [ "/bin/", "/sbin/" ] }
 
 package{"wget": }
-package{"python3": }
+package{"python34": }
 
 # The git repositories are created in a unconfined context
 # TODO: fix this
