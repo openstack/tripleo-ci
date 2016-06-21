@@ -143,7 +143,7 @@ if [ -z ${TE_DATAFILE:-} ] ; then
     # NOTE(pabelanger): We need gear for testenv, but this really should be
     # handled by tox.
     if [ $LSBRELEASE == 'CentOS' ]; then
-        sudo yum install -y python-gear
+        sudo pip install gear
     fi
     # Kill the whole job if it doesn't get a testenv in 20 minutes as it likely will timout in zuul
     ( sleep 1200 ; [ ! -e /tmp/toci.started ] && sudo kill -9 $$ ) &
