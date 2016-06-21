@@ -54,6 +54,7 @@ from tempest.lib import exceptions
 from tempest.lib.services.compute import flavors_client
 from tempest.lib.services.compute import networks_client as nova_net_client
 from tempest.lib.services.compute import servers_client
+from tempest.lib.services.image.v2 import images_client
 from tempest.lib.services.network import networks_client
 from tempest.services.identity.v2.json import identity_client
 from tempest.services.identity.v2.json import roles_client
@@ -61,7 +62,6 @@ from tempest.services.identity.v2.json import tenants_client
 from tempest.services.identity.v2.json import users_client
 from tempest.services.identity.v3.json  \
     import identity_client as identity_v3_client
-from tempest.lib.services.image.v2 import images_client
 
 LOG = logging.getLogger(__name__)
 LOG_FORMAT = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
@@ -533,7 +533,7 @@ def create_user_with_tenant(tenants_client, users_client, username,
     email = "%s@test.com" % username
     # create tenant
     try:
-        tenants_client.create_tenant(tenant_name,
+        tenants_client.create_tenant(name=tenant_name,
                                      description=tenant_description)
     except exceptions.Conflict:
         LOG.info("(no change) Tenant '%s' already exists", tenant_name)
@@ -541,7 +541,8 @@ def create_user_with_tenant(tenants_client, users_client, username,
     tenant_id = identity.get_tenant_by_name(tenants_client, tenant_name)['id']
     # create user
     try:
-        users_client.create_user(username, password, tenant_id, email)
+        users_client.create_user(**{'name': username, 'password': password,
+                                    'tenantId': tenant_id, 'email': email})
     except exceptions.Conflict:
         LOG.info("User '%s' already exists. Setting password to '%s'",
                  username, password)

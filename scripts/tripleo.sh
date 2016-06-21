@@ -134,6 +134,7 @@ TEMPEST_RUN=${TEMPEST_RUN:-""}
 TEMPEST_ARGS=${TEMPEST_ARGS:-"--parallel --subunit"}
 TEMPEST_ADD_CONFIG=${TEMPEST_ADD_CONFIG:-}
 TEMPEST_REGEX=${TEMPEST_REGEX:-"^(?=(.*smoke))(?!(tempest.api.orchestration.stacks|tempest.scenario.test_volume_boot_pattern|tempest.api.telemetry))"}
+TEMPEST_PINNED="fb77374ddeeb1642bffa086311d5f281e15142b2"
 
 # TODO: remove this when Image create in openstackclient supports the v2 API
 export OS_IMAGE_API_VERSION=1
@@ -702,13 +703,14 @@ function tempest_run {
     root_dir=$(realpath $(dirname ${BASH_SOURCE[0]:-$0}))
     [[ ! -e $HOME/tempest ]] && git clone https://github.com/openstack/tempest $HOME/tempest
     pushd $HOME/tempest
+    git checkout $TEMPEST_PINNED
     FLOATING_IP_CIDR=${FLOATING_IP_CIDR:-"192.0.2.0/24"};
     FLOATING_IP_START=${FLOATING_IP_START:-"192.0.2.50"};
     FLOATING_IP_END=${FLOATING_IP_END:-"192.0.2.64"};
     export EXTERNAL_NETWORK_GATEWAY=${EXTERNAL_NETWORK_GATEWAY:-"192.0.2.1"};
     neutron net-create nova --shared --router:external=True --provider:network_type flat --provider:physical_network datacentre;
     neutron subnet-create --name ext-subnet --allocation-pool start=$FLOATING_IP_START,end=$FLOATING_IP_END --disable-dhcp --gateway $EXTERNAL_NETWORK_GATEWAY nova $FLOATING_IP_CIDR;
-    sudo yum install -y libffi-devel openssl-devel
+    sudo yum install -y libffi-devel openssl-devel python-virtualenv
     virtualenv --no-site-packages .venv
     $HOME/tempest/tools/with_venv.sh pip install -U pip setuptools
     $HOME/tempest/tools/with_venv.sh pip install junitxml httplib2 -r test-requirements.txt -r requirements.txt
@@ -727,6 +729,7 @@ function tempest_run {
         identity.admin_password $OS_PASSWORD \
         compute.build_timeout 500 \
         compute.image_ssh_user cirros \
+        orchestration.stack_owner_role _member_ \
         compute.ssh_user cirros \
         network.build_timeout 500 \
         volume.build_timeout 500 \
@@ -740,7 +743,7 @@ function tempest_run {
         tee >( subunit2junitxml --output-to=/var/log/tempest/tempest.xml ) | \
         subunit-trace --no-failure-debug -f 2>&1 | \
         tee /var/log/tempest/tempest_console.log && exitval=0 || exitval=$?
-    subunit2html $(find $HOME/tempest/.testrepository -name [0-9] | head -1) /var/log/tempest/tempest.html
+    subunit2html $HOME/tempest/.testrepository/$(ls -t $HOME/tempest/.testrepository/ | grep -e "[0-9]" | head -1) /var/log/tempest/tempest.html
     exit ${exitval}
 }
 

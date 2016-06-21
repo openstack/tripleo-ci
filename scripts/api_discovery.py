@@ -176,6 +176,8 @@ def discover(auth_provider, region, object_store_discovery=True,
     services = {}
     service_catalog = 'serviceCatalog'
     public_url = 'publicURL'
+    identity_port = urlparse.urlparse(auth_provider.auth_url).port
+    identity_version = urlparse.urlparse(auth_provider.auth_url).path
     if api_version == 3:
         service_catalog = 'catalog'
         public_url = 'url'
@@ -189,7 +191,12 @@ def discover(auth_provider, region, object_store_discovery=True,
                 break
         else:
             ep = entry['endpoints'][0]
-        services[name]['url'] = ep[public_url]
+        if 'identity' in ep[public_url]:
+            services[name]['url'] = ep[public_url].replace(
+                "/identity", ":{0}{1}".format(
+                    identity_port, identity_version))
+        else:
+            services[name]['url'] = ep[public_url]
         service_class = get_service_class(name)
         service = service_class(name, services[name]['url'], token,
                                 disable_ssl_certificate_validation)
