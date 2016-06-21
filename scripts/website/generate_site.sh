@@ -75,10 +75,14 @@ else
 fi
 
 #Planet (Blog Feed Aggregator)
-if [ ! -d planet-2.0 ]; then
-  wget http://www.planetplanet.org/download/planet-2.0.tar.bz2
-  tar xvf planet-2.0.tar.bz2
-  rm planet-2.0.tar.bz2
+PLANET_DIR='planet-venus'
+if [ ! -d '$PLANET_DIR' ]; then
+  git clone https://github.com/rubys/venus.git $PLANET_DIR
+else
+  pushd $PLANET_DIR
+  git reset --hard origin/master
+  git pull
+  popd
 fi
 
 #-----------------------------------------
@@ -130,12 +134,13 @@ fi
 
 # Planet
 if [ -z "$SKIP_BLOG" ]; then
-  cp $SCRIPT_DIR/tripleo-ci/scripts/website/planet* $SCRIPT_DIR/planet-2.0/
-  pushd $SCRIPT_DIR/planet-2.0
+  cp $SCRIPT_DIR/tripleo-ci/scripts/website/planet* $SCRIPT_DIR/$PLANET_DIR
+  pushd $SCRIPT_DIR/$PLANET_DIR
   mkdir output
+  rm planet.html.tmplc # cleanup from previous runs
   python planet.py planet.config.ini
   popd
-  DATA=$(cat planet-2.0/output/planet.html)
+  DATA=$(cat $PLANET_DIR/output/planet.html)
   OUT_FILE=$SCRIPT_DIR/tripleo-docs/doc/build/html/planet.html
   TEMPLATE_FILE=$SCRIPT_DIR/tripleosphinx/doc/build/html/blank.html
   sed -n '1,/.*Custom Content Here/p' $TEMPLATE_FILE > $OUT_FILE #first half
