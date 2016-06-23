@@ -217,15 +217,15 @@ function repo_setup {
 
     if [ -z "$STABLE_RELEASE" ]; then
         # Enable the Delorean Deps repository
-        sudo curl -o $REPO_PREFIX/delorean-deps.repo http://trunk.rdoproject.org/centos7/delorean-deps.repo
+        sudo curl -Lo $REPO_PREFIX/delorean-deps.repo http://trunk.rdoproject.org/centos7/delorean-deps.repo
         sudo sed -i -e 's%priority=.*%priority=30%' $REPO_PREFIX/delorean-deps.repo
 
         # Enable last known good RDO Trunk Delorean repository
-        sudo curl -o $REPO_PREFIX/delorean.repo $DELOREAN_REPO_URL/$DELOREAN_REPO_FILE
+        sudo curl -Lo $REPO_PREFIX/delorean.repo $DELOREAN_REPO_URL/$DELOREAN_REPO_FILE
         sudo sed -i -e 's%priority=.*%priority=20%' $REPO_PREFIX/delorean.repo
 
         # Enable latest RDO Trunk Delorean repository
-        sudo curl -o $REPO_PREFIX/delorean-current.repo http://trunk.rdoproject.org/centos7/current/delorean.repo
+        sudo curl -Lo $REPO_PREFIX/delorean-current.repo http://trunk.rdoproject.org/centos7/current/delorean.repo
         sudo sed -i -e 's%priority=.*%priority=10%' $REPO_PREFIX/delorean-current.repo
         sudo sed -i 's/\[delorean\]/\[delorean-current\]/' $REPO_PREFIX/delorean-current.repo
         sudo /bin/bash -c "cat <<-EOF>>$REPO_PREFIX/delorean-current.repo
@@ -234,11 +234,11 @@ includepkgs=diskimage-builder,instack,instack-undercloud,os-apply-config,os-clou
 EOF"
     else
         # Enable the Delorean Deps repository
-        sudo curl -o $REPO_PREFIX/delorean-deps.repo http://trunk.rdoproject.org/centos7-$STABLE_RELEASE/delorean-deps.repo
+        sudo curl -Lo $REPO_PREFIX/delorean-deps.repo http://trunk.rdoproject.org/centos7-$STABLE_RELEASE/delorean-deps.repo
         sudo sed -i -e 's%priority=.*%priority=30%' $REPO_PREFIX/delorean-deps.repo
 
         # Enable delorean current for the stable version
-        sudo curl -o $REPO_PREFIX/delorean.repo $DELOREAN_STABLE_REPO_URL/$DELOREAN_REPO_FILE
+        sudo curl -Lo $REPO_PREFIX/delorean.repo $DELOREAN_STABLE_REPO_URL/$DELOREAN_REPO_FILE
         sudo sed -i -e 's%priority=.*%priority=20%' $REPO_PREFIX/delorean.repo
 
         # Create empty delorean-current for dib image building
