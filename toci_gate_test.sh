@@ -15,9 +15,10 @@ fi
 # Remove metrics from a previous run
 rm -f /tmp/metric-start-times /tmp/metrics-data
 
-# In order to save space remove some of the largest git repos
-# mirrored on the jenkins slave, together these make up 2G(of 4.6G)
-sudo rm -rf /opt/git/openstack/openstack-manuals /opt/git/openstack/daisycloud-core /opt/git/openstack/fuel-* /opt/git/openstack-infra/activity-board
+# In order to save space remove the cached git repositories, at this point in
+# CI the ones we are interested in have been cloned to /opt/stack/new. We
+# can also remove some distro images cached on the images.
+sudo rm -rf /opt/git /opt/stack/cache/files/mysql.qcow2 /opt/stack/cache/files/ubuntu-12.04-x86_64.tar.gz
 
 # cd to toci directory so relative paths work (below and in toci_devtest.sh)
 cd $(dirname $0)
