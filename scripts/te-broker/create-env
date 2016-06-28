@@ -1,0 +1,48 @@
+#!/bin/bash
+set -ex
+
+# If we hit any problem then pause this env so it stops
+# trying to dish out testenvs
+trap "echo There was a problem, going to sleep ; sleep infinity" ERR
+
+
+ENVNUM=${1:-$(date +%s)}
+NODECOUNT=${2:-2}
+UCINSTANCE=${3:-}
+PROVISIONNET=provision_${ENVNUM}
+ENVFILE=env_${ENVNUM}.yaml
+
+
+source /etc/nodepoolrc
+
+cd /opt/stack/openstack-virtual-baremetal/
+
+/bin/cp --remove-destination templates/env.yaml.example $ENVFILE
+sed -i -e "s/baremetal_prefix:.*/baremetal_prefix: baremetal_${ENVNUM}/" $ENVFILE
+sed -i -e "s/bmc_image:.*/bmc_image: bmc-template/" $ENVFILE
+sed -i -e "s/bmc_prefix:.*/bmc_prefix: bmc_${ENVNUM}/" $ENVFILE
+sed -i -e "s/key_name:.*/key_name: tripleo-cd-admins/" $ENVFILE
+sed -i -e "s/node_count:.*/node_count: ${NODECOUNT}/" $ENVFILE
+sed -i -e "s/os_auth_url:.*/os_auth_url: ${OS_AUTH_URL//\//\/}/" $ENVFILE
+sed -i -e "s/os_password:.*/os_password: $OS_PASSWORD/" $ENVFILE
+sed -i -e "s/os_tenant:.*/os_tenant: $OS_TENANT_NAME/" $ENVFILE
+sed -i -e "s/os_user:.*/os_user: $OS_USERNAME/" $ENVFILE
+sed -i -e "s/provision_net:.*/provision_net: $PROVISIONNET/" $ENVFILE
+
+PROVISIONNETID=$(neutron net-create $PROVISIONNET | awk '$2=="id" {print $4}')
+neutron subnet-create --name provision_subnet_${ENVNUM} --enable_dhcp=False $PROVISIONNET 192.0.2.0/24
+if [ -n "$UCINSTANCE" ] ; then
+    nova interface-attach --net-id $PROVISIONNETID $UCINSTANCE
+fi
+/opt/stack/openstack-virtual-baremetal/bin/deploy.py --env $ENVFILE --name baremetal_${ENVNUM}
+
+while ! heat stack-show baremetal_${ENVNUM} | grep CREATE_COMPLETE ; do
+    sleep 10
+    if heat stack-show baremetal_${ENVNUM} | grep CREATE_FAILED ; then
+        echo "Failed creating OVB stack" > $TE_DATAFILE
+        exit 0
+    fi
+done
+
+/opt/stack/openstack-virtual-baremetal/bin/build-nodes-json --env $ENVFILE --nodes_json $TE_DATAFILE
+

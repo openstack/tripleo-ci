@@ -1,0 +1,6 @@
+[Unit]
+Description=TE Workers
+
+[Service]
+ExecStart=/opt/stack/tripleo-ci/scripts/te-broker/start_workers.sh
+

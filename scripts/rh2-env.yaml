@@ -1,0 +1,75 @@
+parameter_defaults:
+  CloudName: ci-overcloud.rh2.tripleo.org
+  controllerExtraConfig:
+    tripleo::loadbalancer::public_virtual_ip: 8.43.87.224
+    neutron::agents::ml2::ovs::prevent_arp_spoofing: false
+    # https://bugs.launchpad.net/tripleo/+bug/1590101
+    # Tripleo sets this to 1400, the mtu of most pysical networks without jumbo frames is 1500
+    # Tripleo also forces dhcp-option-force=26,1400 , this leaves no overhead room for vxlan
+    # we probably shouldn't force this as neutron automatically subtracts the overlay protocol overhead global_physnet_mtu.
+    # TODO: investigate properly
+    neutron::global_physnet_mtu: 1500
+    # this is deprecated but take precendence ??
+    neutron::network_device_mtu: 1500
+    # rh2 disks are small, we're relying on the fact that CI jobs at different stages wont
+    # ever use peak disk usage together (also they don't use all thats allocate in the flavor)
+    nova::scheduler::filter::disk_allocation_ratio: 3
+  NovaComputeExtraConfig:
+    neutron::agents::ml2::ovs::prevent_arp_spoofing: false
+    neutron::plugins::ml2::firewall_driver: neutron.agent.firewall.NoopFirewallDriver
+    neutron::agents::ml2::ovs::firewall_driver: neutron.agent.firewall.NoopFirewallDriver
+    neutron::global_physnet_mtu: 1500
+    # this is deprecated but takes precendence ??
+    neutron::network_device_mtu: 1500
+    # Allow file injection so that the nodepool cloud creds can be injected into the te-broker
+    nova::compute::libvirt::libvirt_inject_partition: -1
+    # This should be OK if the cloud is exclusivly for CI but it might end in tears
+    nova::compute::libvirt::libvirt_disk_cachemodes:
+    - file=unsafe
+  EndpointMap:
+    AodhAdmin: {protocol: 'http', port: '8042', host: 'IP_ADDRESS'}
+    AodhInternal: {protocol: 'http', port: '8042', host: 'IP_ADDRESS'}
+    AodhPublic: {protocol: 'https', port: '13042', host: 'CLOUDNAME'}
+    CeilometerAdmin: {protocol: 'http', port: '8777', host: 'IP_ADDRESS'}
+    CeilometerInternal: {protocol: 'http', port: '8777', host: 'IP_ADDRESS'}
+    CeilometerPublic: {protocol: 'https', port: '13777', host: 'CLOUDNAME'}
+    CinderAdmin: {protocol: 'http', port: '8776', host: 'IP_ADDRESS'}
+    CinderInternal: {protocol: 'http', port: '8776', host: 'IP_ADDRESS'}
+    CinderPublic: {protocol: 'https', port: '13776', host: 'CLOUDNAME'}
+    GlanceAdmin: {protocol: 'http', port: '9292', host: 'IP_ADDRESS'}
+    GlanceInternal: {protocol: 'http', port: '9292', host: 'IP_ADDRESS'}
+    GlancePublic: {protocol: 'https', port: '13292', host: 'CLOUDNAME'}
+    GnocchiAdmin: {protocol: 'http', port: '8041', host: 'IP_ADDRESS'}
+    GnocchiInternal: {protocol: 'http', port: '8041', host: 'IP_ADDRESS'}
+    GnocchiPublic: {protocol: 'https', port: '13041', host: 'CLOUDNAME'}
+    HeatAdmin: {protocol: 'http', port: '8004', host: 'IP_ADDRESS'}
+    HeatInternal: {protocol: 'http', port: '8004', host: 'IP_ADDRESS'}
+    HeatPublic: {protocol: 'https', port: '13004', host: 'CLOUDNAME'}
+    HorizonPublic: {protocol: 'https', port: '443', host: 'CLOUDNAME'}
+    KeystoneAdmin: {protocol: 'http', port: '35357', host: 'IP_ADDRESS'}
+    KeystoneInternal: {protocol: 'http', port: '5000', host: 'IP_ADDRESS'}
+    KeystonePublic: {protocol: 'https', port: '13000', host: 'CLOUDNAME'}
+    KeystoneV3Admin: {protocol: 'http', port: '35357', host: 'IP_ADDRESS'}
+    KeystoneV3Internal: {protocol: 'http', port: '5000', host: 'IP_ADDRESS'}
+    KeystoneV3Public: {protocol: 'https', port: '13000', host: 'CLOUDNAME'}
+    NeutronAdmin: {protocol: 'http', port: '9696', host: 'IP_ADDRESS'}
+    NeutronInternal: {protocol: 'http', port: '9696', host: 'IP_ADDRESS'}
+    NeutronPublic: {protocol: 'https', port: '13696', host: 'CLOUDNAME'}
+    NovaAdmin: {protocol: 'http', port: '8774', host: 'IP_ADDRESS'}
+    NovaInternal: {protocol: 'http', port: '8774', host: 'IP_ADDRESS'}
+    NovaPublic: {protocol: 'https', port: '13774', host: 'CLOUDNAME'}
+    NovaEC2Admin: {protocol: 'http', port: '8773', host: 'IP_ADDRESS'}
+    NovaEC2Internal: {protocol: 'http', port: '8773', host: 'IP_ADDRESS'}
+    NovaEC2Public: {protocol: 'https', port: '13773', host: 'CLOUDNAME'}
+    NovaVNCProxyAdmin: {protocol: 'http', port: '6080', host: 'IP_ADDRESS'}
+    NovaVNCProxyInternal: {protocol: 'http', port: '6080', host: 'IP_ADDRESS'}
+    NovaVNCProxyPublic: {protocol: 'https', port: '13080', host: 'CLOUDNAME'}
+    SaharaAdmin: {protocol: 'http', port: '8386', host: 'IP_ADDRESS'}
+    SaharaInternal: {protocol: 'http', port: '8386', host: 'IP_ADDRESS'}
+    SaharaPublic: {protocol: 'https', port: '13386', host: 'CLOUDNAME'}
+    SwiftAdmin: {protocol: 'http', port: '8080', host: 'IP_ADDRESS'}
+    SwiftInternal: {protocol: 'http', port: '8080', host: 'IP_ADDRESS'}
+    SwiftPublic: {protocol: 'https', port: '13808', host: 'CLOUDNAME'}
+
+resource_registry:
+  OS::TripleO::NodeTLSData: /usr/share/openstack-tripleo-heat-templates/puppet/extraconfig/tls/tls-cert-inject.yaml
