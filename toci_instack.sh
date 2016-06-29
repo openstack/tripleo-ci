@@ -11,6 +11,10 @@ fi
 
 export TRIPLEO_ROOT=/opt/stack/new
 export PATH=/sbin:/usr/sbin:$PATH
+if [[ -z "${JOB_NAME-}" ]]; then
+    JOB_NAME=${WORKSPACE%/}
+    export JOB_NAME=${JOB_NAME##*/}
+fi
 
 source $TRIPLEO_ROOT/tripleo-ci/scripts/common_functions.sh
 source $TRIPLEO_ROOT/tripleo-ci/scripts/metrics.bash
@@ -242,9 +246,10 @@ SEED_IP=$(OS_CONFIG_FILES=$TE_DATAFILE os-apply-config --key seed-ip --type neta
 echo -e "nameserver 10.1.8.10\nnameserver 8.8.8.8" > /tmp/resolv.conf
 tripleo wait_for -d 5 -l 20 -- scp $SSH_OPTIONS /tmp/resolv.conf root@${SEED_IP}:/etc/resolv.conf
 
-for VAR in CENTOS_MIRROR EPEL_MIRROR http_proxy INTROSPECT MY_IP no_proxy NODECOUNT OVERCLOUD_DEPLOY_ARGS OVERCLOUD_UPDATE_ARGS PACEMAKER SSH_OPTIONS STABLE_RELEASE TRIPLEO_ROOT TRIPLEO_SH_ARGS NETISO_V4 NETISO_V6 TOCI_JOBTYPE UNDERCLOUD_SSL RUN_TEMPEST_TESTS RUN_PING_TEST; do
+for VAR in CENTOS_MIRROR EPEL_MIRROR http_proxy INTROSPECT MY_IP no_proxy NODECOUNT OVERCLOUD_DEPLOY_ARGS OVERCLOUD_UPDATE_ARGS PACEMAKER SSH_OPTIONS STABLE_RELEASE TRIPLEO_ROOT TRIPLEO_SH_ARGS NETISO_V4 NETISO_V6 TOCI_JOBTYPE UNDERCLOUD_SSL RUN_TEMPEST_TESTS RUN_PING_TEST JOB_NAME; do
     echo "export $VAR=\"${!VAR}\"" >> $TRIPLEO_ROOT/tripleo-ci/deploy.env
 done
+cp $TRIPLEO_ROOT/tripleo-ci/deploy.env $WORKSPACE/logs/deploy.env.log
 
 # Copy the required CI resources to the undercloud were we use them
 tar -czf - $TRIPLEO_ROOT/tripleo-ci $TRIPLEO_ROOT/puppet-*/.git /etc/yum.repos.d/delorean* | ssh $SSH_OPTIONS root@$SEED_IP tar -C / -xzf -
