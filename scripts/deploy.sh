@@ -1,6 +1,8 @@
 set -eux
 set -o pipefail
 
+cd
+
 # This sets all the environment variables for undercloud and overcloud installation
 source /opt/stack/new/tripleo-ci/deploy.env
 source /opt/stack/new/tripleo-ci/scripts/metrics.bash
@@ -12,8 +14,9 @@ export DIB_DISTRIBUTION_MIRROR=$CENTOS_MIRROR
 export DIB_EPEL_MIRROR=$EPEL_MIRROR
 export STABLE_RELEASE=${STABLE_RELEASE:-""}
 
+echo '[DEFAULT]' > ~/undercloud.conf
+
 if [ $UNDERCLOUD_SSL == 1 ] ; then
-    echo '[DEFAULT]' > ~/undercloud.conf
     echo 'generate_service_certificate = True' >> ~/undercloud.conf
 fi
 
@@ -23,6 +26,7 @@ echo "INFO: This file can be found in logs/undercloud.tar.xz in the directory co
 start_metric "tripleo.undercloud.install.seconds"
 $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --undercloud 2>&1 | ts '%Y-%m-%d %H:%M:%S.000 |' | sudo dd of=/var/log/undercloud_install.txt || (tail -n 50 /var/log/undercloud_install.txt && false)
 stop_metric "tripleo.undercloud.install.seconds"
+
 if [ $INTROSPECT == 1 ] ; then
     # I'm removing most of the nodes in the env to speed up discovery
     # This could be in jq but I don't know how

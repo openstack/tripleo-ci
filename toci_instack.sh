@@ -11,13 +11,14 @@ fi
 
 export TRIPLEO_ROOT=/opt/stack/new
 export PATH=/sbin:/usr/sbin:$PATH
-if [[ -z "${JOB_NAME-}" ]]; then
-    JOB_NAME=${WORKSPACE%/}
-    export JOB_NAME=${JOB_NAME##*/}
-fi
 
-source $TRIPLEO_ROOT/tripleo-ci/scripts/common_functions.sh
-source $TRIPLEO_ROOT/tripleo-ci/scripts/metrics.bash
+export CURRENT_DIR=$(dirname ${BASH_SOURCE[0]:-$0})
+export TRIPLEO_CI_DIR=$CURRENT_DIR/../
+
+source $TRIPLEO_CI_DIR/tripleo-ci/scripts/common_vars.bash
+source $TRIPLEO_CI_DIR/tripleo-ci/scripts/common_functions.sh
+source $TRIPLEO_CI_DIR/tripleo-ci/scripts/metrics.bash
+
 stop_metric "tripleo.testenv.wait.seconds" # start_metric in toci_gate_test.sh
 start_metric "tripleo.ci.total.seconds"
 
@@ -27,121 +28,22 @@ MY_IP=$(ip addr show dev eth1 | awk '/inet / {gsub("/.*", "") ; print $2}')
 
 export no_proxy=192.0.2.1,$MY_IP,$MIRRORSERVER
 
-# Periodic stable jobs set OVERRIDE_ZUUL_BRANCH, gate stable jobs
-# just have the branch they're proposed to, e.g ZUUL_BRANCH, in both
-# cases we need to set STABLE_RELEASE to match for tripleo.sh
-export STABLE_RELEASE=
-if [[ $ZUUL_BRANCH =~ ^stable/ ]]; then
-    export STABLE_RELEASE=${ZUUL_BRANCH#stable/}
-fi
-
-if [[ $OVERRIDE_ZUUL_BRANCH =~ ^stable/ ]]; then
-    export STABLE_RELEASE=${OVERRIDE_ZUUL_BRANCH#stable/}
-fi
-
 # Setup delorean
 $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --delorean-setup
 
-# If we have no ZUUL_CHANGES then this is a periodic job, we wont be
-# building a ci repo, create a dummy one.
-if [ -z "${ZUUL_CHANGES:-}" ] ; then
-    ZUUL_CHANGES=${ZUUL_CHANGES:-}
-    mkdir -p $TRIPLEO_ROOT/delorean/data/repos/current
-    touch $TRIPLEO_ROOT/delorean/data/repos/current/delorean-ci.repo
-fi
-ZUUL_CHANGES=${ZUUL_CHANGES//^/ }
+dummy_ci_repo
 
 # install moreutils for timestamping postci.log with ts
 sudo yum install -y moreutils
 
-# post ci chores to run at the end of ci
-SSH_OPTIONS='-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=Verbose -o PasswordAuthentication=no -o ConnectionAttempts=32'
-TARCMD="sudo XZ_OPT=-3 tar -cJf - --exclude=udev/hwdb.bin --exclude=etc/services --exclude=selinux/targeted --exclude=etc/services --exclude=etc/pki /var/log /etc"
-
-function extract_logs(){
-    local name=$1
-    mkdir -p $WORKSPACE/logs/$name
-    # Exclude journal files because they're large and not useful in a browser
-    tar -C $WORKSPACE/logs/$name -xf $WORKSPACE/logs/$name.tar.xz var --exclude=journal
-    find $WORKSPACE/logs/$name -type f | xargs chmod 644
-}
-
-function postci(){
-    set +e
-    stop_metric "tripleo.ci.total.seconds"
-    if [ -e $TRIPLEO_ROOT/delorean/data/repos/ ] ; then
-        # I'd like to tar up repos/current but tar'ed its about 8M it may be a
-        # bit much for the log server, maybe when we are building less
-        find $TRIPLEO_ROOT/delorean/data/repos -name "*.log" | XZ_OPT=-3 xargs tar -cJf $WORKSPACE/logs/delorean_repos.tar.xz
-        extract_logs delorean_repos
-    fi
-    if [ "${SEED_IP:-}" != "" ] ; then
-        # Generate extra state information from the running undercloud
-        ssh root@${SEED_IP} /opt/stack/new/tripleo-ci/scripts/get_host_info.sh
-
-        # Get logs from the undercloud
-        ssh root@${SEED_IP} $TARCMD > $WORKSPACE/logs/undercloud.tar.xz
-        extract_logs undercloud
-
-        # when we ran get_host_info.sh on the undercloud it left the output of nova list in /tmp for us
-        for INSTANCE in $(ssh root@${SEED_IP} cat /tmp/nova-list.txt | grep ACTIVE | awk '{printf"%s=%s\n", $4, $12}') ; do
-            IP=${INSTANCE//*=}
-            NAME=${INSTANCE//=*}
-            ssh $SSH_OPTIONS root@${SEED_IP} su stack -c \"scp $SSH_OPTIONS $TRIPLEO_ROOT/tripleo-ci/scripts/get_host_info.sh heat-admin@$IP:/tmp\"
-            timeout -s 15 -k 600 300 ssh $SSH_OPTIONS root@${SEED_IP} su stack -c \"ssh $SSH_OPTIONS heat-admin@$IP sudo /tmp/get_host_info.sh\"
-            ssh $SSH_OPTIONS root@${SEED_IP} su stack -c \"ssh $SSH_OPTIONS heat-admin@$IP $TARCMD\" > $WORKSPACE/logs/${NAME}.tar.xz
-            extract_logs $NAME
-        done
-        # post metrics
-        scp $SSH_OPTIONS root@${SEED_IP}:${METRICS_DATA_FILE} /tmp/seed-metrics
-        cat /tmp/seed-metrics >> ${METRICS_DATA_FILE}
-        metrics_to_graphite "23.253.94.71" #Dan's temp graphite server
-        if [ -z "${LEAVE_RUNNING:-}" ] ; then
-            destroy_vms &> $WORKSPACE/logs/destroy_vms.log
-        fi
-    fi
-    return 0
-}
 trap "[ \$? != 0 ] && echo ERROR DURING PREVIOUS COMMAND ^^^ && echo 'See postci.txt in the logs directory for debugging details'; postci 2>&1 | ts '%Y-%m-%d %H:%M:%S.000 |' > $WORKSPACE/logs/postci.log 2>&1" EXIT
 
-DELOREAN_BUILD_REFS=
-for PROJFULLREF in $ZUUL_CHANGES ; do
-    PROJ=$(filterref $PROJFULLREF)
-    # If ci is being run for a change to ci its ok not to have a ci produced repository
-    # We also don't build packages for puppet repositories, we use them from source
-    if [ "$PROJ" == "tripleo-ci" ] || [[ "$PROJ" =~ ^puppet-* ]] ; then
-        mkdir -p $TRIPLEO_ROOT/delorean/data/repos/current
-        touch $TRIPLEO_ROOT/delorean/data/repos/current/delorean-ci.repo
-    else
-        # Note we only add the project once for it to be built
-        if ! echo $DELOREAN_BUILD_REFS | egrep "( |^)$PROJ( |$)"; then
-            DELOREAN_BUILD_REFS="$DELOREAN_BUILD_REFS $PROJ"
-        fi
-    fi
-done
-
-# Build packages
-if [ -n "$DELOREAN_BUILD_REFS" ] ; then
-    $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --delorean-build $DELOREAN_BUILD_REFS
-fi
-
-# kill the http server if its already running
-ps -ef | grep -i python | grep SimpleHTTPServer | awk '{print $2}' | xargs kill -9 || true
-cd $TRIPLEO_ROOT/delorean/data/repos
-sudo iptables -I INPUT -p tcp --dport 8766 -i eth1 -j ACCEPT
-python -m SimpleHTTPServer 8766 1>$WORKSPACE/logs/yum_mirror.log 2>$WORKSPACE/logs/yum_mirror_error.log &
+delorean_build_and_serve
 
 # Install all of the repositories we need
 $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --repo-setup
 
-# Find the path to the trunk repository used
-TRUNKREPOUSED=$(grep -Eo "[0-9a-z]{2}/[0-9a-z]{2}/[0-9a-z]{40}_[0-9a-z]+" /etc/yum.repos.d/delorean.repo)
-
-# Layer the ci repository on top of it
-sudo wget http://$MY_IP:8766/current/delorean-ci.repo -O /etc/yum.repos.d/delorean-ci.repo
-# rewrite the baseurl in delorean-ci.repo as its currently pointing a http://trunk.rdoproject.org/..
-sudo sed -i -e "s%baseurl=.*%baseurl=http://$MY_IP:8766/current/%" /etc/yum.repos.d/delorean-ci.repo
-sudo sed -i -e 's%priority=.*%priority=1%' /etc/yum.repos.d/delorean-ci.repo
+layer_ci_repo
 
 # Remove everything installed from a delorean repository (only requred if ci nodes are being reused)
 TOBEREMOVED=$(yumdb search from_repo delorean delorean-current delorean-ci | grep -v -e from_repo -e "Loaded plugins" || true)
@@ -187,17 +89,7 @@ export DIB_DISTRIBUTION_MIRROR=$CENTOS_MIRROR
 export DIB_EPEL_MIRROR=$EPEL_MIRROR
 export DIB_CLOUD_IMAGES=http://$MIRRORSERVER/cloud.centos.org/centos/7/images
 
-# create DIB environment variables for all the puppet modules, $TRIPLEO_ROOT
-# has all of the openstack modules with the correct HEAD. Set the DIB_REPO*
-# variables so they are used (and not cloned from github)
-# Note DIB_INSTALLTYPE_puppet_modules is set in tripleo.sh
-for PROJDIR in $TRIPLEO_ROOT/puppet-*; do
-    REV=$(git --git-dir=$PROJDIR/.git rev-parse HEAD)
-    X=${PROJDIR//-/_}
-    PROJ=${X##*/}
-    echo "export DIB_REPOREF_$PROJ=$REV" >> $TRIPLEO_ROOT/tripleo-ci/deploy.env
-    echo "export DIB_REPOLOCATION_$PROJ=$PROJDIR" >> $TRIPLEO_ROOT/tripleo-ci/deploy.env
-done
+create_dib_vars_for_puppet
 
 IFS=$'\n'
 # For the others we use local mirror server
@@ -246,9 +138,7 @@ SEED_IP=$(OS_CONFIG_FILES=$TE_DATAFILE os-apply-config --key seed-ip --type neta
 echo -e "nameserver 10.1.8.10\nnameserver 8.8.8.8" > /tmp/resolv.conf
 tripleo wait_for -d 5 -l 20 -- scp $SSH_OPTIONS /tmp/resolv.conf root@${SEED_IP}:/etc/resolv.conf
 
-for VAR in CENTOS_MIRROR EPEL_MIRROR http_proxy INTROSPECT MY_IP no_proxy NODECOUNT OVERCLOUD_DEPLOY_ARGS OVERCLOUD_UPDATE_ARGS PACEMAKER SSH_OPTIONS STABLE_RELEASE TRIPLEO_ROOT TRIPLEO_SH_ARGS NETISO_V4 NETISO_V6 TOCI_JOBTYPE UNDERCLOUD_SSL RUN_TEMPEST_TESTS RUN_PING_TEST JOB_NAME; do
-    echo "export $VAR=\"${!VAR}\"" >> $TRIPLEO_ROOT/tripleo-ci/deploy.env
-done
+echo_vars_to_deploy_env
 cp $TRIPLEO_ROOT/tripleo-ci/deploy.env $WORKSPACE/logs/deploy.env.log
 
 # Copy the required CI resources to the undercloud were we use them

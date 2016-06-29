@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 set -eux
 
+# Need to make sure lsb_release is installed
+sudo yum -y install redhat-lsb-core
+
 LSBRELEASE=`lsb_release -i -s`
 
 # Clean any cached yum metadata, it maybe stale
@@ -15,12 +18,19 @@ fi
 # Remove metrics from a previous run
 rm -f /tmp/metric-start-times /tmp/metrics-data
 
+# JOB_NAME used to be available from jenkins, we need to create it ourselves until
+# we remove our reliance on it.
+if [[ -z "${JOB_NAME-}" ]]; then
+    JOB_NAME=${WORKSPACE%/}
+    export JOB_NAME=${JOB_NAME##*/}
+fi
+
 # In order to save space remove the cached git repositories, at this point in
 # CI the ones we are interested in have been cloned to /opt/stack/new. We
 # can also remove some distro images cached on the images.
 sudo rm -rf /opt/git /opt/stack/cache/files/mysql.qcow2 /opt/stack/cache/files/ubuntu-12.04-x86_64.tar.gz
 
-# cd to toci directory so relative paths work (below and in toci_devtest.sh)
+# cd to toci directory so relative paths work
 cd $(dirname $0)
 
 # Mirrors
@@ -38,7 +48,11 @@ done
 # This EPEL Mirror is in the same data center as our CI rack
 export EPEL_MIRROR=http://dl.fedoraproject.org/pub/epel
 
-export http_proxy=http://192.168.1.100:3128/
+# Only define $http_proxy if it is unset (use "-" instead of ":-" in the
+# parameter expansion). This will allow an external script to override using a
+# proxy by setting export http_proxy=""
+export http_proxy=${http_proxy-"http://192.168.1.100:3128/"}
+
 export GEARDSERVER=192.168.1.1
 export MIRRORSERVER=192.168.1.101
 
@@ -52,7 +66,8 @@ export PACEMAKER=0
 # the deploy.  Hopefully that's enough, while still leaving some cushion to come
 # in under the gate timeout so we can collect logs.
 OVERCLOUD_DEPLOY_TIMEOUT=$((DEVSTACK_GATE_TIMEOUT-90))
-export OVERCLOUD_DEPLOY_ARGS="--libvirt-type=qemu -t $OVERCLOUD_DEPLOY_TIMEOUT"
+export OVERCLOUD_DEPLOY_ARGS=${OVERCLOUD_DEPLOY_ARGS:-""}
+export OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS --libvirt-type=qemu -t $OVERCLOUD_DEPLOY_TIMEOUT"
 export OVERCLOUD_UPDATE_ARGS=
 export UNDERCLOUD_SSL=0
 export TRIPLEO_SH_ARGS=
