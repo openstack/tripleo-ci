@@ -583,7 +583,7 @@ function cleanup_pingtest {
         log "Overcloud pingtest - time out waiting to delete tenant heat stack, please check manually"
     fi
     log "Overcloud pingtest - cleaning all 'pingtest_*' images"
-    openstack image list | grep pingtest | awk '{print $2}' | xargs -n1 openstack image delete || true
+    openstack image list | grep pingtest | awk '{print $2}' | xargs -r -n1 openstack image delete || true
     log "Overcloud pingtest - cleaning demo network 'nova'"
     neutron net-delete nova || true
 }
