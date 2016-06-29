@@ -53,6 +53,7 @@ function show_options {
     echo "      --repo-setup            -- Perform repository setup."
     echo "      --delorean-setup        -- Install local delorean build environment."
     echo "      --delorean-build        -- Build a delorean package locally"
+    echo "      --multinode-setup       -- Perform multinode setup."
     echo "      --undercloud            -- Install the undercloud."
     echo "      --overcloud-images      -- Build and load overcloud images."
     echo "      --register-nodes        -- Register and configure nodes."
@@ -78,7 +79,7 @@ if [ ${#@} = 0 ]; then
 fi
 
 TEMP=$(getopt -o ,h \
-        -l,help,repo-setup,delorean-setup,delorean-build,undercloud,overcloud-images,register-nodes,introspect-nodes,overcloud-deploy,overcloud-update,overcloud-delete,use-containers,overcloud-pingtest,skip-pingtest-cleanup,all,enable-check,run-tempest \
+        -l,help,repo-setup,delorean-setup,delorean-build,multinode-setup,undercloud,overcloud-images,register-nodes,introspect-nodes,overcloud-deploy,overcloud-update,overcloud-delete,use-containers,overcloud-pingtest,skip-pingtest-cleanup,all,enable-check,run-tempest \
         -o,x,h,a \
         -n $SCRIPT_NAME -- "$@")
 
@@ -106,7 +107,7 @@ OVERCLOUD_DEPLOY=${OVERCLOUD_DEPLOY:-""}
 OVERCLOUD_DELETE=${OVERCLOUD_DELETE:-""}
 OVERCLOUD_DELETE_TIMEOUT=${OVERCLOUD_DELETE_TIMEOUT:-"300"}
 OVERCLOUD_DEPLOY_ARGS=${OVERCLOUD_DEPLOY_ARGS:-""}
-OVERCLOUD_VALIDATE_ARGS=${OVERCLOUD_VALIDATE_ARGS:-"--validation-errors-fatal --validation-warnings-fatal"}
+OVERCLOUD_VALIDATE_ARGS=${OVERCLOUD_VALIDATE_ARGS-"--validation-errors-fatal --validation-warnings-fatal"}
 OVERCLOUD_UPDATE=${OVERCLOUD_UPDATE:-""}
 OVERCLOUD_UPDATE_RM_FILES=${OVERCLOUD_UPDATE_RM_FILES:-"1"}
 OVERCLOUD_UPDATE_ARGS=${OVERCLOUD_UPDATE_ARGS:-"$OVERCLOUD_DEPLOY_ARGS $OVERCLOUD_VALIDATE_ARGS"}
@@ -125,6 +126,7 @@ OVERCLOUD_IMAGES_DIB_YUM_REPO_CONF=${OVERCLOUD_IMAGES_DIB_YUM_REPO_CONF:-"\
     $REPO_PREFIX/delorean-deps.repo"}
 DELOREAN_SETUP=${DELOREAN_SETUP:-""}
 DELOREAN_BUILD=${DELOREAN_BUILD:-""}
+MULTINODE_SETUP=${MULTINODE_SETUP:-""}
 STDERR=/dev/null
 UNDERCLOUD=${UNDERCLOUD:-""}
 UNDERCLOUD_CONF=${UNDERCLOUD_CONF:-"/usr/share/instack-undercloud/undercloud.conf.sample"}
@@ -135,6 +137,8 @@ TEMPEST_ARGS=${TEMPEST_ARGS:-"--parallel --subunit"}
 TEMPEST_ADD_CONFIG=${TEMPEST_ADD_CONFIG:-}
 TEMPEST_REGEX=${TEMPEST_REGEX:-"^(?=(.*smoke))(?!(tempest.api.orchestration.stacks|tempest.scenario.test_volume_boot_pattern|tempest.api.telemetry))"}
 TEMPEST_PINNED="fb77374ddeeb1642bffa086311d5f281e15142b2"
+SSH_OPTIONS=${SSH_OPTIONS:-'-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=Verbose -o PasswordAuthentication=no -o ConnectionAttempts=32'}
+export SCRIPTS_DIR=$(dirname ${BASH_SOURCE[0]:-$0})
 
 # TODO: remove this when Image create in openstackclient supports the v2 API
 export OS_IMAGE_API_VERSION=1
@@ -159,6 +163,7 @@ while true ; do
         --delorean-setup) DELOREAN_SETUP="1"; shift 1;;
         --delorean-build) DELOREAN_BUILD="1"; shift 1;;
         --undercloud) UNDERCLOUD="1"; shift 1;;
+        --multinode-setup) MULTINODE_SETUP="1"; shift 1;;
         -x) set -x; STDERR=/dev/stderr; shift 1;;
         -h | --help) show_options 0;;
         --) shift ; break ;;
@@ -783,6 +788,103 @@ function tempest_run {
     exit ${exitval}
 }
 
+function clone {
+
+    local repo=$1
+
+    log "$0 requires $repo to be cloned at \$TRIPLEO_ROOT ($TRIPLEO_ROOT)"
+
+    if [ ! -d $TRIPLEO_ROOT/$(basename $repo) ]; then
+        echo "$repo not found at $TRIPLEO_ROOT/$repo, git cloning."
+        pushd $TRIPLEO_ROOT
+        git clone https://git.openstack.org/$repo
+        popd
+    else
+        echo "$repo found at $TRIPLEO_ROOT/$repo, nothing to do."
+    fi
+
+}
+
+function multinode_setup {
+
+    log "Multinode Setup"
+
+    clone openstack-dev/devstack
+    clone openstack-infra/devstack-gate
+
+    # $BASE is expected by devstack/functions-common
+    # which is sourced by devstack-gate/functions.sh
+    # It should be the parent directory of the "new" directory where
+    # zuul-cloner has checked out the repositories
+    log "Sourcing devstack-gate/functions.sh"
+    export BASE=${BASE:-"/opt/stack"}
+    set +u
+    source $TRIPLEO_ROOT/devstack-gate/functions.sh
+    set -u
+
+    PUB_BRIDGE_NAME=${PUB_BRIDGE_NAME:-"br-ex"}
+
+    local primary_node
+    primary_node=$(cat /etc/nodepool/primary_node_private)
+    local sub_nodes
+    sub_nodes=$(cat /etc/nodepool/sub_nodes_private)
+
+    for ip in $sub_nodes; do
+        # Do repo setup
+        ssh $SSH_OPTIONS -t -i /etc/nodepool/id_rsa $ip \
+            $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --repo-setup
+
+        # Run overcloud full bootstrap script
+        log "Running overcloud-full boostrap script on $ip"
+        ssh $SSH_OPTIONS -t -i /etc/nodepool/id_rsa $ip \
+            $TRIPLEO_ROOT/tripleo-ci/scripts/bootstrap-overcloud-full.sh
+    done
+
+    # Create OVS vxlan bridges
+    # If br-ctlplane already exists on this node, we need to bring it down
+    # first, then bring it back up after calling ovs_vxlan_bridge. This ensures
+    # that the route added to br-ex by ovs_vxlan_bridge will be preferred over
+    # the br-ctlplane route. If it's not preferred, multinode connectivity
+    # across the vxlan bridge will not work.
+    if [ -f /etc/sysconfig/network-scripts/ifcfg-br-ctlplane ]; then
+        sudo ifdown br-ctlplane
+    fi
+    set +u
+    ovs_vxlan_bridge $PUB_BRIDGE_NAME $primary_node "True" 2 192.0.2 24 $sub_nodes
+    set -u
+
+    log "Setting $PUB_BRIDGE_NAME up on $primary_node"
+    sudo ip link set dev $PUB_BRIDGE_NAME up
+
+    if [ -f /etc/sysconfig/network-scripts/ifcfg-br-ctlplane ]; then
+        sudo ifup br-ctlplane
+    fi
+    # Restart neutron-openvswitch-agent if it's enabled, since it may have
+    # terminated when br-ctlplane was down
+    if [ $(sudo systemctl is-enabled neutron-openvswitch-agent) = 'enabled' ]; then
+        sudo systemctl reset-failed neutron-openvswitch-agent
+        sudo systemctl restart neutron-openvswitch-agent
+    fi
+
+    local ping_command="ping -c 3 -W 3 192.0.2.2"
+
+    for ip in $sub_nodes; do
+        log "Setting $PUB_BRIDGE_NAME up on $ip"
+        ssh $SSH_OPTIONS -t -i /etc/nodepool/id_rsa $ip \
+            sudo ip link set dev $PUB_BRIDGE_NAME up
+        if ! remote_command $ip $ping_command; then
+            log "Pinging from $ip failed, restarting openvswitch"
+            remote_command $ip sudo systemctl restart openvswitch
+            if ! remote_command $ip $ping_command; then
+                log "Pinging from $ip still failed after restarting openvswitch"
+                exit 1
+            fi
+        fi
+    done
+
+    log "Multinode Setup - DONE".
+}
+
 if [ "$REPO_SETUP" = 1 ]; then
     repo_setup
 fi
@@ -839,6 +941,10 @@ fi
 
 if [ "$TEMPEST_RUN" = 1 ]; then
     tempest_run
+fi
+
+if [ "$MULTINODE_SETUP" = 1 ]; then
+    multinode_setup
 fi
 
 if [ "$ALL" = 1 ]; then

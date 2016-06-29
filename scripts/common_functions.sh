@@ -187,6 +187,7 @@ function extract_logs(){
 }
 
 function postci(){
+    set -x
     set +e
     stop_metric "tripleo.ci.total.seconds"
     if [ -e $TRIPLEO_ROOT/delorean/data/repos/ ] ; then
@@ -219,6 +220,23 @@ function postci(){
         if [ -z "${LEAVE_RUNNING:-}" ] && [ -n "${HOST_IP:-}" ] ; then
             destroy_vms &> $WORKSPACE/logs/destroy_vms.log
         fi
+    elif [ "$MULTINODE" = "1" ] ; then
+        local i=2
+        sudo /opt/stack/new/tripleo-ci/scripts/get_host_info.sh
+        $TARCMD > $WORKSPACE/logs/primary_node.tar.xz
+        for ip in $(cat /etc/nodepool/sub_nodes_private); do
+            mkdir $WORKSPACE/logs/subnode-$i/
+            ssh $SSH_OPTIONS -i /etc/nodepool/id_rsa $ip \
+                sudo /opt/stack/new/tripleo-ci/scripts/get_host_info.sh
+            ssh $SSH_OPTIONS -i /etc/nodepool/id_rsa $ip \
+                $TARCMD > $WORKSPACE/logs/subnode-$i/subnode-$i.tar.xz
+            # TODO: For some reason, these files are causing the publish logs ansible
+            # task to fail with an rsync error:
+            # "symlink has no referent"
+            rm -f $WORKSPACE/logs/subnode-$i/etc/sahara/rootwrap.d/sahara.filters
+            rm -f $WORKSPACE/logs/subnode-$i/etc/cinder/rootwrap.d/os-brick.filters
+            let i+=1
+        done
     fi
 
     sudo chown -R $USER $WORKSPACE
@@ -296,7 +314,7 @@ function layer_ci_repo {
 
 
 function echo_vars_to_deploy_env {
-    for VAR in CENTOS_MIRROR EPEL_MIRROR http_proxy INTROSPECT MY_IP no_proxy NODECOUNT OVERCLOUD_DEPLOY_ARGS OVERCLOUD_UPDATE_ARGS PACEMAKER SSH_OPTIONS STABLE_RELEASE TRIPLEO_ROOT TRIPLEO_SH_ARGS NETISO_V4 NETISO_V6 TOCI_JOBTYPE UNDERCLOUD_SSL RUN_TEMPEST_TESTS RUN_PING_TEST JOB_NAME OVB UNDERCLOUD_IDEMPOTENT; do
+    for VAR in CENTOS_MIRROR EPEL_MIRROR http_proxy INTROSPECT MY_IP no_proxy NODECOUNT OVERCLOUD_DEPLOY_ARGS OVERCLOUD_UPDATE_ARGS PACEMAKER SSH_OPTIONS STABLE_RELEASE TRIPLEO_ROOT TRIPLEO_SH_ARGS NETISO_V4 NETISO_V6 TOCI_JOBTYPE UNDERCLOUD_SSL RUN_TEMPEST_TESTS RUN_PING_TEST JOB_NAME OVB UNDERCLOUD_IDEMPOTENT MULTINODE CONTROLLER_HOSTS COMPUTE_HOSTS SUBNODES_SSH_KEY; do
         echo "export $VAR=\"${!VAR}\"" >> $TRIPLEO_ROOT/tripleo-ci/deploy.env
     done
 }

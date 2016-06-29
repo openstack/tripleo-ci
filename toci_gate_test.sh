@@ -71,6 +71,7 @@ export PACEMAKER=0
 # the deploy.  Hopefully that's enough, while still leaving some cushion to come
 # in under the gate timeout so we can collect logs.
 OVERCLOUD_DEPLOY_TIMEOUT=$((DEVSTACK_GATE_TIMEOUT-90))
+export OVERCLOUD_SSH_USER=${OVERCLOUD_SSH_USER:-"jenkins"}
 export OVERCLOUD_DEPLOY_ARGS=${OVERCLOUD_DEPLOY_ARGS:-""}
 export OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS --libvirt-type=qemu -t $OVERCLOUD_DEPLOY_TIMEOUT"
 export OVERCLOUD_UPDATE_ARGS=
@@ -84,6 +85,10 @@ export RUN_TEMPEST_TESTS=0
 export OVB=0
 export UCINSTANCEID=NULL
 export TOCIRUNNER="./toci_instack.sh"
+export MULTINODE=0
+export CONTROLLER_HOSTS=
+export COMPUTE_HOSTS=
+export SUBNODES_SSH_KEY=
 
 # NOTE(pabelanger): Once we bring AFS mirrors online, we no longer need to do this.
 sudo sed -i -e "s|^#baseurl=http://mirror.centos.org/centos/|baseurl=$CENTOS_MIRROR|;/^mirrorlist/d" /etc/yum.repos.d/CentOS-Base.repo
@@ -140,6 +145,18 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
             # The test env broker needs to know the instanceid of the this node so it can attach it to the provisioning network
             UCINSTANCEID=$(http_proxy= curl http://169.254.169.254/openstack/2015-10-15/meta_data.json | python -c 'import json, sys; print json.load(sys.stdin)["uuid"]')
             ;;
+        multinode)
+            MULTINODE=1
+            TOCIRUNNER="./toci_instack_multinode.sh"
+            NODECOUNT=1
+            PACEMAKER=1
+            CONTROLLER_HOSTS=$(sed -n 1,1p /etc/nodepool/sub_nodes)
+            SUBNODES_SSH_KEY=/etc/nodepool/id_rsa
+            UNDERCLOUD_SSL=0
+            INTROSPECT=0
+            OVERCLOUD_DEPLOY_ARGS="--libvirt-type=qemu -t $OVERCLOUD_DEPLOY_TIMEOUT"
+            OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS -e /usr/share/openstack-tripleo-heat-templates/environments/deployed-server-environment.yaml -e /opt/stack/new/tripleo-ci/test-environments/multinode.yaml --compute-scale 0 --overcloud-ssh-user $OVERCLOUD_SSH_USER"
+            ;;
         periodic)
             export DELOREAN_REPO_URL=http://trunk.rdoproject.org/centos7/consistent
             CACHEUPLOAD=1
@@ -173,7 +190,7 @@ set -m
 
 source /opt/stack/new/tripleo-ci/scripts/metrics.bash
 start_metric "tripleo.testenv.wait.seconds"
-if [ -z ${TE_DATAFILE:-} ] ; then
+if [ -z "${TE_DATAFILE:-}" -a "$MULTINODE" = "0" ] ; then
     # NOTE(pabelanger): We need gear for testenv, but this really should be
     # handled by tox.
     sudo pip install gear
