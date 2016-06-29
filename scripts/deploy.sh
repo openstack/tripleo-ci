@@ -27,6 +27,25 @@ start_metric "tripleo.undercloud.install.seconds"
 $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --undercloud 2>&1 | ts '%Y-%m-%d %H:%M:%S.000 |' | sudo dd of=/var/log/undercloud_install.txt || (tail -n 50 /var/log/undercloud_install.txt && false)
 stop_metric "tripleo.undercloud.install.seconds"
 
+if [ "$OVB" = 1 ]; then
+
+    # eth1 is on the provisioning netwrok and doesn't have dhcp, so we need to set its MTU manually.
+    sudo ip link set dev eth1 up
+    sudo ip link set dev eth1 mtu 1400
+
+    echo -e "\ndhcp-option-force=26,1400" | sudo tee -a /etc/dnsmasq-ironic.conf
+    sudo systemctl restart 'neutron-*'
+
+    # The undercloud install is creating file in ~/.cache as root
+    # change them back so we can build overcloud images
+    sudo chown -R $USER ~/.cache || true
+
+    # check the power status of the last IPMI device we have details for
+    # this ensures the BMC is ready and sanity tests that its working
+    PMADDR=$(jq '.nodes[length-1].pm_addr' < ~/instackenv.json | tr '"' ' ')
+    tripleo wait_for -d 10 -l 40 -- ipmitool -I lanplus -H $PMADDR -U admin -P password power status
+fi
+
 if [ $INTROSPECT == 1 ] ; then
     # I'm removing most of the nodes in the env to speed up discovery
     # This could be in jq but I don't know how

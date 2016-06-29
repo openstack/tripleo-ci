@@ -83,7 +83,6 @@ function destroy_vms(){
 ls /home/jenkins/.ssh/id_rsa_virt_power || ssh-keygen -f /home/jenkins/.ssh/id_rsa_virt_power -P ""
 
 export ANSWERSFILE=/usr/share/instack-undercloud/undercloud.conf.sample
-export UNDERCLOUD_VM_NAME=instack
 export ELEMENTS_PATH=/usr/share/instack-undercloud
 export DIB_DISTRIBUTION_MIRROR=$CENTOS_MIRROR
 export DIB_EPEL_MIRROR=$EPEL_MIRROR

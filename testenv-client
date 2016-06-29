@@ -62,7 +62,7 @@ class TestCallback(object):
 
         logger.info('Received job : %s', job.arguments.strip())
         time_waiting = time.time() - self.created
-        if time_waiting > 10:
+        if time_waiting > 90:
             logger.warn('%.1f seconds waiting for a worker.' % (time_waiting))
         logger.info('Running command "%s"', ' '.join(self.command))
 
@@ -141,6 +141,11 @@ def main(args=sys.argv[1:]):
     parser.add_argument('--timeout', '-t',  default='10800',
                         help='Set a timeout, after which the command will '
                              'be killed.')
+    parser.add_argument('--envsize', default="2",
+                        help='Number of baremetal nodes to request')
+    parser.add_argument('--ucinstance',
+                        help='uuid for the undercloud instance (where an '
+                             'interface on the provisioning net is attached')
     parser.add_argument('--debug', '-d',  action='store_true',
                         help='Set to debug mode.')
     opts = parser.parse_args(args)
@@ -155,7 +160,12 @@ def main(args=sys.argv[1:]):
     add_servers(client, opts.geard)
     client.waitForServer()
 
-    job_params = {"callback_name": callback_name, "timeout": opts.timeout}
+    job_params = {
+        "callback_name": callback_name,
+        "timeout": opts.timeout,
+        "envsize":opts.envsize,
+        "ucinstance":opts.ucinstance,
+    }
     job = gear.Job('lockenv', json.dumps(job_params))
     client.submitJob(job)
 

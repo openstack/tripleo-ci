@@ -6,6 +6,13 @@ sudo yum -y install redhat-lsb-core
 
 LSBRELEASE=`lsb_release -i -s`
 
+# I'd like to use a variable from ZUUL to dicide which cloud I'm running on
+# but that would then break if running toci_* manually outside of CI, so for
+# the moment use a IP uniq to rh1
+if ping -c 1 192.168.100.1 ; then
+    source $(dirname $0)/scripts/rh2.env
+fi
+
 # Clean any cached yum metadata, it maybe stale
 sudo yum clean all
 
@@ -53,8 +60,8 @@ export EPEL_MIRROR=http://dl.fedoraproject.org/pub/epel
 # proxy by setting export http_proxy=""
 export http_proxy=${http_proxy-"http://192.168.1.100:3128/"}
 
-export GEARDSERVER=192.168.1.1
-export MIRRORSERVER=192.168.1.101
+export GEARDSERVER=${TEBROKERIP-192.168.1.1}
+export MIRRORSERVER=${MIRRORIP-192.168.1.101}
 
 export CACHEUPLOAD=0
 export INTROSPECT=0
@@ -75,6 +82,9 @@ export NETISO_V4=0
 export NETISO_V6=0
 export RUN_PING_TEST=1
 export RUN_TEMPEST_TESTS=0
+export OVB=0
+export UCINSTANCEID=NULL
+export TOCIRUNNER="./toci_instack.sh"
 
 # Set the fedora mirror, this is more reliable then relying on the repolist returned by metalink
 # NOTE(pabelanger): Once we bring AFS mirrors online, we no longer need to do this.
@@ -90,6 +100,10 @@ sudo yum install -y dstat nmap-ncat #nc is for metrics
 mkdir -p "$WORKSPACE/logs"
 dstat -tcmndrylpg --output "$WORKSPACE/logs/dstat-csv.log" >/dev/null &
 disown
+
+# TODO: Submit a patch to chang this in infra once all the reshuffling is done
+[ $TOCI_JOBTYPE == "ovb-ha" ] && TOCI_JOBTYPE=ovb-ha2
+
 
 # Switch defaults based on the job name
 for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
@@ -112,6 +126,14 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
             NETISO_V4=1
             PACEMAKER=1
             ;;
+        ha2)
+            NODECOUNT=4
+            # In ci our overcloud nodes don't have access to an external netwrok
+            # --ntp-server is here to make the deploy command happy, the ci env
+            # is on virt so the clocks should be in sync without it.
+            OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS --control-scale 3 --ntp-server 0.centos.pool.ntp.org -e /usr/share/openstack-tripleo-heat-templates/environments/puppet-pacemaker.yaml"
+            PACEMAKER=1
+            ;;
         nonha)
             OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS -e /opt/stack/new/tripleo-ci/test-environments/enable-tls.yaml -e /opt/stack/new/tripleo-ci/test-environments/inject-trust-anchor.yaml --ceph-storage-scale 1 -e /usr/share/openstack-tripleo-heat-templates/environments/puppet-ceph-devel.yaml"
             INTROSPECT=1
@@ -122,6 +144,13 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
             # TODO : remove this when the containers job is passing again
             exit 1
             TRIPLEO_SH_ARGS="--use-containers"
+            ;;
+        ovb)
+            OVB=1
+            TOCIRUNNER="./toci_instack_ovb.sh"
+
+            # The test env broker needs to know the instanceid of the this node so it can attach it to the provisioning network
+            UCINSTANCEID=$(http_proxy= curl http://169.254.169.254/openstack/2015-10-15/meta_data.json | python -c 'import json, sys; print json.load(sys.stdin)["uuid"]')
             ;;
         periodic)
             export DELOREAN_REPO_URL=http://trunk.rdoproject.org/centos7/consistent
@@ -163,7 +192,8 @@ if [ -z ${TE_DATAFILE:-} ] ; then
     fi
     # Kill the whole job if it doesn't get a testenv in 20 minutes as it likely will timout in zuul
     ( sleep 1200 ; [ ! -e /tmp/toci.started ] && sudo kill -9 $$ ) &
-    ./testenv-client -b $GEARDSERVER:4730 -t $TIMEOUT_SECS -- ./toci_instack.sh
+
+    ./testenv-client -b $GEARDSERVER:4730 -t $TIMEOUT_SECS --envsize $NODECOUNT --ucinstance $UCINSTANCEID -- $TOCIRUNNER
 else
-    LEAVE_RUNNING=1 ./toci_instack.sh
+    LEAVE_RUNNING=1 $TOCIRUNNER
 fi
