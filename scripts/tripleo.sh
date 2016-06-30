@@ -115,8 +115,10 @@ OVERCLOUD_UPDATE_RM_FILES=${OVERCLOUD_UPDATE_RM_FILES:-"1"}
 OVERCLOUD_UPDATE_ARGS=${OVERCLOUD_UPDATE_ARGS:-"$OVERCLOUD_DEPLOY_ARGS $OVERCLOUD_VALIDATE_ARGS"}
 OVERCLOUD_UPDATE_CHECK=${OVERCLOUD_UPDATE_CHECK:-}
 OVERCLOUD_IMAGES_PATH=${OVERCLOUD_IMAGES_PATH:-"$HOME"}
+OVERCLOUD_IMAGES_YAML_PATH=${OVERCLOUD_IMAGES_YAML_PATH:-"/usr/share/openstack-tripleo-common/image-yaml"}
 OVERCLOUD_IMAGES=${OVERCLOUD_IMAGES:-""}
-OVERCLOUD_IMAGES_ARGS=${OVERCLOUD_IMAGES_ARGS='--all'}
+OVERCLOUD_IMAGES_LEGACY_ARGS=${OVERCLOUD_IMAGES_LEGACY_ARGS:-"--all"}
+OVERCLOUD_IMAGES_ARGS=${OVERCLOUD_IMAGES_ARGS:-"--output-directory $OVERCLOUD_IMAGES_PATH --config-file $OVERCLOUD_IMAGES_YAML_PATH/overcloud-images.yaml --config-file $OVERCLOUD_IMAGES_YAML_PATH/overcloud-images-centos7.yaml"}
 OVERCLOUD_NAME=${OVERCLOUD_NAME:-"overcloud"}
 UNDERCLOUD_UPGRADE=${UNDERCLOUD_UPGRADE:-""}
 UPGRADE_VERSION=${UPGRADE_VERSION:-"master"}
@@ -443,7 +445,6 @@ function undercloud {
 function overcloud_images {
 
     log "Overcloud images"
-    log "Overcloud images saved in $OVERCLOUD_IMAGES_PATH"
 
     if [[ "${STABLE_RELEASE}" =~ ^(liberty)$ ]] ; then
         export FS_TYPE=ext4
@@ -476,7 +477,11 @@ function overcloud_images {
     log "Overcloud images saved in $OVERCLOUD_IMAGES_PATH"
     pushd $OVERCLOUD_IMAGES_PATH
     log "OVERCLOUD_IMAGES_DIB_YUM_REPO_CONF=$OVERCLOUD_IMAGES_DIB_YUM_REPO_CONF"
-    openstack overcloud image build $OVERCLOUD_IMAGES_ARGS 2>&1 | \
+    if [[ "${STABLE_RELEASE}" =~ ^(liberty|mitaka|newton)$ ]] ; then
+        OVERCLOUD_IMAGES_ARGS="$OVERCLOUD_IMAGES_LEGACY_ARGS"
+    fi
+    DIB_YUM_REPO_CONF=$OVERCLOUD_IMAGES_DIB_YUM_REPO_CONF \
+        openstack overcloud image build $OVERCLOUD_IMAGES_ARGS 2>&1 | \
         tee -a overcloud-image-build.log
 
     stackrc_check
