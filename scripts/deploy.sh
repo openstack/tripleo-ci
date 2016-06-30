@@ -5,6 +5,9 @@ set -o pipefail
 source /opt/stack/new/tripleo-ci/deploy.env
 source /opt/stack/new/tripleo-ci/scripts/metrics.bash
 
+# Prevent python from buffering stdout, so timestamps are set at appropriate times
+export PYTHONUNBUFFERED=true
+
 export DIB_DISTRIBUTION_MIRROR=$CENTOS_MIRROR
 export DIB_EPEL_MIRROR=$EPEL_MIRROR
 export STABLE_RELEASE=${STABLE_RELEASE:-""}
