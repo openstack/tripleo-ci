@@ -105,6 +105,9 @@ resources:
 
   server1_floating_ip:
     type: OS::Neutron::FloatingIP
+    # TODO: investigate why we need this depends_on and if we could
+    # replace it by router_id with get_resource: router_interface
+    depends_on: router_interface
     properties:
       floating_network: { get_param: public_net_name }
       port_id: { get_resource: server1_port }
