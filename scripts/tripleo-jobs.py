@@ -38,6 +38,7 @@ default_job_names = [
     'gate-tripleo-ci-centos-7-ha',
     'gate-tripleo-ci-centos-7-upgrades',
     'gate-tripleo-ci-centos-7-containers',
+    'gate-tripleo-ci-centos-7-ovb-ha',
 ]
 
 

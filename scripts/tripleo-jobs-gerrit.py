@@ -12,6 +12,7 @@ DEFAULT_JOB_NAMES = [
     'gate-tripleo-ci-centos-7-ha',
     'gate-tripleo-ci-centos-7-upgrades',
     'gate-tripleo-ci-centos-7-containers',
+    'gate-tripleo-ci-centos-7-ovb-ha',
 ]
 
 DEFAULT_PROJECTS = [
