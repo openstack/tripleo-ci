@@ -10,6 +10,11 @@ ENVFILE=env_${ENVNUM}.yaml
 
 source /etc/nodepoolrc
 
+if [ ! -e /opt/stack/openstack-virtual-baremetal ] ; then
+    sudo git clone https://github.com/cybertron/openstack-virtual-baremetal.git /opt/stack/openstack-virtual-baremetal
+    sudo chown -R $USER /opt/stack/openstack-virtual-baremetal
+fi
+
 cd /opt/stack/openstack-virtual-baremetal/
 
 /bin/cp --remove-destination templates/env.yaml.example $ENVFILE
@@ -39,5 +44,4 @@ while ! heat stack-show baremetal_${ENVNUM} | grep CREATE_COMPLETE ; do
     fi
 done
 
-/opt/stack/openstack-virtual-baremetal/bin/build-nodes-json --env $ENVFILE --nodes_json $TE_DATAFILE
-
+/opt/stack/openstack-virtual-baremetal/bin/build-nodes-json --env $ENVFILE --nodes_json ${TE_DATAFILE:-~/instackenv.json}

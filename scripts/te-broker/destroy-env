@@ -9,10 +9,13 @@ rm -f /opt/stack/openstack-virtual-baremetal/env_${ENVNUM}.yaml
 
 source /etc/nodepoolrc
 while heat stack-show baremetal_${ENVNUM} 2>&1 > /dev/null ; do
-    # keep calling delete until its gone
-    heat stack-delete -y baremetal_${ENVNUM} || true
+    # If the delete failed, try again
+    if heat stack-show baremetal_${ENVNUM} | grep DELETE_FAILED ; then
+        heat stack-delete -y baremetal_${ENVNUM} || true
+    fi
     sleep 20
 done
+
 
 # Delete the port that has been attached to the undercloud
 SUBNETID=$(neutron subnet-show provision_subnet_${ENVNUM} | awk '$2=="id" {print $4}')
