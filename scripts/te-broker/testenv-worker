@@ -126,7 +126,7 @@ class TEWorkerThread(threading.Thread):
             with tempfile.NamedTemporaryFile('r') as fp:
                 os.environ["TE_DATAFILE"] = fp.name
                 logger.info(
-                    subprocess.check_output([self.scriptfiles[0], self.num, arguments.get("envsize","2"), arguments.get("ucinstance","")]))
+                    subprocess.check_output([self.scriptfiles[0], self.num, arguments.get("envsize","2"), arguments.get("ucinstance","")], stderr=subprocess.STDOUT))
                 clientdata = fp.read()
         except subprocess.CalledProcessError as e:
             logger.error(e.output)
@@ -148,7 +148,7 @@ class TEWorkerThread(threading.Thread):
             if not cb_job.running:
                 logger.error("No sign of the Callback job starting,"
                              "assuming its no longer present")
-                clientdata = subprocess.check_output([self.scriptfiles[1], self.num])
+                clientdata = subprocess.check_output([self.scriptfiles[1], self.num], stderr=subprocess.STDOUT)
                 logger.info(clientdata)
                 client.shutdown()
                 return
@@ -166,7 +166,7 @@ class TEWorkerThread(threading.Thread):
         else:
             logger.info('Returned from Job : %s', cb_job.data)
         try:
-            clientdata = subprocess.check_output([self.scriptfiles[1], self.num])
+            clientdata = subprocess.check_output([self.scriptfiles[1], self.num], stderr=subprocess.STDOUT)
         except subprocess.CalledProcessError as e:
             logger.error(e.output)
             raise
