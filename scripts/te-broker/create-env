@@ -1,11 +1,6 @@
 #!/bin/bash
 set -ex
 
-# If we hit any problem then pause this env so it stops
-# trying to dish out testenvs
-trap "echo There was a problem, going to sleep ; sleep infinity" ERR
-
-
 ENVNUM=${1:-$(date +%s)}
 NODECOUNT=${2:-2}
 UCINSTANCE=${3:-}
