@@ -16,6 +16,10 @@ fi
 # Clean any cached yum metadata, it maybe stale
 sudo yum clean all
 
+# Generate a random OCTET of the IP range used in THIS ci job
+# See scripts/deploy.sh for more detail
+export RANDOM_IPRANGE_OCTET=$(( $RANDOM%254+1 ))
+
 # NOTE(pabelanger): Current hack to make centos-7 dib work.
 if [ $LSBRELEASE == 'CentOS' ]; then
     # TODO(pabelanger): Why is python-requests installed from pip?
