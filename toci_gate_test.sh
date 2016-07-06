@@ -1,11 +1,6 @@
 #!/usr/bin/env bash
 set -eux
 
-# Need to make sure lsb_release is installed
-sudo yum -y install redhat-lsb-core
-
-LSBRELEASE=`lsb_release -i -s`
-
 # I'd like to use a variable from ZUUL to dicide which cloud I'm running on
 # but that would then break if running toci_* manually outside of CI, so for
 # the moment use a IP uniq to rh1
@@ -17,10 +12,8 @@ fi
 sudo yum clean all
 
 # NOTE(pabelanger): Current hack to make centos-7 dib work.
-if [ $LSBRELEASE == 'CentOS' ]; then
-    # TODO(pabelanger): Why is python-requests installed from pip?
-    sudo rm -rf /usr/lib/python2.7/site-packages/requests
-fi
+# TODO(pabelanger): Why is python-requests installed from pip?
+sudo rm -rf /usr/lib/python2.7/site-packages/requests
 
 # Remove metrics from a previous run
 rm -f /tmp/metric-start-times /tmp/metrics-data
@@ -41,8 +34,6 @@ sudo rm -rf /opt/git /opt/stack/cache/files/mysql.qcow2 /opt/stack/cache/files/u
 cd $(dirname $0)
 
 # Mirrors
-# This Fedora Mirror is in the same data center as our CI rack
-export FEDORA_MIRROR=http://dl.fedoraproject.org/pub/fedora/linux
 # We don't seem to have a CentOS mirror in the data center, so we need to pick
 # one that has reasonable connectivity to our rack.  Provide a few options in
 # case one of them goes down.
@@ -86,13 +77,8 @@ export OVB=0
 export UCINSTANCEID=NULL
 export TOCIRUNNER="./toci_instack.sh"
 
-# Set the fedora mirror, this is more reliable then relying on the repolist returned by metalink
 # NOTE(pabelanger): Once we bring AFS mirrors online, we no longer need to do this.
-if [ $LSBRELEASE == 'Fedora' ]; then
-    sudo sed -i -e "s|^#baseurl=http://download.fedoraproject.org/pub/fedora/linux|baseurl=$FEDORA_MIRROR|;/^metalink/d" /etc/yum.repos.d/fedora*.repo
-else
-    sudo sed -i -e "s|^#baseurl=http://mirror.centos.org/centos/|baseurl=$CENTOS_MIRROR|;/^mirrorlist/d" /etc/yum.repos.d/CentOS-Base.repo
-fi
+sudo sed -i -e "s|^#baseurl=http://mirror.centos.org/centos/|baseurl=$CENTOS_MIRROR|;/^mirrorlist/d" /etc/yum.repos.d/CentOS-Base.repo
 
 # start dstat early
 # TODO add it to the gate image building
@@ -187,9 +173,7 @@ start_metric "tripleo.testenv.wait.seconds"
 if [ -z ${TE_DATAFILE:-} ] ; then
     # NOTE(pabelanger): We need gear for testenv, but this really should be
     # handled by tox.
-    if [ $LSBRELEASE == 'CentOS' ]; then
-        sudo pip install gear
-    fi
+    sudo pip install gear
     # Kill the whole job if it doesn't get a testenv in 20 minutes as it likely will timout in zuul
     ( sleep 1200 ; [ ! -e /tmp/toci.started ] && sudo kill -9 $$ ) &
 
