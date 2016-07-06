@@ -222,9 +222,9 @@ function postci(){
         for INSTANCE in $(ssh root@${SEED_IP} cat /tmp/nova-list.txt | grep ACTIVE | awk '{printf"%s=%s\n", $4, $12}') ; do
             IP=${INSTANCE//*=}
             NAME=${INSTANCE//=*}
-            ssh $SSH_OPTIONS root@${SEED_IP} su stack -c \"scp $SSH_OPTIONS $TRIPLEO_ROOT/tripleo-ci/scripts/get_host_info.sh heat-admin@$IP:/tmp\"
-            timeout -s 15 -k 600 300 ssh $SSH_OPTIONS root@${SEED_IP} su stack -c \"ssh $SSH_OPTIONS heat-admin@$IP sudo /tmp/get_host_info.sh\"
-            ssh $SSH_OPTIONS root@${SEED_IP} su stack -c \"ssh $SSH_OPTIONS heat-admin@$IP $TARCMD\" > $WORKSPACE/logs/${NAME}.tar.xz
+            ssh $SSH_OPTIONS root@${SEED_IP} su jenkins -c \"scp $SSH_OPTIONS $TRIPLEO_ROOT/tripleo-ci/scripts/get_host_info.sh heat-admin@$IP:/tmp\"
+            timeout -s 15 -k 600 300 ssh $SSH_OPTIONS root@${SEED_IP} su jenkins -c \"ssh $SSH_OPTIONS heat-admin@$IP sudo /tmp/get_host_info.sh\"
+            ssh $SSH_OPTIONS root@${SEED_IP} su jenkins -c \"ssh $SSH_OPTIONS heat-admin@$IP $TARCMD\" > $WORKSPACE/logs/${NAME}.tar.xz
             extract_logs $NAME
         done
         # post metrics
