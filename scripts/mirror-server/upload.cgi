@@ -38,7 +38,7 @@ def saveform(form, storagedir):
 
 def run():
 
-    if not os.environ.get("REMOTE_ADDR", "").startswith("192.168.1."):
+    if not os.environ.get("REMOTE_ADDR", "").startswith("192.168."):
         print("File uploads only allowed from the tripleo test network")
         return 1
 
