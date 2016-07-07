@@ -106,4 +106,21 @@ fi
 cp -f $TE_DATAFILE ~/instackenv.json
 
 $TRIPLEO_ROOT/tripleo-ci/scripts/deploy.sh
+# If we got this far and its a periodic job, declare success and upload build artifacts
+if [ $CACHEUPLOAD == 1 ] ; then
+    # Get the IPA and overcloud images for caching
+    tar -C ~ -cf - ironic-python-agent.initramfs ironic-python-agent.vmlinuz ironic-python-agent.kernel > ipa_images.tar
+    tar -C ~ -cf - overcloud-full.qcow2 overcloud-full.initrd overcloud-full.vmlinuz > overcloud-full.tar
+
+    md5sum overcloud-full.tar > overcloud-full.tar.md5
+    md5sum ipa_images.tar > ipa_images.tar.md5
+
+    curl http://$MIRRORSERVER/cgi-bin/upload.cgi  -F "repohash=$TRUNKREPOUSED" -F "upload=@ipa_images.tar;filename=ipa_images.tar"
+    curl http://$MIRRORSERVER/cgi-bin/upload.cgi  -F "repohash=$TRUNKREPOUSED" -F "upload=@overcloud-full.tar;filename=overcloud-full.tar"
+    # TODO(pabelanger): Remove qcow2 format, since centos-7 cannot mount nbd with the default kernel.
+    curl http://$MIRRORSERVER/cgi-bin/upload.cgi  -F "repohash=$TRUNKREPOUSED" -F "upload=@ipa_images.tar.md5;filename=ipa_images.tar.md5"
+    curl http://$MIRRORSERVER/cgi-bin/upload.cgi  -F "repohash=$TRUNKREPOUSED" -F "upload=@overcloud-full.tar.md5;filename=overcloud-full.tar.md5"
+    curl http://$MIRRORSERVER/cgi-bin/upload.cgi  -F "repohash=$TRUNKREPOUSED" -F "$JOB_NAME=SUCCESS"
+fi
+
 echo 'Run completed.'
