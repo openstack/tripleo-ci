@@ -1,10 +1,6 @@
 #!/bin/bash
 set -xe
 
-# If we hit any problem then pause this env so it stops
-# trying to dish out testenvs
-trap "echo There was a problem, going to sleep ; sleep infinity" ERR
-
 ENVNUM=${1:-$(date +%s)}
 PROVISIONNET=provision_${ENVNUM}
 ENVFILE=env_${ENVNUM}.yaml
