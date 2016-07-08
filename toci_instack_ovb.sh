@@ -39,8 +39,8 @@ if [ ! -e /home/jenkins/.ssh/id_rsa.pub ] ; then
 fi
 cat ~/.ssh/id_rsa.pub | sudo tee -a ~root/.ssh/authorized_keys | sudo tee -a ~/.ssh/authorized_keys
 
-# Remove the puppet related stuff that was used by ZUUL to set up this node
-sudo yum remove -y puppet hiera puppetlabs-release
+# Remove the anything on the infra image template that might interfere with CI
+sudo yum remove -y puppet hiera puppetlabs-release rdo-release
 sudo rm -rf /etc/puppet /etc/hiera.yaml
 
 export no_proxy=192.0.2.1,$MY_IP,$MIRRORSERVER
