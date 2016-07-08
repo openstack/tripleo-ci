@@ -34,8 +34,8 @@ sudo yum install -y xfsprogs qemu-img
 # this any longer
 export SEED_IP=127.0.0.1
 echo | sudo tee -a ~root/.ssh/authorized_keys | sudo tee -a ~/.ssh/authorized_keys
-if [ ! -e /home/jenkins/.ssh/id_rsa.pub ] ; then
-    ssh-keygen -N "" -f /home/jenkins/.ssh/id_rsa
+if [ ! -e /home/$USER/.ssh/id_rsa.pub ] ; then
+    ssh-keygen -N "" -f /home/$USER/.ssh/id_rsa
 fi
 cat ~/.ssh/id_rsa.pub | sudo tee -a ~root/.ssh/authorized_keys | sudo tee -a ~/.ssh/authorized_keys
 
