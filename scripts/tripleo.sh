@@ -125,6 +125,14 @@ OVERCLOUD_IMAGES_DIB_YUM_REPO_CONF=${OVERCLOUD_IMAGES_DIB_YUM_REPO_CONF:-"\
     $REPO_PREFIX/delorean.repo \
     $REPO_PREFIX/delorean-current.repo \
     $REPO_PREFIX/delorean-deps.repo"}
+# Use Ceph/Jewel for all but liberty/mitaka
+if [[ "${STABLE_RELEASE}" =~ ^(liberty|mitaka)$ ]] ; then
+  OVERCLOUD_IMAGES_DIB_YUM_REPO_CONF=${OVERCLOUD_IMAGES_DIB_YUM_REPO_CONF}"\
+    $REPO_PREFIX/CentOS-Ceph-Hammer.repo"
+else
+  OVERCLOUD_IMAGES_DIB_YUM_REPO_CONF=${OVERCLOUD_IMAGES_DIB_YUM_REPO_CONF}"\
+    $REPO_PREFIX/CentOS-Ceph-Jewel.repo"
+fi
 DELOREAN_SETUP=${DELOREAN_SETUP:-""}
 DELOREAN_BUILD=${DELOREAN_BUILD:-""}
 MULTINODE_SETUP=${MULTINODE_SETUP:-""}
@@ -217,6 +225,20 @@ function repo_setup {
 
     # sets $TRIPLEO_OS_FAMILY and $TRIPLEO_OS_DISTRO
     source $(dirname ${BASH_SOURCE[0]:-$0})/set-os-type
+
+    if [ "$TRIPLEO_OS_DISTRO" = "centos" ]; then
+        # Enable Storage/SIG Ceph repo
+        if [[ "${STABLE_RELEASE}" =~ ^(liberty|mitaka)$ ]] ; then
+            rpm -q centos-release-ceph-hammer || sudo yum -y install --enablerepo=extras centos-release-ceph-hammer
+            sudo sed -i -e 's%gpgcheck=.*%gpgcheck=0%' $REPO_PREFIX/CentOS-Ceph-Hammer.repo
+        else
+            # TODO(gfidente): Replace with centos-release-ceph-jewel as above, when available
+            sudo yum-config-manager --add-repo https://raw.githubusercontent.com/CentOS-Storage-SIG/centos-release-ceph-jewel/master/CentOS-Ceph-Jewel.repo
+            sudo yum-config-manager --disable centos-ceph-jewel
+            sudo yum-config-manager --enable centos-ceph-jewel-test
+            sudo sed -i -e 's%gpgcheck=.*%gpgcheck=0%' $REPO_PREFIX/CentOS-Ceph-Jewel.repo
+        fi
+    fi
 
     if [ -z "$STABLE_RELEASE" ]; then
         # Enable the Delorean Deps repository
@@ -452,6 +474,7 @@ function overcloud_images {
 
     log "Overcloud images saved in $OVERCLOUD_IMAGES_PATH"
     pushd $OVERCLOUD_IMAGES_PATH
+    log "OVERCLOUD_IMAGES_DIB_YUM_REPO_CONF=$OVERCLOUD_IMAGES_DIB_YUM_REPO_CONF"
     DIB_YUM_REPO_CONF=$OVERCLOUD_IMAGES_DIB_YUM_REPO_CONF \
         openstack overcloud image build $OVERCLOUD_IMAGES_ARGS 2>&1 | \
         tee -a overcloud-image-build.log
