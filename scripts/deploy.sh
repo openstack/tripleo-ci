@@ -14,7 +14,13 @@ export DIB_DISTRIBUTION_MIRROR=$CENTOS_MIRROR
 export DIB_EPEL_MIRROR=$EPEL_MIRROR
 export STABLE_RELEASE=${STABLE_RELEASE:-""}
 
+
+cat <<EOF >$HOME/undercloud-hieradata-override.yaml
+ironic::drivers::deploy::http_port: 3816
+EOF
+
 echo '[DEFAULT]' > ~/undercloud.conf
+echo "hieradata_override = $HOME/undercloud-hieradata-override.yaml" >> ~/undercloud.conf
 
 if [ $UNDERCLOUD_SSL == 1 ] ; then
     echo 'generate_service_certificate = True' >> ~/undercloud.conf
