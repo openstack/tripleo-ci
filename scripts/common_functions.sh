@@ -266,7 +266,7 @@ function delorean_build_and_serve {
     fi
 
     # kill the http server if its already running
-    ps -ef | grep -i python | grep SimpleHTTPServer | awk '{print $2}' | xargs kill -9 || true
+    ps -ef | grep -i python | grep SimpleHTTPServer | awk '{print $2}' | xargs --no-run-if-empty kill -9 || true
     pushd $TRIPLEO_ROOT/delorean/data/repos
     sudo iptables -I INPUT -p tcp --dport 8766 -i eth1 -j ACCEPT
     python -m SimpleHTTPServer 8766 1>$WORKSPACE/logs/yum_mirror.log 2>$WORKSPACE/logs/yum_mirror_error.log &
