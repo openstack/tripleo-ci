@@ -91,10 +91,6 @@ mkdir -p "$WORKSPACE/logs"
 dstat -tcmndrylpg --output "$WORKSPACE/logs/dstat-csv.log" >/dev/null &
 disown
 
-# TODO: Submit a patch to chang this in infra once all the reshuffling is done
-[ $TOCI_JOBTYPE == "ovb-ha" ] && TOCI_JOBTYPE=ovb-ha2
-
-
 # Switch defaults based on the job name
 for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
     case $JOB_TYPE_PART in
