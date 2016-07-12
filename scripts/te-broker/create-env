@@ -5,6 +5,7 @@ ENVNUM=${1:-$(date +%s)}
 NODECOUNT=${2:-2}
 UCINSTANCE=${3:-}
 PROVISIONNET=provision-${ENVNUM}
+PUBLICNET=public-${ENVNUM}
 ENVFILE=env-${ENVNUM}.yaml
 
 
@@ -26,6 +27,8 @@ sed -i -e "s/os_password:.*/os_password: $OS_PASSWORD/" $ENVFILE
 sed -i -e "s/os_tenant:.*/os_tenant: $OS_TENANT_NAME/" $ENVFILE
 sed -i -e "s/os_user:.*/os_user: $OS_USERNAME/" $ENVFILE
 echo -e 'resource_registry:\n  OS::OVB::UndercloudEnvironment: OS::Heat::None' >> $ENVFILE
+echo '  OS::OVB::BaremetalNetworks: templates/baremetal-networks-all.yaml' >> $ENVFILE
+echo '  OS::OVB::BaremetalPorts: templates/baremetal-ports-all.yaml' >> $ENVFILE
 
 
 /opt/stack/openstack-virtual-baremetal/bin/deploy.py --env $ENVFILE --name baremetal_${ENVNUM} --quintupleo --id ${ENVNUM}
@@ -39,6 +42,7 @@ while ! heat stack-show baremetal_${ENVNUM} | grep CREATE_COMPLETE ; do
 done
 
 nova interface-attach --net-id $(neutron net-show -F id -f value $PROVISIONNET) $UCINSTANCE
+nova interface-attach --net-id $(neutron net-show -F id -f value $PUBLICNET) $UCINSTANCE
 
 # This writes out the env file as env-ID.yaml while overwrites the one we have created
 /opt/stack/openstack-virtual-baremetal/bin/build-nodes-json --env $ENVFILE --nodes_json ${TE_DATAFILE:-~/instackenv.json}
