@@ -16,31 +16,6 @@ export STABLE_RELEASE=${STABLE_RELEASE:-""}
 
 echo '[DEFAULT]' > ~/undercloud.conf
 
-# Switch away from the default IP range used by tripleo, for 2 reasons
-# 1. To make it less likley any traffic that leaks from one tenant network to
-#    another will effect currently running jobs (We suspect this is occurring).
-# 2. To eliminate any assumptions that creep into tripleo about the IP
-#    range used.
-echo "local_ip = 192.0.${RANDOM_IPRANGE_OCTET}.1/24" >> ~/undercloud.conf
-echo "network_gateway = 192.0.${RANDOM_IPRANGE_OCTET}.1" >> ~/undercloud.conf
-echo "undercloud_public_vip = 192.0.${RANDOM_IPRANGE_OCTET}.2" >> ~/undercloud.conf
-echo "undercloud_admin_vip = 192.0.${RANDOM_IPRANGE_OCTET}.3" >> ~/undercloud.conf
-echo "network_cidr = 192.0.${RANDOM_IPRANGE_OCTET}.0/24" >> ~/undercloud.conf
-echo "masquerade_network = 192.0.${RANDOM_IPRANGE_OCTET}.0/24" >> ~/undercloud.conf
-echo "dhcp_start = 192.0.${RANDOM_IPRANGE_OCTET}.5" >> ~/undercloud.conf
-echo "dhcp_end = 192.0.${RANDOM_IPRANGE_OCTET}.24" >> ~/undercloud.conf
-echo "inspection_iprange = 192.0.${RANDOM_IPRANGE_OCTET}.100,192.0.${RANDOM_IPRANGE_OCTET}.120" >> ~/undercloud.conf
-
-export FLOATING_IP_CIDR=192.0.${RANDOM_IPRANGE_OCTET}.0/24
-export FLOATING_IP_START=192.0.${RANDOM_IPRANGE_OCTET}.50
-export FLOATING_IP_END=192.0.${RANDOM_IPRANGE_OCTET}.64
-export EXTERNAL_NETWORK_GATEWAY=192.0.${RANDOM_IPRANGE_OCTET}.1
-export FLOATING_IP_CIDR=192.0.${RANDOM_IPRANGE_OCTET}.0/24
-export FLOATING_IP_START=192.0.${RANDOM_IPRANGE_OCTET}.50
-export FLOATING_IP_END=192.0.${RANDOM_IPRANGE_OCTET}.64
-
-
-
 if [ $UNDERCLOUD_SSL == 1 ] ; then
     echo 'generate_service_certificate = True' >> ~/undercloud.conf
 fi

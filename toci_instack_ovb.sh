@@ -28,6 +28,7 @@ sudo netstat -lpn | grep tcp | grep :8088 | awk '{print $7}' | cut -d / -f 1 | h
 # TODO: xfsprogs should be a dep of DIB?
 sudo yum install -y xfsprogs qemu-img
 
+
 # Setting up localhost so that postci will ssh to it to retrieve logs
 # once the legacy TE support is removed from tripleo-ci we won't need to do
 # this any longer
@@ -42,7 +43,7 @@ cat ~/.ssh/id_rsa.pub | sudo tee -a ~root/.ssh/authorized_keys | sudo tee -a ~/.
 sudo yum remove -y puppet hiera puppetlabs-release rdo-release
 sudo rm -rf /etc/puppet /etc/hiera.yaml
 
-export no_proxy=192.0.${RANDOM_IPRANGE_OCTET}.1,$MY_IP,$MIRRORSERVER
+export no_proxy=192.0.2.1,$MY_IP,$MIRRORSERVER
 
 # Setup delorean
 $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --delorean-setup

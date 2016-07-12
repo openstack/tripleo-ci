@@ -26,7 +26,7 @@ mkdir -p $WORKSPACE/logs
 
 MY_IP=$(ip addr show dev eth1 | awk '/inet / {gsub("/.*", "") ; print $2}')
 
-export no_proxy=192.0.${RANDOM_IPRANGE_OCTET}.1,$MY_IP,$MIRRORSERVER
+export no_proxy=192.0.2.1,$MY_IP,$MIRRORSERVER
 
 # Setup delorean
 $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --delorean-setup
