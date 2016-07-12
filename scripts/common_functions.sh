@@ -73,25 +73,16 @@ function filterref(){
 function update_image(){
     IMAGE=$1
     MOUNTDIR=$(mktemp -d)
-    LSBRELEASE=`lsb_release -i -s`
     case ${IMAGE##*.} in
         qcow2)
-            # NOTE(pabelanger): We need to support both Fedora and CentOS.
-            if [ $LSBRELEASE == 'Fedora' ]; then
-                sudo modprobe nbd max_part=8
-                sudo qemu-nbd --connect=/dev/nbd0 $IMAGE
-                # The qcow2 images may be a whole disk or single partition
-                sudo mount -o seclabel /dev/nbd0p1 $MOUNTDIR || sudo mount -o seclabel /dev/nbd0 $MOUNTDIR
-            else
-                # NOTE(pabelanger): Sadly, nbd module is missing from CentOS 7,
-                # so we need to convert the image to raw format.  A fix for this
-                # would be support raw instack images in our nightly builds.
-                qemu-img convert -f qcow2 -O raw ${IMAGE} ${IMAGE/qcow2/raw}
-                rm -rf ${IMAGE}
-                sudo kpartx -avs ${IMAGE/qcow2/raw}
-                # The qcow2 images may be a whole disk or single partition
-                sudo mount /dev/mapper/loop0p1 $MOUNTDIR || sudo mount /dev/loop0 $MOUNTDIR
-            fi
+            # NOTE(pabelanger): Sadly, nbd module is missing from CentOS 7,
+            # so we need to convert the image to raw format.  A fix for this
+            # would be support raw instack images in our nightly builds.
+            qemu-img convert -f qcow2 -O raw ${IMAGE} ${IMAGE/qcow2/raw}
+            rm -rf ${IMAGE}
+            sudo kpartx -avs ${IMAGE/qcow2/raw}
+            # The qcow2 images may be a whole disk or single partition
+            sudo mount /dev/mapper/loop0p1 $MOUNTDIR || sudo mount /dev/loop0 $MOUNTDIR
             ;;
         initramfs)
             pushd $MOUNTDIR
@@ -143,15 +134,9 @@ function update_image(){
             # The yum update inside a chroot breaks selinux file contexts, fix them
             sudo chroot $MOUNTDIR setfiles /etc/selinux/targeted/contexts/files/file_contexts /
             sudo umount $MOUNTDIR
-            # NOTE(pabelanger): Again, this bits need to support both Fedora and
-            # CentOS.
-            if [ $LSBRELEASE == 'Fedora' ]; then
-                sudo qemu-nbd --disconnect /dev/nbd0
-            else
-                sudo kpartx -dv ${IMAGE/qcow2/raw}
-                qemu-img convert -f raw -O qcow2 ${IMAGE/qcow2/raw} ${IMAGE}
-                rm -rf ${IMAGE/qcow2/raw}
-            fi
+            sudo kpartx -dv ${IMAGE/qcow2/raw}
+            qemu-img convert -f raw -O qcow2 ${IMAGE/qcow2/raw} ${IMAGE}
+            rm -rf ${IMAGE/qcow2/raw}
             ;;
         initramfs)
             sudo find . -print | sudo cpio -o -H newc | gzip > $IMAGE
