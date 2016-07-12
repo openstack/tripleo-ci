@@ -718,7 +718,8 @@ function tempest_run {
     cp $root_dir/api_discovery.py $HOME/tempest/tempest/common/
     cp $root_dir/default-overrides.conf $HOME/tempest/etc/
     sudo mkdir -p /var/log/tempest/ ||:
-    sudo chown stack:stack -R /var/log/tempest/
+    sudo mkdir -p /etc/tempest/ ||:
+    sudo chown $USER:$USER -R /var/log/tempest/
     $HOME/tempest/tools/with_venv.sh python $HOME/tempest/tools/config_tempest.py \
         --out etc/tempest.conf \
         --debug \
@@ -740,10 +741,10 @@ function tempest_run {
     $HOME/tempest/tools/with_venv.sh testr run \
         $TEMPEST_ARGS \
         $TEMPEST_REGEX | \
-        tee >( subunit2junitxml --output-to=/var/log/tempest/tempest.xml ) | \
-        subunit-trace --no-failure-debug -f 2>&1 | \
+        tee >( $HOME/tempest/tools/with_venv.sh subunit2junitxml --output-to=/var/log/tempest/tempest.xml ) | \
+        $HOME/tempest/tools/with_venv.sh subunit-trace --no-failure-debug -f 2>&1 | \
         tee /var/log/tempest/tempest_console.log && exitval=0 || exitval=$?
-    subunit2html $HOME/tempest/.testrepository/$(ls -t $HOME/tempest/.testrepository/ | grep -e "[0-9]" | head -1) /var/log/tempest/tempest.html
+    $HOME/tempest/tools/with_venv.sh subunit2html $HOME/tempest/.testrepository/$(ls -t $HOME/tempest/.testrepository/ | grep -e "[0-9]" | head -1) /var/log/tempest/tempest.html
     exit ${exitval}
 }
 
