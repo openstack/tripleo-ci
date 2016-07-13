@@ -8,6 +8,7 @@ ENVFILE=env_${ENVNUM}.yaml
 rm -f /opt/stack/openstack-virtual-baremetal/env_${ENVNUM}.yaml
 
 source /etc/nodepoolrc
+heat stack-delete -y baremetal_${ENVNUM}
 while heat stack-show baremetal_${ENVNUM} 2>&1 > /dev/null ; do
     # If the delete failed, try again
     if heat stack-show baremetal_${ENVNUM} | grep DELETE_FAILED ; then
