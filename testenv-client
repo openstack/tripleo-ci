@@ -66,6 +66,12 @@ class TestCallback(object):
             logger.warn('%.1f seconds waiting for a worker.' % (time_waiting))
         logger.info('Running command "%s"', ' '.join(self.command))
 
+        if job.arguments == "Couldn't retrieve env":
+            logger.error(job.arguments)
+            self.rv = 2
+            job.sendWorkComplete("")
+            return
+
         with tempfile.NamedTemporaryFile('w') as fp:
             fp.write(job.arguments)
             fp.flush()
