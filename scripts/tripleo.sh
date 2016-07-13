@@ -233,7 +233,7 @@ function repo_setup {
         sudo sed -i 's/\[delorean\]/\[delorean-current\]/' $REPO_PREFIX/delorean-current.repo
         sudo /bin/bash -c "cat <<-EOF>>$REPO_PREFIX/delorean-current.repo
 
-includepkgs=diskimage-builder,instack,instack-undercloud,os-apply-config,os-cloud-config,os-collect-config,os-net-config,os-refresh-config,python-tripleoclient,openstack-tripleo-common,openstack-tripleo-heat-templates,openstack-tripleo-image-elements,openstack-tripleo,openstack-tripleo-puppet-elements
+includepkgs=diskimage-builder,instack,instack-undercloud,os-apply-config,os-cloud-config,os-collect-config,os-net-config,os-refresh-config,python-tripleoclient,openstack-tripleo-common,openstack-tripleo-heat-templates,openstack-tripleo-image-elements,openstack-tripleo,openstack-tripleo-puppet-elements,openstack-puppet-modules,puppet-*
 EOF"
     else
         # Enable the Delorean Deps repository
@@ -389,14 +389,6 @@ function delorean_build {
 function undercloud {
 
     log "Undercloud install"
-    # We use puppet modules from source by default for master, for stable we
-    # currently use a stable package (we may eventually want to use a
-    # stable-puppet-modules element instead so we can set DIB_REPOREF.., etc)
-    if [ -z "$STABLE_RELEASE" ]; then
-        export DIB_INSTALLTYPE_puppet_modules=${DIB_INSTALLTYPE_puppet_modules:-source}
-    else
-        export DIB_INSTALLTYPE_puppet_modules=${DIB_INSTALLTYPE_puppet_modules:-}
-    fi
 
     sudo yum install -y python-tripleoclient
 
@@ -421,15 +413,6 @@ function overcloud_images {
 
     log "Overcloud images"
     log "Overcloud images saved in $OVERCLOUD_IMAGES_PATH"
-
-    # We use puppet modules from source by default for master, for stable we
-    # currently use a stable package (we may eventually want to use a
-    # stable-puppet-modules element instead so we can set DIB_REPOREF.., etc)
-    if [ -z "$STABLE_RELEASE" ]; then
-        export DIB_INSTALLTYPE_puppet_modules=${DIB_INSTALLTYPE_puppet_modules:-source}
-    else
-        export DIB_INSTALLTYPE_puppet_modules=${DIB_INSTALLTYPE_puppet_modules:-}
-    fi
 
     if [[ "${STABLE_RELEASE}" =~ ^(liberty)$ ]] ; then
         export FS_TYPE=ext4

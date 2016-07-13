@@ -31,8 +31,6 @@ sudo yum -y install instack-undercloud git openstack-tripleo-common
 
 export ELEMENTS_PATH="/usr/share/diskimage-builder/elements:/usr/share/instack-undercloud:/usr/share/tripleo-image-elements:/usr/share/tripleo-puppet-elements:/usr/share/openstack-heat-templates/software-config/elements"
 
-export DIB_INSTALLTYPE_puppet_modules=source
-
 sudo yum -y install openstack-tripleo-common
 
 ELEMENTS=$(\

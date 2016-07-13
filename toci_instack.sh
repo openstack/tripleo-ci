@@ -85,18 +85,6 @@ export DIB_DISTRIBUTION_MIRROR=$CENTOS_MIRROR
 export DIB_EPEL_MIRROR=$EPEL_MIRROR
 export DIB_CLOUD_IMAGES=http://$MIRRORSERVER/cloud.centos.org/centos/7/images
 
-create_dib_vars_for_puppet
-
-IFS=$'\n'
-# For the others we use local mirror server
-for REPO in $(cat $TRIPLEO_ROOT/tripleo-ci/scripts/mirror-server/mirrored.list | grep -v "^#"); do
-    RDIR=${REPO%% *}
-    REPOLOCATION=http://$MIRRORSERVER/repos/$RDIR
-    if curl -sf ${REPOLOCATION}/HEAD ; then
-        echo "export DIB_REPOLOCATION_$RDIR=$REPOLOCATION" >> $TRIPLEO_ROOT/tripleo-ci/deploy.env
-    fi
-done
-IFS=$' \t\n'
 source $TRIPLEO_ROOT/tripleo-ci/deploy.env
 
 # Build and deploy our undercloud instance
@@ -138,7 +126,7 @@ echo_vars_to_deploy_env
 cp $TRIPLEO_ROOT/tripleo-ci/deploy.env $WORKSPACE/logs/deploy.env.log
 
 # Copy the required CI resources to the undercloud were we use them
-tar -czf - $TRIPLEO_ROOT/tripleo-ci $TRIPLEO_ROOT/puppet-*/.git /etc/yum.repos.d/delorean* | ssh $SSH_OPTIONS root@$SEED_IP tar -C / -xzf -
+tar -czf - $TRIPLEO_ROOT/tripleo-ci /etc/yum.repos.d/delorean* | ssh $SSH_OPTIONS root@$SEED_IP tar -C / -xzf -
 
 # Don't get a file from cache if CACHEUPLOAD=1 (periodic job)
 # If this 404's it wont error just continue without a file created

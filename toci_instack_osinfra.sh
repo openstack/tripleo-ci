@@ -54,8 +54,6 @@ sleep 3
 
 layer_ci_repo
 
-create_dib_vars_for_puppet
-
 echo_vars_to_deploy_env
 # We need to override $OVERCLOUD_VALIDATE_ARGS to be empty so that the
 # validations that check for the correct number of ironic nodes does not fail

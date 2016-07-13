@@ -104,31 +104,6 @@ function update_image(){
     sudo rm -f $MOUNTDIR/etc/yum.repos.d/delorean*
     sudo mv -f $MOUNTDIR/etc/resolv.conf{_,}
 
-    # If the image has contains puppet modules (i.e. overcloud-full image)
-    # the puppet modules that were baked into the image may be out of date
-    # go through them all and make sure they match the various DIB_REPO*
-    # variables.
-    # FIXME: There is a bug here that means any new puppet modules needed on
-    # the overcloud image need to be added and the image cached before they can
-    # be used.
-    if [ -d $MOUNTDIR/opt/stack/puppet-modules ] ; then
-        for MODULE in $MOUNTDIR/opt/stack/puppet-modules/* ; do
-            pushd $MODULE
-            REPONAME=$(git remote -v | grep fetch | sed -e 's/.*\/\(.*\)_.*/\1/')
-            REPOLOC=DIB_REPOLOCATION_$REPONAME
-            REPOREF=DIB_REPOREF_$REPONAME
-            if [ -n "${!REPOLOC:-}" ] ; then
-                sudo git fetch ${!REPOLOC}
-                if [ -n "${!REPOREF:-}" ] ; then
-                    sudo git reset --hard ${!REPOREF:-}
-                else
-                    sudo git reset --hard FETCH_HEAD
-                fi
-            fi
-            popd
-        done
-    fi
-
     case ${IMAGE##*.} in
         qcow2)
             # The yum update inside a chroot breaks selinux file contexts, fix them
@@ -149,6 +124,11 @@ function update_image(){
 # Decide if a particular cached artifact can be used in this CI test
 # Takes a single argument representing the name of the artifact being checked.
 function canusecache(){
+
+    # Disable image caching until after we have overcloud images available containing
+    # packaged puppet modules (as opposed to source)
+    return 1
+
     # If we are uploading to the cache then we shouldn't use it
     [ "$CACHEUPLOAD" == 1 ] && return 1
 
@@ -267,8 +247,7 @@ function delorean_build_and_serve {
     for PROJFULLREF in $ZUUL_CHANGES ; do
         PROJ=$(filterref $PROJFULLREF)
         # If ci is being run for a change to ci its ok not to have a ci produced repository
-        # We also don't build packages for puppet repositories, we use them from source
-        if [ "$PROJ" == "tripleo-ci" ] || [[ "$PROJ" =~ ^puppet-* ]] ; then
+        if [ "$PROJ" == "tripleo-ci" ] ; then
             mkdir -p $TRIPLEO_ROOT/delorean/data/repos/current
             touch $TRIPLEO_ROOT/delorean/data/repos/current/delorean-ci.repo
         else
@@ -290,20 +269,6 @@ function delorean_build_and_serve {
     sudo iptables -I INPUT -p tcp --dport 8766 -i eth1 -j ACCEPT
     python -m SimpleHTTPServer 8766 1>$WORKSPACE/logs/yum_mirror.log 2>$WORKSPACE/logs/yum_mirror_error.log &
     popd
-}
-
-function create_dib_vars_for_puppet {
-    # create DIB environment variables for all the puppet modules, $TRIPLEO_ROOT
-    # has all of the openstack modules with the correct HEAD. Set the DIB_REPO*
-    # variables so they are used (and not cloned from github)
-    # Note DIB_INSTALLTYPE_puppet_modules is set in tripleo.sh
-    for PROJDIR in $(ls -d $TRIPLEO_ROOT/puppet-*); do
-        REV=$(git --git-dir=$PROJDIR/.git rev-parse HEAD)
-        X=${PROJDIR//-/_}
-        PROJ=${X##*/}
-        echo "export DIB_REPOREF_$PROJ=$REV" >> $TRIPLEO_ROOT/tripleo-ci/deploy.env
-        echo "export DIB_REPOLOCATION_$PROJ=$PROJDIR" >> $TRIPLEO_ROOT/tripleo-ci/deploy.env
-    done
 }
 
 function dummy_ci_repo {

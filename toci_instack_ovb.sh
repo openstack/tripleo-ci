@@ -64,8 +64,6 @@ sleep 3
 
 layer_ci_repo
 
-create_dib_vars_for_puppet
-
 export http_proxy=""
 
 echo_vars_to_deploy_env
