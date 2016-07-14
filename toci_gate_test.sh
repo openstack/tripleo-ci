@@ -1,6 +1,13 @@
 #!/usr/bin/env bash
 set -eux
 
+# FIXME(derekh) This needs to be removed
+# We pin this in tripleo-puppet-elements, but the stuff in toci_* overrides it
+# as ci is written to use whatever zuul tells it to use, remove what zuul has given
+# us and use stable/hammer (pinned in t-p-e), N.B. This essentially invailidates
+# tripleo puppet-ceph ci
+rm -rf /opt/stack/new/puppet-ceph
+
 # I'd like to use a variable from ZUUL to dicide which cloud I'm running on
 # but that would then break if running toci_* manually outside of CI, so for
 # the moment use a IP uniq to rh1
