@@ -2,12 +2,19 @@
 set -xe
 
 ENVNUM=${1:-$(date +%s)}
-PROVISIONNET=provision_${ENVNUM}
-ENVFILE=env_${ENVNUM}.yaml
+PROVISIONNET=provision-${ENVNUM}
+ENVFILE=env-${ENVNUM}.yaml
 
-rm -f /opt/stack/openstack-virtual-baremetal/env_${ENVNUM}.yaml
+rm -f /opt/stack/openstack-virtual-baremetal/$ENVFILE
 
 source /etc/nodepoolrc
+
+# Delete the port that has been attached to the undercloud
+SUBNETID=$(neutron subnet-show $PROVISIONNET | awk '$2=="id" {print $4}')
+for PORT in $(neutron port-list | grep $SUBNETID | awk '{print $2}') ; do
+    neutron port-delete $PORT
+done
+
 heat stack-delete -y baremetal_${ENVNUM}
 while heat stack-show baremetal_${ENVNUM} 2>&1 > /dev/null ; do
     # If the delete failed, try again
@@ -16,13 +23,3 @@ while heat stack-show baremetal_${ENVNUM} 2>&1 > /dev/null ; do
     fi
     sleep 20
 done
-
-
-# Delete the port that has been attached to the undercloud
-SUBNETID=$(neutron subnet-show provision_subnet_${ENVNUM} | awk '$2=="id" {print $4}')
-for PORT in $(neutron port-list | grep $SUBNETID | awk '{print $2}') ; do
-    neutron port-delete $PORT
-done
-
-neutron subnet-delete provision_subnet_${ENVNUM}
-neutron net-delete $PROVISIONNET
