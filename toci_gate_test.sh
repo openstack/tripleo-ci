@@ -123,9 +123,7 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
             ;;
         nonha)
             OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS -e /opt/stack/new/tripleo-ci/test-environments/enable-tls.yaml -e /opt/stack/new/tripleo-ci/test-environments/inject-trust-anchor.yaml --ceph-storage-scale 1 -e /usr/share/openstack-tripleo-heat-templates/environments/puppet-ceph-devel.yaml"
-            # TODO(derekh) return this once introspection is fixed
-            # https://bugs.launchpad.net/tripleo/+bug/1602976
-            # INTROSPECT=1
+            INTROSPECT=1
             NODECOUNT=3
             UNDERCLOUD_SSL=1
             ;;
