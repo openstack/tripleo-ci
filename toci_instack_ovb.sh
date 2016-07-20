@@ -26,7 +26,7 @@ if [ -n "$STABLE_RELEASE" ]; then
     # Kill the zuul console stream, its tcp port clashes with the port we're using to serve out /httpboot
     # This is not needed on master since we're able to configure a different
     # port for httpd ipxe using hieradata_override
-    sudo netstat -lpn | grep tcp | grep :8088 | awk '{print $7}' | cut -d / -f 1 | head -n 1 | sudo xargs -t kill
+    sudo netstat -lpn | grep tcp | grep :8088 | awk '{print $7}' | cut -d / -f 1 | head -n 1 | sudo xargs -r -t kill
 fi
 
 # TODO: xfsprogs should be a dep of DIB?
