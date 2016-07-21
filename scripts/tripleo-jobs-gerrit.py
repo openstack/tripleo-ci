@@ -10,6 +10,7 @@ import datetime
 DEFAULT_JOB_NAMES = [
     'gate-tripleo-ci-centos-7-ovb-nonha',
     'gate-tripleo-ci-centos-7-ovb-ha',
+    'gate-tripleo-ci-centos-7-nonha-multinode-nv',
 ]
 
 DEFAULT_PROJECTS = [
@@ -61,7 +62,8 @@ def get_jenkins_comment_message(review):
             if comment['reviewer']['name'] == 'Jenkins':
                 if "NOT_REGISTERED" in comment['message']:
                     continue
-                if "check-tripleo pipeline" not in comment['message']:
+                if "check-tripleo pipeline" not in comment['message'] and \
+                    "check pipeline" not in comment['message']:
                     continue
                 jenkins_messages[comment['timestamp']] = comment['message']
     return jenkins_messages
