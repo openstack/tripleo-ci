@@ -17,7 +17,6 @@ export STABLE_RELEASE=${STABLE_RELEASE:-""}
 
 cat <<EOF >$HOME/undercloud-hieradata-override.yaml
 ironic::drivers::deploy::http_port: 3816
-ironic::inspector::http_port: 3816
 EOF
 
 echo '[DEFAULT]' > ~/undercloud.conf
