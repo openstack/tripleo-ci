@@ -39,7 +39,7 @@ def process_events(all_events, events):
         elapsed = 'Still in progress'
         if times[name]['elapsed'] is not None:
             elapsed = times[name]['elapsed']
-        print '%s: %s' % (name, elapsed)
+        print '%s %s' % (name, elapsed)
 
 if __name__ == '__main__':
     stdin = sys.stdin.read()
