@@ -60,6 +60,8 @@ export CACHEUPLOAD=0
 export INTROSPECT=0
 export NODECOUNT=2
 export PACEMAKER=0
+# Whether or not we deploy an Overcloud
+export OVERCLOUD=1
 # NOTE(bnemec): At this time, the undercloud install + image build is taking from
 # 1 hour to 1 hour and 15 minutes on the jobs I checked.  The devstack gate timeout
 # is 170 minutes, so subtracting 90 should leave us an hour and 20 minutes for
@@ -72,6 +74,7 @@ export OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS --libvirt-type=qemu -t $OVE
 export OVERCLOUD_UPDATE_ARGS=
 export UNDERCLOUD_SSL=0
 export UNDERCLOUD_IDEMPOTENT=0
+export UNDERCLOUD_SANITY_CHECK=0
 export TRIPLEO_SH_ARGS=
 export NETISO_V4=0
 export NETISO_V6=0
@@ -81,6 +84,8 @@ export OVB=0
 export UCINSTANCEID=NULL
 export TOCIRUNNER="./toci_instack.sh"
 export MULTINODE=0
+# Whether or not we run TripleO using OpenStack Infra nodes
+export OSINFRA=0
 export CONTROLLER_HOSTS=
 export COMPUTE_HOSTS=
 export SUBNODES_SSH_KEY=
@@ -143,12 +148,24 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
             TOCIRUNNER="./toci_instack_osinfra.sh"
             NODECOUNT=1
             PACEMAKER=1
+            OSINFRA=1
+
             CONTROLLER_HOSTS=$(sed -n 1,1p /etc/nodepool/sub_nodes)
             SUBNODES_SSH_KEY=/etc/nodepool/id_rsa
             UNDERCLOUD_SSL=0
             INTROSPECT=0
             OVERCLOUD_DEPLOY_ARGS="--libvirt-type=qemu -t $OVERCLOUD_DEPLOY_TIMEOUT"
             OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS -e /usr/share/openstack-tripleo-heat-templates/environments/deployed-server-environment.yaml -e /opt/stack/new/tripleo-ci/test-environments/multinode.yaml --compute-scale 0 --overcloud-ssh-user $OVERCLOUD_SSH_USER"
+            ;;
+        undercloud)
+            TOCIRUNNER="./toci_instack_osinfra.sh"
+            NODECOUNT=0
+            OVERCLOUD=0
+            OSINFRA=1
+            RUN_PING_TEST=0
+            UNDERCLOUD_SSL=0
+            INTROSPECT=0
+            export UNDERCLOUD_SANITY_CHECK=1
             ;;
         periodic)
             export DELOREAN_REPO_URL=http://trunk.rdoproject.org/centos7/consistent
@@ -191,7 +208,7 @@ sudo yum erase -y epel-release nodejs nodejs-devel nodejs-packaging || :
 
 source /opt/stack/new/tripleo-ci/scripts/metrics.bash
 start_metric "tripleo.testenv.wait.seconds"
-if [ -z "${TE_DATAFILE:-}" -a "$MULTINODE" = "0" ] ; then
+if [ -z "${TE_DATAFILE:-}" -a "$OSINFRA" = "0" ] ; then
     # NOTE(pabelanger): We need gear for testenv, but this really should be
     # handled by tox.
     sudo pip install gear

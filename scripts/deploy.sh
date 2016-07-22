@@ -28,7 +28,7 @@ fi
 # TODO: fix this in instack-undercloud
 sudo mkdir -p /etc/puppet/hieradata
 
-if [ "$MULTINODE" = 1 ]; then
+if [ "$OSINFRA" = 1 ]; then
     echo 'net_config_override = /opt/stack/new/tripleo-ci/undercloud-configs/net-config-multinode.json.template' >> ~/undercloud.conf
 fi
 
@@ -99,7 +99,7 @@ EOF_CAT
     sudo os-net-config -c /tmp/eth6.cfg -v
 fi
 
-if [ "$MULTINODE" = "0" ]; then
+if [ "$OSINFRA" = "0" ]; then
     # Our ci underclouds don't have enough RAM to allow us to use a tmpfs
     export DIB_NO_TMPFS=1
     # Override the default repositories set by tripleo.sh, to add the delorean-ci repository
@@ -154,13 +154,15 @@ if [ "$MULTINODE" = "1" ]; then
     fi
 fi
 
-export OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS -e $TRIPLEO_ROOT/tripleo-ci/test-environments/worker-config.yaml"
-if [[ "${STABLE_RELEASE}" =~ ^(liberty|mitaka)$ ]] ; then
-    OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS -e $TRIPLEO_ROOT/tripleo-ci/test-environments/worker-config-mitaka-and-below.yaml"
+if [ $OVERCLOUD == 1 ] ; then
+    export OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS -e $TRIPLEO_ROOT/tripleo-ci/test-environments/worker-config.yaml"
+    if [[ "${STABLE_RELEASE}" =~ ^(liberty|mitaka)$ ]] ; then
+        OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS -e $TRIPLEO_ROOT/tripleo-ci/test-environments/worker-config-mitaka-and-below.yaml"
+    fi
+    start_metric "tripleo.overcloud.${TOCI_JOBTYPE}.deploy.seconds"
+    http_proxy= $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --overcloud-deploy ${TRIPLEO_SH_ARGS:-}
+    stop_metric "tripleo.overcloud.${TOCI_JOBTYPE}.deploy.seconds"
 fi
-start_metric "tripleo.overcloud.${TOCI_JOBTYPE}.deploy.seconds"
-http_proxy= $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --overcloud-deploy ${TRIPLEO_SH_ARGS:-}
-stop_metric "tripleo.overcloud.${TOCI_JOBTYPE}.deploy.seconds"
 
 if [ $UNDERCLOUD_IDEMPOTENT == 1 ]; then
     echo "INFO: Check /var/log/undercloud_install_idempotent.txt for undercloud install output"
@@ -183,7 +185,7 @@ if [ -n "${OVERCLOUD_UPDATE_ARGS:-}" ] ; then
     http_proxy= $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --overcloud-update ${TRIPLEO_SH_ARGS:-}
 fi
 
-if [ "$MULTINODE" = "0" ]; then
+if [ "$MULTINODE" == 0 ] && [ "$OVERCLOUD" == 1 ] ; then
     # Sanity test we deployed what we said we would
     source ~/stackrc
     [ "$NODECOUNT" != $(nova list | grep ACTIVE | wc -l | cut -f1 -d " ") ] && echo "Wrong number of nodes deployed" && exit 1
@@ -208,7 +210,10 @@ if [ "$MULTINODE" = "0" ]; then
     fi
 fi
 
-source ~/overcloudrc
+if [ -f ~/overcloudrc ]; then
+    source ~/overcloudrc
+fi
+
 if [ $RUN_PING_TEST == 1 ] ; then
     start_metric "tripleo.overcloud.${TOCI_JOBTYPE}.ping_test.seconds"
     OVERCLOUD_PINGTEST_OLD_HEATCLIENT=0 $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --overcloud-pingtest --skip-pingtest-cleanup
