@@ -212,7 +212,7 @@ fi
 source ~/overcloudrc
 if [ $RUN_PING_TEST == 1 ] ; then
     start_metric "tripleo.overcloud.${TOCI_JOBTYPE}.ping_test.seconds"
-    OVERCLOUD_PINGTEST_OLD_HEATCLIENT=0 $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --overcloud-pingtest
+    OVERCLOUD_PINGTEST_OLD_HEATCLIENT=0 $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --overcloud-pingtest --skip-pingtest-cleanup
     stop_metric "tripleo.overcloud.${TOCI_JOBTYPE}.ping_test.seconds"
 fi
 if [ $RUN_TEMPEST_TESTS == 1 ] ; then
