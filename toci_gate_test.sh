@@ -16,11 +16,13 @@ export EPEL_MIRROR=http://$NODEPOOL_MIRROR_HOST/epel
 # tripleo puppet-ceph ci
 rm -rf /opt/stack/new/puppet-ceph
 
-# I'd like to use a variable from ZUUL to dicide which cloud I'm running on
-# but that would then break if running toci_* manually outside of CI, so for
-# the moment use a IP uniq to rh1
-if ping -c 1 192.168.100.1 ; then
+if [ $NODEPOOL_CLOUD == 'tripleo-test-cloud-rh1' ]; then
     source $(dirname $0)/scripts/rh2.env
+
+    # In order to save space remove the cached git repositories, at this point in
+    # CI the ones we are interested in have been cloned to /opt/stack/new. We
+    # can also remove some distro images cached on the images.
+    sudo rm -rf /opt/git /opt/stack/cache/files/mysql.qcow2 /opt/stack/cache/files/ubuntu-12.04-x86_64.tar.gz
 fi
 
 # Clean any cached yum metadata, it maybe stale
@@ -39,11 +41,6 @@ if [[ -z "${JOB_NAME-}" ]]; then
     JOB_NAME=${WORKSPACE%/}
     export JOB_NAME=${JOB_NAME##*/}
 fi
-
-# In order to save space remove the cached git repositories, at this point in
-# CI the ones we are interested in have been cloned to /opt/stack/new. We
-# can also remove some distro images cached on the images.
-sudo rm -rf /opt/git /opt/stack/cache/files/mysql.qcow2 /opt/stack/cache/files/ubuntu-12.04-x86_64.tar.gz
 
 # cd to toci directory so relative paths work
 cd $(dirname $0)
