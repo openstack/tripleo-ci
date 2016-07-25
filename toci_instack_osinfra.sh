@@ -64,8 +64,6 @@ echo 'export OVERCLOUD_VALIDATE_ARGS=""' >> $TRIPLEO_ROOT/tripleo-ci/deploy.env
 
 source $TRIPLEO_ROOT/tripleo-ci/deploy.env
 
-deploy_env=$(cat $TRIPLEO_ROOT/tripleo-ci/deploy.env)
-
 # This will remove any puppet configuration done by infra setup
 sudo yum -y remove puppet facter hiera
 
@@ -84,11 +82,12 @@ if [ -s /etc/nodepool/sub_nodes ]; then
             sudo sed -i -e 's%priority=.*%priority=1%' /etc/yum.repos.d/delorean-ci.repo
         ssh $SSH_OPTIONS -tt -i /etc/nodepool/id_rsa $ip \
             sudo mkdir -p $TRIPLEO_ROOT/tripleo-ci
-        ssh $SSH_OPTIONS -tt -i /etc/nodepool/id_rsa $ip \
-            /bin/bash -c "echo \"$deploy_env\" > deploy.env"
+        scp $SSH_OPTIONS -i /etc/nodepool/id_rsa \
+            $TRIPLEO_ROOT/tripleo-ci/deploy.env $ip:
         ssh $SSH_OPTIONS -tt -i /etc/nodepool/id_rsa $ip \
             sudo cp deploy.env $TRIPLEO_ROOT/tripleo-ci/deploy.env
     done
+
     $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --multinode
 
     # This needs to be done after the --multinode setup otherwise /etc/hosts will
