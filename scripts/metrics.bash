@@ -48,6 +48,9 @@ function stop_metric {
 }
 
 function metrics_to_graphite {
+    # With a lot of metrics, the trace output gets pretty spammy
+    set +x
+    echo "Sending metrics to graphite"
     local SERVER=$1
     local PORT=${2:-2003} # default port for graphite data
 
@@ -60,10 +63,12 @@ function metrics_to_graphite {
         METRIC_NAME=$(echo $X | cut -d ":" -f 1)
         METRIC_VAL=$(echo $X | cut -d ":" -f 2)
         DTS=$(echo $X | cut -d ":" -f 3)
+        echo "Sending $METRIC_NAME to Graphite"
         echo "$METRIC_NAME $METRIC_VAL $DTS" | nc ${SERVER} ${PORT}
     done
     set -e
     # reset the existing data file and start times
     echo "" > METRICS_START_TIMES
     echo "" > METRICS_DATA_FILE
+    set -x
 }
