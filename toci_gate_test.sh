@@ -147,7 +147,7 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
             ;;
         multinode)
             MULTINODE=1
-            TOCIRUNNER="./toci_instack_multinode.sh"
+            TOCIRUNNER="./toci_instack_osinfra.sh"
             NODECOUNT=1
             PACEMAKER=1
             CONTROLLER_HOSTS=$(sed -n 1,1p /etc/nodepool/sub_nodes)
