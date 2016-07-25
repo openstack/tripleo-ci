@@ -58,6 +58,7 @@ export CACHEUPLOAD=0
 export INTROSPECT=0
 export NODECOUNT=2
 export PACEMAKER=0
+export UNDERCLOUD_MAJOR_UPGRADE=0
 # Whether or not we deploy an Overcloud
 export OVERCLOUD=1
 # NOTE(bnemec): At this time, the undercloud install + image build is taking from
@@ -118,6 +119,13 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
             OVERCLOUD_UPDATE_ARGS="-e /usr/share/openstack-tripleo-heat-templates/overcloud-resource-registry-puppet.yaml $OVERCLOUD_DEPLOY_ARGS"
             NETISO_V6=1
             PACEMAKER=1
+            ;;
+        upgrades)
+            if [ $TOCI_JOBTYPE == 'undercloud-upgrades' ] ; then
+                UNDERCLOUD_MAJOR_UPGRADE=1
+                export UNDERCLOUD_SANITY_CHECK=1
+                export STABLE_RELEASE=mitaka
+            fi
             ;;
         ha)
             NODECOUNT=5
