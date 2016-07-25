@@ -12,6 +12,7 @@ export IP_DEVICE=${IP_DEVICE:-"eth0"}
 source $TRIPLEO_CI_DIR/tripleo-ci/scripts/common_vars.bash
 source $TRIPLEO_CI_DIR/tripleo-ci/scripts/common_functions.sh
 source $TRIPLEO_CI_DIR/tripleo-ci/scripts/metrics.bash
+stop_metric "tripleo.testenv.wait.seconds" # start_metric in toci_gate_test.sh
 start_metric "tripleo.ci.total.seconds"
 
 mkdir -p $WORKSPACE/logs
