@@ -2,9 +2,8 @@
 
 # taken from openstack-virtual-baremetal/bin/install_openstackbmc.sh
 yum -y update centos-release # required for rdo-release install to work
-yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
 yum install -y https://rdo.fedorapeople.org/rdo-release.rpm
-yum install -y python-pip python2-crypto os-net-config python-novaclient python-neutronclient git jq
+yum install -y python-pip python-crypto os-net-config python-novaclient python-neutronclient git jq
 pip install pyghmi
 
 # the CI cloud is using a unsafe disk caching mode, so this sync will be ignored by the host

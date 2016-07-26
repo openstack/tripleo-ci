@@ -81,7 +81,6 @@ ls /home/jenkins/.ssh/id_rsa_virt_power || ssh-keygen -f /home/jenkins/.ssh/id_r
 export ANSWERSFILE=/usr/share/instack-undercloud/undercloud.conf.sample
 export ELEMENTS_PATH=/usr/share/instack-undercloud
 export DIB_DISTRIBUTION_MIRROR=$CENTOS_MIRROR
-export DIB_EPEL_MIRROR=$EPEL_MIRROR
 export DIB_CLOUD_IMAGES=http://$MIRRORSERVER/cloud.centos.org/centos/7/images
 
 source $TRIPLEO_ROOT/tripleo-ci/deploy.env

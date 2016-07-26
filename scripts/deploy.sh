@@ -11,7 +11,6 @@ source $TRIPLEO_ROOT/tripleo-ci/scripts/metrics.bash
 export PYTHONUNBUFFERED=true
 
 export DIB_DISTRIBUTION_MIRROR=$CENTOS_MIRROR
-export DIB_EPEL_MIRROR=$EPEL_MIRROR
 export STABLE_RELEASE=${STABLE_RELEASE:-""}
 
 

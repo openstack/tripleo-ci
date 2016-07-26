@@ -4,7 +4,6 @@
 # to run based on the hostname e.g. to create a mirror server then one can simply
 # nova boot --image <id> --flavor <id> --user-data scripts/deploy-server.sh --nic net-id=<id> --nic net-id=<id>,v4-fixed-ip=192.168.1.101 mirror-server
 
-yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
 yum install -y puppet git
 
 echo puppetlabs-apache adrien-filemapper | xargs -n 1 puppet module install

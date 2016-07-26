@@ -286,6 +286,11 @@ EOF"
     # takes precedence over the main RDO repositories.
     sudo yum -y install yum-plugin-priorities
 
+    # Make sure EPEL is uninstalled.
+    if rpm --quiet -q epel-release; then
+        sudo rpm -e epel-release
+    fi
+
     log "Repository setup - DONE."
 
 }
