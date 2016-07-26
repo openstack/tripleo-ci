@@ -32,7 +32,6 @@ if [ "$MULTINODE" = 1 ]; then
     echo 'net_config_override = /opt/stack/new/tripleo-ci/undercloud-configs/net-config-multinode.json.template' >> ~/undercloud.conf
 fi
 
-sudo yum install -y moreutils
 echo "INFO: Check /var/log/undercloud_install.txt for undercloud install output"
 echo "INFO: This file can be found in logs/undercloud.tar.xz in the directory containing console.log"
 start_metric "tripleo.undercloud.install.seconds"

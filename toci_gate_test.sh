@@ -188,6 +188,13 @@ TIMEOUT_SECS=$((DEVSTACK_GATE_TIMEOUT*60))
 # run it in a separate group to avoid getting killed along with it
 set -m
 
+# install moreutils for timestamping postci.log with ts
+# This comes from epel, so we need to install it before removing that repo
+sudo yum install -y moreutils
+
+# Temporary fix for https://bugs.launchpad.net/tripleo/+bug/1606685
+sudo yum erase -y epel-release nodejs nodejs-devel nodejs-packaging || :
+
 source /opt/stack/new/tripleo-ci/scripts/metrics.bash
 start_metric "tripleo.testenv.wait.seconds"
 if [ -z "${TE_DATAFILE:-}" -a "$MULTINODE" = "0" ] ; then

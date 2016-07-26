@@ -33,9 +33,6 @@ $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --delorean-setup
 
 dummy_ci_repo
 
-# install moreutils for timestamping postci.log with ts
-sudo yum install -y moreutils
-
 trap "[ \$? != 0 ] && echo ERROR DURING PREVIOUS COMMAND ^^^ && echo 'See postci.txt in the logs directory for debugging details'; postci 2>&1 | ts '%Y-%m-%d %H:%M:%S.000 |' > $WORKSPACE/logs/postci.log 2>&1" EXIT
 
 delorean_build_and_serve

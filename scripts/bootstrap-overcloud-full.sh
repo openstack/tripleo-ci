@@ -9,6 +9,9 @@ if [ -f "$TRIPLEO_ROOT/tripleo-ci/deploy.env" ]; then
     source $TRIPLEO_ROOT/tripleo-ci/deploy.env
 fi
 
+# Temporary fix for https://bugs.launchpad.net/tripleo/+bug/1606685
+sudo yum erase -y epel-release nodejs nodejs-devel nodejs-packaging || :
+
 # Copied from toci_gate_test.sh...need to apply this fix on subnodes as well
 # TODO(pabelanger): Why is python-requests installed from pip?
 sudo rm -rf /usr/lib/python2.7/site-packages/requests

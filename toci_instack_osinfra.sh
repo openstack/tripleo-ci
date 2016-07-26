@@ -36,8 +36,8 @@ dummy_ci_repo
 # Install all of the repositories we need
 $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --repo-setup
 
-# Install wget and moreutils for timestamping postci.log with ts
-sudo yum -y install wget moreutils python-simplejson dstat yum-plugin-priorities
+# Install some useful/necessary packages
+sudo yum -y install wget python-simplejson dstat yum-plugin-priorities
 # Need to reinstall requests since it's rm'd in toci_gate_test.sh
 sudo rpm -e --nodeps python-requests || :
 sudo yum -y install python-requests
