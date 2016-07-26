@@ -587,9 +587,9 @@ function overcloud_delete {
     # This should be fairly quick, but we poll for OVERCLOUD_DELETE_TIMEOUT
     # NOTE(bnemec): We can't use the openstack function here because we need
     # different behavior from what it does - we want to use the openstack
-    # command (which supports --yes) on everything except Liberty, and in
-    # Liberty we just call 'heat stack-delete' because there's no confirmation
-    # input on that release.
+    # command on everything except Liberty, and in Liberty we just
+    # call 'heat stack-delete --yes', on the versions that it's supported,
+    # or 'heat stack-delete' in the versions that don't support that flag.
 
     # Note, we need the ID, not the name, as stack-show will only return
     # soft-deleted stacks by ID (not name, as it may be reused)
@@ -599,7 +599,11 @@ function overcloud_delete {
         /usr/bin/openstack stack delete --yes "$OVERCLOUD_NAME"
     else
         wait_command="heat stack-show $OVERCLOUD_ID"
-        heat stack-delete "$OVERCLOUD_NAME"
+        if heat stack-delete --help | grep -q "\-\-yes"; then
+            heat stack-delete --yes "$OVERCLOUD_NAME"
+        else
+            heat stack-delete "$OVERCLOUD_NAME"
+        fi
     fi
     if $(tripleo wait_for -w $OVERCLOUD_DELETE_TIMEOUT -d 10 -s "DELETE_COMPLETE" -- "$wait_command"); then
        log "Overcloud $OVERCLOUD_ID DELETE_COMPLETE"
@@ -616,15 +620,19 @@ function cleanup_pingtest {
     overcloudrc_check
     # NOTE(bnemec): We can't use the openstack function here because we need
     # different behavior from what it does - we want to use the openstack
-    # command (which supports --yes) on everything except Liberty, and in
-    # Liberty we just call 'heat stack-delete' because there's no confirmation
-    # input on that release.
+    # command on everything except Liberty, and in Liberty we just
+    # call 'heat stack-delete --yes', on the versions that it's supported,
+    # or 'heat stack-delete' in the versions that don't support that flag.
     if [ "$STABLE_RELEASE" != "liberty" ]; then
         wait_command="openstack stack show tenant-stack"
         /usr/bin/openstack stack delete --yes tenant-stack || true
     else
         wait_command="heat stack-show tenant-stack"
-        heat stack-delete tenant-stack || true
+        if heat stack-delete --help | grep -q "\-\-yes"; then
+            heat stack-delete --yes tenant-stack || true
+        else
+            heat stack-delete tenant-stack || true
+        fi
     fi
     if tripleo wait_for -w 300 -d 10 -s "Stack not found" -- "$wait_command"; then
         log "Overcloud pingtest - deleted the tenant-stack heat stack"
