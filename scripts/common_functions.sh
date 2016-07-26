@@ -236,11 +236,13 @@ function postci(){
                 sudo /opt/stack/new/tripleo-ci/scripts/get_host_info.sh
             ssh $SSH_OPTIONS -i /etc/nodepool/id_rsa $ip \
                 $TARCMD > $WORKSPACE/logs/subnode-$i/subnode-$i.tar.xz
-            # TODO: For some reason, these files are causing the publish logs ansible
+            # These files are causing the publish logs ansible
             # task to fail with an rsync error:
             # "symlink has no referent"
-            rm -f $WORKSPACE/logs/subnode-$i/etc/sahara/rootwrap.d/sahara.filters
-            rm -f $WORKSPACE/logs/subnode-$i/etc/cinder/rootwrap.d/os-brick.filters
+            ssh $SSH_OPTIONS -i /etc/nodepool/id_rsa $ip \
+                sudo rm -f /etc/sahara/rootwrap.d/sahara.filters
+            ssh $SSH_OPTIONS -i /etc/nodepool/id_rsa $ip \
+                sudo rm -f /etc/cinder/rootwrap.d/os-brick.filters
             let i+=1
         done
     fi
