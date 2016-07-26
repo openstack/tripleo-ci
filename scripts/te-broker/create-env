@@ -6,10 +6,11 @@ NODECOUNT=${2:-2}
 UCINSTANCE=${3:-}
 CREATE_UNDERCLOUD=${4:-""}
 SSH_KEY=${5:-""}
+# We recognize 3 values for NETISO: none, multi-nic, public-bond
+NETISO=${6:-'multi-nic'}
 PROVISIONNET=provision-${ENVNUM}
 PUBLICNET=public-${ENVNUM}
 ENVFILE=env-${ENVNUM}.yaml
-
 
 source /etc/nodepoolrc
 
@@ -52,8 +53,13 @@ if [ -z "$CREATE_UNDERCLOUD" ]; then
     echo '  OS::OVB::UndercloudEnvironment: OS::Heat::None' >> $ENVFILE
 fi
 echo '  OS::OVB::UndercloudFloating: templates/undercloud-floating-none.yaml' >> $ENVFILE
-echo '  OS::OVB::BaremetalNetworks: templates/baremetal-networks-all.yaml' >> $ENVFILE
-echo '  OS::OVB::BaremetalPorts: templates/baremetal-ports-all.yaml' >> $ENVFILE
+if [ $NETISO == 'multi-nic' ]; then
+    echo '  OS::OVB::BaremetalNetworks: templates/baremetal-networks-all.yaml' >> $ENVFILE
+    echo '  OS::OVB::BaremetalPorts: templates/baremetal-ports-all.yaml' >> $ENVFILE
+elif [ $NETISO == 'public-bond' ]; then
+    echo '  OS::OVB::BaremetalNetworks: templates/baremetal-networks-all.yaml' >> $ENVFILE
+    echo '  OS::OVB::BaremetalPorts: templates/baremetal-ports-public-bond.yaml' >> $ENVFILE
+fi
 
 
 /opt/stack/openstack-virtual-baremetal/bin/deploy.py --env $ENVFILE --name baremetal_${ENVNUM} --quintupleo --id ${ENVNUM}
@@ -69,7 +75,9 @@ while ! heat stack-show baremetal_${ENVNUM} | grep CREATE_COMPLETE ; do
 done
 
 nova interface-attach --net-id $(neutron net-show -F id -f value $PROVISIONNET) $UCINSTANCE
-nova interface-attach --net-id $(neutron net-show -F id -f value $PUBLICNET) $UCINSTANCE
+if [ $NETISO != 'none' ]; then
+    nova interface-attach --net-id $(neutron net-show -F id -f value $PUBLICNET) $UCINSTANCE
+fi
 
 # This writes out the env file as env-ID.yaml while overwrites the one we have created
 /opt/stack/openstack-virtual-baremetal/bin/build-nodes-json --env $ENVFILE \

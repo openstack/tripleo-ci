@@ -316,9 +316,14 @@ if [ -z "${TE_DATAFILE:-}" -a "$OSINFRA" = "0" ] ; then
     # Only check every 5 minutes to avoid hammering the status endpoint.
     ( while :; do sleep 300; curl http://zuul.openstack.org/status.json | grep -q $ZUUL_UUID || sudo kill -9 $$; done ) &> /dev/null &
 
+    # TODO(bnemec): Add jobs that use public-bond
+    NETISO_ENV="none"
+    if [ $NETISO_V4 -eq 1 -o $NETISO_V6 -eq 1 ]; then
+        NETISO_ENV="multi-nic"
+    fi
     ./testenv-client -b $GEARDSERVER:4730 -t $TIMEOUT_SECS \
         --envsize $NODECOUNT --ucinstance $UCINSTANCEID \
-        $TEST_ENV_EXTRA_ARGS -- $TOCIRUNNER
+        --net-iso $NETISO_ENV $TEST_ENV_EXTRA_ARGS -- $TOCIRUNNER
 else
     $TOCIRUNNER
 fi
