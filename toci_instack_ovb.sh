@@ -50,8 +50,8 @@ dummy_ci_repo
 # Install all of the repositories we need
 $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --repo-setup
 
-# Install wget and moreutils for timestamping postci.log with ts
-sudo yum -y install wget moreutils python-simplejson dstat yum-plugin-priorities
+# Install some useful/necessary packages
+sudo yum -y install wget python-simplejson dstat yum-plugin-priorities
 
 trap "[ \$? != 0 ] && echo ERROR DURING PREVIOUS COMMAND ^^^ && echo 'See postci.txt in the logs directory for debugging details'; postci 2>&1 | ts '%Y-%m-%d %H:%M:%S.000 |' > $WORKSPACE/logs/postci.log 2>&1" EXIT
 

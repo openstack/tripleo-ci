@@ -217,11 +217,6 @@ function repo_setup {
     # sets $TRIPLEO_OS_FAMILY and $TRIPLEO_OS_DISTRO
     source $(dirname ${BASH_SOURCE[0]:-$0})/set-os-type
 
-    if [ "$TRIPLEO_OS_DISTRO" = "centos" ]; then
-        # Enable epel
-        rpm -q epel-release || sudo yum -y install epel-release
-    fi
-
     if [ -z "$STABLE_RELEASE" ]; then
         # Enable the Delorean Deps repository
         sudo curl -Lo $REPO_PREFIX/delorean-deps.repo http://trunk.rdoproject.org/centos7/delorean-deps.repo
