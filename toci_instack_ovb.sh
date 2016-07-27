@@ -26,17 +26,6 @@ echo "127.0.0.1 $(hostname) $(hostname).openstacklocal" | sudo tee -a /etc/hosts
 # TODO: xfsprogs should be a dep of DIB?
 sudo yum install -y xfsprogs qemu-img
 
-
-# Setting up localhost so that postci will ssh to it to retrieve logs
-# once the legacy TE support is removed from tripleo-ci we won't need to do
-# this any longer
-export SEED_IP=127.0.0.1
-echo | sudo tee -a ~root/.ssh/authorized_keys | sudo tee -a ~/.ssh/authorized_keys
-if [ ! -e /home/$USER/.ssh/id_rsa.pub ] ; then
-    ssh-keygen -N "" -f /home/$USER/.ssh/id_rsa
-fi
-cat ~/.ssh/id_rsa.pub | sudo tee -a ~root/.ssh/authorized_keys | sudo tee -a ~/.ssh/authorized_keys
-
 # Remove the anything on the infra image template that might interfere with CI
 sudo yum remove -y puppet hiera puppetlabs-release rdo-release
 sudo rm -rf /etc/puppet /etc/hiera.yaml
