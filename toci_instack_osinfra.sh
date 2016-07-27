@@ -37,7 +37,7 @@ dummy_ci_repo
 $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --repo-setup
 
 # Install some useful/necessary packages
-sudo yum -y install wget python-simplejson dstat yum-plugin-priorities
+sudo yum -y install wget python-simplejson yum-plugin-priorities
 # Need to reinstall requests since it's rm'd in toci_gate_test.sh
 sudo rpm -e --nodeps python-requests || :
 sudo yum -y install python-requests
@@ -103,8 +103,6 @@ if [ -s /etc/nodepool/sub_nodes ]; then
     done
 fi
 
-# Add a simple system utilisation logger process
-sudo dstat -tcmndrylpg --output /var/log/dstat-csv.log >/dev/null &
 # Install our test cert so SSL tests work
 sudo cp $TRIPLEO_ROOT/tripleo-ci/test-environments/overcloud-cacert.pem /etc/pki/ca-trust/source/anchors/
 sudo update-ca-trust extract
