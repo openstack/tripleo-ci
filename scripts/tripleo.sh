@@ -118,6 +118,7 @@ OVERCLOUD_IMAGES_ARGS=${OVERCLOUD_IMAGES_ARGS='--all'}
 OVERCLOUD_NAME=${OVERCLOUD_NAME:-"overcloud"}
 SKIP_PINGTEST_CLEANUP=${SKIP_PINGTEST_CLEANUP:-""}
 OVERCLOUD_PINGTEST=${OVERCLOUD_PINGTEST:-""}
+UNDERCLOUD_SANITY_CHECK=${UNDERCLOUD_SANITY_CHECK:-""}
 REPO_SETUP=${REPO_SETUP:-""}
 REPO_PREFIX=${REPO_PREFIX:-"/etc/yum.repos.d/"}
 OVERCLOUD_IMAGES_DIB_YUM_REPO_CONF=${OVERCLOUD_IMAGES_DIB_YUM_REPO_CONF:-"\
@@ -885,6 +886,21 @@ function multinode_setup {
     log "Multinode Setup - DONE".
 }
 
+function undercloud_sanity_check {
+    set -x
+    stackrc_check
+    openstack user list
+    openstack catalog list
+    nova service-list
+    glance image-list
+    neutron subnet-list
+    neutron net-list
+    neutron agent-list
+    ironic node-list
+    openstack stack list
+    set +x
+}
+
 if [ "$REPO_SETUP" = 1 ]; then
     repo_setup
 fi
@@ -904,6 +920,9 @@ fi
 
 if [ "$UNDERCLOUD" = 1 ]; then
     undercloud
+    if [ "$UNDERCLOUD_SANITY_CHECK" = 1 ]; then
+        undercloud_sanity_check
+    fi
 fi
 
 if [ "$OVERCLOUD_IMAGES" = 1 ]; then
