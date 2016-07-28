@@ -92,8 +92,10 @@ def gen_html(data, html_file, table_file, stats_hours, job_names, options):
     fp.write("</tr>")
     count = 0
 
-    for ts in reversed(sorted(data.iterkeys())):
-        result = data[ts]
+    reversed_sorted_keys = [(x['id'], x['patchset']) for x in
+        reversed(sorted(data.values(), key=lambda y: y['ts']))]
+    for key in reversed_sorted_keys:
+        result = data[key]
         if count > 300:
             break
         if not result['ci_results']:
@@ -172,23 +174,29 @@ def main(args=sys.argv[1:]):
     proj_reviews = []
     for proj in opts.p.split(","):
         proj_reviews.extend(get_gerrit_reviews(proj, status=opts.s, branch=opts.b, limit=opts.l))
-    ts_results = {}
+    results = {}
     for review in proj_reviews:
         for ts, message in get_jenkins_comment_message(review).iteritems():
-            ts_results[ts] = {
+            ci_results = process_jenkins_comment_message(message,
+                                                         job_names)
+
+            patchset = str(re.search('Patch Set (.+?):', message).group(1))
+            key = (review['id'], patchset)
+            results.setdefault(key, {}).update({
                 'id': review['id'],
+                'ts': ts,
                 'status': review['status'],
                 'timestamp': datetime.datetime.fromtimestamp(
                     int(ts)).strftime('%Y-%m-%d %H:%M:%S'),
                 'url': review['url'],
-                'patchset': re.search('Patch Set (.+?):', message).group(1),
+                'patchset': patchset,
                 'project': re.sub(r'.*/', '', review['project']),
                 'branch': review['branch'],
-                'ci_results': process_jenkins_comment_message(message,
-                                                              job_names)
-            }
+                })
+            results[key].setdefault(
+                                    'ci_results', {}).update(ci_results)
 
-    gen_html(ts_results, opts.o, "%s-table" % opts.o, 24, job_names,opts)
+    gen_html(results, opts.o, "%s-table" % opts.o, 24, job_names,opts)
 
 if __name__ == '__main__':
     exit(main())
