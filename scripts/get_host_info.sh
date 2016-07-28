@@ -21,6 +21,7 @@ which pcs &> /dev/null && sudo pcs status --full
 which pcs &> /dev/null && sudo pcs constraint show --full
 which pcs &> /dev/null && sudo pcs stonith show --full
 which crm_verify &> /dev/null && sudo crm_verify -L -VVVVVV
+sudo facter
 
 EOF
 
