@@ -51,7 +51,7 @@ dummy_ci_repo
 $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --repo-setup
 
 # Install some useful/necessary packages
-sudo yum -y install wget python-simplejson dstat yum-plugin-priorities
+sudo yum -y install wget python-simplejson yum-plugin-priorities
 
 trap "[ \$? != 0 ] && echo ERROR DURING PREVIOUS COMMAND ^^^ && echo 'See postci.txt in the logs directory for debugging details'; postci 2>&1 | ts '%Y-%m-%d %H:%M:%S.000 |' > $WORKSPACE/logs/postci.log 2>&1" EXIT
 
@@ -71,8 +71,6 @@ echo_vars_to_deploy_env
 
 source $TRIPLEO_ROOT/tripleo-ci/deploy.env
 
-# Add a simple system utilisation logger process
-sudo dstat -tcmndrylpg --output /var/log/dstat-csv.log >/dev/null &
 # Install our test cert so SSL tests work
 sudo cp $TRIPLEO_ROOT/tripleo-ci/test-environments/overcloud-cacert.pem /etc/pki/ca-trust/source/anchors/
 sudo update-ca-trust extract
