@@ -385,24 +385,24 @@ function delorean_build {
         done
         popd
 
+        set +e
         while true; do
             DELOREANCMD="./venv/bin/dlrn --config-file projects.ini --head-only --package-name $MAPPED_PROJ --local --use-public --build-env http_proxy=${http_proxy:-} --info-repo rdoinfo"
             # Using sudo to su a command as ourselves to run the command with a new login
             # to ensure the addition to the mock group has taken effect.
-            sudo su $(id -nu) -c "$DELOREANCMD" || true
+            sudo su $(id -nu) -c "$DELOREANCMD"
+            EXITCODE=$?
 
-            # If delorean fails due to a network error it will mark it to be retried up to 3 times
-            # Test the status and run delorean again if it is not SUCCESS or FAILED
-            STATUS=$(echo "select status from commits where project_name == \"$MAPPED_PROJ\" order by id desc limit 1;" | sqlite3 commits.sqlite)
-            if [ "$STATUS" == "FAILED" ] ; then
-                exit 1
-            elif [ "$STATUS" == "SUCCESS" ] ; then
-                break
-            elif [ "$STATUS" == "RETRY" ] ; then
+            # delorean exits with 2 if the error is a network glitch, we can retry
+            if [ "$EXITCODE" == "2" ] ; then
                 continue
+            elif [ "$EXITCODE" == "0" ] ; then
+                break
             fi
+            set -e
             exit 1
         done
+        set -e
     done
     popd
     log "Delorean build - DONE."
