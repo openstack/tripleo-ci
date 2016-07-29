@@ -216,12 +216,20 @@ function postci(){
         # post metrics
         scp $SSH_OPTIONS root@${SEED_IP}:${METRICS_DATA_FILE} /tmp/seed-metrics
         cat /tmp/seed-metrics >> ${METRICS_DATA_FILE}
+        # This spams the postci output with largely uninteresting trace output
+        set +x
+        echo -n 'Recording Heat deployment times...'
+        # We're only interested in the resources that take the most time
+        long_times=/tmp/long-deploy-times.log
+        head -n 50 $WORKSPACE/logs/undercloud/var/log/heat-deploy-times.log > $long_times
         while read line; do
             # $line should look like "ResourceName 123.0", so concatenating all
             # of this together we should end up with a call that looks like:
             # record_metric tripleo.overcloud.ha.resources.ResourceName 123.0
             record_metric tripleo.overcloud.${TOCI_JOBTYPE}.resources.${line}
-        done <$WORKSPACE/logs/undercloud/var/log/heat-deploy-times.log
+        done <$long_times
+        echo 'Finished'
+        set -x
         metrics_to_graphite "23.253.94.71" #Dan's temp graphite server
         if [ -z "${LEAVE_RUNNING:-}" ] && [ -n "${HOST_IP:-}" ] ; then
             destroy_vms &> $WORKSPACE/logs/destroy_vms.log
