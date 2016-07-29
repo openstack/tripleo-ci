@@ -2,7 +2,7 @@
 
 # Keep X number of testenv workers running, each testenv worker exists after processing a single job
 BASEPATH=$(realpath $(dirname $0)/../..)
-ENVFILE=$BASEPATH/scripts/rh2.env
+ENVFILE=$BASEPATH/scripts/rh1.env
 
 
 TENUM=0
