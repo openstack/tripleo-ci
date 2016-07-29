@@ -21,7 +21,9 @@ which pcs &> /dev/null && sudo pcs status --full
 which pcs &> /dev/null && sudo pcs constraint show --full
 which pcs &> /dev/null && sudo pcs stonith show --full
 which crm_verify &> /dev/null && sudo crm_verify -L -VVVVVV
+which ceph &> /dev/null && sudo ceph status
 sudo facter
+find ~jenkins -iname tripleo-overcloud-passwords -execdir cat '{}' ';'
 
 EOF
 
