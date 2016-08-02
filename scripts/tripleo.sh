@@ -54,6 +54,7 @@ function show_options {
     echo "      --delorean-setup        -- Install local delorean build environment."
     echo "      --delorean-build        -- Build a delorean package locally"
     echo "      --multinode-setup       -- Perform multinode setup."
+    echo "      --bootstrap-subnodes    -- Perform bootstrap setup on subnodes."
     echo "      --undercloud            -- Install the undercloud."
     echo "      --overcloud-images      -- Build and load overcloud images."
     echo "      --register-nodes        -- Register and configure nodes."
@@ -79,7 +80,7 @@ if [ ${#@} = 0 ]; then
 fi
 
 TEMP=$(getopt -o ,h \
-        -l,help,repo-setup,delorean-setup,delorean-build,multinode-setup,undercloud,overcloud-images,register-nodes,introspect-nodes,overcloud-deploy,overcloud-update,overcloud-delete,use-containers,overcloud-pingtest,skip-pingtest-cleanup,all,enable-check,run-tempest \
+        -l,help,repo-setup,delorean-setup,delorean-build,multinode-setup,bootstrap-subnodes,undercloud,overcloud-images,register-nodes,introspect-nodes,overcloud-deploy,overcloud-update,overcloud-delete,use-containers,overcloud-pingtest,skip-pingtest-cleanup,all,enable-check,run-tempest \
         -o,x,h,a \
         -n $SCRIPT_NAME -- "$@")
 
@@ -136,6 +137,7 @@ fi
 DELOREAN_SETUP=${DELOREAN_SETUP:-""}
 DELOREAN_BUILD=${DELOREAN_BUILD:-""}
 MULTINODE_SETUP=${MULTINODE_SETUP:-""}
+BOOTSTRAP_SUBNODES=${BOOTSTRAP_SUBNODES:-""}
 STDERR=/dev/null
 UNDERCLOUD=${UNDERCLOUD:-""}
 UNDERCLOUD_CONF=${UNDERCLOUD_CONF:-"/usr/share/instack-undercloud/undercloud.conf.sample"}
@@ -173,6 +175,7 @@ while true ; do
         --delorean-build) DELOREAN_BUILD="1"; shift 1;;
         --undercloud) UNDERCLOUD="1"; shift 1;;
         --multinode-setup) MULTINODE_SETUP="1"; shift 1;;
+        --bootstrap-subnodes) BOOTSTRAP_SUBNODES="1"; shift 1;;
         -x) set -x; STDERR=/dev/stderr; shift 1;;
         -h | --help) show_options 0;;
         --) shift ; break ;;
@@ -845,14 +848,10 @@ function multinode_setup {
     sub_nodes=$(cat /etc/nodepool/sub_nodes_private)
 
     for ip in $sub_nodes; do
-        # Do repo setup
+        # Do repo setup so openvswitch package is available on subnodes. Will
+        # be installed by ovs_vxlan_bridge function below.
         ssh $SSH_OPTIONS -t -i /etc/nodepool/id_rsa $ip \
             $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --repo-setup
-
-        # Run overcloud full bootstrap script
-        log "Running overcloud-full boostrap script on $ip"
-        ssh $SSH_OPTIONS -t -i /etc/nodepool/id_rsa $ip \
-            $TRIPLEO_ROOT/tripleo-ci/scripts/bootstrap-overcloud-full.sh
     done
 
     # Create OVS vxlan bridges
@@ -913,6 +912,28 @@ function undercloud_sanity_check {
     ironic node-list
     openstack stack list
     set +x
+}
+
+function bootstrap_subnodes {
+    log "Bootstrap subnodes"
+
+    local sub_nodes
+    sub_nodes=$(cat /etc/nodepool/sub_nodes_private)
+
+    for ip in $sub_nodes; do
+        log "Bootstrapping $ip"
+        log "Running --repo-setup on $ip"
+        # Do repo setup
+        ssh $SSH_OPTIONS -t -i /etc/nodepool/id_rsa $ip \
+            $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --repo-setup
+
+        # Run overcloud full bootstrap script
+        log "Running bootstrap-overcloud-full.sh on $ip"
+        ssh $SSH_OPTIONS -t -i /etc/nodepool/id_rsa $ip \
+            $TRIPLEO_ROOT/tripleo-ci/scripts/bootstrap-overcloud-full.sh
+    done
+
+    log "Bootstrap subnodes - DONE".
 }
 
 if [ "$REPO_SETUP" = 1 ]; then
@@ -978,6 +999,10 @@ fi
 
 if [ "$MULTINODE_SETUP" = 1 ]; then
     multinode_setup
+fi
+
+if [ "$BOOTSTRAP_SUBNODES" = 1 ]; then
+    bootstrap_subnodes
 fi
 
 if [ "$ALL" = 1 ]; then
