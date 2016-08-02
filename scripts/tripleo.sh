@@ -280,11 +280,6 @@ function delorean_setup {
 
     pushd $TRIPLEO_ROOT/delorean
 
-    # TODO: (sshnaidm) temporary workaround because delorean fail on stable branches
-    # https://bugs.launchpad.net/tripleo/+bug/1604039
-    git checkout 10fec3647fdf3b9177f8fa2e8d60fe0bca2f1980
-    sed -ie '84s/local=local/local=False/' dlrn/drivers/rdoinfo.py
-
     sudo rm -rf data commits.sqlite
     mkdir -p data
 
