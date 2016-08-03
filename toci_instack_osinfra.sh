@@ -16,7 +16,7 @@ start_metric "tripleo.ci.total.seconds"
 mkdir -p $WORKSPACE/logs
 
 MY_IP=$(ip addr show dev $IP_DEVICE | awk '/inet / {gsub("/.*", "") ; print $2}')
-MY_IP_eth1=$(ip addr show dev eth1 | awk '/inet / {gsub("/.*", "") ; print $2}')
+MY_IP_eth1=$(ip addr show dev eth1 | awk '/inet / {gsub("/.*", "") ; print $2}') || MY_IP_eth1=""
 
 export http_proxy=""
 export no_proxy=192.0.2.1,$MY_IP,$MY_IP_eth1
