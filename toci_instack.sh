@@ -9,7 +9,6 @@ if [ ! -e "$TE_DATAFILE" ] ; then
     exit 1
 fi
 
-export TRIPLEO_ROOT=/opt/stack/new
 export PATH=/sbin:/usr/sbin:$PATH
 
 export CURRENT_DIR=$(dirname ${BASH_SOURCE[0]:-$0})
@@ -155,7 +154,7 @@ ssh $SSH_OPTIONS root@${SEED_IP} <<-EOF
 
 set -eux
 
-source /opt/stack/new/tripleo-ci/deploy.env
+source $TRIPLEO_ROOT/tripleo-ci/deploy.env
 
 ip route add 0.0.0.0/0 dev eth0 via $MY_IP
 

@@ -12,7 +12,7 @@ if [[ $OVERRIDE_ZUUL_BRANCH =~ ^stable/ ]]; then
     export STABLE_RELEASE=${OVERRIDE_ZUUL_BRANCH#stable/}
 fi
 
-export TRIPLEO_ROOT=/opt/stack/new
+export TRIPLEO_ROOT=${TRIPLEO_ROOT:-"/opt/stack/new"}
 export PATH=/sbin:/usr/sbin:$PATH
 
 export UNDERCLOUD_VM_NAME=instack
