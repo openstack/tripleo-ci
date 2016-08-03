@@ -150,6 +150,8 @@ TEMPEST_REGEX=${TEMPEST_REGEX:-"^(?=(.*smoke))(?!(tempest.api.orchestration.stac
 TEMPEST_PINNED="fb77374ddeeb1642bffa086311d5f281e15142b2"
 SSH_OPTIONS=${SSH_OPTIONS:-'-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=Verbose -o PasswordAuthentication=no -o ConnectionAttempts=32'}
 export SCRIPTS_DIR=$(dirname ${BASH_SOURCE[0]:-$0})
+OPSTOOLS_REPO_ENABLED=${OPSTOOLS_REPO_ENABLED:-"0"}
+OPSTOOLS_REPO_URL=${OPSTOOLS_REPO_URL:-"https://raw.githubusercontent.com/centos-opstools/opstools-repo/master/opstools.repo"}
 
 # TODO: remove this when Image create in openstackclient supports the v2 API
 export OS_IMAGE_API_VERSION=1
@@ -458,11 +460,19 @@ function overcloud_images {
         sudo chown -R $(id -u) ~/.cache/image-create/source-repositories
     fi
 
+    # Enable OpsTools repository
+    if [[ "$OPSTOOLS_REPO_ENABLED" == "1" ]]; then
+        sudo curl -Lo $TRIPLEO_ROOT/opstools.repo $OPSTOOLS_REPO_URL
+        export DIB_YUM_REPO_CONF="$OVERCLOUD_IMAGES_DIB_YUM_REPO_CONF \
+            $TRIPLEO_ROOT/opstools.repo"
+    else
+        export DIB_YUM_REPO_CONF=$OVERCLOUD_IMAGES_DIB_YUM_REPO_CONF
+    fi
+
     log "Overcloud images saved in $OVERCLOUD_IMAGES_PATH"
     pushd $OVERCLOUD_IMAGES_PATH
     log "OVERCLOUD_IMAGES_DIB_YUM_REPO_CONF=$OVERCLOUD_IMAGES_DIB_YUM_REPO_CONF"
-    DIB_YUM_REPO_CONF=$OVERCLOUD_IMAGES_DIB_YUM_REPO_CONF \
-        openstack overcloud image build $OVERCLOUD_IMAGES_ARGS 2>&1 | \
+    openstack overcloud image build $OVERCLOUD_IMAGES_ARGS 2>&1 | \
         tee -a overcloud-image-build.log
 
     stackrc_check
