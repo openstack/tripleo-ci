@@ -181,6 +181,7 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
         tempest)
             export RUN_TEMPEST_TESTS=1
             export RUN_PING_TEST=0
+            UNDERCLOUD_IDEMPOTENT=0
             ;;
     esac
 done
