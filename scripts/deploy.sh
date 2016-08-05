@@ -80,23 +80,22 @@ if [ $NETISO_V4 -eq 1 ] || [ $NETISO_V6 -eq 1 ]; then
     export EXTERNAL_NETWORK_GATEWAY=${EXTERNAL_NETWORK_GATEWAY:-"10.0.0.1"}
 
 # Make our undercloud act as the external gateway
-# eth6 should line up with the "external" network port per the
-# tripleo-heat-template/network/config/multiple-nics templates.
+# OVB uses eth2 as the "external" network
 # NOTE: seed uses eth0 for the local network.
-    cat >> /tmp/eth6.cfg <<EOF_CAT
+    cat >> /tmp/eth2.cfg <<EOF_CAT
 network_config:
     - type: interface
-      name: eth6
+      name: eth2
       use_dhcp: false
       addresses:
         - ip_netmask: 10.0.0.1/24
 EOF_CAT
     if [ $NETISO_V6 -eq 1 ]; then
-        cat >> /tmp/eth6.cfg <<EOF_CAT
+        cat >> /tmp/eth2.cfg <<EOF_CAT
         - ip_netmask: 2001:db8:fd00:1000::1/64
 EOF_CAT
     fi
-    sudo os-net-config -c /tmp/eth6.cfg -v
+    sudo os-net-config -c /tmp/eth2.cfg -v
 fi
 
 if [ "$OSINFRA" = "0" ]; then
