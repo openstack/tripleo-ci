@@ -42,11 +42,6 @@ cron {"centos-cloud-images":
     minute  => "11"
 }
 
-cron {"mirror-repos":
-    command => "timeout 30m /opt/stack/tripleo-ci/scripts/mirror-server/mirror-repos.sh",
-    minute  => "33"
-}
-
 cron {"promote":
     command => "timeout 10m /opt/stack/tripleo-ci/scripts/mirror-server/promote.sh current-tripleo periodic-tripleo-ci-centos-7-ovb-ha periodic-tripleo-ci-centos-7-ovb-nonha",
     minute  => "40"
