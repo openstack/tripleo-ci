@@ -24,6 +24,7 @@ which crm_verify &> /dev/null && sudo crm_verify -L -VVVVVV
 which ceph &> /dev/null && sudo ceph status
 sudo facter
 find ~jenkins -iname tripleo-overcloud-passwords -execdir cat '{}' ';'
+sudo systemctl list-units --full --all
 
 EOF
 
