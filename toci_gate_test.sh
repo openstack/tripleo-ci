@@ -153,7 +153,7 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
             UNDERCLOUD_SSL=0
             INTROSPECT=0
             OVERCLOUD_DEPLOY_ARGS="--libvirt-type=qemu -t $OVERCLOUD_DEPLOY_TIMEOUT"
-            OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS -e /usr/share/openstack-tripleo-heat-templates/environments/deployed-server-environment.yaml -e /opt/stack/new/tripleo-ci/test-environments/multinode.yaml --compute-scale 0 --overcloud-ssh-user $OVERCLOUD_SSH_USER"
+            OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS -e /usr/share/openstack-tripleo-heat-templates/environments/deployed-server-environment.yaml -e /opt/stack/new/tripleo-ci/test-environments/multinode.yaml --compute-scale 0 --overcloud-ssh-user $OVERCLOUD_SSH_USER --validation-errors-nonfatal"
             ;;
         undercloud)
             TOCIRUNNER="./toci_instack_osinfra.sh"
