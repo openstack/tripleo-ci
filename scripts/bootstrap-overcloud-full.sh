@@ -38,7 +38,7 @@ tripleo-build-images \
   --image-json-output \
   --image-config-file /usr/share/tripleo-common/image-yaml/overcloud-images-centos7.yaml \
   --image-config-file /usr/share/tripleo-common/image-yaml/overcloud-images.yaml \
-  | jq '. | map(select(.imagename == "overcloud")) | .[0].elements | map(.+" ") | add' \
+  | jq '. | map(select(.imagename == "overcloud-full")) | .[0].elements | map(.+" ") | add' \
   | sed 's/"//g')
 
 # delorean-repo is excluded b/c we've already run --repo-setup on this node and
@@ -64,7 +64,7 @@ tripleo-build-images \
   --image-json-output \
   --image-config-file /usr/share/tripleo-common/image-yaml/overcloud-images-centos7.yaml \
   --image-config-file /usr/share/tripleo-common/image-yaml/overcloud-images.yaml \
-  | jq '. | map(select(.imagename == "overcloud")) | .[0].packages | .[] | tostring' \
+  | jq '. | map(select(.imagename == "overcloud-full")) | .[0].packages | .[] | tostring' \
   | sed 's/"//g')
 
 # Install additional packages expected by the image
