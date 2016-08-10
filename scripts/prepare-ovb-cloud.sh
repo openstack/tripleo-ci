@@ -9,7 +9,7 @@ source $1
 
 # We can't use heat to create the flavors as they can't be given a name with the heat resource
 nova flavor-show bmc || nova flavor-create bmc auto 512 20 1
-nova flavor-show baremetal || nova flavor-create baremetal auto 5120 41 1
+nova flavor-show baremetal || nova flavor-create baremetal auto 5632 41 1
 nova flavor-show undercloud || nova flavor-create undercloud auto 6144 40 2
 
 # Remove the flavors that provide most disk space, the disks on rh2 are small we've over commited
@@ -72,7 +72,7 @@ nova show mirror-server || nova boot --flavor m1.medium --image "CentOS-7-x86_64
 nova show proxy-server || nova boot --flavor m1.medium --image "CentOS-7-x86_64-GenericCloud" --key-name tripleo-cd-admins --nic net-name=private,v4-fixed-ip=$PROXYIP --user-data scripts/deploy-server.sh proxy-server
 if ! nova image-show bmc-template ; then
     nova keypair-add --pub-key ~/.ssh/id_rsa.pub undercloud
-    nova boot --flavor bmc --image "CentOS-7-x86_64-GenericCloud" --key-name undercloud --user-data scripts/deploy-server.sh bmc-template 
+    nova boot --flavor bmc --image "CentOS-7-x86_64-GenericCloud" --key-name undercloud --user-data scripts/deploy-server.sh bmc-template
     FLOATINGIP=$(nova floating-ip-create $EXTNET | grep public | awk '{print $4}')
     nova floating-ip-associate bmc-template $FLOATINGIP
     while ! ssh -o StrictHostKeyChecking=no -o PasswordAuthentication=no -o ConnectTimeout=2 centos@$FLOATINGIP ls /var/tmp/ready ; do
