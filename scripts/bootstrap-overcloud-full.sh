@@ -15,6 +15,11 @@ sudo yum erase -y epel-release nodejs nodejs-devel nodejs-packaging || :
 # Copied from toci_gate_test.sh...need to apply this fix on subnodes as well
 # TODO(pabelanger): Why is python-requests installed from pip?
 sudo rm -rf /usr/lib/python2.7/site-packages/requests
+# Reinstall python-requests if it was already installed, otherwise it will be
+# installed later when other packages are installed.
+if rpm -q python-requests; then
+    sudo yum reinstall -y python-requests
+fi
 
 # Clear out any puppet modules on the node placed their by infra configuration
 sudo rm -rf /etc/puppet/modules/*
