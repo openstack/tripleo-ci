@@ -93,11 +93,13 @@ if [ -s /etc/nodepool/sub_nodes ]; then
 
     # This needs to be done after the --multinode setup otherwise /etc/hosts will
     # get overwritten
-    hosts='127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
-    ::1         localhost localhost.localdomain localhost6 localhost6.localdomain6'
+    hosts=$(mktemp)
+    cat >$hosts<<EOF
+127.0.0.1 localhost localhost.localdomain localhost4 localhost4.localdomain4
+::1        localhost localhost.localdomain localhost6 localhost6.localdomain6
+EOF
     for ip in $(cat /etc/nodepool/sub_nodes); do
-        ssh $SSH_OPTIONS -tt -i /etc/nodepool/id_rsa $ip \
-            /bin/bash -c "echo \"$hosts\" > hosts"
+        scp $SSH_OPTIONS -i /etc/nodepool/id_rsa $hosts $ip:hosts
         ssh $SSH_OPTIONS -tt -i /etc/nodepool/id_rsa $ip \
             sudo cp hosts /etc/hosts
     done
