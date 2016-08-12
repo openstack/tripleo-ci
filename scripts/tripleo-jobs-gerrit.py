@@ -10,8 +10,8 @@ import datetime
 DEFAULT_JOB_NAMES = [
     'gate-tripleo-ci-centos-7-ovb-nonha',
     'gate-tripleo-ci-centos-7-ovb-ha',
-    'gate-tripleo-ci-centos-7-nonha-multinode-nv',
-    'gate-tripleo-ci-centos-7-undercloud-nv',
+    'gate-tripleo-ci-centos-7-nonha-multinode',
+    'gate-tripleo-ci-centos-7-undercloud',
 ]
 
 DEFAULT_PROJECTS = [
