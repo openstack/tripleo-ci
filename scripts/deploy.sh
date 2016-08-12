@@ -4,8 +4,8 @@ set -o pipefail
 cd
 
 # This sets all the environment variables for undercloud and overcloud installation
-source /opt/stack/new/tripleo-ci/deploy.env
-source /opt/stack/new/tripleo-ci/scripts/metrics.bash
+source $TRIPLEO_ROOT/tripleo-ci/deploy.env
+source $TRIPLEO_ROOT/tripleo-ci/scripts/metrics.bash
 
 # Prevent python from buffering stdout, so timestamps are set at appropriate times
 export PYTHONUNBUFFERED=true
@@ -29,7 +29,7 @@ fi
 sudo mkdir -p /etc/puppet/hieradata
 
 if [ "$OSINFRA" = 1 ]; then
-    echo 'net_config_override = /opt/stack/new/tripleo-ci/undercloud-configs/net-config-multinode.json.template' >> ~/undercloud.conf
+    echo "net_config_override = $TRIPLEO_ROOT/tripleo-ci/undercloud-configs/net-config-multinode.json.template" >> ~/undercloud.conf
 fi
 
 echo "INFO: Check /var/log/undercloud_install.txt for undercloud install output"

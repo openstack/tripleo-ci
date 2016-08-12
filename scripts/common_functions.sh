@@ -7,12 +7,12 @@
 #      that triggers ci).
 function temprevert(){
     # Before reverting check to ensure this isn't the related fix
-    if git --git-dir=/opt/stack/new/${ZUUL_PROJECT#*/}/.git log -1 | grep -iE "bug.*$3" ; then
+    if git --git-dir=$TRIPLEO_ROOT/${ZUUL_PROJECT#*/}/.git log -1 | grep -iE "bug.*$3" ; then
         echo "Skipping temprevert because bug fix $3 was found in git message."
         return 0
     fi
 
-    pushd /opt/stack/new/$1
+    pushd $TRIPLEO_ROOT/$1
     # Abort on fail so  we're not left in a conflict state
     git revert --no-edit $2 || git revert --abort || true
     popd
@@ -25,12 +25,12 @@ function temprevert(){
 #      that triggers ci).
 function pin(){
     # Before reverting check to ensure this isn't the related fix
-    if git --git-dir=/opt/stack/new/${ZUUL_PROJECT#*/}/.git log -1 | grep -iE "bug.*$3" ; then
+    if git --git-dir=$TRIPLEO_ROOT/${ZUUL_PROJECT#*/}/.git log -1 | grep -iE "bug.*$3" ; then
         echo "Skipping pin because bug fix $3 was found in git message."
         return 0
     fi
 
-    pushd /opt/stack/new/$1
+    pushd $TRIPLEO_ROOT/$1
     git reset --hard $2
     popd
 }
@@ -45,12 +45,12 @@ function cherrypick(){
     local REFSPEC=$2
 
     # Before cherrypicking check to ensure this isn't the related fix
-    if git --git-dir=/opt/stack/new/${ZUUL_PROJECT#*/}/.git log -1 | grep -iE "bug.*$3" ; then
+    if git --git-dir=$TRIPLEO_ROOT/${ZUUL_PROJECT#*/}/.git log -1 | grep -iE "bug.*$3" ; then
         echo "Skipping cherrypick because bug fix $3 was found in git message."
         return 0
     fi
 
-    pushd /opt/stack/new/$PROJ_NAME
+    pushd $TRIPLEO_ROOT/$PROJ_NAME
     git fetch https://review.openstack.org/openstack/$PROJ_NAME "$REFSPEC"
     # Abort on fail so  we're not left in a conflict state
     git cherry-pick FETCH_HEAD || git cherry-pick --abort
@@ -178,7 +178,7 @@ function postci(){
     fi
     if [ "${SEED_IP:-}" != "" ] ; then
         # Generate extra state information from the running undercloud
-        ssh root@${SEED_IP} /opt/stack/new/tripleo-ci/scripts/get_host_info.sh
+        ssh root@${SEED_IP} $TRIPLEO_ROOT/tripleo-ci/scripts/get_host_info.sh
 
         # Get logs from the undercloud
         ssh root@${SEED_IP} $TARCMD > $WORKSPACE/logs/undercloud.tar.xz
@@ -216,12 +216,12 @@ function postci(){
         fi
     elif [ "$OSINFRA" = "1" ] ; then
         local i=2
-        sudo /opt/stack/new/tripleo-ci/scripts/get_host_info.sh
+        sudo $TRIPLEO_ROOT/tripleo-ci/scripts/get_host_info.sh
         $TARCMD > $WORKSPACE/logs/primary_node.tar.xz
         for ip in $(cat /etc/nodepool/sub_nodes_private); do
             mkdir $WORKSPACE/logs/subnode-$i/
             ssh $SSH_OPTIONS -i /etc/nodepool/id_rsa $ip \
-                sudo /opt/stack/new/tripleo-ci/scripts/get_host_info.sh
+                sudo $TRIPLEO_ROOT/tripleo-ci/scripts/get_host_info.sh
             ssh $SSH_OPTIONS -i /etc/nodepool/id_rsa $ip \
                 $TARCMD > $WORKSPACE/logs/subnode-$i/subnode-$i.tar.xz
             # These files are causing the publish logs ansible
