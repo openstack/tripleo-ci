@@ -31,7 +31,8 @@ if [ -e ~/stackrc ] ; then
     source ~/stackrc
 
     nova list | tee /tmp/nova-list.txt
-    heat stack-show overcloud
+    # If there's no overcloud then there's no point in continuing
+    heat stack-show overcloud || (echo 'No active overcloud found' && exit 0)
     heat resource-list -n5 overcloud
     heat event-list overcloud
     # --nested-depth 2 seems to get us a reasonable list of resources without
