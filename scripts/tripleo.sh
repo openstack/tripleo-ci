@@ -855,6 +855,7 @@ function multinode_setup {
     for ip in $sub_nodes; do
         # Do repo setup so openvswitch package is available on subnodes. Will
         # be installed by ovs_vxlan_bridge function below.
+        log "Running --repo-setup on $ip"
         ssh $SSH_OPTIONS -t -i /etc/nodepool/id_rsa $ip \
             $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --repo-setup
     done
@@ -869,6 +870,7 @@ function multinode_setup {
         sudo ifdown br-ctlplane
     fi
     set +u
+    log "Running ovs_vxlan_bridge"
     ovs_vxlan_bridge $PUB_BRIDGE_NAME $primary_node "True" 2 192.0.2 24 $sub_nodes
     set -u
 
@@ -885,12 +887,13 @@ function multinode_setup {
         sudo systemctl restart neutron-openvswitch-agent
     fi
 
-    local ping_command="ping -c 3 -W 3 192.0.2.2"
+    local ping_command="ping -c 6 -W 3 192.0.2.2"
 
     for ip in $sub_nodes; do
         log "Setting $PUB_BRIDGE_NAME up on $ip"
         ssh $SSH_OPTIONS -t -i /etc/nodepool/id_rsa $ip \
             sudo ip link set dev $PUB_BRIDGE_NAME up
+        log "Pinging from $ip"
         if ! remote_command $ip $ping_command; then
             log "Pinging from $ip failed, restarting openvswitch"
             remote_command $ip sudo systemctl restart openvswitch
