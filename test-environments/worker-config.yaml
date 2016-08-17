@@ -7,7 +7,7 @@ parameter_defaults:
   CeilometerWorkers: 1
   CinderWorkers: 1
   GlanceWorkers: 1
-  KeystoneWorkers: 1
+  KeystoneWorkers: 4
   NeutronWorkers: 1
   NovaWorkers: 1
   SwiftWorkers: 1
