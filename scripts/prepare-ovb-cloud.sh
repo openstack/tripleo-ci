@@ -9,7 +9,7 @@ source $1
 
 # We can't use heat to create the flavors as they can't be given a name with the heat resource
 nova flavor-show bmc || nova flavor-create bmc auto 512 20 1
-nova flavor-show baremetal || nova flavor-create baremetal auto 5632 41 1
+nova flavor-show baremetal || nova flavor-create baremetal auto 6144 41 1
 nova flavor-show undercloud || nova flavor-create undercloud auto 6144 40 2
 
 # Remove the flavors that provide most disk space, the disks on rh2 are small we've over commited
