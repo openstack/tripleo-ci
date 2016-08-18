@@ -178,7 +178,7 @@ function postci(){
     fi
     if [ "${SEED_IP:-}" != "" ] ; then
         # Generate extra state information from the running undercloud
-        ssh root@${SEED_IP} $TRIPLEO_ROOT/tripleo-ci/scripts/get_host_info.sh
+        ssh root@${SEED_IP} 'export TRIPLEO_ROOT='"$TRIPLEO_ROOT""; $TRIPLEO_ROOT/tripleo-ci/scripts/get_host_info.sh"
 
         # Get logs from the undercloud
         ssh root@${SEED_IP} $TARCMD > $WORKSPACE/logs/undercloud.tar.xz
