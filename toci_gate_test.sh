@@ -169,6 +169,7 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
             RUN_PING_TEST=0
             UNDERCLOUD_SSL=0
             INTROSPECT=0
+            UNDERCLOUD_SSL=1
             export UNDERCLOUD_SANITY_CHECK=1
             ;;
         periodic)
