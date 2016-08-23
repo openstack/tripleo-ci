@@ -125,10 +125,6 @@ function update_image(){
 # Takes a single argument representing the name of the artifact being checked.
 function canusecache(){
 
-    # Disable image caching until after we have overcloud images available containing
-    # packaged puppet modules (as opposed to source)
-    return 1
-
     # If we are uploading to the cache then we shouldn't use it
     [ "$CACHEUPLOAD" == 1 ] && return 1
 
