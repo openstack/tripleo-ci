@@ -125,7 +125,12 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
             PACEMAKER=1
             ;;
         nonha)
-            OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS -e $TRIPLEO_ROOT/tripleo-ci/test-environments/enable-tls.yaml -e $TRIPLEO_ROOT/tripleo-ci/test-environments/inject-trust-anchor.yaml --ceph-storage-scale 1 -e /usr/share/openstack-tripleo-heat-templates/environments/puppet-ceph-devel.yaml"
+            if [[ "${STABLE_RELEASE}" =~ ^(liberty|mitaka)$ ]] ; then
+                ENDPOINT_LIST_LOCATION=$TRIPLEO_ROOT/tripleo-ci/test-environments
+            else
+                ENDPOINT_LIST_LOCATION=/usr/share/openstack-tripleo-heat-templates/environments
+            fi
+            OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS -e $TRIPLEO_ROOT/tripleo-ci/test-environments/enable-tls.yaml -e $ENDPOINT_LIST_LOCATION/tls-endpoints-public-ip.yaml -e $TRIPLEO_ROOT/tripleo-ci/test-environments/inject-trust-anchor.yaml --ceph-storage-scale 1 -e /usr/share/openstack-tripleo-heat-templates/environments/puppet-ceph-devel.yaml"
             INTROSPECT=1
             NODECOUNT=3
             UNDERCLOUD_SSL=1
