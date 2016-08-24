@@ -119,6 +119,7 @@ OVERCLOUD_IMAGES_ARGS=${OVERCLOUD_IMAGES_ARGS='--all'}
 OVERCLOUD_NAME=${OVERCLOUD_NAME:-"overcloud"}
 SKIP_PINGTEST_CLEANUP=${SKIP_PINGTEST_CLEANUP:-""}
 OVERCLOUD_PINGTEST=${OVERCLOUD_PINGTEST:-""}
+PINGTEST_TEMPLATE=${PINGTEST_TEMPLATE:-""}
 UNDERCLOUD_SANITY_CHECK=${UNDERCLOUD_SANITY_CHECK:-""}
 REPO_SETUP=${REPO_SETUP:-""}
 REPO_PREFIX=${REPO_PREFIX:-"/etc/yum.repos.d/"}
@@ -691,9 +692,9 @@ function overcloud_pingtest {
     EXTERNAL_NETWORK_GATEWAY=${EXTERNAL_NETWORK_GATEWAY:-"192.0.2.1"}
     TENANT_STACK_DEPLOY_ARGS=${TENANT_STACK_DEPLOY_ARGS:-""}
     neutron subnet-create --name ext-subnet --allocation-pool start=$FLOATING_IP_START,end=$FLOATING_IP_END --disable-dhcp --gateway $EXTERNAL_NETWORK_GATEWAY nova $FLOATING_IP_CIDR
-    TENANT_PINGTEST_TEMPLATE=/usr/share/tripleo-ci/tenantvm_floatingip.yaml
+    TENANT_PINGTEST_TEMPLATE=/usr/share/tripleo-ci/$PINGTEST_TEMPLATE.yaml
     if [ ! -e $TENANT_PINGTEST_TEMPLATE ]; then
-        TENANT_PINGTEST_TEMPLATE=$(dirname `readlink -f -- $0`)/../templates/tenantvm_floatingip.yaml
+        TENANT_PINGTEST_TEMPLATE=$(dirname `readlink -f -- $0`)/../templates/$PINGTEST_TEMPLATE.yaml
     fi
     log "Overcloud pingtest, creating tenant-stack heat stack:"
     heat stack-create -f $TENANT_PINGTEST_TEMPLATE $TENANT_STACK_DEPLOY_ARGS tenant-stack || exitval=1
