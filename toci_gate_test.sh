@@ -93,7 +93,7 @@ export TEST_OVERCLOUD_DELETE=0
 # TODO add it to the gate image building
 sudo yum install -y dstat nmap-ncat #nc is for metrics
 mkdir -p "$WORKSPACE/logs"
-dstat -tcmndrylpg --output "$WORKSPACE/logs/dstat-csv.log" >/dev/null &
+dstat -tcmndrylpgs --output "$WORKSPACE/logs/dstat-csv.log" >/dev/null &
 disown
 
 # Switch defaults based on the job name
