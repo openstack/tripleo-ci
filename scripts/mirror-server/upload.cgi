@@ -19,7 +19,7 @@ def saveform(form, storagedir):
             filename = os.path.split(entry.filename)[1]
             filename = os.path.join(storagedir, filename)
             if os.path.exists(filename):
-                print ("allready received %s" % entry.filename)
+                print("already received %s" % entry.filename)
                 continue
 
             fp = tempfile.NamedTemporaryFile(delete=False)
