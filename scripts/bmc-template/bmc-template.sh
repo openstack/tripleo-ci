@@ -7,8 +7,8 @@ yum install -y https://rdo.fedorapeople.org/rdo-release.rpm
 yum install -y python-pip python2-crypto os-net-config python-novaclient python-neutronclient git jq
 pip install pyghmi
 
-# the CI cloud is using a unsafe dick caching mode so the sync will be ignore by the host
-# we're syncing date on the VM, then give the host 5 seconds to write it to disk and hope its long enough
+# the CI cloud is using a unsafe disk caching mode, so this sync will be ignored by the host
+# we're syncing data on the VM, then give the host 5 seconds to write it to disk and hope its long enough
 sync
 sleep 5
 
