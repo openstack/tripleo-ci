@@ -224,6 +224,7 @@ if [ $RUN_TEMPEST_TESTS == 1 ] ; then
     export TEMPEST_REGEX="${TEMPEST_REGEX}tempest.scenario.test_volume_boot_pattern" # http://bugzilla.redhat.com/1272289
     export TEMPEST_REGEX="${TEMPEST_REGEX}|tempest.api.identity.*v3" # https://bugzilla.redhat.com/1266947
     export TEMPEST_REGEX="${TEMPEST_REGEX}|.*test_external_network_visibility" # https://bugs.launchpad.net/tripleo/+bug/1577769
+    export TEMPEST_REGEX="${TEMPEST_REGEX}|tempest.api.data_processing" # Sahara is not enabled by default and has problem with performance
     export TEMPEST_REGEX="${TEMPEST_REGEX}))"
     bash $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --run-tempest
     stop_metric "tripleo.overcloud.${TOCI_JOBTYPE}.tempest.seconds"
