@@ -218,12 +218,16 @@ function postci(){
         local i=2
         sudo $TRIPLEO_ROOT/tripleo-ci/scripts/get_host_info.sh
         $TARCMD > $WORKSPACE/logs/primary_node.tar.xz
+        # Extract /var/log for easy viewing
+        tar xf $WORKSPACE/logs/primary_node.tar.xz -C $WORKSPACE/logs/ var/log
         for ip in $(cat /etc/nodepool/sub_nodes_private); do
             mkdir $WORKSPACE/logs/subnode-$i/
             ssh $SSH_OPTIONS -i /etc/nodepool/id_rsa $ip \
                 sudo $TRIPLEO_ROOT/tripleo-ci/scripts/get_host_info.sh
             ssh $SSH_OPTIONS -i /etc/nodepool/id_rsa $ip \
                 $TARCMD > $WORKSPACE/logs/subnode-$i/subnode-$i.tar.xz
+            # Extract /var/log for easy viewing
+            tar xf $WORKSPACE/logs/subnode-$i/subnode-$i.tar.xz -C $WORKSPACE/logs/subnode-$i/ var/log
             # These files are causing the publish logs ansible
             # task to fail with an rsync error:
             # "symlink has no referent"
