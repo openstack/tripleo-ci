@@ -89,6 +89,14 @@ export COMPUTE_HOSTS=
 export SUBNODES_SSH_KEY=
 export TEST_OVERCLOUD_DELETE=0
 
+if [[ $TOCI_JOBTYPE =~ scenario ]]; then
+    export PINGTEST_TEMPLATE=${PINGTEST_TEMPLATE:-"${TOCI_JOBTYPE}-pingtest"}
+    MULTINODE_ENV_NAME=$TOCI_JOBTYPE
+else
+    export PINGTEST_TEMPLATE=${PINGTEST_TEMPLATE:-"tenantvm_floatingip"}
+    MULTINODE_ENV_NAME='multinode'
+fi
+
 # start dstat early
 # TODO add it to the gate image building
 sudo yum install -y dstat nmap-ncat #nc is for metrics
@@ -159,7 +167,7 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
             UNDERCLOUD_SSL=0
             INTROSPECT=0
             OVERCLOUD_DEPLOY_ARGS="--libvirt-type=qemu -t $OVERCLOUD_DEPLOY_TIMEOUT"
-            OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS -e /usr/share/openstack-tripleo-heat-templates/environments/deployed-server-environment.yaml -e $TRIPLEO_ROOT/tripleo-ci/test-environments/multinode.yaml --compute-scale 0 --overcloud-ssh-user $OVERCLOUD_SSH_USER --validation-errors-nonfatal"
+            OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS -e /usr/share/openstack-tripleo-heat-templates/environments/deployed-server-environment.yaml -e $TRIPLEO_ROOT/tripleo-ci/test-environments/$MULTINODE_ENV_NAME.yaml --compute-scale 0 --overcloud-ssh-user $OVERCLOUD_SSH_USER --validation-errors-nonfatal"
             ;;
         undercloud)
             TOCIRUNNER="./toci_instack_osinfra.sh"
