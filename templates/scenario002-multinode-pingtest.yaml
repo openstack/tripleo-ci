@@ -1,7 +1,7 @@
 heat_template_version: 2013-05-23
 
 description: >
-  HOT template to created resources deployed by scenario001.
+  HOT template to created resources deployed by scenario002.
 parameters:
   key_name:
     type: string
@@ -72,12 +72,22 @@ resources:
       router_id: { get_resource: router }
       subnet_id: { get_resource: private_subnet }
 
+  volume1:
+    type: OS::Cinder::Volume
+    properties:
+      name: Volume1
+      image: { get_param: image }
+      size: 1
+
   server1:
     type: OS::Nova::Server
+    depends_on: volume1
     properties:
       name: Server1
+      block_device_mapping:
+        - device_name: vda
+          volume_id: { get_resource: volume1 }
       flavor: { get_resource: test_flavor }
-      image: { get_param: image }
       key_name: { get_resource: key_pair }
       networks:
         - port: { get_resource: server1_port }
@@ -118,51 +128,6 @@ resources:
       ram: 512
       vcpus: 1
 
-  gnocchi_res_alarm:
-    type: OS::Aodh::GnocchiResourcesAlarm
-    properties:
-      description: Do stuff with gnocchi
-      metric: cpu_util
-      aggregation_method: mean
-      granularity: 60
-      evaluation_periods: 1
-      threshold: 50
-      alarm_actions: []
-      resource_type: instance
-      resource_id: { get_resource: server1 }
-      comparison_operator: gt
-
-  asg:
-    type: OS::Heat::AutoScalingGroup
-    properties:
-      max_size: 5
-      min_size: 1
-      resource:
-        type: OS::Heat::RandomString
-
-  scaleup_policy:
-    type: OS::Heat::ScalingPolicy
-    properties:
-      adjustment_type: change_in_capacity
-      auto_scaling_group_id: {get_resource: asg}
-      cooldown: 0
-      scaling_adjustment: 1
-
-  alarm:
-    type: OS::Aodh::Alarm
-    properties:
-      description: Scale-up if the average CPU > 50% for 1 minute
-      meter_name: test_meter
-      statistic: count
-      comparison_operator: ge
-      threshold: 1
-      period: 60
-      evaluation_periods: 1
-      alarm_actions:
-        - {get_attr: [scaleup_policy, alarm_url]}
-      matching_metadata:
-        metadata.metering.stack_id: {get_param: "OS::stack_id"}
-
 outputs:
   server1_private_ip:
     description: IP address of server1 in private network
@@ -170,5 +135,3 @@ outputs:
   server1_public_ip:
     description: Floating IP address of server1 in public network
     value: { get_attr: [ server1_floating_ip, floating_ip_address ] }
-  asg_size:
-    value: {get_attr: [asg, current_size]}

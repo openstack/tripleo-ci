@@ -26,25 +26,30 @@ the same node.
 Service testing matrix
 ----------------------
 
-|        -       | scenario001 | multinode-nonha |
-|:--------------:|:-----------:|:---------------:|
-| keystone       |      X      |        X        |
-| glance         |    file     |      swift      |
-| cinder         |             |      iscsi      |
-| heat           |      X      |        X        |
-| mysql          |      X      |        X        |
-| neutron        |     ovs     |        X        |
-| rabbitmq       |      X      |        X        |
-| haproxy        |      X      |        X        |
-| keepalived     |      X      |        X        |
-| memcached      |      X      |        X        |
-| pacemaker      |      X      |        X        |
-| nova           |     qemu    |        X        |
-| ntp            |      X      |        X        |
-| snmp           |      X      |        X        |
-| timezone       |      X      |        X        |
-| sahara         |      X      |                 |
-| swift          |             |        X        |
+|        -       | scenario001 | scenario002 | scenario003 |multinode-nonha |
+|:--------------:|:-----------:|:-----------:|:-----------:|---------------:|
+| keystone       |      X      |      X      |      X      |       X        |
+| glance         |    file     |    file     |    file     |     swift      |
+| cinder         |             |      X      |             |     iscsi      |
+| heat           |      X      |      X      |      X      |       X        |
+| mysql          |      X      |      X      |      X      |       X        |
+| neutron        |     ovs     |     ovs     |     ovs     |       X        |
+| rabbitmq       |      X      |      X      |      X      |       X        |
+| mongodb        |      X      |             |             |                |
+| redis          |      X      |             |             |                |
+| haproxy        |      X      |      X      |      X      |       X        |
+| keepalived     |      X      |      X      |      X      |       X        |
+| memcached      |      X      |      X      |      X      |       X        |
+| pacemaker      |      X      |      X      |      X      |       X        |
+| nova           |     qemu    |     qemu    |     qemu    |       X        |
+| ntp            |      X      |      X      |      X      |       X        |
+| snmp           |      X      |      X      |      X      |       X        |
+| timezone       |      X      |      X      |      X      |       X        |
+| sahara         |             |             |      X      |                |
+| swift          |             |             |             |       X        |
+| aodh           |      X      |             |             |                |
+| ceilometer     |      X      |             |             |                |
+| gnocchi        |      X      |             |             |                |
 
 
 
