@@ -57,9 +57,9 @@ from tempest.lib.services.compute import servers_client
 from tempest.lib.services.image.v2 import images_client
 from tempest.lib.services.network import networks_client
 from tempest.services.identity.v2.json import identity_client
-from tempest.services.identity.v2.json import roles_client
-from tempest.services.identity.v2.json import tenants_client
-from tempest.services.identity.v2.json import users_client
+from tempest.lib.services.identity.v2 import roles_client
+from tempest.lib.services.identity.v2 import tenants_client
+from tempest.lib.services.identity.v2 import users_client
 from tempest.services.identity.v3.json  \
     import identity_client as identity_v3_client
 
@@ -513,7 +513,7 @@ def give_role_to_user(tenants_client, roles_client, users_client, username,
         return
     role_id = role_ids[0]
     try:
-        roles_client.assign_user_role(tenant_id, user_id, role_id)
+        roles_client.create_user_role_on_project(tenant_id, user_id, role_id)
         LOG.debug("User '%s' was given the '%s' role in project '%s'",
                   username, role_name, tenant_name)
     except exceptions.Conflict:
@@ -709,7 +709,8 @@ def create_tempest_networks(clients, conf, has_neutron, public_network_id):
                           "Please note that any test that relies on external "
                           "connectivity would most likely fail.")
 
-        conf.set('network', 'public_network_id', public_network_id)
+        if public_network_id is not None:
+            conf.set('network', 'public_network_id', public_network_id)
 
     else:
         client = clients.get_nova_net_client()
