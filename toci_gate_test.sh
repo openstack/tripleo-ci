@@ -96,6 +96,11 @@ else
     export PINGTEST_TEMPLATE=${PINGTEST_TEMPLATE:-"tenantvm_floatingip"}
     MULTINODE_ENV_NAME='multinode'
 fi
+if [[ "$TOCI_JOBTYPE" =~ "periodic" && "$TOCI_JOBTYPE" =~ "-ha" ]]; then
+    TEST_OVERCLOUD_DELETE=1
+elif [[ "$TOCI_JOBTYPE" =~ "periodic" && "$TOCI_JOBTYPE" =~ "-nonha" ]]; then
+    UNDERCLOUD_IDEMPOTENT=1
+fi
 
 # start dstat early
 # TODO add it to the gate image building
@@ -184,8 +189,6 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
         periodic)
             export DELOREAN_REPO_URL=http://trunk.rdoproject.org/centos7/consistent
             CACHEUPLOAD=1
-            UNDERCLOUD_IDEMPOTENT=1
-            TEST_OVERCLOUD_DELETE=1
             ;;
         liberty|mitaka)
             # This is handled in tripleo.sh (it always uses centos7-$STABLE_RELEASE/current)
@@ -195,7 +198,6 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
         tempest)
             export RUN_TEMPEST_TESTS=1
             export RUN_PING_TEST=0
-            UNDERCLOUD_IDEMPOTENT=0
             ;;
     esac
 done
