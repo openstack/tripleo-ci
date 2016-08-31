@@ -883,7 +883,7 @@ function multinode_setup {
     fi
     # Restart neutron-openvswitch-agent if it's enabled, since it may have
     # terminated when br-ctlplane was down
-    if [ $(sudo systemctl is-enabled neutron-openvswitch-agent) = 'enabled' ]; then
+    if [ "$(sudo systemctl is-enabled neutron-openvswitch-agent)" = 'enabled' ]; then
         sudo systemctl reset-failed neutron-openvswitch-agent
         sudo systemctl restart neutron-openvswitch-agent
     fi
