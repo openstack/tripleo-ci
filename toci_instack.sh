@@ -115,11 +115,12 @@ ssh $SSH_OPTIONS root@${HOST_IP} virsh start seed_$ENV_NUM
 
 # Set SEED_IP here to prevent postci ssh'ing to the undercloud before its up and running
 SEED_IP=$(OS_CONFIG_FILES=$TE_DATAFILE os-apply-config --key seed-ip --type netaddress --key-default '')
+SANITIZED_SEED_ADDRESS=$(sanitize_ip_address ${SEED_IP})
 
 # The very first thing we should do is put a valid dns server in /etc/resolv.conf, without it
 # all ssh connections hit a 20 second delay until a reverse dns lookup hits a timeout
 echo -e "nameserver 10.1.8.10\nnameserver 8.8.8.8" > /tmp/resolv.conf
-tripleo wait_for -d 5 -l 20 -- scp $SSH_OPTIONS /tmp/resolv.conf root@${SEED_IP}:/etc/resolv.conf
+tripleo wait_for -d 5 -l 20 -- scp $SSH_OPTIONS /tmp/resolv.conf root@${SANITIZED_SEED_ADDRESS}:/etc/resolv.conf
 
 echo_vars_to_deploy_env
 cp $TRIPLEO_ROOT/tripleo-ci/deploy.env $WORKSPACE/logs/deploy.env.log
@@ -134,7 +135,7 @@ if canusecache ipa_images.tar ; then
     if [ -f ipa_images.tar ] ; then
         tar -xf ipa_images.tar
         update_image $PWD/ironic-python-agent.initramfs
-        scp $SSH_OPTIONS ironic-python-agent.* root@$SEED_IP:/home/stack
+        scp $SSH_OPTIONS ironic-python-agent.* root@${SANITIZED_SEED_ADDRESS}:/home/stack
         rm ipa_images.tar ironic-python-agent.*
     fi
 fi
@@ -145,7 +146,7 @@ if canusecache overcloud-full.tar ; then
     if [ -f overcloud-full.tar ] ; then
         tar -xf overcloud-full.tar
         update_image $PWD/overcloud-full.qcow2
-        scp $SSH_OPTIONS overcloud-full.qcow2 overcloud-full.initrd overcloud-full.vmlinuz root@$SEED_IP:/home/stack
+        scp $SSH_OPTIONS overcloud-full.qcow2 overcloud-full.initrd overcloud-full.vmlinuz root@${SANITIZED_SEED_ADDRESS}:/home/stack
         rm overcloud-full.*
     fi
 fi
