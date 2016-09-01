@@ -71,6 +71,7 @@ sudo cat /etc/nodepool/*
 
 if [ -s /etc/nodepool/sub_nodes ]; then
     for ip in $(cat /etc/nodepool/sub_nodes); do
+        sanitized_address=$(sanitize_ip_address $ip)
         ssh $SSH_OPTIONS -tt -i /etc/nodepool/id_rsa $ip \
             sudo yum -y install wget
         ssh $SSH_OPTIONS -tt -i /etc/nodepool/id_rsa $ip \
@@ -82,7 +83,7 @@ if [ -s /etc/nodepool/sub_nodes ]; then
         ssh $SSH_OPTIONS -tt -i /etc/nodepool/id_rsa $ip \
             sudo mkdir -p $TRIPLEO_ROOT/tripleo-ci
         scp $SSH_OPTIONS -i /etc/nodepool/id_rsa \
-            $TRIPLEO_ROOT/tripleo-ci/deploy.env $ip:
+            $TRIPLEO_ROOT/tripleo-ci/deploy.env ${sanitized_address}:
         ssh $SSH_OPTIONS -tt -i /etc/nodepool/id_rsa $ip \
             sudo cp deploy.env $TRIPLEO_ROOT/tripleo-ci/deploy.env
     done
@@ -99,7 +100,8 @@ if [ -s /etc/nodepool/sub_nodes ]; then
 ::1        localhost localhost.localdomain localhost6 localhost6.localdomain6
 EOF
     for ip in $(cat /etc/nodepool/sub_nodes); do
-        scp $SSH_OPTIONS -i /etc/nodepool/id_rsa $hosts $ip:hosts
+        sanitized_address=$(sanitize_ip_address $ip)
+        scp $SSH_OPTIONS -i /etc/nodepool/id_rsa $hosts ${sanitized_address}:hosts
         ssh $SSH_OPTIONS -tt -i /etc/nodepool/id_rsa $ip \
             sudo cp hosts /etc/hosts
     done
