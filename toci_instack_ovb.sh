@@ -64,8 +64,6 @@ sleep 3
 
 layer_ci_repo
 
-export http_proxy=""
-
 echo_vars_to_deploy_env
 
 source $TRIPLEO_ROOT/tripleo-ci/deploy.env
