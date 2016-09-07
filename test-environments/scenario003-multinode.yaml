@@ -39,5 +39,6 @@ parameter_defaults:
   ControllerExtraConfig:
     nova::compute::libvirt::services::libvirt_virt_type: qemu
     nova::compute::libvirt::libvirt_virt_type: qemu
+  Debug: true
   # we don't deploy Swift so we switch to file backend.
   GlanceBackend: 'file'
