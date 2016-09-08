@@ -10,13 +10,6 @@ NODEPOOL_MIRROR_HOST=$(echo $NODEPOOL_MIRROR_HOST|tr '[:upper:]' '[:lower:]')
 export CENTOS_MIRROR=http://$NODEPOOL_MIRROR_HOST/centos
 export EPEL_MIRROR=http://$NODEPOOL_MIRROR_HOST/epel
 
-# FIXME(derekh) This needs to be removed
-# We pin this in tripleo-puppet-elements, but the stuff in toci_* overrides it
-# as ci is written to use whatever zuul tells it to use, remove what zuul has given
-# us and use stable/hammer (pinned in t-p-e), N.B. This essentially invailidates
-# tripleo puppet-ceph ci
-rm -rf $TRIPLEO_ROOT/puppet-ceph
-
 if [ $NODEPOOL_CLOUD == 'tripleo-test-cloud-rh1' ]; then
     source $(dirname $0)/scripts/rh2.env
 
