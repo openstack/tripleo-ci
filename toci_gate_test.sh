@@ -114,11 +114,15 @@ disown
 for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
     case $JOB_TYPE_PART in
         updates)
-            NODECOUNT=3
-            OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS -e /usr/share/openstack-tripleo-heat-templates/environments/puppet-pacemaker.yaml --ceph-storage-scale 1 -e /usr/share/openstack-tripleo-heat-templates/environments/network-isolation-v6.yaml -e /usr/share/openstack-tripleo-heat-templates/environments/net-multiple-nics-v6.yaml -e $TRIPLEO_ROOT/tripleo-ci/test-environments/net-iso.yaml"
-            OVERCLOUD_UPDATE_ARGS="-e /usr/share/openstack-tripleo-heat-templates/overcloud-resource-registry-puppet.yaml $OVERCLOUD_DEPLOY_ARGS"
-            NETISO_V6=1
-            PACEMAKER=1
+            if [ $TOCI_JOBTYPE == 'ovb-updates' ] ; then
+                NODECOUNT=3
+                OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS -e /usr/share/openstack-tripleo-heat-templates/environments/puppet-pacemaker.yaml --ceph-storage-scale 1 -e /usr/share/openstack-tripleo-heat-templates/environments/network-isolation-v6.yaml -e /usr/share/openstack-tripleo-heat-templates/environments/net-multiple-nics-v6.yaml -e $TRIPLEO_ROOT/tripleo-ci/test-environments/net-iso.yaml"
+                OVERCLOUD_UPDATE_ARGS="-e /usr/share/openstack-tripleo-heat-templates/overcloud-resource-registry-puppet.yaml $OVERCLOUD_DEPLOY_ARGS"
+                NETISO_V6=1
+                PACEMAKER=1
+            elif [ $TOCI_JOBTYPE == 'nonha-multinode-updates' ] ; then
+                OVERCLOUD_UPDATE_ARGS="-e /usr/share/openstack-tripleo-heat-templates/overcloud-resource-registry-puppet.yaml $OVERCLOUD_DEPLOY_ARGS"
+            fi
             ;;
         upgrades)
             if [ $TOCI_JOBTYPE == 'undercloud-upgrades' ] ; then
