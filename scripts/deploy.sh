@@ -233,3 +233,9 @@ if [ $TEST_OVERCLOUD_DELETE -eq 1 ] ; then
     source ~/stackrc
     $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --overcloud-delete
 fi
+
+# Upgrade part
+if [ "$UNDERCLOUD_MAJOR_UPGRADE" == 1 ] ; then
+    UPGRADE_VERSION=master $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --undercloud-upgrade
+fi
+

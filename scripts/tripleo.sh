@@ -59,6 +59,7 @@ function show_options {
     echo "      --overcloud-images      -- Build and load overcloud images."
     echo "      --register-nodes        -- Register and configure nodes."
     echo "      --introspect-nodes      -- Introspect nodes."
+    echo "      --undercloud-upgrade    -- Upgrade a deployed undercloud."
     echo "      --overcloud-deploy      -- Deploy an overcloud."
     echo "      --overcloud-update      -- Update a deployed overcloud."
     echo "      --overcloud-delete      -- Delete the overcloud."
@@ -80,7 +81,7 @@ if [ ${#@} = 0 ]; then
 fi
 
 TEMP=$(getopt -o ,h \
-        -l,help,repo-setup,delorean-setup,delorean-build,multinode-setup,bootstrap-subnodes,undercloud,overcloud-images,register-nodes,introspect-nodes,overcloud-deploy,overcloud-update,overcloud-delete,use-containers,overcloud-pingtest,skip-pingtest-cleanup,all,enable-check,run-tempest \
+        -l,help,repo-setup,delorean-setup,delorean-build,multinode-setup,bootstrap-subnodes,undercloud,overcloud-images,register-nodes,introspect-nodes,overcloud-deploy,overcloud-update,overcloud-delete,use-containers,overcloud-pingtest,undercloud-upgrade,skip-pingtest-cleanup,all,enable-check,run-tempest \
         -o,x,h,a \
         -n $SCRIPT_NAME -- "$@")
 
@@ -117,6 +118,8 @@ OVERCLOUD_IMAGES_PATH=${OVERCLOUD_IMAGES_PATH:-"$HOME"}
 OVERCLOUD_IMAGES=${OVERCLOUD_IMAGES:-""}
 OVERCLOUD_IMAGES_ARGS=${OVERCLOUD_IMAGES_ARGS='--all'}
 OVERCLOUD_NAME=${OVERCLOUD_NAME:-"overcloud"}
+UNDERCLOUD_UPGRADE=${UNDERCLOUD_UPGRADE:-""}
+UPGRADE_VERSION=${UPGRADE_VERSION:-"master"}
 SKIP_PINGTEST_CLEANUP=${SKIP_PINGTEST_CLEANUP:-""}
 OVERCLOUD_PINGTEST=${OVERCLOUD_PINGTEST:-""}
 PINGTEST_TEMPLATE=${PINGTEST_TEMPLATE:-""}
@@ -177,6 +180,7 @@ while true ; do
         --delorean-setup) DELOREAN_SETUP="1"; shift 1;;
         --delorean-build) DELOREAN_BUILD="1"; shift 1;;
         --undercloud) UNDERCLOUD="1"; shift 1;;
+        --undercloud-upgrade) UNDERCLOUD_UPGRADE="1"; shift 1;;
         --multinode-setup) MULTINODE_SETUP="1"; shift 1;;
         --bootstrap-subnodes) BOOTSTRAP_SUBNODES="1"; shift 1;;
         -x) set -x; STDERR=/dev/stderr; shift 1;;
@@ -543,6 +547,34 @@ function overcloud_deploy {
         exit 1
     fi
     log "Overcloud create - DONE."
+}
+
+function undercloud_upgrade {
+
+    log "Undercloud upgrade"
+    # Remove all Delorean repositories
+    sudo yum clean metadata
+    sudo rm -f /etc/yum.repos.d/delorean*
+
+    # Enable new repositories
+    sudo curl -o /etc/yum.repos.d/delorean.repo http://buildlogs.centos.org/centos/7/cloud/x86_64/rdo-trunk-$UPGRADE_VERSION-tested/delorean.repo
+    sudo curl -o /etc/yum.repos.d/delorean-deps.repo http://trunk.rdoproject.org/centos7-$UPGRADE_VERSION/delorean-deps.repo
+    sudo yum clean all
+
+    # Until https://review.rdoproject.org/r/#/c/1793/ is merged and in our repo
+    sudo yum -y update python-cachetools
+    # NOTE(emilien):
+    # If we don't stop OpenStack services before the upgrade, Puppet run will hang forever.
+    # This thing might be an ugly workaround but we need to to upgrade the undercloud.
+    # The question is: where to do it? in tripleoclient? or instack-undercloud?
+    sudo systemctl stop openstack-*
+    sudo systemctl stop neutron-*
+    # tripleo cli needs to be re-install
+    sudo yum -y update python-tripleoclient
+
+    # Upgrade the undercloud
+    openstack undercloud upgrade
+    log "Undercloud upgrade - Done."
 }
 
 function overcloud_update {
@@ -1004,6 +1036,10 @@ fi
 
 if [ "$TEMPEST_RUN" = 1 ]; then
     tempest_run
+fi
+
+if [ "$UNDERCLOUD_UPGRADE" = 1 ]; then
+    undercloud_upgrade
 fi
 
 if [ "$MULTINODE_SETUP" = 1 ]; then
