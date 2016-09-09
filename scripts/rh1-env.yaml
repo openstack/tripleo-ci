@@ -21,6 +21,10 @@ parameter_defaults:
     heat::config::heat_config:
       DEFAULT/num_engine_workers:
         value: 4
+  # Limit the workers for these services.  More workers doesn't appreciably help our
+  # capacity, so it's just a waste of memory and CPU.
+  HeatWorkers: 12
+  NovaWorkers: 12
   NovaComputeExtraConfig:
     neutron::agents::ml2::ovs::prevent_arp_spoofing: false
     neutron::plugins::ml2::firewall_driver: neutron.agent.firewall.NoopFirewallDriver
