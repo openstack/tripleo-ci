@@ -29,8 +29,8 @@ Service testing matrix
 |        -       | scenario001 | scenario002 | scenario003 |multinode-nonha |
 |:--------------:|:-----------:|:-----------:|:-----------:|---------------:|
 | keystone       |      X      |      X      |      X      |       X        |
-| glance         |    file     |    file     |    file     |     swift      |
-| cinder         |             |      X      |             |     iscsi      |
+| glance         |    file     |    swift    |    file     |     swift      |
+| cinder         |             |    iscsi    |             |     iscsi      |
 | heat           |      X      |      X      |      X      |       X        |
 | mysql          |      X      |      X      |      X      |       X        |
 | neutron        |     ovs     |     ovs     |     ovs     |       X        |
@@ -46,7 +46,7 @@ Service testing matrix
 | snmp           |      X      |      X      |      X      |       X        |
 | timezone       |      X      |      X      |      X      |       X        |
 | sahara         |             |             |      X      |                |
-| swift          |             |             |             |       X        |
+| swift          |             |      X      |             |       X        |
 | aodh           |      X      |             |             |                |
 | ceilometer     |      X      |             |             |                |
 | gnocchi        |      X      |             |             |                |
