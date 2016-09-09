@@ -233,6 +233,8 @@ function repo_setup {
 
     log "Repository setup"
 
+    sudo yum clean metadata
+
     # sets $TRIPLEO_OS_FAMILY and $TRIPLEO_OS_DISTRO
     source $(dirname ${BASH_SOURCE[0]:-$0})/set-os-type
 
@@ -552,24 +554,20 @@ function overcloud_deploy {
 function undercloud_upgrade {
 
     log "Undercloud upgrade"
+
     # Remove all Delorean repositories
-    sudo yum clean metadata
     sudo rm -f /etc/yum.repos.d/delorean*
 
-    # Enable new repositories
-    sudo curl -o /etc/yum.repos.d/delorean.repo http://buildlogs.centos.org/centos/7/cloud/x86_64/rdo-trunk-$UPGRADE_VERSION-tested/delorean.repo
-    sudo curl -o /etc/yum.repos.d/delorean-deps.repo http://trunk.rdoproject.org/centos7-$UPGRADE_VERSION/delorean-deps.repo
-    sudo yum clean all
+    # Setup repositories
+    repo_setup
 
-    # Until https://review.rdoproject.org/r/#/c/1793/ is merged and in our repo
-    sudo yum -y update python-cachetools
     # NOTE(emilien):
     # If we don't stop OpenStack services before the upgrade, Puppet run will hang forever.
     # This thing might be an ugly workaround but we need to to upgrade the undercloud.
     # The question is: where to do it? in tripleoclient? or instack-undercloud?
     sudo systemctl stop openstack-*
     sudo systemctl stop neutron-*
-    # tripleo cli needs to be re-install
+    # tripleo cli needs to be updated first
     sudo yum -y update python-tripleoclient
 
     # Upgrade the undercloud
