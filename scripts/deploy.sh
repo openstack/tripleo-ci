@@ -236,6 +236,9 @@ fi
 
 # Upgrade part
 if [ "$UNDERCLOUD_MAJOR_UPGRADE" == 1 ] ; then
-    UPGRADE_VERSION=master $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --undercloud-upgrade
+    # Unset stable release so that we'll be using the latest pinned TripleO
+    # repo.
+    export STABLE_RELEASE=""
+    $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --undercloud-upgrade
 fi
 
