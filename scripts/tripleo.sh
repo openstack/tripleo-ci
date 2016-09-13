@@ -244,10 +244,7 @@ function repo_setup {
             rpm -q centos-release-ceph-hammer || sudo yum -y install --enablerepo=extras centos-release-ceph-hammer
             sudo sed -i -e 's%gpgcheck=.*%gpgcheck=0%' $REPO_PREFIX/CentOS-Ceph-Hammer.repo
         else
-            # TODO(gfidente): Replace with centos-release-ceph-jewel as above, when available
-            sudo yum-config-manager --add-repo https://raw.githubusercontent.com/CentOS-Storage-SIG/centos-release-ceph-jewel/master/CentOS-Ceph-Jewel.repo
-            sudo yum-config-manager --disable centos-ceph-jewel
-            sudo yum-config-manager --enable centos-ceph-jewel-test
+            rpm -q centos-release-ceph-jewel || sudo yum -y install --enablerepo=extras centos-release-ceph-jewel
             sudo sed -i -e 's%gpgcheck=.*%gpgcheck=0%' $REPO_PREFIX/CentOS-Ceph-Jewel.repo
         fi
     fi
