@@ -26,8 +26,15 @@ def process_events(all_events, events):
     for event in all_events:
         name = event['resource_name']
         status = event['resource_status']
-        etime = time.mktime(time.strptime(event['event_time'],
-                                          '%Y-%m-%dT%H:%M:%S'))
+        # Older clients return timestamps in the first format, newer ones
+        # append a Z.  This way we can handle both formats.
+        try:
+            strptime = time.strptime(event['event_time'],
+                                     '%Y-%m-%dT%H:%M:%S')
+        except ValueError:
+            strptime = time.strptime(event['event_time'],
+                                     '%Y-%m-%dT%H:%M:%SZ')
+        etime = time.mktime(strptime)
         if name in events:
             if status == 'CREATE_IN_PROGRESS':
                 times[name] = {'start': etime, 'elapsed': None}
