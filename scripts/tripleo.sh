@@ -770,6 +770,7 @@ function overcloud_pingtest {
             heat stack-show tenant-stack || :
             heat event-list tenant-stack || :
             heat resource-list -n 5 tenant-stack || :
+            openstack stack failures list tenant-stack || :
             log "Overcloud pingtest, failed to create heat stack, trying cleanup"
             exitval=1
         fi
