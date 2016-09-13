@@ -99,8 +99,11 @@ function update_image(){
     sudo cp /etc/yum.repos.d/delorean* $MOUNTDIR/etc/yum.repos.d
     sudo mv $MOUNTDIR/etc/resolv.conf{,_}
     echo -e "nameserver 10.1.8.10\nnameserver 8.8.8.8" | sudo dd of=$MOUNTDIR/etc/resolv.conf
+    sudo yum remove -y galera
     sudo cp /etc/yum.repos.d/delorean* $MOUNTDIR/etc/yum.repos.d
+    sudo rm -f $MOUNTDIR/etc/yum.repos.d/epel*
     sudo chroot $MOUNTDIR /bin/yum update -y
+    sudo yum install -y galera
     sudo rm -f $MOUNTDIR/etc/yum.repos.d/delorean*
     sudo mv -f $MOUNTDIR/etc/resolv.conf{_,}
 
@@ -264,6 +267,10 @@ function delorean_build_and_serve {
     if [ -n "$DELOREAN_BUILD_REFS" ] ; then
         $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --delorean-build $DELOREAN_BUILD_REFS
     fi
+
+    # Always build DIB, remove this once Iceff0d5bedd9816adfd2990970e7c216b67b6bd0
+    # is in the DIB release
+    $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --delorean-build diskimage-builder
 
     # kill the http server if its already running
     ps -ef | grep -i python | grep SimpleHTTPServer | awk '{print $2}' | xargs --no-run-if-empty kill -9 || true
