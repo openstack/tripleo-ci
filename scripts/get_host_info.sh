@@ -41,5 +41,5 @@ if [ -e ~/stackrc ] ; then
     # taking an excessive amount of time
     openstack stack event list --nested-depth 2 -f json overcloud | $TRIPLEO_ROOT/tripleo-ci/scripts/heat-deploy-times.py | tee /var/log/heat-deploy-times.log || echo 'Failed to process resource deployment times. This is expected for stable/liberty.'
     # useful to see what failed when puppet fails
-    for failed_deployment in $(heat resource-list --nested-depth 5 overcloud | grep FAILED | grep 'StructuredDeployment ' | cut -d '|' -f3); do heat deployment-show $failed_deployment; done;
+    openstack stack failures list --long overcloud || :
 fi
