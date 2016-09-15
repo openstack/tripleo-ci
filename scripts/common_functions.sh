@@ -268,10 +268,6 @@ function delorean_build_and_serve {
         $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --delorean-build $DELOREAN_BUILD_REFS
     fi
 
-    # Always build DIB, remove this once Iceff0d5bedd9816adfd2990970e7c216b67b6bd0
-    # is in the DIB release
-    $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --delorean-build diskimage-builder
-
     # kill the http server if its already running
     ps -ef | grep -i python | grep SimpleHTTPServer | awk '{print $2}' | xargs --no-run-if-empty kill -9 || true
     pushd $TRIPLEO_ROOT/delorean/data/repos
