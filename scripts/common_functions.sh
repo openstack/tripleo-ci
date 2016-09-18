@@ -96,14 +96,11 @@ function update_image(){
     sudo test -f $MOUNTDIR/home/stack/instackenv.json && sudo cp $TE_DATAFILE $MOUNTDIR/home/stack/instackenv.json
 
     # Update the installed packages on the image
-    sudo cp /etc/yum.repos.d/delorean* $MOUNTDIR/etc/yum.repos.d
     sudo mv $MOUNTDIR/etc/resolv.conf{,_}
     echo -e "nameserver 10.1.8.10\nnameserver 8.8.8.8" | sudo dd of=$MOUNTDIR/etc/resolv.conf
-    sudo yum remove -y galera
     sudo cp /etc/yum.repos.d/delorean* $MOUNTDIR/etc/yum.repos.d
     sudo rm -f $MOUNTDIR/etc/yum.repos.d/epel*
     sudo chroot $MOUNTDIR /bin/yum update -y
-    sudo yum install -y galera
     sudo rm -f $MOUNTDIR/etc/yum.repos.d/delorean*
     sudo mv -f $MOUNTDIR/etc/resolv.conf{_,}
 
