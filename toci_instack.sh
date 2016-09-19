@@ -25,7 +25,11 @@ mkdir -p $WORKSPACE/logs
 
 MY_IP=$(ip addr show dev eth1 | awk '/inet / {gsub("/.*", "") ; print $2}')
 
-export no_proxy=192.0.2.1,$MY_IP,$MIRRORSERVER
+undercloud_net_range="192.0.2."
+undercloud_services_ip=$undercloud_net_range"1"
+undercloud_haproxy_public_ip=$undercloud_net_range"2"
+undercloud_haproxy_admin_ip=$undercloud_net_range"3"
+export no_proxy=$undercloud_services_ip,$undercloud_haproxy_public_ip,$undercloud_haproxy_admin_ip,$MY_IP,$MIRRORSERVER
 
 # Setup delorean
 $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --delorean-setup
