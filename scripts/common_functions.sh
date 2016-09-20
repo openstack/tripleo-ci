@@ -163,6 +163,7 @@ function extract_logs(){
 }
 
 function postci(){
+    local exit_val=${1:-0}
     set -x
     set +e
     stop_metric "tripleo.ci.total.seconds"
@@ -208,7 +209,9 @@ function postci(){
         done <$long_times
         echo 'Finished'
         set -x
-        metrics_to_graphite "23.253.94.71" #Dan's temp graphite server
+        if [ $exit_val -eq 0 ]; then
+            metrics_to_graphite "23.253.94.71" #Dan's temp graphite server
+        fi
         if [ -z "${LEAVE_RUNNING:-}" ] && [ -n "${HOST_IP:-}" ] ; then
             destroy_vms &> $WORKSPACE/logs/destroy_vms.log
         fi
