@@ -74,7 +74,7 @@ export RUN_PING_TEST=1
 export RUN_TEMPEST_TESTS=0
 export OVB=0
 export UCINSTANCEID=NULL
-export TOCIRUNNER="./toci_instack.sh"
+export TOCIRUNNER="./toci_instack_ovb.sh"
 export MULTINODE=0
 # Whether or not we run TripleO using OpenStack Infra nodes
 export OSINFRA=0
@@ -153,7 +153,6 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
             ;;
         ovb)
             OVB=1
-            TOCIRUNNER="./toci_instack_ovb.sh"
 
             # The test env broker needs to know the instanceid of the this node so it can attach it to the provisioning network
             UCINSTANCEID=$(http_proxy= curl http://169.254.169.254/openstack/2015-10-15/meta_data.json | python -c 'import json, sys; print json.load(sys.stdin)["uuid"]')
@@ -198,15 +197,6 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
             ;;
     esac
 done
-
-# print the final values of control variables to console
-env | grep -E "(TOCI_JOBTYPE)="
-
-# Allow the instack node to have traffic forwards through here
-sudo iptables -A FORWARD -i eth0 -o eth1 -m state --state RELATED,ESTABLISHED -j ACCEPT
-sudo iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
-sudo iptables -A FORWARD -i eth1 -o eth0 -j ACCEPT
-echo 1 | sudo dd of=/proc/sys/net/ipv4/ip_forward
 
 TIMEOUT_SECS=$((DEVSTACK_GATE_TIMEOUT*60))
 # ./testenv-client kill everything in its own process group it it hits a timeout

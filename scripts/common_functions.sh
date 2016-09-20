@@ -173,28 +173,26 @@ function postci(){
         find $TRIPLEO_ROOT/delorean/data/repos -name "*.log" | XZ_OPT=-3 xargs tar -cJf $WORKSPACE/logs/delorean_repos.tar.xz
         extract_logs delorean_repos
     fi
-    if [ "${SEED_IP:-}" != "" ] ; then
-        SANITIZED_SEED_ADDRESS=$(sanitize_ip_address ${SEED_IP})
-        # Generate extra state information from the running undercloud
-        ssh root@${SEED_IP} 'export TRIPLEO_ROOT='"$TRIPLEO_ROOT""; $TRIPLEO_ROOT/tripleo-ci/scripts/get_host_info.sh"
 
+    # Generate extra state information from the running undercloud
+    sudo --preserve-env $TRIPLEO_ROOT/tripleo-ci/scripts/get_host_info.sh
+
+    if [ "$OVB" == "1" ] ; then
         # Get logs from the undercloud
-        ssh root@${SEED_IP} $TARCMD > $WORKSPACE/logs/undercloud.tar.xz
+        $TARCMD > $WORKSPACE/logs/undercloud.tar.xz
         extract_logs undercloud
 
         # when we ran get_host_info.sh on the undercloud it left the output of nova list in /tmp for us
-        for INSTANCE in $(ssh root@${SEED_IP} cat /tmp/nova-list.txt | grep ACTIVE | awk '{printf"%s=%s\n", $4, $12}') ; do
+        for INSTANCE in $(cat /tmp/nova-list.txt | grep ACTIVE | awk '{printf"%s=%s\n", $4, $12}') ; do
             IP=${INSTANCE//*=}
             SANITIZED_ADDRESS=$(sanitize_ip_address ${IP})
             NAME=${INSTANCE//=*}
-            ssh $SSH_OPTIONS root@${SEED_IP} su jenkins -c \"scp $SSH_OPTIONS $TRIPLEO_ROOT/tripleo-ci/scripts/get_host_info.sh heat-admin@${SANITIZED_ADDRESS}:/tmp\"
-            timeout -s 15 -k 600 300 ssh $SSH_OPTIONS root@${SEED_IP} su jenkins -c \"ssh $SSH_OPTIONS heat-admin@$IP sudo /tmp/get_host_info.sh\"
-            ssh $SSH_OPTIONS root@${SEED_IP} su jenkins -c \"ssh $SSH_OPTIONS heat-admin@$IP $TARCMD\" > $WORKSPACE/logs/${NAME}.tar.xz
+            scp $SSH_OPTIONS $TRIPLEO_ROOT/tripleo-ci/scripts/get_host_info.sh heat-admin@${SANITIZED_ADDRESS}:/tmp
+            timeout -s 15 -k 600 300 ssh $SSH_OPTIONS heat-admin@$IP sudo /tmp/get_host_info.sh
+            ssh $SSH_OPTIONS heat-admin@$IP $TARCMD > $WORKSPACE/logs/${NAME}.tar.xz
             extract_logs $NAME
         done
         # post metrics
-        scp $SSH_OPTIONS root@${SANITIZED_SEED_ADDRESS}:${METRICS_DATA_FILE} /tmp/seed-metrics
-        cat /tmp/seed-metrics >> ${METRICS_DATA_FILE}
         # This spams the postci output with largely uninteresting trace output
         set +x
         echo -n 'Recording Heat deployment times...'
@@ -217,7 +215,6 @@ function postci(){
         fi
     elif [ "$OSINFRA" = "1" ] ; then
         local i=2
-        sudo $TRIPLEO_ROOT/tripleo-ci/scripts/get_host_info.sh
         $TARCMD > $WORKSPACE/logs/primary_node.tar.xz
         # Extract /var/log for easy viewing
         tar xf $WORKSPACE/logs/primary_node.tar.xz -C $WORKSPACE/logs/ var/log

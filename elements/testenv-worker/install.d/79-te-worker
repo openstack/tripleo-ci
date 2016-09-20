@@ -1,8 +1,0 @@
-#!/bin/bash
-set -eux
-
-install-packages python-pip libvirt-bin qemu-utils python-libvirt qemu-kvm qemu-system jq psmisc
-
-pip install gear
-
-install -m 0755 -o root -g root $(dirname $0)/../testenv-worker /usr/local/bin

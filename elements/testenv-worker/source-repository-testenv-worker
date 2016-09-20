@@ -1,2 +1,0 @@
-tripleo-incubator git /opt/stack/tripleo-incubator https://git.openstack.org/openstack/tripleo-incubator.git
-tripleo-image-elements git /opt/stack/tripleo-image-elements https://git.openstack.org/openstack/tripleo-image-elements.git
