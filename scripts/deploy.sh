@@ -88,12 +88,8 @@ network_config:
       use_dhcp: false
       addresses:
         - ip_netmask: 10.0.0.1/24
-EOF_CAT
-    if [ $NETISO_V6 -eq 1 ]; then
-        cat >> /tmp/eth2.cfg <<EOF_CAT
         - ip_netmask: 2001:db8:fd00:1000::1/64
 EOF_CAT
-    fi
     sudo os-net-config -c /tmp/eth2.cfg -v
 fi
 
