@@ -175,7 +175,7 @@ function postci(){
     fi
 
     # Generate extra state information from the running undercloud
-    sudo --preserve-env $TRIPLEO_ROOT/tripleo-ci/scripts/get_host_info.sh
+    sudo -E $TRIPLEO_ROOT/tripleo-ci/scripts/get_host_info.sh
 
     if [ "$OVB" == "1" ] ; then
         # Get logs from the undercloud
