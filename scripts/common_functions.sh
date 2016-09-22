@@ -16,6 +16,7 @@ function temprevert(){
     # Abort on fail so  we're not left in a conflict state
     git revert --no-edit $2 || git revert --abort || true
     popd
+    DELOREAN_BUILD_REFS="${DELOREAN_BUILD_REFS:-} $1"
 }
 
 # Pin to a commit for tripleo ci
@@ -33,6 +34,7 @@ function pin(){
     pushd $TRIPLEO_ROOT/$1
     git reset --hard $2
     popd
+    DELOREAN_BUILD_REFS="${DELOREAN_BUILD_REFS:-} $1"
 }
 
 # Cherry-pick a commit for tripleo ci
@@ -55,6 +57,7 @@ function cherrypick(){
     # Abort on fail so  we're not left in a conflict state
     git cherry-pick FETCH_HEAD || git cherry-pick --abort
     popd
+    DELOREAN_BUILD_REFS="${DELOREAN_BUILD_REFS:-} $1"
 
     # Export a DIB_REPOREF variable as well
     export DIB_REPOREF_${PROJ_NAME//-/_}=$REFSPEC
@@ -245,7 +248,7 @@ function postci(){
 }
 
 function delorean_build_and_serve {
-    DELOREAN_BUILD_REFS=
+    DELOREAN_BUILD_REFS=${DELOREAN_BUILD_REFS:-}
     for PROJFULLREF in $ZUUL_CHANGES ; do
         PROJ=$(filterref $PROJFULLREF)
         # If ci is being run for a change to ci its ok not to have a ci produced repository

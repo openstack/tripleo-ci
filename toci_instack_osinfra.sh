@@ -51,6 +51,9 @@ sudo iptables -I INPUT -p tcp --dport 8766 -j ACCEPT
 
 trap "exit_val=\$?; [ \$exit_val != 0 ] && echo ERROR DURING PREVIOUS COMMAND ^^^ && echo 'See postci.txt in the logs directory for debugging details'; postci \$exit_val 2>&1 | ts '%Y-%m-%d %H:%M:%S.000 |' > $WORKSPACE/logs/postci.log 2>&1" EXIT
 
+# Tempreverts/cherry-picks/pins go here.  For example:
+# temprevert tripleo-common af27127508eabf2b6873713e5e1507fa92b5f5b3 1623606
+
 delorean_build_and_serve
 
 # Since we've moved a few commands from this spot before the wget, we need to
