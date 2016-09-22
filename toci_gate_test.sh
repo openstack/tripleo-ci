@@ -100,7 +100,7 @@ fi
 # TODO add it to the gate image building
 sudo yum install -y dstat nmap-ncat #nc is for metrics
 mkdir -p "$WORKSPACE/logs"
-dstat -tcmndrylpgs --output "$WORKSPACE/logs/dstat-csv.log" >/dev/null &
+dstat -tcmndrylpg --top-cpu-adv --top-io-adv --nocolor | tee --append $WORKSPACE/logs/dstat.log > /dev/null &
 disown
 
 # Switch defaults based on the job name
