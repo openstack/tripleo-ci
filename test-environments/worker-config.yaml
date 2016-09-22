@@ -1,13 +1,7 @@
+# TODO(bnemec): Should these settings be moved to low-memory-usage.yaml
+# in tripleo-heat-templates?
 parameter_defaults:
   controllerExtraConfig:
     heat::api_cloudwatch::enabled: false
     heat::api_cfn::enabled: false
     heat::rpc_response_timeout: 600
-  HeatWorkers: 1
-  CeilometerWorkers: 1
-  CinderWorkers: 1
-  GlanceWorkers: 1
-  KeystoneWorkers: 4
-  NeutronWorkers: 1
-  NovaWorkers: 1
-  SwiftWorkers: 1
