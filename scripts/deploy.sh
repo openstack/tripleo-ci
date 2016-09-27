@@ -301,6 +301,10 @@ if [ "$MULTINODE" == 0 ] && [ "$OVERCLOUD" == 1 ] ; then
     # Sanity test we deployed what we said we would
     source ~/stackrc
     [ "$NODECOUNT" != $(nova list | grep ACTIVE | wc -l | cut -f1 -d " ") ] && echo "Wrong number of nodes deployed" && exit 1
+    if [ $PREDICTABLE_PLACEMENT == 1 ]; then
+        # Verify our public VIP is the one we specified
+        grep -q 10.0.0.9 ~/overcloudrc || (echo "Wrong public vip deployed " && exit 1)
+    fi
 
     if [ $PACEMAKER == 1 ] ; then
         # Wait for the pacemaker cluster to settle and all resources to be

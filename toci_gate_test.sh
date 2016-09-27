@@ -96,6 +96,7 @@ export CA_SERVER=0
 export UNDERCLOUD_TELEMETRY=0
 export UNDERCLOUD_UI=0
 export UNDERCLOUD_VALIDATIONS=0
+export PREDICTABLE_PLACEMENT=0
 
 if [[ $TOCI_JOBTYPE =~ scenario ]]; then
     export MULTINODE_ENV_NAME=$TOCI_JOBTYPE
@@ -186,9 +187,10 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
             # In ci our overcloud nodes don't have access to an external netwrok
             # --ntp-server is here to make the deploy command happy, the ci env
             # is on virt so the clocks should be in sync without it.
-            OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS --control-scale 3 --ntp-server 0.centos.pool.ntp.org -e /usr/share/openstack-tripleo-heat-templates/environments/puppet-pacemaker.yaml -e /usr/share/openstack-tripleo-heat-templates/environments/network-isolation.yaml -e $TRIPLEO_ROOT/tripleo-ci/test-environments/network-templates/network-environment.yaml -e $TRIPLEO_ROOT/tripleo-ci/test-environments/net-iso.yaml"
+            OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS --control-scale 3 --ntp-server 0.centos.pool.ntp.org -e /usr/share/openstack-tripleo-heat-templates/environments/puppet-pacemaker.yaml -e /usr/share/openstack-tripleo-heat-templates/environments/network-isolation.yaml -e $TRIPLEO_ROOT/tripleo-ci/test-environments/network-templates/network-environment.yaml -e $TRIPLEO_ROOT/tripleo-ci/test-environments/net-iso.yaml -e $TRIPLEO_ROOT/tripleo-ci/test-environments/ips-from-pool-all.yaml"
             NETISO_V4=1
             PACEMAKER=1
+            PREDICTABLE_PLACEMENT=1
             ;;
         nonha)
             if [[ "${STABLE_RELEASE}" =~ ^(liberty|mitaka)$ ]] ; then
