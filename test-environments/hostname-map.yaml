@@ -1,0 +1,6 @@
+parameter_defaults:
+  HostnameMap:
+    overcloud-controller-0: controller-0-tripleo-ci-a-foo
+    overcloud-controller-1: controller-1-tripleo-ci-b-bar
+    overcloud-controller-2: controller-2-tripleo-ci-c-baz
+    overcloud-novacompute-0: compute-0-tripleo-ci-a-test

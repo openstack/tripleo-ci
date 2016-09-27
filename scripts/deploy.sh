@@ -304,6 +304,11 @@ if [ "$MULTINODE" == 0 ] && [ "$OVERCLOUD" == 1 ] ; then
     if [ $PREDICTABLE_PLACEMENT == 1 ]; then
         # Verify our public VIP is the one we specified
         grep -q 10.0.0.9 ~/overcloudrc || (echo "Wrong public vip deployed " && exit 1)
+        # Verify our specified hostnames were used
+        nova list | grep -q controller-0-tripleo-ci-a-foo
+        nova list | grep -q controller-1-tripleo-ci-b-bar
+        nova list | grep -q controller-2-tripleo-ci-c-baz
+        nova list | grep -q compute-0-tripleo-ci-a-test
     fi
 
     if [ $PACEMAKER == 1 ] ; then
