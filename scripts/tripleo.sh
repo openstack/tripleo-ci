@@ -544,6 +544,7 @@ function overcloud_deploy {
 
     log "Overcloud create started."
     exitval=0
+    log "Deploy command arguments: $OVERCLOUD_DEPLOY_ARGS"
     openstack overcloud deploy $OVERCLOUD_DEPLOY_ARGS || exitval=1
     if [ $exitval -eq 1 ];
     then
