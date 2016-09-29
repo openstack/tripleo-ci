@@ -13,7 +13,7 @@ parameter_defaults:
     neutron::network_device_mtu: 1500
     # rh2 disks are small, we're relying on the fact that CI jobs at different stages wont
     # ever use peak disk usage together (also they don't use all thats allocate in the flavor)
-    nova::scheduler::filter::disk_allocation_ratio: 3
+    nova::scheduler::filter::disk_allocation_ratio: 4
     # More than 4 Heat engine workers allows Heat to essentially DoS the other services
     # if a lot of jobs come in at once.  This is borrowed from
     # worker-config-mitaka-and-below.yaml.  Once rh1 is on a newer release we should
