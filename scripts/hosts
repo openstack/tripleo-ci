@@ -1,0 +1,11 @@
+localhost ansible_connection=local
+
+127.0.0.2 ansible_host=127.0.0.2 ansible_user=jenkins ansible_private_key_file=/home/jenkins/.ssh/id_rsa undercloud_ip=127.0.0.2
+
+undercloud ansible_host=undercloud ansible_user=jenkins ansible_private_key_file=/home/jenkins/.ssh/id_rsa undercloud_ip=127.0.0.2
+
+[virthost]
+127.0.0.2
+
+[undercloud]
+undercloud

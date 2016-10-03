@@ -1,0 +1,16 @@
+---
+# TODO(sshnaidm): remove tripleo.sh and use ansible build image role
+- name: Get images for quickstart
+  hosts: undercloud
+  gather_facts: no
+  tasks:
+    - name: Prepare images
+      shell: >
+        source {{tripleo_root}}/tripleo-ci/scripts/common_functions.sh;
+        prepare_images_oooq
+      when: "not '{{ lookup('env', 'STABLE_RELEASE') }}'"
+
+    - name: Prepare images for stable branch
+      shell: >
+        STABLE_RELEASE='{{ lookup('env', 'STABLE_RELEASE') }}' {{tripleo_root}}/tripleo-ci/scripts/tripleo.sh --overcloud-images 2>&1 | sudo dd of=/var/log/image_build.txt;
+      when: "'{{ lookup('env', 'STABLE_RELEASE') }}'"

@@ -83,6 +83,7 @@ export CONTROLLER_HOSTS=
 export COMPUTE_HOSTS=
 export SUBNODES_SSH_KEY=
 export TEST_OVERCLOUD_DELETE=0
+export OOOQ=0
 
 if [[ $TOCI_JOBTYPE =~ scenario ]]; then
     export PINGTEST_TEMPLATE=${PINGTEST_TEMPLATE:-"${TOCI_JOBTYPE}-pingtest"}
@@ -208,6 +209,10 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
         tempest)
             export RUN_TEMPEST_TESTS=1
             export RUN_PING_TEST=0
+            ;;
+        oooq)
+            export OOOQ=1
+            TOCIRUNNER="./toci_instack_oooq.sh"
             ;;
     esac
 done

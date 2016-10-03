@@ -1,0 +1,102 @@
+run_tempest: false
+
+step_adjust_mtu: true
+mtu: 1350
+mtu_interface:
+  - eth0
+  - eth1
+  - eth2
+
+external_interface: eth2
+external_interface_ip: 10.0.0.1
+external_interface_netmask: 255.255.255.0
+external_interface_hwaddr: fa:16:3e:79:e8:04
+
+floating_ip_cidr: 10.0.0.0/24
+public_net_pool_start: 10.0.0.50
+public_net_pool_end: 10.0.0.100
+public_net_gateway: 10.0.0.1
+
+
+# Running quickstart with its own config
+network_isolation_type: network-isolation
+network_isolation: true
+enable_pacemaker: true
+deploy_timeout: 110
+
+# Running quickstart as tripleo-ci exactly
+step_introspect: "{{ lookup('env','INTROSPECT')|bool }}"
+undercloud_generate_service_certificate: "{{ lookup('env','UNDERCLOUD_SSL')|bool }}"
+#overcloud_nodes:
+enable_pacemaker: "{{ lookup('env','PACEMAKER')|bool }}"
+deploy_args: "{{ lookup('env','OVERCLOUD_DEPLOY_ARGS') }} --validation-errors-fatal --validation-warnings-fatal"
+network_isolation: "{{ lookup('env','NETISO_V4')|bool }}"
+
+# Collect logs settings
+
+artcl_publish: false
+artcl_rsync_logs: false
+artcl_collect_list:
+  - /var/log/
+  - /var/lib/mysql
+  - /home/jenkins/.instack/install-undercloud.log
+  - /home/jenkins/stackrc
+  - /home/jenkins/overcloudrc
+  - /home/jenkins/*.log
+  - /home/jenkins/*.json
+  - /home/jenkins/*.conf
+  - /home/jenkins/*.yml
+  - /home/jenkins/*.yaml
+  - /home/jenkins/*.sh
+  - /home/jenkins/deploy-overcloudrc
+  - /home/jenkins/network-environment.yaml
+  - /home/jenkins/tempest/*.xml
+  - /home/jenkins/tempest/*.html
+  - /home/jenkins/tempest/*.log
+  - /home/jenkins/tempest/*.sh
+  - /home/jenkins/tempest/etc/*.conf
+  - /home/jenkins/local_tht
+  - /usr/share/openstack-tripleo-heat-templates
+  - /tmp/*.yml
+  - /tmp/*.yaml
+  - /etc/aodh
+  - /etc/ceilometer
+  - /etc/cinder
+  - /etc/dnsmasq-ironic.conf
+  - /etc/docker-registry.yml
+  - /etc/glance
+  - /etc/gnocchi
+  - /etc/heat
+  - /etc/haproxy
+  - /etc/httpd
+  - /etc/ironic
+  - /etc/ironic-inspector
+  - /etc/keepalived
+  - /etc/keystone
+  - /etc/libvirt
+  - /etc/manila
+  - /etc/mistral
+  - /etc/mongod.conf
+  - /etc/mongos.conf
+  - /etc/neutron
+  - /etc/nova
+  - /etc/ntp
+  - /etc/ntp.conf
+  - /etc/os-collect-config.conf
+  - /etc/os-net-config
+  - /etc/puppet
+  - /etc/qpid
+  - /etc/qpidd.conf
+  - /etc/rabbitmq
+  - /etc/redis
+  - /etc/redis.conf*
+  - /etc/resolv.conf
+  - /etc/sahara
+  - /etc/selinux
+  - /etc/swift
+  - /etc/sysconfig
+  - /etc/systemd
+  - /etc/trove
+  - /etc/yum.repos.d
+  - /etc/zaqar
+artcl_gzip_only: true
