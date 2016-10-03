@@ -6,6 +6,7 @@ cd
 # This sets all the environment variables for undercloud and overcloud installation
 source $TRIPLEO_ROOT/tripleo-ci/deploy.env
 source $TRIPLEO_ROOT/tripleo-ci/scripts/metrics.bash
+source $TRIPLEO_ROOT/tripleo-ci/scripts/common_functions.sh
 
 # Prevent python from buffering stdout, so timestamps are set at appropriate times
 export PYTHONUNBUFFERED=true
@@ -29,6 +30,17 @@ sudo mkdir -p /etc/puppet/hieradata
 
 if [ "$OSINFRA" = 1 ]; then
     echo "net_config_override = $TRIPLEO_ROOT/tripleo-ci/undercloud-configs/net-config-multinode.json.template" >> ~/undercloud.conf
+
+    # Use the dummy network interface if on mitaka
+    if [ "$STABLE_RELEASE" = "mitaka" ]; then
+        echo "local_interface = ci-dummy" >> ~/undercloud.conf
+    fi
+fi
+
+# If we're testing an undercloud upgrade, remove the ci repo, since we don't
+# want to consume the package being tested until we actually do the upgrade.
+if [ "$UNDERCLOUD_MAJOR_UPGRADE" == 1 ] ; then
+    sudo rm -f /etc/yum.repos.d/delorean-ci.repo
 fi
 
 echo "INFO: Check /var/log/undercloud_install.txt for undercloud install output"
@@ -233,9 +245,16 @@ fi
 
 # Upgrade part
 if [ "$UNDERCLOUD_MAJOR_UPGRADE" == 1 ] ; then
-    # Unset stable release so that we'll be using the latest pinned TripleO
-    # repo.
-    export STABLE_RELEASE=""
-    $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --undercloud-upgrade
+    # Reset or unset STABLE_RELEASE so that we upgrade to the next major
+    # version
+    if [ "$STABLE_RELEASE" = "mitaka" ]; then
+        export STABLE_RELEASE="newton"
+    elif [ "$STABLE_RELEASE" = "newton" ]; then
+        export STABLE_RELEASE=""
+    fi
+
+    # Add the delorean ci repo so that we include the package being tested
+    layer_ci_repo
+    $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --undercloud-upgrade 2>&1 | ts '%Y-%m-%d %H:%M:%S.000 |' | sudo dd of=/var/log/undercloud_upgrade.txt || (tail -n 50 /var/log/undercloud_upgrade.txt && false)
 fi
 

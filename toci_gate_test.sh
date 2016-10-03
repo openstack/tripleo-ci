@@ -122,7 +122,14 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
             if [ $TOCI_JOBTYPE == 'undercloud-upgrades' ] ; then
                 UNDERCLOUD_MAJOR_UPGRADE=1
                 export UNDERCLOUD_SANITY_CHECK=1
-                export STABLE_RELEASE=mitaka
+
+                # We want to start by installing an Undercloud from the
+                # previous stable release.
+                if [ "$STABLE_RELEASE" = "newton" ]; then
+                    STABLE_RELEASE=mitaka
+                elif [ -z $STABLE_RELEASE ]; then
+                    STABLE_RELEASE=newton
+                fi
             fi
             ;;
         ha)

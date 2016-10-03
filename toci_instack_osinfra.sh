@@ -118,6 +118,11 @@ fi
 sudo cp $TRIPLEO_ROOT/tripleo-ci/test-environments/overcloud-cacert.pem /etc/pki/ca-trust/source/anchors/
 sudo update-ca-trust extract
 
+# The mitaka branch of instack-undercloud does not have the net-config override
+# feature, so we need to add a dummy interface so that os-net-config can
+# add it to the br-ctlplane bridge.
+sudo ip link add ci-dummy type dummy
+
 $TRIPLEO_ROOT/tripleo-ci/scripts/deploy.sh
 
 exit 0

@@ -3,7 +3,7 @@
 # cases we need to set STABLE_RELEASE to match for tripleo.sh
 export ZUUL_BRANCH=${ZUUL_BRANCH:-""}
 export OVERRIDE_ZUUL_BRANCH=${OVERRIDE_ZUUL_BRANCH:-""}
-export STABLE_RELEASE=
+export STABLE_RELEASE=${STABLE_RELEASE:-""}
 if [[ $ZUUL_BRANCH =~ ^stable/ ]]; then
     export STABLE_RELEASE=${ZUUL_BRANCH#stable/}
 fi

@@ -251,7 +251,14 @@ function repo_setup {
             rpm -q centos-release-ceph-hammer || sudo yum -y install --enablerepo=extras centos-release-ceph-hammer
             sudo sed -i -e 's%gpgcheck=.*%gpgcheck=0%' $REPO_PREFIX/CentOS-Ceph-Hammer.repo
         else
-            rpm -q centos-release-ceph-jewel || sudo yum -y install --enablerepo=extras centos-release-ceph-jewel
+            if ! rpm -q centos-release-ceph-jewel; then
+                # Must erase hammer repo if it's installed b/c it conflicts
+                # with jewel repo
+                if rpm -q centos-release-ceph-hammer; then
+                    sudo yum -y erase centos-release-ceph-hammer
+                fi
+                sudo yum -y install --enablerepo=extras centos-release-ceph-jewel
+            fi
             sudo sed -i -e 's%gpgcheck=.*%gpgcheck=0%' $REPO_PREFIX/CentOS-Ceph-Jewel.repo
         fi
     fi
@@ -567,9 +574,6 @@ function overcloud_deploy {
 function undercloud_upgrade {
 
     log "Undercloud upgrade"
-
-    # Remove all Delorean repositories
-    sudo rm -f /etc/yum.repos.d/delorean*
 
     # Setup repositories
     repo_setup
@@ -1055,6 +1059,9 @@ fi
 
 if [ "$UNDERCLOUD_UPGRADE" = 1 ]; then
     undercloud_upgrade
+    if [ "$UNDERCLOUD_SANITY_CHECK" = 1 ]; then
+        undercloud_sanity_check
+    fi
 fi
 
 if [ "$MULTINODE_SETUP" = 1 ]; then
