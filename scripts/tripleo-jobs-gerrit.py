@@ -31,6 +31,7 @@ DEFAULT_PROJECTS = [
     'openstack/tripleo-image-elements',
     'openstack/tripleo-incubator',
     'openstack/tripleo-puppet-elements',
+    'openstack/mistral',
     '^openstack/puppet-.*',
 ]
 
