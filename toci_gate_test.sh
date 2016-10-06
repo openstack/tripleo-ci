@@ -158,6 +158,11 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
             # The test env broker needs to know the instanceid of the this node so it can attach it to the provisioning network
             UCINSTANCEID=$(http_proxy= curl http://169.254.169.254/openstack/2015-10-15/meta_data.json | python -c 'import json, sys; print json.load(sys.stdin)["uuid"]')
             ;;
+        ipv6)
+            NETISO_V4=0
+            NETISO_V6=1
+            OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS  -e /usr/share/openstack-tripleo-heat-templates/environments/network-isolation-v6.yaml -e $TRIPLEO_ROOT/tripleo-ci/test-environments/ipv6-network-templates/network-environment.yaml"
+            ;;
         multinode)
             MULTINODE=1
             TOCIRUNNER="./toci_instack_osinfra.sh"
