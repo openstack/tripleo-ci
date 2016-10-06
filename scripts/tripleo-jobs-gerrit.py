@@ -11,6 +11,9 @@ DEFAULT_JOB_NAMES = [
     'gate-tripleo-ci-centos-7-ovb-nonha',
     'gate-tripleo-ci-centos-7-ovb-ha',
     'gate-tripleo-ci-centos-7-nonha-multinode',
+    'gate-tripleo-ci-centos-7-scenario001-multinode',
+    'gate-tripleo-ci-centos-7-scenario002-multinode',
+    'gate-tripleo-ci-centos-7-scenario003-multinode',
     'gate-tripleo-ci-centos-7-undercloud',
 ]
 
@@ -90,7 +93,7 @@ def gen_html(data, html_file, table_file, stats_hours, job_names, options):
     fp.write("<tr class='headers'><td>&nbsp;</td>")
     for job_name in job_names:
         fp.write("<td class='headers'><b>%s</b></td>" %
-                 job_name.replace("gate-tripleo-ironic-", ""))
+                 job_name.replace("gate-tripleo-ci-centos-7-", ""))
     fp.write("</tr>")
     count = 0
 
