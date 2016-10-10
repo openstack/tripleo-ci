@@ -24,7 +24,7 @@ hostname | sudo dd of=/etc/hostname
 echo "127.0.0.1 $(hostname) $(hostname).openstacklocal" | sudo tee -a /etc/hosts
 
 # TODO: xfsprogs should be a dep of DIB?
-sudo yum install -y xfsprogs qemu-img
+sudo yum install -y xfsprogs
 
 # Remove the anything on the infra image template that might interfere with CI
 sudo yum remove -y puppet hiera puppetlabs-release rdo-release
@@ -45,7 +45,7 @@ dummy_ci_repo
 $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --repo-setup
 
 # Install some useful/necessary packages
-sudo yum -y install wget python-simplejson yum-plugin-priorities
+sudo yum -y install wget python-simplejson yum-plugin-priorities qemu-img
 
 trap "exit_val=\$?; [ \$exit_val != 0 ] && echo ERROR DURING PREVIOUS COMMAND ^^^ && echo 'See postci.txt in the logs directory for debugging details'; postci \$exit_val 2>&1 | ts '%Y-%m-%d %H:%M:%S.000 |' > $WORKSPACE/logs/postci.log 2>&1" EXIT
 
