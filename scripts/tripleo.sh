@@ -159,6 +159,7 @@ DELOREAN_SETUP=${DELOREAN_SETUP:-""}
 DELOREAN_BUILD=${DELOREAN_BUILD:-""}
 MULTINODE_SETUP=${MULTINODE_SETUP:-""}
 MULTINODE_ENV_NAME=${MULTINODE_ENV_NAME:-}
+MTU=${MTU:-"1450"}
 BOOTSTRAP_SUBNODES=${BOOTSTRAP_SUBNODES:-""}
 SETUP_NODEPOOL_FILES=${SETUP_NODEPOOL_FILES:-""}
 PRIMARY_NODE_IP=${PRIMARY_NODE_IP:-""}
@@ -169,6 +170,7 @@ STDERR=/dev/null
 UNDERCLOUD=${UNDERCLOUD:-""}
 UNDERCLOUD_CONF=${UNDERCLOUD_CONF:-"/usr/share/instack-undercloud/undercloud.conf.sample"}
 UNDERCLOUD_SSL=${UNDERCLOUD_SSL:-""}
+BASE=${BASE:-$TRIPLEO_ROOT}
 USE_CONTAINERS=${USE_CONTAINERS:-""}
 TEMPEST_RUN=${TEMPEST_RUN:-""}
 TEMPEST_ARGS=${TEMPEST_ARGS:-"--parallel --subunit"}
@@ -945,8 +947,10 @@ function multinode_setup {
     # which is sourced by devstack-gate/functions.sh
     # It should be the parent directory of the "new" directory where
     # zuul-cloner has checked out the repositories
+    export BASE
+    export TRIPLEO_ROOT
+
     log "Sourcing devstack-gate/functions.sh"
-    export BASE=${BASE:-"/opt/stack"}
     set +u
     source $TRIPLEO_ROOT/devstack-gate/functions.sh
     set -u
@@ -983,6 +987,7 @@ function multinode_setup {
 
     log "Setting $PUB_BRIDGE_NAME up on $primary_node"
     sudo ip link set dev $PUB_BRIDGE_NAME up
+    sudo ip link set dev $PUB_BRIDGE_NAME mtu $MTU
 
     if [ -f /etc/sysconfig/network-scripts/ifcfg-br-ctlplane ]; then
         sudo ifup br-ctlplane
@@ -1000,6 +1005,8 @@ function multinode_setup {
         log "Setting $PUB_BRIDGE_NAME up on $ip"
         ssh $SSH_OPTIONS -t -i /etc/nodepool/id_rsa $ip \
             sudo ip link set dev $PUB_BRIDGE_NAME up
+        ssh $SSH_OPTIONS -t -i /etc/nodepool/id_rsa $ip \
+            sudo ip link set dev $PUB_BRIDGE_NAME mtu $MTU
         log "Pinging from $ip"
         if ! remote_command $ip $ping_command; then
             log "Pinging from $ip failed, restarting openvswitch"
