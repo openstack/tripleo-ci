@@ -64,13 +64,14 @@ class TestCallback(object):
         time_waiting = time.time() - self.created
         if time_waiting > 90:
             logger.warn('%.1f seconds waiting for a worker.' % (time_waiting))
-        logger.info('Running command "%s"', ' '.join(self.command))
 
-        if job.arguments == "Couldn't retrieve env":
+        if "Couldn't retrieve env" in job.arguments or "Failed creating OVB stack" in job.arguments:
             logger.error(job.arguments)
             self.rv = 2
             job.sendWorkComplete("")
             return
+
+        logger.info('Running command "%s"', ' '.join(self.command))
 
         with tempfile.NamedTemporaryFile('w') as fp:
             fp.write(job.arguments)
