@@ -134,6 +134,9 @@ function canusecache(){
     # We're not currently caching artifacts for stable jobs
     [ -n "$STABLE_RELEASE" ] && return 1
 
+    # The updates job already takes a long time, always use cache for it
+    [ -n "$OVERCLOUD_UPDATE_ARGS" ] && return 0
+
     CACHEDOBJECT=$1
 
     for PROJFULLREF in $ZUUL_CHANGES ; do
