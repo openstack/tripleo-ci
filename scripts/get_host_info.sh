@@ -41,5 +41,7 @@ if [ -e ~/stackrc ] ; then
     # taking an excessive amount of time
     openstack stack event list --nested-depth 2 -f json overcloud | $TRIPLEO_ROOT/tripleo-ci/scripts/heat-deploy-times.py | tee /var/log/heat-deploy-times.log || echo 'Failed to process resource deployment times. This is expected for stable/liberty.'
     # useful to see what failed when puppet fails
-    openstack stack failures list --long overcloud || :
+    # NOTE(bnemec): openstack stack failures list only exists in Newton and above.
+    # On older releases we still need to manually query the deployments.
+    openstack stack failures list --long overcloud || for failed_deployment in $(heat resource-list --nested-depth 5 overcloud | grep FAILED | grep 'StructuredDeployment ' | cut -d '|' -f3); do heat deployment-show $failed_deployment; done;
 fi
