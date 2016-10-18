@@ -43,8 +43,6 @@ for DIR in $DIRS2TEST ; do
     curl $JOB_URL?token=$RDO_PROMOTE_TOKEN\&tripleo_dlrn_promote_hash=$(basename $DIR)
     set -x
     ln -snf $DIR $CURRENT
-    # OVB based CI jobs no longer create a instack image, keep an old one in place until quickstart uses overcloud-full instead
-    cp /var/www/html/instack/instack.qcow2* /var/www/html/builds/current-tripleo/ ||:
     break
 done
 
