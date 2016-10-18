@@ -93,6 +93,12 @@ fi
 # Note the quotes around `$TEMP': they are essential!
 eval set -- "$TEMP"
 
+# Source deploy.env if it exists. It should exist if we are running under
+# tripleo-ci
+if [ -f "$TRIPLEO_ROOT/tripleo-ci/deploy.env" ]; then
+    source $TRIPLEO_ROOT/tripleo-ci/deploy.env
+fi
+
 ALL=${ALL:-""}
 CONTAINER_ARGS=${CONTAINER_ARGS:-"-e /usr/share/openstack-tripleo-heat-templates/environments/docker.yaml -e /usr/share/openstack-tripleo-heat-templates/environments/docker-network.yaml --libvirt-type=qemu"}
 STABLE_RELEASE=${STABLE_RELEASE:-}
@@ -892,6 +898,7 @@ function multinode_setup {
         # be installed by ovs_vxlan_bridge function below.
         log "Running --repo-setup on $ip"
         ssh $SSH_OPTIONS -t -i /etc/nodepool/id_rsa $ip \
+            TRIPLEO_ROOT=$TRIPLEO_ROOT \
             $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --repo-setup
     done
 
@@ -968,11 +975,13 @@ function bootstrap_subnodes {
         log "Running --repo-setup on $ip"
         # Do repo setup
         ssh $SSH_OPTIONS -t -i /etc/nodepool/id_rsa $ip \
+            TRIPLEO_ROOT=$TRIPLEO_ROOT \
             $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --repo-setup
 
         # Run overcloud full bootstrap script
         log "Running bootstrap-overcloud-full.sh on $ip"
         ssh $SSH_OPTIONS -t -i /etc/nodepool/id_rsa $ip \
+            TRIPLEO_ROOT=$TRIPLEO_ROOT \
             $TRIPLEO_ROOT/tripleo-ci/scripts/bootstrap-overcloud-full.sh
     done
 
