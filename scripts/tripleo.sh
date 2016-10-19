@@ -93,6 +93,8 @@ fi
 # Note the quotes around `$TEMP': they are essential!
 eval set -- "$TEMP"
 
+TRIPLEO_ROOT=${TRIPLEO_ROOT:-$HOME/tripleo}
+
 # Source deploy.env if it exists. It should exist if we are running under
 # tripleo-ci
 if [ -f "$TRIPLEO_ROOT/tripleo-ci/deploy.env" ]; then
@@ -151,7 +153,6 @@ BOOTSTRAP_SUBNODES=${BOOTSTRAP_SUBNODES:-""}
 STDERR=/dev/null
 UNDERCLOUD=${UNDERCLOUD:-""}
 UNDERCLOUD_CONF=${UNDERCLOUD_CONF:-"/usr/share/instack-undercloud/undercloud.conf.sample"}
-TRIPLEO_ROOT=${TRIPLEO_ROOT:-$HOME/tripleo}
 USE_CONTAINERS=${USE_CONTAINERS:-""}
 TEMPEST_RUN=${TEMPEST_RUN:-""}
 TEMPEST_ARGS=${TEMPEST_ARGS:-"--parallel --subunit"}
