@@ -50,6 +50,7 @@ Service testing matrix
 | aodh           |      X      |             |             |                |
 | ceilometer     |      X      |             |             |                |
 | gnocchi        |      X      |             |             |                |
+| barbican       |             |      X      |             |                |
 
 
 
