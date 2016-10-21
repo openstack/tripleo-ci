@@ -747,7 +747,7 @@ function overcloud_pingtest {
         # some key services *might* work for 'fail faster', but where things
         # can be so slow already it might just cause more pain.
         #
-        if tripleo wait_for -w 1200 -d 10 -s "CREATE_COMPLETE" -f "CREATE_FAILED" -- "heat stack-list | grep tenant-stack"; then
+        if tripleo wait_for -w 300 -d 10 -s "CREATE_COMPLETE" -f "CREATE_FAILED" -- "heat stack-list | grep tenant-stack"; then
             log "Overcloud pingtest, heat stack CREATE_COMPLETE";
 
             vm1_ip=`heat output-show tenant-stack server1_public_ip -F raw`
