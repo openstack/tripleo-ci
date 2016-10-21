@@ -27,3 +27,5 @@ projects:
     launchpad_project: tripleo
   - name: tripleo-specs
     launchpad_project: tripleo
+  - name: tripleo-validations
+    launchpad_project: tripleo
