@@ -210,9 +210,10 @@ function postci(){
         done <$long_times
         echo 'Finished'
         set -x
-        if [ $exit_val -eq 0 ]; then
-            metrics_to_graphite "23.253.94.71" #Dan's temp graphite server
-        fi
+        # NOTE(bnemec): Graphite metrics temporarily disabled while the server is down.
+        #if [ $exit_val -eq 0 ]; then
+        #    metrics_to_graphite "23.253.94.71" #Dan's temp graphite server
+        #fi
         if [ -z "${LEAVE_RUNNING:-}" ] && [ -n "${HOST_IP:-}" ] ; then
             destroy_vms &> $WORKSPACE/logs/destroy_vms.log
         fi
