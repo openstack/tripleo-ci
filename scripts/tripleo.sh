@@ -549,6 +549,9 @@ function overcloud_deploy {
         OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS $CONTAINER_ARGS"
     fi
 
+
+    log "unsetting any http proxy"
+    unset http_proxy
     log "Overcloud create started."
     exitval=0
     log "Deploy command arguments: $OVERCLOUD_DEPLOY_ARGS"
