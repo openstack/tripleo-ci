@@ -79,6 +79,15 @@ resources:
       image: { get_param: image }
       size: 1
 
+  key_order1:
+    type: OS::Barbican::Order
+    properties:
+      name: key_order1
+      type: asymmetric
+      algorithm: rsa
+      bit_length: 2048
+      mode: cbc
+
   server1:
     type: OS::Nova::Server
     depends_on: volume1
@@ -129,6 +138,9 @@ resources:
       vcpus: 1
 
 outputs:
+  key_info:
+    description: Key-pair ordered from barbican
+    value: {get_attr: [key_order1, show]}
   server1_private_ip:
     description: IP address of server1 in private network
     value: { get_attr: [ server1, first_address ] }
