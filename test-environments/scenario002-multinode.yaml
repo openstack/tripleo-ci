@@ -1,7 +1,6 @@
 resource_registry:
   OS::TripleO::Controller::Net::SoftwareConfig: ../heat-templates/net-config-multinode.yaml
   OS::TripleO::Compute::Net::SoftwareConfig: ../heat-templates/net-config-multinode.yaml
-  OS::TripleO::Services::BarbicanApi: /usr/share/openstack-tripleo-heat-templates/puppet/services/barbican-api.yaml
 
 parameter_defaults:
   ControllerServices:
@@ -34,7 +33,6 @@ parameter_defaults:
     - OS::TripleO::Services::Timezone
     - OS::TripleO::Services::NovaCompute
     - OS::TripleO::Services::NovaLibvirt
-    - OS::TripleO::Services::BarbicanApi
     - OS::TripleO::Services::CinderApi
     - OS::TripleO::Services::CinderBackup
     - OS::TripleO::Services::CinderScheduler
