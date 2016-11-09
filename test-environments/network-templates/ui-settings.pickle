@@ -7,14 +7,14 @@ p3
 (dp4
 S'route'
 p5
-V192.0.2.1
+V192.168.24.1
 p6
 sS'mask'
 p7
 I24
 sS'ec2'
 p8
-V192.0.2.1
+V192.168.24.1
 p9
 ssS'major'
 p10

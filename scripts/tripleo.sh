@@ -715,6 +715,10 @@ function overcloud_pingtest {
     log "Overcloud pingtest"
     exitval=0
 
+    stackrc_check
+    CTLPLANE_CIDR=$(neutron net-list -c subnets -c name -f value | grep ctlplane | awk {'print $2'})
+    CTLPLANE_NET=$(echo $CTLPLANE_CIDR | awk -F "." {'print $1"."$2"."$3'})
+
     overcloudrc_check
 
     cleanup_pingtest
@@ -739,10 +743,11 @@ function overcloud_pingtest {
     log "Overcloud pingtest, creating external network"
     neutron net-create nova --shared --router:external=True --provider:network_type flat \
   --provider:physical_network datacentre
-    FLOATING_IP_CIDR=${FLOATING_IP_CIDR:-"192.0.2.0/24"}
-    FLOATING_IP_START=${FLOATING_IP_START:-"192.0.2.50"}
-    FLOATING_IP_END=${FLOATING_IP_END:-"192.0.2.64"}
-    EXTERNAL_NETWORK_GATEWAY=${EXTERNAL_NETWORK_GATEWAY:-"192.0.2.1"}
+
+    FLOATING_IP_CIDR=${FLOATING_IP_CIDR:-$CTLPLANE_CIDR}
+    FLOATING_IP_START=${FLOATING_IP_START:-"${CTLPLANE_NET}.50"}
+    FLOATING_IP_END=${FLOATING_IP_END:-"${CTLPLANE_NET}.64"}
+    EXTERNAL_NETWORK_GATEWAY=${EXTERNAL_NETWORK_GATEWAY:-"${CTLPLANE_NET}.1"}
     TENANT_STACK_DEPLOY_ARGS=${TENANT_STACK_DEPLOY_ARGS:-""}
     neutron subnet-create --name ext-subnet --allocation-pool start=$FLOATING_IP_START,end=$FLOATING_IP_END --disable-dhcp --gateway $EXTERNAL_NETWORK_GATEWAY nova $FLOATING_IP_CIDR
     TENANT_PINGTEST_TEMPLATE=/usr/share/tripleo-ci/$PINGTEST_TEMPLATE.yaml
@@ -816,16 +821,20 @@ function tempest_run {
 
     log "Running tempest"
 
+    stackrc_check
+    CTLPLANE_CIDR=$(neutron net-list -c subnets -c name -f value | grep ctlplane | awk {'print $2'})
+    CTLPLANE_NET=$(echo $CTLPLANE_CIDR | awk -F "." {'print $1"."$2"."$3'})
+
     overcloudrc_check
     clean_tempest
     root_dir=$(realpath $(dirname ${BASH_SOURCE[0]:-$0}))
     [[ ! -e $HOME/tempest ]] && git clone https://github.com/openstack/tempest $HOME/tempest
     pushd $HOME/tempest
     git checkout $TEMPEST_PINNED
-    FLOATING_IP_CIDR=${FLOATING_IP_CIDR:-"192.0.2.0/24"};
-    FLOATING_IP_START=${FLOATING_IP_START:-"192.0.2.50"};
-    FLOATING_IP_END=${FLOATING_IP_END:-"192.0.2.64"};
-    export EXTERNAL_NETWORK_GATEWAY=${EXTERNAL_NETWORK_GATEWAY:-"192.0.2.1"};
+    FLOATING_IP_CIDR=${FLOATING_IP_CIDR:-$CTLPLANE_CIDR}
+    FLOATING_IP_START=${FLOATING_IP_START:-"${CTLPLANE_NET}.50"}
+    FLOATING_IP_END=${FLOATING_IP_END:-"${CTLPLANE_NET}.64"}
+    export EXTERNAL_NETWORK_GATEWAY=${EXTERNAL_NETWORK_GATEWAY:-"${CTLPLANE_NET}.1"}
     neutron net-create nova --shared --router:external=True --provider:network_type flat --provider:physical_network datacentre;
     neutron subnet-create --name ext-subnet --allocation-pool start=$FLOATING_IP_START,end=$FLOATING_IP_END --disable-dhcp --gateway $EXTERNAL_NETWORK_GATEWAY nova $FLOATING_IP_CIDR;
     sudo yum install -y libffi-devel openssl-devel python-virtualenv
@@ -927,7 +936,7 @@ function multinode_setup {
     fi
     set +u
     log "Running ovs_vxlan_bridge"
-    ovs_vxlan_bridge $PUB_BRIDGE_NAME $primary_node "True" 2 192.0.2 24 $sub_nodes
+    ovs_vxlan_bridge $PUB_BRIDGE_NAME $primary_node "True" 2 192.168.24 24 $sub_nodes
     set -u
 
     log "Setting $PUB_BRIDGE_NAME up on $primary_node"
@@ -943,7 +952,7 @@ function multinode_setup {
         sudo systemctl restart neutron-openvswitch-agent
     fi
 
-    local ping_command="ping -c 6 -W 3 192.0.2.2"
+    local ping_command="ping -c 6 -W 3 192.168.24.2"
 
     for ip in $sub_nodes; do
         log "Setting $PUB_BRIDGE_NAME up on $ip"
@@ -966,9 +975,9 @@ function multinode_setup {
 function ui_sanity_check {
     if [ -f "/etc/httpd/conf.d/25-tripleo-ui.conf" ]; then
         if [ "$UNDERCLOUD_SSL" = 1 ]; then
-            UI_URL=https://192.0.2.2
+            UI_URL=https://192.168.24.2
         else
-            UI_URL=http://192.0.2.1:3000
+            UI_URL=http://192.168.24.1:3000
         fi
         if ! curl $UI_URL 2>/dev/null | grep -q 'TripleO'; then
             log "ERROR: TripleO UI front page is not loading."
