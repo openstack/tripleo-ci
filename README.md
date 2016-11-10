@@ -53,6 +53,9 @@ Service testing matrix
 | barbican       |             |             |             |      X      |                |
 
 
+Note: Scenario004 only runs on releases newer than newton, since it contains
+services that are not available in those releases.
+
 
 Scenarios description
 ---------------------
