@@ -144,10 +144,10 @@ function canusecache(){
                 [[ "$PROJ" =~ instack-undercloud|diskimage-builder|tripleo-image-elements|tripleo-puppet-elements ]] && return 1
                 ;;
             ipa_images.tar)
-                [[ "$PROJ" =~ diskimage-builder|python-tripleoclient ]] && return 1
+                [[ "$PROJ" =~ diskimage-builder|python-tripleoclient|tripleo-common ]] && return 1
                 ;;
             overcloud-full.tar)
-                [[ "$PROJ" =~ diskimage-builder|tripleo-image-elements|tripleo-puppet-elements|instack-undercloud|python-tripleoclient ]] && return 1
+                [[ "$PROJ" =~ diskimage-builder|tripleo-image-elements|tripleo-puppet-elements|instack-undercloud|python-tripleoclient|tripleo-common ]] && return 1
                 ;;
             *)
                 return 1
