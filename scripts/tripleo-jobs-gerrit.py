@@ -99,6 +99,9 @@ def gen_html(data, html_file, table_file, stats_hours, job_names, options):
 
     reversed_sorted_keys = [(x['id'], x['patchset']) for x in
         reversed(sorted(data.values(), key=lambda y: y['ts']))]
+    passed_jobs = 0
+    partial_jobs = 0
+    failed_jobs = 0
     for key in reversed_sorted_keys:
         result = data[key]
         if count > 300:
@@ -123,11 +126,13 @@ def gen_html(data, html_file, table_file, stats_hours, job_names, options):
         fp.write("</td>")
 
         job_columns = ""
+        result_types = set()
         for job_name in job_names:
             if job_name in result['ci_results']:
                 job_columns += "<td>"
                 ci_result = result['ci_results'][job_name]
                 color = COLORS.get(ci_result['status'], "#666666")
+                result_types.add(ci_result['status'])
                 job_columns += '<font color="%s">' % color
                 gerrit_href = 'https://review.openstack.org/#/c/%s/%s"' % (
                     result['url'].split('/')[-1], result['patchset']
@@ -143,6 +148,14 @@ def gen_html(data, html_file, table_file, stats_hours, job_names, options):
                 job_columns += "</td>"
             else:
                 job_columns += "<td>&nbsp;</td>"
+        # For the purpose of these stats, let's ignore POST_FAILURE jobs
+        result_types.discard('POST_FAILURE')
+        if len(result_types) > 1:
+            partial_jobs += 1
+        elif 'FAILURE' in result_types:
+            failed_jobs += 1
+        else:
+            passed_jobs += 1
         fp.write(job_columns)
         fp.write("</tr>")
     fp.write("<table>")
@@ -150,6 +163,24 @@ def gen_html(data, html_file, table_file, stats_hours, job_names, options):
     fp.write("Branch: "+options.b+"<br/>")
     fp.write("Status: "+options.s+"<br/>")
     fp.write("Limit: "+options.l)
+
+    total = passed_jobs + partial_jobs + failed_jobs
+    fp.write("<p>Overall</p>")
+    fp.write("Passed: %d/%d (%d %%)<br/>" % (
+        passed_jobs,
+        total,
+        float(passed_jobs) / float(total) * 100
+        ))
+    fp.write("Partial Failures: %d/%d (%d %%)<br/>" % (
+        partial_jobs,
+        total,
+        float(partial_jobs) / float(total) * 100
+        ))
+    fp.write("Complete Failures: %d/%d (%d %%)<br/>" % (
+        failed_jobs,
+        total,
+        float(failed_jobs) / float(total) * 100
+        ))
 
     fp.close()
 
