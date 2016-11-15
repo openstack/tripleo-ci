@@ -589,6 +589,7 @@ function undercloud_upgrade {
     # The question is: where to do it? in tripleoclient? or instack-undercloud?
     sudo systemctl stop openstack-*
     sudo systemctl stop neutron-*
+    sudo systemctl stop openvswitch
     # tripleo cli needs to be updated first
     sudo yum -y update python-tripleoclient
 
