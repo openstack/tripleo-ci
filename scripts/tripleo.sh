@@ -451,7 +451,7 @@ function delorean_build {
         GITHASH=$(git rev-parse HEAD)
 
         # Set the branches delorean reads to the same git hash as PROJ has left for us
-        for BRANCH in master origin/master stable/mitaka origin/stable/mitaka; do
+        for BRANCH in master origin/master stable/mitaka origin/stable/mitaka stable/newton origin/stable/newton stable/ocata origin/stable/ocata; do
             git checkout -b $BRANCH || git checkout $BRANCH
             git reset --hard $GITHASH
         done
