@@ -9,6 +9,8 @@ parameter_defaults:
     - OS::TripleO::Services::Keystone
     - OS::TripleO::Services::GlanceApi
     - OS::TripleO::Services::GlanceRegistry
+    - OS::TripleO::Services::HeatApi
+    - OS::TripleO::Services::HeatEngine
     - OS::TripleO::Services::MySQL
     - OS::TripleO::Services::NeutronDhcpAgent
     - OS::TripleO::Services::NeutronL3Agent
@@ -39,3 +41,4 @@ parameter_defaults:
     nova::compute::libvirt::services::libvirt_virt_type: qemu
     nova::compute::libvirt::libvirt_virt_type: qemu
   Debug: true
+  GlanceBackend: 'file'
