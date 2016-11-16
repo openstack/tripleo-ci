@@ -167,9 +167,9 @@ export SCRIPTS_DIR=$(dirname ${BASH_SOURCE[0]:-$0})
 OPSTOOLS_REPO_ENABLED=${OPSTOOLS_REPO_ENABLED:-"0"}
 OPSTOOLS_REPO_URL=${OPSTOOLS_REPO_URL:-"https://raw.githubusercontent.com/centos-opstools/opstools-repo/master/opstools.repo"}
 
-# TODO: remove this when Image create in openstackclient supports the v2 API
-export OS_IMAGE_API_VERSION=1
-
+if [[ "${STABLE_RELEASE}" =~ ^(liberty|mitaka)$ ]] ; then
+    export OS_IMAGE_API_VERSION=1
+fi
 # Temporary workarounds
 
 while true ; do
