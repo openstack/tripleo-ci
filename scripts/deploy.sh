@@ -161,11 +161,6 @@ if [ "$MULTINODE" = "1" ]; then
 fi
 
 if [ $OVERCLOUD == 1 ] ; then
-    if [[ "${STABLE_RELEASE}" =~ ^(liberty|mitaka)$ ]] ; then
-        export OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS -e $TRIPLEO_ROOT/tripleo-ci/test-environments/worker-config-mitaka-and-below.yaml"
-    else
-        export OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS -e $TRIPLEO_ROOT/tripleo-ci/test-environments/worker-config.yaml -e /usr/share/openstack-tripleo-heat-templates/environments/low-memory-usage.yaml"
-    fi
     start_metric "tripleo.overcloud.${TOCI_JOBTYPE}.deploy.seconds"
     http_proxy= $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --overcloud-deploy ${TRIPLEO_SH_ARGS:-}
     stop_metric "tripleo.overcloud.${TOCI_JOBTYPE}.deploy.seconds"
@@ -185,11 +180,6 @@ if [ -n "${OVERCLOUD_UPDATE_ARGS:-}" ] ; then
     sudo rpm -ev --nodeps openstack-tripleo-heat-templates
     sudo yum -y install openstack-tripleo-heat-templates
 
-    if [[ "${STABLE_RELEASE}" =~ ^(liberty|mitaka)$ ]] ; then
-        export OVERCLOUD_UPDATE_ARGS="$OVERCLOUD_UPDATE_ARGS -e $TRIPLEO_ROOT/tripleo-ci/test-environments/worker-config-mitaka-and-below.yaml"
-    else
-        export OVERCLOUD_UPDATE_ARGS="$OVERCLOUD_UPDATE_ARGS -e $TRIPLEO_ROOT/tripleo-ci/test-environments/worker-config.yaml -e /usr/share/openstack-tripleo-heat-templates/environments/low-memory-usage.yaml"
-    fi
     http_proxy= $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --overcloud-update ${TRIPLEO_SH_ARGS:-}
 fi
 

@@ -212,6 +212,17 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
     esac
 done
 
+# Limit worker counts to avoid overloading our limited resources
+if [[ "${STABLE_RELEASE}" =~ ^(liberty|mitaka)$ ]] ; then
+    OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS -e $TRIPLEO_ROOT/tripleo-ci/test-environments/worker-config-mitaka-and-below.yaml"
+else
+    OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS -e $TRIPLEO_ROOT/tripleo-ci/test-environments/worker-config.yaml -e /usr/share/openstack-tripleo-heat-templates/environments/low-memory-usage.yaml"
+fi
+# If we're running an update job, regenerate the args to reflect the above changes
+if [ -n "$OVERCLOUD_UPDATE_ARGS" ]; then
+    OVERCLOUD_UPDATE_ARGS="-e /usr/share/openstack-tripleo-heat-templates/overcloud-resource-registry-puppet.yaml $OVERCLOUD_DEPLOY_ARGS"
+fi
+
 TIMEOUT_SECS=$((DEVSTACK_GATE_TIMEOUT*60))
 # ./testenv-client kill everything in its own process group it it hits a timeout
 # run it in a separate group to avoid getting killed along with it
