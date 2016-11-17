@@ -5,3 +5,12 @@ parameter_defaults:
     heat::config::heat_config:
       DEFAULT/num_engine_workers:
         value: 1
+  # In newton and above, these parameters are set by low-memory-usage.yaml from t-h-t
+  HeatWorkers: 1
+  CeilometerWorkers: 1
+  CinderWorkers: 1
+  GlanceWorkers: 1
+  KeystoneWorkers: 4
+  NeutronWorkers: 1
+  NovaWorkers: 1
+  SwiftWorkers: 1
