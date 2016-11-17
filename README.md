@@ -29,3 +29,18 @@ Service testing matrix
 The CI testing matrix for all scenarios is defined in
 [tripleo-heat-templates](https://git.openstack.org/cgit/openstack/tripleo-heat-templates/tree/README.rst).
 This matrix describes the services that will run in each environment.
+
+Feature testing matrix
+----------------------
+
+|       -                | nonha | ha | updates |
+|:----------------------:|:-----:|:--:|:-------:|
+| undercloud ssl         |   X   |    |         |
+| overcloud ssl          |   X   |    |         |
+| ceph                   |   X   |    |    X    |
+| ipv4 net-iso           |       | X  |         |
+| ipv6 net-iso           |       |    |    X    |
+| pacemaker              |       | X  |    X    |
+| predictable placement  |       | X  |         |
+| introspection          |   X   |    |         |
+|                        |       |    |         |
