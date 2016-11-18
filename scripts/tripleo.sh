@@ -370,7 +370,11 @@ function delorean_build {
         sed -i -e "s%source=.*%source=master%" projects.ini
     else
         sed -i -e "s%baseurl=.*%baseurl=https://trunk.rdoproject.org/centos7-$STABLE_RELEASE%" projects.ini
-        sed -i -e "s%distro=.*%distro=rpm-$STABLE_RELEASE%" projects.ini
+        if [ "$STABLE_RELEASE" = "newton" ]; then
+            sed -i -e "s%distro=.*%distro=$STABLE_RELEASE-rdo%" projects.ini
+        else
+            sed -i -e "s%distro=.*%distro=rpm-$STABLE_RELEASE%" projects.ini
+        fi
         sed -i -e "s%source=.*%source=stable/$STABLE_RELEASE%" projects.ini
     fi
 
