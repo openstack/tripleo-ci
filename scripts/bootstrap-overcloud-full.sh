@@ -2,6 +2,8 @@
 
 set -eux
 
+export STABLE_RELEASE=${STABLE_RELEASE:-""}
+
 # Source deploy.env if it exists. It should exist if we are running under
 # tripleo-ci
 export TRIPLEO_ROOT=${TRIPLEO_ROOT:-"/opt/stack/new"}
