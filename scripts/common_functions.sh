@@ -179,6 +179,7 @@ function postci(){
 
     # Generate extra state information from the running undercloud
     sudo -E $TRIPLEO_ROOT/tripleo-ci/scripts/get_host_info.sh
+    eval $JLOGCMD
 
     if [ "$OVB" == "1" ] ; then
         # Get logs from the undercloud
@@ -192,6 +193,7 @@ function postci(){
             NAME=${INSTANCE//=*}
             scp $SSH_OPTIONS $TRIPLEO_ROOT/tripleo-ci/scripts/get_host_info.sh heat-admin@${SANITIZED_ADDRESS}:/tmp
             timeout -s 15 -k 600 300 ssh $SSH_OPTIONS heat-admin@$IP sudo /tmp/get_host_info.sh
+            ssh $SSH_OPTIONS heat-admin@$IP $JLOGCMD
             ssh $SSH_OPTIONS heat-admin@$IP $TARCMD > $WORKSPACE/logs/${NAME}.tar.xz
             extract_logs $NAME
         done
@@ -226,6 +228,7 @@ function postci(){
             mkdir $WORKSPACE/logs/subnode-$i/
             ssh $SSH_OPTIONS -i /etc/nodepool/id_rsa $ip \
                 sudo $TRIPLEO_ROOT/tripleo-ci/scripts/get_host_info.sh
+            ssh $SSH_OPTIONS -i /etc/nodepool/id_rsa $ip $JLOGCMD
             ssh $SSH_OPTIONS -i /etc/nodepool/id_rsa $ip \
                 $TARCMD > $WORKSPACE/logs/subnode-$i/subnode-$i.tar.xz
             # Extract /var/log for easy viewing
