@@ -30,7 +30,7 @@ sudo yum install -y xfsprogs
 sudo yum remove -y puppet hiera puppetlabs-release rdo-release
 sudo rm -rf /etc/puppet /etc/hiera.yaml
 
-undercloud_net_range="192.0.2."
+undercloud_net_range="192.168.24."
 undercloud_services_ip=$undercloud_net_range"1"
 undercloud_haproxy_public_ip=$undercloud_net_range"2"
 undercloud_haproxy_admin_ip=$undercloud_net_range"3"

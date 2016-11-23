@@ -8,8 +8,8 @@ resource_registry:
 
 parameter_defaults:
   ControlPlaneSubnetCidr: '24'
-  ControlPlaneDefaultRoute: 192.0.2.1
-  EC2MetadataIp: 192.0.2.1
+  ControlPlaneDefaultRoute: 192.168.24.1
+  EC2MetadataIp: 192.168.24.1
   ExternalNetCidr: 2001:db8:fd00:1000::/64
   ExternalAllocationPools: [{"start": "2001:db8:fd00:1000::10", "end": "2001:db8:fd00:1000:ffff:ffff:ffff:fffe"}]
   ExternalInterfaceDefaultRoute: 2001:db8:fd00:1000::1

@@ -21,6 +21,17 @@ EOF
 
 echo '[DEFAULT]' > ~/undercloud.conf
 echo "hieradata_override = $HOME/undercloud-hieradata-override.yaml" >> ~/undercloud.conf
+cat <<EOF >>~/undercloud.conf
+network_cidr = 192.168.24.0/24
+local_ip = 192.168.24.1/24
+network_gateway = 192.168.24.1
+undercloud_public_vip = 192.168.24.2
+undercloud_admin_vip = 192.168.24.3
+masquerade_network = 192.168.24.0/24
+dhcp_start = 192.168.24.5
+dhcp_end = 192.168.24.30
+inspection_iprange = 192.168.24.100,192.168.24.120
+EOF
 
 if [ $UNDERCLOUD_SSL == 1 ] ; then
     echo 'generate_service_certificate = True' >> ~/undercloud.conf

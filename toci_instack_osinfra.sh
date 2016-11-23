@@ -19,7 +19,7 @@ MY_IP=$(ip addr show dev $IP_DEVICE | awk '/inet / {gsub("/.*", "") ; print $2}'
 MY_IP_eth1=$(ip addr show dev eth1 | awk '/inet / {gsub("/.*", "") ; print $2}') || MY_IP_eth1=""
 
 export http_proxy=""
-undercloud_net_range="192.0.2."
+undercloud_net_range="192.168.24."
 undercloud_services_ip=$undercloud_net_range"1"
 undercloud_haproxy_public_ip=$undercloud_net_range"2"
 undercloud_haproxy_admin_ip=$undercloud_net_range"3"
