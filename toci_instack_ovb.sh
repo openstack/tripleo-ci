@@ -66,6 +66,8 @@ source $TRIPLEO_ROOT/tripleo-ci/deploy.env
 
 # Install our test cert so SSL tests work
 sudo cp $TRIPLEO_ROOT/tripleo-ci/test-environments/overcloud-cacert.pem /etc/pki/ca-trust/source/anchors/
+sudo cp $TRIPLEO_ROOT/tripleo-ci/test-environments/overcloud-cacert-ipv6.pem /etc/pki/ca-trust/source/anchors/
+
 sudo update-ca-trust extract
 
 # Don't get a file from cache if CACHEUPLOAD=1 (periodic job)
