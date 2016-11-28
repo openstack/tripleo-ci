@@ -54,7 +54,7 @@
         - openstack/tripleo-quickstart
         - openstack-infra/tripleo-ci
   roles:
-    - { role: tripleo-gate, when: "{{ lookup('env', 'USE_DELOREAN')|default(0, true) }} == 1" }
+    - { role: build-test-packages, when: "{{ lookup('env', 'USE_DELOREAN')|default(0, true) }} == 1" }
 
 # TODO(sshnaidm): to create a separate role for this in quickstart-extras(?)
 - include: inject_repo-playbook.yml
