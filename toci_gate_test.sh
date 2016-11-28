@@ -237,8 +237,8 @@ set -m
 # This comes from epel, so we need to install it before removing that repo
 sudo yum install -y moreutils
 
-# Temporary fix for https://bugs.launchpad.net/tripleo/+bug/1606685
-sudo yum erase -y epel-release nodejs nodejs-devel nodejs-packaging || :
+# Ensure epel-release is not installed
+sudo yum erase -y epel-release || :
 
 source $TRIPLEO_ROOT/tripleo-ci/scripts/metrics.bash
 start_metric "tripleo.testenv.wait.seconds"
