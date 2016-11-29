@@ -774,9 +774,14 @@ function overcloud_pingtest {
     EXTERNAL_NETWORK_GATEWAY=${EXTERNAL_NETWORK_GATEWAY:-"${CTLPLANE_NET}.1"}
     TENANT_STACK_DEPLOY_ARGS=${TENANT_STACK_DEPLOY_ARGS:-""}
     neutron subnet-create --name ext-subnet --allocation-pool start=$FLOATING_IP_START,end=$FLOATING_IP_END --disable-dhcp --gateway $EXTERNAL_NETWORK_GATEWAY nova $FLOATING_IP_CIDR
-    TENANT_PINGTEST_TEMPLATE=/usr/share/tripleo-ci/$PINGTEST_TEMPLATE.yaml
-    if [ ! -e $TENANT_PINGTEST_TEMPLATE ]; then
-        TENANT_PINGTEST_TEMPLATE=$(dirname `readlink -f -- $0`)/../templates/$PINGTEST_TEMPLATE.yaml
+    # pingtest environment for scenarios jobs is in TripleO Heat Templates.
+    if [ -e /usr/share/openstack-tripleo-heat-templates/ci/pingtests/$MULTINODE_ENV_NAME.yaml ]; then
+        TENANT_PINGTEST_TEMPLATE=/usr/share/openstack-tripleo-heat-templates/ci/pingtests/$MULTINODE_ENV_NAME.yaml
+    else
+      TENANT_PINGTEST_TEMPLATE=/usr/share/tripleo-ci/$PINGTEST_TEMPLATE.yaml
+      if [ ! -e $TENANT_PINGTEST_TEMPLATE ]; then
+          TENANT_PINGTEST_TEMPLATE=$(dirname `readlink -f -- $0`)/../templates/$PINGTEST_TEMPLATE.yaml
+      fi
     fi
     log "Overcloud pingtest, creating tenant-stack heat stack:"
     heat stack-create -f $TENANT_PINGTEST_TEMPLATE $TENANT_STACK_DEPLOY_ARGS tenant-stack || exitval=1

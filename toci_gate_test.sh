@@ -86,11 +86,15 @@ export TEST_OVERCLOUD_DELETE=0
 export OOOQ=0
 
 if [[ $TOCI_JOBTYPE =~ scenario ]]; then
-    export PINGTEST_TEMPLATE=${PINGTEST_TEMPLATE:-"${TOCI_JOBTYPE}-pingtest"}
-    MULTINODE_ENV_NAME=$TOCI_JOBTYPE
+    # note: we don't need PINGTEST_TEMPLATE here. See tripleo.sh. Though
+    # we need to export it for logs purpose.
+    export PINGTEST_TEMPLATE=
+    export MULTINODE_ENV_NAME=$TOCI_JOBTYPE
+    MULTINODE_ENV_PATH=/usr/share/openstack-tripleo-heat-templates/ci/environments/$MULTINODE_ENV_NAME.yaml
 else
     export PINGTEST_TEMPLATE=${PINGTEST_TEMPLATE:-"tenantvm_floatingip"}
-    MULTINODE_ENV_NAME='multinode'
+    export MULTINODE_ENV_NAME='multinode'
+    MULTINODE_ENV_PATH=$TRIPLEO_ROOT/tripleo-ci/test-environments/$MULTINODE_ENV_NAME.yaml
 fi
 if [[ "$TOCI_JOBTYPE" =~ "periodic" && "$TOCI_JOBTYPE" =~ "-ha" ]]; then
     TEST_OVERCLOUD_DELETE=1
@@ -183,7 +187,7 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
             UNDERCLOUD_SSL=0
             INTROSPECT=0
             OVERCLOUD_DEPLOY_ARGS="--libvirt-type=qemu -t $OVERCLOUD_DEPLOY_TIMEOUT"
-            OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS -e /usr/share/openstack-tripleo-heat-templates/environments/deployed-server-environment.yaml -e $TRIPLEO_ROOT/tripleo-ci/test-environments/$MULTINODE_ENV_NAME.yaml --compute-scale 0 --overcloud-ssh-user $OVERCLOUD_SSH_USER --validation-errors-nonfatal"
+            OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS -e /usr/share/openstack-tripleo-heat-templates/environments/deployed-server-environment.yaml -e $MULTINODE_ENV_PATH --compute-scale 0 --overcloud-ssh-user $OVERCLOUD_SSH_USER --validation-errors-nonfatal"
             ;;
         undercloud)
             TOCIRUNNER="./toci_instack_osinfra.sh"
