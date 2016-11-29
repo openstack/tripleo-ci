@@ -4,12 +4,19 @@
 export ZUUL_BRANCH=${ZUUL_BRANCH:-""}
 export OVERRIDE_ZUUL_BRANCH=${OVERRIDE_ZUUL_BRANCH:-""}
 export STABLE_RELEASE=${STABLE_RELEASE:-""}
+export FEATURE_BRANCH=${FEATURE_BRANCH:-""}
 if [[ $ZUUL_BRANCH =~ ^stable/ ]]; then
     export STABLE_RELEASE=${ZUUL_BRANCH#stable/}
 fi
 
 if [[ $OVERRIDE_ZUUL_BRANCH =~ ^stable/ ]]; then
     export STABLE_RELEASE=${OVERRIDE_ZUUL_BRANCH#stable/}
+fi
+
+# if we still don't have an stable branch, check if that
+# is a feature branch
+if [ -z "$STABLE_RELEASE" ] && [ "$ZUUL_BRANCH" != "master" ]; then
+    export FEATURE_BRANCH=$ZUUL_BRANCH
 fi
 
 export TRIPLEO_ROOT=${TRIPLEO_ROOT:-"/opt/stack/new"}

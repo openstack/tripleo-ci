@@ -36,7 +36,15 @@ sudo yum -y update
 # openstack-tripleo-common needed for the tripleo-build-images command
 sudo yum -y install instack-undercloud git openstack-tripleo-common
 
-export ELEMENTS_PATH="/usr/share/diskimage-builder/elements:/usr/share/instack-undercloud:/usr/share/tripleo-image-elements:/usr/share/tripleo-puppet-elements:/usr/share/openstack-heat-templates/software-config/elements"
+# detect the real path depending on diskimage-builder version
+COMMON_ELEMENTS_PATH=$(python -c '
+try:
+    import diskimage_builder.paths
+    diskimage_builder.paths.show_path("elements")
+except:
+    print("/usr/share/diskimage-builder/elements")
+')
+export ELEMENTS_PATH="${COMMON_ELEMENTS_PATH}:/usr/share/instack-undercloud:/usr/share/tripleo-image-elements:/usr/share/tripleo-puppet-elements:/usr/share/openstack-heat-templates/software-config/elements"
 
 sudo yum -y install openstack-tripleo-common
 

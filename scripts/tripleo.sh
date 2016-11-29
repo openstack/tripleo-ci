@@ -369,11 +369,8 @@ function delorean_build {
 
     pushd $TRIPLEO_ROOT/delorean
 
-    if [ -z "$STABLE_RELEASE" ]; then
-        sed -i -e "s%baseurl=.*%baseurl=https://trunk.rdoproject.org/centos7%" projects.ini
-        sed -i -e "s%distro=.*%distro=rpm-master%" projects.ini
-        sed -i -e "s%source=.*%source=master%" projects.ini
-    else
+    if [ -n "$STABLE_RELEASE" ]; then
+        # first check if we have a stable release
         sed -i -e "s%baseurl=.*%baseurl=https://trunk.rdoproject.org/centos7-$STABLE_RELEASE%" projects.ini
         if [ "$STABLE_RELEASE" = "newton" ]; then
             sed -i -e "s%distro=.*%distro=$STABLE_RELEASE-rdo%" projects.ini
@@ -381,6 +378,15 @@ function delorean_build {
             sed -i -e "s%distro=.*%distro=rpm-$STABLE_RELEASE%" projects.ini
         fi
         sed -i -e "s%source=.*%source=stable/$STABLE_RELEASE%" projects.ini
+    elif [ -n "$FEATURE_BRANCH" ]; then
+        # next, check if we are testing for a feature branch
+        sed -i -e "s%baseurl=.*%baseurl=https://trunk.rdoproject.org/centos7%" projects.ini
+        sed -i -e "s%distro=.*%distro=rpm-$FEATURE_BRANCH%" projects.ini
+        sed -i -e "s%source=.*%source=$FEATURE_BRANCH%" projects.ini
+    else
+        sed -i -e "s%baseurl=.*%baseurl=https://trunk.rdoproject.org/centos7%" projects.ini
+        sed -i -e "s%distro=.*%distro=rpm-master%" projects.ini
+        sed -i -e "s%source=.*%source=master%" projects.ini
     fi
 
     sudo rm -rf data commits.sqlite
@@ -477,8 +483,17 @@ function overcloud_images {
     # (slagle) TODO: This needs to be fixed in python-tripleoclient or
     # diskimage-builder!
     # Ensure yum-plugin-priorities is installed
-    echo -e '#!/bin/bash\nyum install -y yum-plugin-priorities' | sudo tee /usr/share/diskimage-builder/elements/yum/pre-install.d/99-tmphacks
-    sudo chmod +x /usr/share/diskimage-builder/elements/yum/pre-install.d/99-tmphacks
+
+    # get the right path for diskimage-builder version
+    COMMON_ELEMENTS_PATH=$(python -c '
+try:
+    import diskimage_builder.paths
+    diskimage_builder.paths.show_path("elements")
+except:
+    print("/usr/share/diskimage-builder/elements")
+')    
+    echo -e '#!/bin/bash\nyum install -y yum-plugin-priorities' | sudo tee ${COMMON_ELEMENTS_PATH}/yum/pre-install.d/99-tmphacks
+    sudo chmod +x ${COMMON_ELEMENTS_PATH}/yum/pre-install.d/99-tmphacks
 
     # To install the undercloud instack-undercloud is run as root,
     # as a result all of the git repositories get cached to
