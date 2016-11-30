@@ -1,4 +1,5 @@
 run_tempest: false
+ssl_overcloud: false
 
 step_adjust_mtu: true
 mtu: 1350
@@ -29,7 +30,7 @@ step_introspect: "{{ lookup('env','INTROSPECT')|bool }}"
 undercloud_generate_service_certificate: "{{ lookup('env','UNDERCLOUD_SSL')|bool }}"
 #overcloud_nodes:
 enable_pacemaker: "{{ lookup('env','PACEMAKER')|bool }}"
-deploy_args: "{{ lookup('env','OVERCLOUD_DEPLOY_ARGS') }} --validation-errors-fatal --validation-warnings-fatal"
+deploy_args: "{{ lookup('env','OVERCLOUD_DEPLOY_ARGS') }}"
 network_isolation: "{{ lookup('env','NETISO_V4')|bool }}"
 
 # Collect logs settings
