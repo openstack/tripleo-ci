@@ -1,0 +1,25 @@
+resource_registry:
+  OS::TripleO::Controller::Net::SoftwareConfig: ../heat-templates/net-config-multinode.yaml
+  OS::TripleO::Compute::Net::SoftwareConfig: ../heat-templates/net-config-multinode.yaml
+  OS::TripleO::Services::Core: multinode-core.yaml
+
+parameter_defaults:
+  ControllerServices:
+    - OS::TripleO::Services::CACerts
+    - OS::TripleO::Services::Core
+    - OS::TripleO::Services::Kernel
+    - OS::TripleO::Services::Keystone
+    - OS::TripleO::Services::MySQL
+    - OS::TripleO::Services::RabbitMQ
+    - OS::TripleO::Services::HAproxy
+    - OS::TripleO::Services::Keepalived
+    - OS::TripleO::Services::Ntp
+    - OS::TripleO::Services::Timezone
+    - OS::TripleO::Services::TripleoPackages
+    - OS::TripleO::Services::TripleoFirewall
+  ControllerExtraConfig:
+    nova::compute::libvirt::services::libvirt_virt_type: qemu
+    nova::compute::libvirt::libvirt_virt_type: qemu
+    # Required for Centos 7.3 and Qemu 2.6.0
+    nova::compute::libvirt::libvirt_cpu_mode: 'none'
+  SwiftCeilometerPipelineEnabled: False

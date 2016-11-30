@@ -53,6 +53,9 @@ export INTROSPECT=0
 export NODECOUNT=2
 export PACEMAKER=0
 export UNDERCLOUD_MAJOR_UPGRADE=0
+export OVERCLOUD_MAJOR_UPGRADE=0
+export MAJOR_UPGRADE=0
+export UPGRADE_RELEASE=
 # Whether or not we deploy an Overcloud
 export OVERCLOUD=1
 # NOTE(bnemec): At this time, the undercloud install + image build is taking from
@@ -154,17 +157,28 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
             fi
             ;;
         upgrades)
+            MAJOR_UPGRADE=1
             if [ $TOCI_JOBTYPE == 'undercloud-upgrades' ] ; then
-                UNDERCLOUD_MAJOR_UPGRADE=1
-                export UNDERCLOUD_SANITY_CHECK=1
-
-                # We want to start by installing an Undercloud from the
-                # previous stable release.
+                # We want to start by installing an Undercloud
+                # from the previous stable release.
                 if [ "$STABLE_RELEASE" = "newton" ]; then
                     STABLE_RELEASE=mitaka
                 elif [ -z $STABLE_RELEASE ]; then
                     STABLE_RELEASE=newton
                 fi
+                UNDERCLOUD_MAJOR_UPGRADE=1
+                export UNDERCLOUD_SANITY_CHECK=1
+            fi
+            if [ $TOCI_JOBTYPE == 'multinode-upgrades' ] ; then
+                # We deploy a master Undercloud and an Overcloud with the
+                # previous release. The pingtest is disable because it won't
+                # work with the few services deployed.
+                UPGRADE_RELEASE=newton
+                OVERCLOUD_MAJOR_UPGRADE=1
+                RUN_PING_TEST=0
+                OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS --libvirt-type=qemu -t $OVERCLOUD_DEPLOY_TIMEOUT -e $TRIPLEO_ROOT/tripleo-ci/test-environments/multinode_major_upgrade.yaml -r $TRIPLEO_ROOT/tripleo-ci/test-environments/upgrade_roles_data.yaml --overcloud-ssh-user $OVERCLOUD_SSH_USER --validation-errors-nonfatal"
+                UNDERCLOUD_SSL=0
+                export UNDERCLOUD_SANITY_CHECK=0
             fi
             ;;
         ha)

@@ -95,6 +95,25 @@ if [ -s /etc/nodepool/sub_nodes ]; then
             sudo cp deploy.env $TRIPLEO_ROOT/tripleo-ci/deploy.env
     done
 
+    subnodes_scp_deploy_env
+
+    if [ "$OVERCLOUD_MAJOR_UPGRADE" = "1" ]; then
+        # If upgrading the overcloud, we want to bootstrap the subnodes at the
+        # release defined by $UPGRADE_RELEASE
+        # Save the current value of $STABLE_RELEASE
+        CURR_STABLE_RELEASE=$STABLE_RELEASE
+        # Set $STABLE_RELEASE to the release at which we want to start the subnodes
+        STABLE_RELEASE=$UPGRADE_RELEASE
+        # Update and copy deploy.env to the subnodes
+        echo_vars_to_deploy_env
+        subnodes_scp_deploy_env
+        # Reset $STABLE_RELEASE
+        STABLE_RELEASE=$CURR_STABLE_RELEASE
+        # Update the local deploy.env only so that the undercloud will install
+        # at the current $STABLE_RELEASE
+        echo_vars_to_deploy_env
+    fi
+
     $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --multinode-setup
     echo "INFO: Check /var/log/boostrap-subnodes.log for boostrap subnodes output"
     $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --bootstrap-subnodes 2>&1 | sudo dd of=/var/log/bootstrap-subnodes.log || (tail -n 50 /var/log/bootstrap-subnodes.log && false)

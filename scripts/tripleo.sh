@@ -63,6 +63,7 @@ function show_options {
     echo "      --undercloud-upgrade    -- Upgrade a deployed undercloud."
     echo "      --overcloud-deploy      -- Deploy an overcloud."
     echo "      --overcloud-update      -- Update a deployed overcloud."
+    echo "      --overcloud-upgrade     -- Upgrade a deployed overcloud."
     echo "      --overcloud-delete      -- Delete the overcloud."
     echo "      --use-containers        -- Use a containerized compute node."
     echo "      --enable-check          -- Enable checks on update."
@@ -82,7 +83,7 @@ if [ ${#@} = 0 ]; then
 fi
 
 TEMP=$(getopt -o ,h \
-        -l,help,repo-setup,delorean-setup,delorean-build,multinode-setup,bootstrap-subnodes,undercloud,overcloud-images,register-nodes,introspect-nodes,overcloud-deploy,overcloud-update,overcloud-delete,use-containers,overcloud-pingtest,undercloud-upgrade,skip-pingtest-cleanup,all,enable-check,run-tempest,setup-nodepool-files \
+        -l,help,repo-setup,delorean-setup,delorean-build,multinode-setup,bootstrap-subnodes,undercloud,overcloud-images,register-nodes,introspect-nodes,overcloud-deploy,overcloud-update,overcloud-upgrade,overcloud-delete,use-containers,overcloud-pingtest,undercloud-upgrade,skip-pingtest-cleanup,all,enable-check,run-tempest,setup-nodepool-files \
         -o,x,h,a \
         -n $SCRIPT_NAME -- "$@")
 
@@ -105,6 +106,7 @@ fi
 ALL=${ALL:-""}
 CONTAINER_ARGS=${CONTAINER_ARGS:-"-e /usr/share/openstack-tripleo-heat-templates/environments/docker.yaml -e /usr/share/openstack-tripleo-heat-templates/environments/docker-network.yaml --libvirt-type=qemu"}
 STABLE_RELEASE=${STABLE_RELEASE:-}
+UPGRADE_RELEASE=${UPGRADE_RELEASE:-""}
 DELOREAN_REPO_FILE=${DELOREAN_REPO_FILE:-"delorean.repo"}
 DELOREAN_REPO_URL=${DELOREAN_REPO_URL:-"\
     http://trunk.rdoproject.org/centos7/current-tripleo/"}
@@ -125,6 +127,7 @@ else
     OVERCLOUD_VALIDATE_ARGS=${OVERCLOUD_VALIDATE_ARGS-"--validation-warnings-fatal"}
 fi
 OVERCLOUD_UPDATE=${OVERCLOUD_UPDATE:-""}
+OVERCLOUD_UPGRADE=${OVERCLOUD_UPGRADE:-""}
 OVERCLOUD_UPDATE_RM_FILES=${OVERCLOUD_UPDATE_RM_FILES:-"1"}
 OVERCLOUD_UPDATE_ARGS=${OVERCLOUD_UPDATE_ARGS:-"$OVERCLOUD_DEPLOY_ARGS $OVERCLOUD_VALIDATE_ARGS"}
 OVERCLOUD_UPDATE_CHECK=${OVERCLOUD_UPDATE_CHECK:-}
@@ -134,6 +137,11 @@ OVERCLOUD_IMAGES=${OVERCLOUD_IMAGES:-""}
 OVERCLOUD_IMAGES_LEGACY_ARGS=${OVERCLOUD_IMAGES_LEGACY_ARGS:-"--all"}
 OVERCLOUD_IMAGES_ARGS=${OVERCLOUD_IMAGES_ARGS:-"--output-directory $OVERCLOUD_IMAGES_PATH --config-file $OVERCLOUD_IMAGES_YAML_PATH/overcloud-images.yaml --config-file $OVERCLOUD_IMAGES_YAML_PATH/overcloud-images-centos7.yaml"}
 OVERCLOUD_NAME=${OVERCLOUD_NAME:-"overcloud"}
+OVERCLOUD_UPGRADE_THT_PATH=${OVERCLOUD_UPGRADE_THT_PATH:-"/usr/share/openstack-tripleo-heat-templates"}
+OVERCLOUD_UPGRADE_ARGS=${OVERCLOUD_UPGRADE_ARGS:-"-e $OVERCLOUD_UPGRADE_THT_PATH/overcloud-resource-registry-puppet.yaml $OVERCLOUD_DEPLOY_ARGS -e $OVERCLOUD_UPGRADE_THT_PATH/environments/major-upgrade-all-in-one.yaml -e $HOME/init-repo.yaml --templates $OVERCLOUD_UPGRADE_THT_PATH"}
+UPGRADE_VERSION=${UPGRADE_VERSION:-"master"}
+UPGRADE_REPO_URL=${UPGRADE_REPO_URL:-"http://buildlogs.centos.org/centos/7/cloud/x86_64/rdo-trunk-$UPGRADE_VERSION-tested/delorean.repo"}
+UPGRADE_OVERCLOUD_REPO_URL=${UPGRADE_OVERCLOUD_REPO_URL:-"http://buildlogs.centos.org/centos/7/cloud/x86_64/rdo-trunk-$UPGRADE_VERSION-tested/delorean.repo"}
 UNDERCLOUD_UPGRADE=${UNDERCLOUD_UPGRADE:-""}
 UPGRADE_VERSION=${UPGRADE_VERSION:-"master"}
 SKIP_PINGTEST_CLEANUP=${SKIP_PINGTEST_CLEANUP:-""}
@@ -196,6 +204,7 @@ while true ; do
         --register-nodes) REGISTER_NODES="1"; shift 1;;
         --overcloud-deploy) OVERCLOUD_DEPLOY="1"; shift 1;;
         --overcloud-update) OVERCLOUD_UPDATE="1"; shift 1;;
+        --overcloud-upgrade) OVERCLOUD_UPGRADE="1"; shift 1;;
         --overcloud-delete) OVERCLOUD_DELETE="1"; shift 1;;
         --overcloud-images) OVERCLOUD_IMAGES="1"; shift 1;;
         --overcloud-pingtest) OVERCLOUD_PINGTEST="1"; shift 1;;
@@ -265,7 +274,7 @@ function repo_setup {
             # Note yum --installroot doesn't seem to work as it can't find the extras repos in the
             # system yum.repos.d, so download the package then extraact the repo file
             mkdir -p $REPO_PREFIX
-            sudo yum -y install --enablerepo=extras --downloadonly --downloaddir=$REPO_PREFIX $CEPH_REPO_RPM
+            yumdownloader --destdir $REPO_PREFIX $CEPH_REPO_RPM
             pushd $REPO_PREFIX
             rpm2cpio ${CEPH_REPO_RPM}*.rpm | cpio -ivd
             mv etc/yum.repos.d/* .
@@ -275,7 +284,8 @@ function repo_setup {
         fi
         sudo sed -i -e 's%gpgcheck=.*%gpgcheck=0%' ${REPO_PREFIX}/${CEPH_REPO_FILE}
     fi
-
+    # @matbu TBR debuginfo:
+    log "Stable release: $STABLE_RELEASE"
     if [ -z "$STABLE_RELEASE" ]; then
         # Enable the Delorean Deps repository
         sudo curl -Lvo $REPO_PREFIX/delorean-deps.repo http://trunk.rdoproject.org/centos7/delorean-deps.repo
@@ -541,6 +551,7 @@ except:
 
 }
 
+
 function register_nodes {
 
     log "Register nodes"
@@ -585,6 +596,8 @@ function overcloud_deploy {
     stackrc_check
 
     OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS $OVERCLOUD_VALIDATE_ARGS"
+    # Set dns server for the overcloud nodes
+    neutron subnet-update $(neutron net-list | grep ctlplane | cut  -d ' ' -f 6) --dns-nameserver $(cat /etc/resolv.conf | grep nameserver | awk '{ print $2 }' | sed ':a;N;$!ba;s/\n/ --dns-nameserver /g')
 
     if [[ $USE_CONTAINERS == 1 ]]; then
         if ! glance image-list | grep  -q atomic-image; then
@@ -668,6 +681,61 @@ function overcloud_update {
         log "Overcloud update - DONE."
         if [[ $OVERCLOUD_UPDATE_RM_FILES == 1 ]]; then
             rm -f $BEFORE_FILE $AFTER_FILE
+        fi
+    else
+        log "Overcloud FAILED - No stack $OVERCLOUD_NAME."
+        exit 1
+    fi
+}
+
+function overcloud_upgrade {
+    stackrc_check
+    if heat stack-show "$OVERCLOUD_NAME" ; then
+        log "Create overcloud repo template file"
+        /bin/bash -c "cat <<EOF>$HOME/init-repo.yaml
+
+parameter_defaults:
+  UpgradeInitCommand: |
+    set -e
+    # For some reason '$HOME' is not defined when the Heat agent executes this
+    # script and tripleo.sh expects it. Just reuse the same value from the
+    # current undercloud user.
+    yum clean all
+    HOME=$HOME $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --repo-setup
+    yum clean all
+    yum install -y python-heat-agent-*
+
+    # TODO: (slagle)
+    # remove the --noscripts install of openstack-tripleo-image-elements
+    # once https://review.rdoproject.org/r/4225 merges
+    pushd /tmp
+    yumdownloader openstack-tripleo-image-elements
+    rpm -Uvh --noscripts --force ./openstack-tripleo-image-elements*
+    rm -f openstack-tripleo-image-elements*
+    popd
+
+    # FIXME: matbu
+    # Remove those packages is temporary workaround since the fix in
+    # https://bugs.launchpad.net/tripleo/+bug/1649284
+    # will be release and landed in the packages
+    yum remove -y python-UcsSdk openstack-neutron-bigswitch-agent python-networking-bigswitch openstack-neutron-bigswitch-lldp python-networking-odl
+    # Ref https://review.openstack.org/#/c/392615 disable the old hiera hook
+    # FIXME - this should probably be handled via packaging?
+    rm -f /usr/libexec/os-apply-config/templates/etc/puppet/hiera.yaml
+    rm -f /usr/libexec/os-refresh-config/configure.d/40-hiera-datafiles
+    rm -f /etc/puppet/hieradata/*.yaml
+EOF"
+        log "Overcloud upgrade started."
+        log "Upgrade command arguments: $OVERCLOUD_UPGRADE_ARGS"
+        log "Execute major upgrade."
+        openstack overcloud deploy $OVERCLOUD_UPGRADE_ARGS
+        log "Major upgrade - DONE."
+
+        if heat stack-show "$OVERCLOUD_NAME" | grep "stack_status " | egrep "UPDATE_COMPLETE"; then
+            log "Major Upgrade - DONE."
+        else
+            log "Major Upgrade FAILED."
+            exit 1
         fi
     else
         log "Overcloud FAILED - No stack $OVERCLOUD_NAME."
@@ -1024,14 +1092,10 @@ function bootstrap_subnodes {
     local sub_nodes
     sub_nodes=$(cat /etc/nodepool/sub_nodes_private)
 
+    bootstrap_subnodes_repos
+
     for ip in $sub_nodes; do
         log "Bootstrapping $ip"
-        log "Running --repo-setup on $ip"
-        # Do repo setup
-        ssh $SSH_OPTIONS -t -i /etc/nodepool/id_rsa $ip \
-            TRIPLEO_ROOT=$TRIPLEO_ROOT \
-            $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --repo-setup
-
         # Run overcloud full bootstrap script
         log "Running bootstrap-overcloud-full.sh on $ip"
         ssh $SSH_OPTIONS -t -i /etc/nodepool/id_rsa $ip \
@@ -1041,6 +1105,7 @@ function bootstrap_subnodes {
 
     log "Bootstrap subnodes - DONE".
 }
+
 
 function setup_nodepool_files {
     log "Setup nodepool files"
@@ -1090,6 +1155,37 @@ function setup_nodepool_files {
     log "Setup nodepool files - DONE"
 }
 
+
+function bootstrap_subnodes_repos {
+    log "Bootstrap subnodes repos"
+
+    local sub_nodes
+    sub_nodes=$(cat /etc/nodepool/sub_nodes_private)
+
+    for ip in $sub_nodes; do
+        log "Bootstrapping $ip"
+        log "Running --repo-setup on $ip"
+        # Do repo setup
+        # if UPGRADE_RELEASE is set, then we are making an upgrade, so
+        # we need to set the stable_release.
+        if [ ! -z $UPGRADE_RELEASE ]; then
+            log "Stable release $UPGRADE_RELEASE"
+            ssh $SSH_OPTIONS -t -i /etc/nodepool/id_rsa $ip \
+                "TRIPLEO_ROOT=$TRIPLEO_ROOT; \
+                unset STABLE_RELEASE; \
+                export STABLE_RELEASE=$UPGRADE_RELEASE; \
+                $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --repo-setup"
+        else
+            ssh $SSH_OPTIONS -t -i /etc/nodepool/id_rsa $ip \
+                TRIPLEO_ROOT=$TRIPLEO_ROOT \
+                $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --repo-setup
+        fi
+    done
+
+    log "Bootstrap subnodes repos - DONE".
+}
+
+
 if [ "$REPO_SETUP" = 1 ]; then
     repo_setup
 fi
@@ -1132,6 +1228,10 @@ fi
 
 if [ "$OVERCLOUD_UPDATE" = 1 ]; then
     overcloud_update
+fi
+
+if [ "$OVERCLOUD_UPGRADE" = 1 ]; then
+    overcloud_upgrade
 fi
 
 if [ "$OVERCLOUD_DELETE" = 1 ]; then
