@@ -98,7 +98,7 @@ collect_oooq_logs
 
 # TODO(sshnaidm): hack for collect-logs role,
 # fix it there by replacing hardcoded 'stack' user
-sed -i "s@/home/stack/@/home/jenkins/@g" $OPT_WORKDIR/usr/local/share/ansible/roles/tripleo-collect-logs/tasks/create-docs.yml ||:
+sed -i "s@/home/stack/@/home/jenkins/@g" $OPT_WORKDIR/usr/local/share/ansible/roles/collect-logs/tasks/create-docs.yml ||:
 # TODO(sshnaidm): fix this either in role or quickstart.sh
 # it will not duplicate logs from undercloud and 127.0.0.2
 sed -i 's/hosts: all:!localhost/hosts: all:!localhost:!127.0.0.2/' $OPT_WORKDIR/playbooks/collect-logs.yml ||:
