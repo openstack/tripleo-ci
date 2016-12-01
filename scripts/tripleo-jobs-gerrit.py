@@ -14,6 +14,7 @@ DEFAULT_JOB_NAMES = [
     'gate-tripleo-ci-centos-7-scenario001-multinode',
     'gate-tripleo-ci-centos-7-scenario002-multinode',
     'gate-tripleo-ci-centos-7-scenario003-multinode',
+    'gate-tripleo-ci-centos-7-scenario004-multinode',
     'gate-tripleo-ci-centos-7-undercloud',
 ]
 
