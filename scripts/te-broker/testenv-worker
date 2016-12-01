@@ -31,6 +31,7 @@ import time
 import uuid
 
 import gear
+import posix_ipc
 
 # 100Mb log files
 maxBytes=1024*1024*100
@@ -125,9 +126,15 @@ class TEWorkerThread(threading.Thread):
         try:
             with tempfile.NamedTemporaryFile('r') as fp:
                 os.environ["TE_DATAFILE"] = fp.name
-                logger.info(
-                    subprocess.check_output([self.scriptfiles[0], self.num, arguments.get("envsize","2"), arguments.get("ucinstance","")], stderr=subprocess.STDOUT))
-                clientdata = fp.read()
+                # Limit the number of concurrent environment creations to 5.
+                # This will hopefully reduce the number of testenv creations
+                # that fail or timeout due to an overloaded controller.
+                with posix_ipc.Semaphore('testenv-worker',
+                                         flags=posix_ipc.O_CREAT,
+                                         initial_value=5):
+                    logger.info(
+                        subprocess.check_output([self.scriptfiles[0], self.num, arguments.get("envsize","2"), arguments.get("ucinstance","")], stderr=subprocess.STDOUT))
+                    clientdata = fp.read()
         except subprocess.CalledProcessError as e:
             logger.error(e.output)
             clientdata = "Couldn't retrieve env"
