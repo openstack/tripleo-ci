@@ -462,8 +462,11 @@ function undercloud {
     fi
 
     # Hostname check, add to /etc/hosts if needed
-    if ! grep -E "^127.0.0.1\s*$HOSTNAME" /etc/hosts; then
-        sudo /bin/bash -c "echo \"127.0.0.1 $HOSTNAME\" >> /etc/hosts"
+    if ! grep -E "^127.0.0.1\s*$(hostname -f)" /etc/hosts; then
+        sudo sed -i "s/127.0.0.1\s*\(.*\)/127.0.0.1\t$(hostname -f) $(hostname -s) \1/" /etc/hosts
+    fi
+    if ! grep -E "^::1\s*$(hostname -f)" /etc/hosts; then
+        sudo sed -i "s/::1\s*\(.*\)/::1\t$(hostname -f) $(hostname -s) \1/" /etc/hosts
     fi
 
     openstack undercloud install
