@@ -183,7 +183,7 @@ function postci(){
 
     if [ "$OVB" == "1" ] ; then
         # Get logs from the undercloud
-        $TARCMD > $WORKSPACE/logs/undercloud.tar.xz
+        $TARCMD $HOME/*.log > $WORKSPACE/logs/undercloud.tar.xz
         extract_logs undercloud
 
         # when we ran get_host_info.sh on the undercloud it left the output of nova list in /tmp for us
@@ -221,7 +221,7 @@ function postci(){
         fi
     elif [ "$OSINFRA" = "1" ] ; then
         local i=2
-        $TARCMD > $WORKSPACE/logs/primary_node.tar.xz
+        $TARCMD $HOME/*.log > $WORKSPACE/logs/primary_node.tar.xz
         # Extract /var/log for easy viewing
         tar xf $WORKSPACE/logs/primary_node.tar.xz -C $WORKSPACE/logs/ var/log
         for ip in $(cat /etc/nodepool/sub_nodes_private); do
