@@ -186,20 +186,29 @@ function postci(){
 
     if [ "$OVB" == "1" ] ; then
         # Get logs from the undercloud
-        $TARCMD $HOME/*.log > $WORKSPACE/logs/undercloud.tar.xz
-        extract_logs undercloud
+        # Log collection takes a while.  Let's start these in the background
+        # so they can run in parallel, then we'll wait for them to complete
+        # after they're all running.
+        (
+            $TARCMD $HOME/*.log > $WORKSPACE/logs/undercloud.tar.xz
+            extract_logs undercloud
+        ) &
 
         # when we ran get_host_info.sh on the undercloud it left the output of nova list in /tmp for us
         for INSTANCE in $(cat /tmp/nova-list.txt | grep ACTIVE | awk '{printf"%s=%s\n", $4, $12}') ; do
             IP=${INSTANCE//*=}
             SANITIZED_ADDRESS=$(sanitize_ip_address ${IP})
             NAME=${INSTANCE//=*}
-            scp $SSH_OPTIONS $TRIPLEO_ROOT/tripleo-ci/scripts/get_host_info.sh heat-admin@${SANITIZED_ADDRESS}:/tmp
-            timeout -s 15 -k 600 300 ssh $SSH_OPTIONS heat-admin@$IP sudo /tmp/get_host_info.sh
-            ssh $SSH_OPTIONS heat-admin@$IP $JLOGCMD
-            ssh $SSH_OPTIONS heat-admin@$IP $TARCMD > $WORKSPACE/logs/${NAME}.tar.xz
-            extract_logs $NAME
+            (
+                scp $SSH_OPTIONS $TRIPLEO_ROOT/tripleo-ci/scripts/get_host_info.sh heat-admin@${SANITIZED_ADDRESS}:/tmp
+                timeout -s 15 -k 600 300 ssh $SSH_OPTIONS heat-admin@$IP sudo /tmp/get_host_info.sh
+                ssh $SSH_OPTIONS heat-admin@$IP $JLOGCMD
+                ssh $SSH_OPTIONS heat-admin@$IP $TARCMD > $WORKSPACE/logs/${NAME}.tar.xz
+                extract_logs $NAME
+            ) &
         done
+        # Wait for the commands we started in the background to complete
+        wait
         # post metrics
         # This spams the postci output with largely uninteresting trace output
         set +x
