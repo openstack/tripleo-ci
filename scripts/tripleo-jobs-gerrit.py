@@ -136,7 +136,7 @@ def gen_html(data, html_file, table_file, stats_hours, job_names, options):
                 job_columns += '<a STYLE="color : %s" href="%s">%s,%s</a>' % \
                     (color, gerrit_href, result['url'].split('/')[-1],
                      result['patchset'])
-                job_columns += ' - %s ' % (ci_result['duration'])
+                job_columns += '<br/>%s ' % (ci_result['duration'])
                 job_columns += '<a STYLE="text-decoration:none" '
                 job_columns += 'href="%s">log</a>' %\
                                ci_result['log_url']
