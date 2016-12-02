@@ -115,8 +115,7 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
     case $JOB_TYPE_PART in
         updates)
             if [[ "$TOCI_JOBTYPE" =~ 'ovb-updates' ]] ; then
-                NODECOUNT=2
-                # TODO(bnemec): Re-enable Ceph in the updates job
+                NODECOUNT=3
                 if [[ "${STABLE_RELEASE}" =~ ^mitaka$ ]] ; then
                     ENDPOINT_LIST_LOCATION=$TRIPLEO_ROOT/tripleo-ci/test-environments
                     CA_ENVIRONMENT_FILE=inject-trust-anchor-ipv6.yaml
@@ -133,6 +132,8 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
                     -e $TRIPLEO_ROOT/tripleo-ci/test-environments/enable-tls-ipv6.yaml
                     -e $ENDPOINT_LIST_LOCATION/tls-endpoints-public-ip.yaml
                     -e $TRIPLEO_ROOT/tripleo-ci/test-environments/$CA_ENVIRONMENT_FILE
+                    --ceph-storage-scale 1
+                    -e /usr/share/openstack-tripleo-heat-templates/environments/storage-environment.yaml
                 "
                 OVERCLOUD_UPDATE_ARGS="-e /usr/share/openstack-tripleo-heat-templates/overcloud-resource-registry-puppet.yaml $OVERCLOUD_DEPLOY_ARGS"
                 NETISO_V6=1
