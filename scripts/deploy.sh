@@ -172,9 +172,12 @@ if [ "$MULTINODE" = "1" ]; then
 fi
 
 if [ $OVERCLOUD == 1 ] ; then
+    source ~/stackrc
     start_metric "tripleo.overcloud.${TOCI_JOBTYPE}.deploy.seconds"
     http_proxy= $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --overcloud-deploy ${TRIPLEO_SH_ARGS:-}
     stop_metric "tripleo.overcloud.${TOCI_JOBTYPE}.deploy.seconds"
+    # Add hosts to /etc/hosts
+    openstack stack output show overcloud HostsEntry -f value -c output_value | sudo tee -a /etc/hosts
 fi
 
 if [ $UNDERCLOUD_IDEMPOTENT == 1 ]; then
