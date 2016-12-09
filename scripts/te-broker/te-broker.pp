@@ -12,10 +12,6 @@ vcsrepo {"/opt/stack/tripleo-ci":
     ensure => latest,
 }
 
-package {"python-posix_ipc":
-    ensure => "present",
-}
-
 cron {"refresh-server":
     command => "timeout 20m puppet apply /opt/stack/tripleo-ci/scripts/te-broker/te-broker.pp",
     minute  => "*/30"
