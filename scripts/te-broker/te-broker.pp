@@ -23,8 +23,10 @@ cron {"refresh-server":
 
 service{"te_workers":
     ensure => "running",
+    enable => true,
 }
 service{"geard":
     ensure => "running",
+    enable => true,
 }
 
