@@ -113,8 +113,9 @@ function update_image(){
             sudo chroot $MOUNTDIR setfiles /etc/selinux/targeted/contexts/files/file_contexts /
             sudo umount $MOUNTDIR
             sudo kpartx -dv ${IMAGE/qcow2/raw}
-            qemu-img convert -f raw -O qcow2 ${IMAGE/qcow2/raw} ${IMAGE}
-            rm -rf ${IMAGE/qcow2/raw}
+            qemu-img convert -c -f raw -O qcow2 ${IMAGE/qcow2/raw} ${IMAGE}
+            sudo rm -rf ${IMAGE/qcow2/raw}
+            sudo losetup -d /dev/loop0
             ;;
         initramfs)
             sudo find . -print | sudo cpio -o -H newc | gzip > $IMAGE
