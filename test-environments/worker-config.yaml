@@ -5,3 +5,6 @@ parameter_defaults:
     heat::api_cloudwatch::enabled: false
     heat::api_cfn::enabled: false
     heat::rpc_response_timeout: 600
+  NovaComputeExtraConfig:
+    # Required for Centos 7.3 and Qemu 2.6.0
+    nova::compute::libvirt::libvirt_cpu_mode: 'none'
