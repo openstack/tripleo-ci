@@ -14,3 +14,6 @@ parameter_defaults:
   NeutronWorkers: 1
   NovaWorkers: 1
   SwiftWorkers: 1
+  NovaComputeExtraConfig:
+    # Required for Centos 7.3 and Qemu 2.6.0
+    nova::compute::libvirt::libvirt_cpu_mode: 'none'
