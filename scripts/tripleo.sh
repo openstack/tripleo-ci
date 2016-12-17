@@ -795,6 +795,10 @@ function overcloud_sanitytest_create {
                 run_cmd openstack user create ${SANITYTEST_CONTENT_NAME}
                 run_cmd openstack user list
                 ;;
+            "glance_api" )
+                run_cmd openstack image create ${SANITYTEST_CONTENT_NAME}
+                run_cmd openstack image list
+                ;;
         esac
     done
 }
@@ -805,6 +809,9 @@ function overcloud_sanitytest_check {
         case $service in
             "keystone" )
                 run_cmd openstack user show ${SANITYTEST_CONTENT_NAME}
+                ;;
+            "glance_api" )
+                run_cmd openstack image show ${SANITYTEST_CONTENT_NAME}
                 ;;
         esac
     done
@@ -817,6 +824,9 @@ function overcloud_sanitytest_cleanup {
             "keystone" )
                 echo "Sanity test keystone"
                 run_cmd openstack user delete ${SANITYTEST_CONTENT_NAME}
+                ;;
+            "glance_api" )
+                run_cmd openstack image delete ${SANITYTEST_CONTENT_NAME}
                 ;;
         esac
     done
