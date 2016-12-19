@@ -4,6 +4,7 @@ set -ex
 ENVNUM=${1:-$(date +%s)}
 NODECOUNT=${2:-2}
 UCINSTANCE=${3:-}
+CREATE_UNDERCLOUD=${4:-""}
 PROVISIONNET=provision-${ENVNUM}
 PUBLICNET=public-${ENVNUM}
 ENVFILE=env-${ENVNUM}.yaml
@@ -28,7 +29,17 @@ sed -i -e "s/os_tenant:.*/os_tenant: $OS_TENANT_NAME/" $ENVFILE
 sed -i -e "s/os_user:.*/os_user: $OS_USERNAME/" $ENVFILE
 sed -i -e "s/provision_net_shared:.*/provision_net_shared: true/" $ENVFILE
 sed -i -e "s/public_net_shared:.*/public_net_shared: true/" $ENVFILE
-echo -e 'resource_registry:\n  OS::OVB::UndercloudEnvironment: OS::Heat::None' >> $ENVFILE
+if [ -n "$CREATE_UNDERCLOUD" ]; then
+    sed -i -e "s/undercloud_name:.*/undercloud_name: extra-node/" $ENVFILE
+    sed -i -e "s/undercloud_flavor:.*/undercloud_flavor: m1.small/" $ENVFILE
+fi
+
+echo -e 'resource_registry:\n'  >> $ENVFILE
+
+if [ -z "$CREATE_UNDERCLOUD" ]; then
+    echo '  OS::OVB::UndercloudEnvironment: OS::Heat::None' >> $ENVFILE
+fi
+echo '  OS::OVB::UndercloudFloating: templates/undercloud-floating-none.yaml' >> $ENVFILE
 echo '  OS::OVB::BaremetalNetworks: templates/baremetal-networks-all.yaml' >> $ENVFILE
 echo '  OS::OVB::BaremetalPorts: templates/baremetal-ports-all.yaml' >> $ENVFILE
 
