@@ -256,7 +256,7 @@ if [ "$UNDERCLOUD_MAJOR_UPGRADE" == 1 ] ; then
     elif [ "$STABLE_RELEASE" = "newton" ]; then
         export STABLE_RELEASE=""
     fi
-
+    echo_vars_to_deploy_env
     # Add the delorean ci repo so that we include the package being tested
     layer_ci_repo
     $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --undercloud-upgrade 2>&1 | ts '%Y-%m-%d %H:%M:%S.000 |' | sudo dd of=/var/log/undercloud_upgrade.txt || (tail -n 50 /var/log/undercloud_upgrade.txt && false)
