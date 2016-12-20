@@ -10,10 +10,13 @@ rm -f /opt/stack/openstack-virtual-baremetal/$ENVFILE
 
 source /etc/nodepoolrc
 
+# NOTE(bnemec): This function starts the port deletions in the background.
+# To ensure they complete before you proceed, you must call "wait" after
+# calling this function.
 function delete_ports() {
     local subnetid=$1
     for PORT in $(neutron port-list | grep $subnetid | awk '{print $2}') ; do
-        neutron port-delete $PORT
+        neutron port-delete $PORT &
     done
 }
 
@@ -22,6 +25,8 @@ SUBNETID=$(neutron subnet-show $PUBLICNET | awk '$2=="id" {print $4}')
 delete_ports $SUBNETID
 SUBNETID=$(neutron subnet-show $PROVISIONNET | awk '$2=="id" {print $4}')
 delete_ports $SUBNETID
+# Needed to ensure all ports have been deleted before we delete the heat stack
+wait
 
 # NOTE(bnemec): I'm periodically seeing the stack-delete fail to connect to
 # Heat.  It looks like a transient network issue, so let's just retry when it happens.
