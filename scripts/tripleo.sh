@@ -55,6 +55,7 @@ function show_options {
     echo "      --delorean-build        -- Build a delorean package locally"
     echo "      --multinode-setup       -- Perform multinode setup."
     echo "      --bootstrap-subnodes    -- Perform bootstrap setup on subnodes."
+    echo "      --setup-nodepool-files  -- Setup nodepool files on subnodes."
     echo "      --undercloud            -- Install the undercloud."
     echo "      --overcloud-images      -- Build and load overcloud images."
     echo "      --register-nodes        -- Register and configure nodes."
@@ -81,7 +82,7 @@ if [ ${#@} = 0 ]; then
 fi
 
 TEMP=$(getopt -o ,h \
-        -l,help,repo-setup,delorean-setup,delorean-build,multinode-setup,bootstrap-subnodes,undercloud,overcloud-images,register-nodes,introspect-nodes,overcloud-deploy,overcloud-update,overcloud-delete,use-containers,overcloud-pingtest,undercloud-upgrade,skip-pingtest-cleanup,all,enable-check,run-tempest \
+        -l,help,repo-setup,delorean-setup,delorean-build,multinode-setup,bootstrap-subnodes,undercloud,overcloud-images,register-nodes,introspect-nodes,overcloud-deploy,overcloud-update,overcloud-delete,use-containers,overcloud-pingtest,undercloud-upgrade,skip-pingtest-cleanup,all,enable-check,run-tempest,setup-nodepool-files \
         -o,x,h,a \
         -n $SCRIPT_NAME -- "$@")
 
@@ -159,6 +160,11 @@ DELOREAN_BUILD=${DELOREAN_BUILD:-""}
 MULTINODE_SETUP=${MULTINODE_SETUP:-""}
 MULTINODE_ENV_NAME=${MULTINODE_ENV_NAME:-}
 BOOTSTRAP_SUBNODES=${BOOTSTRAP_SUBNODES:-""}
+SETUP_NODEPOOL_FILES=${SETUP_NODEPOOL_FILES:-""}
+PRIMARY_NODE_IP=${PRIMARY_NODE_IP:-""}
+SUB_NODE_IPS=${SUB_NODE_IPS:-""}
+NODEPOOL_REGION=${NODEPOOL_REGION:-"nodepool_region"}
+NODEPOOL_CLOUD=${NODEPOOL_CLOUD:-"nodepool_cloud"}
 STDERR=/dev/null
 UNDERCLOUD=${UNDERCLOUD:-""}
 UNDERCLOUD_CONF=${UNDERCLOUD_CONF:-"/usr/share/instack-undercloud/undercloud.conf.sample"}
@@ -200,6 +206,7 @@ while true ; do
         --undercloud-upgrade) UNDERCLOUD_UPGRADE="1"; shift 1;;
         --multinode-setup) MULTINODE_SETUP="1"; shift 1;;
         --bootstrap-subnodes) BOOTSTRAP_SUBNODES="1"; shift 1;;
+        --setup-nodepool-files) SETUP_NODEPOOL_FILES="1"; shift 1;;
         -x) set -x; STDERR=/dev/stderr; shift 1;;
         -h | --help) show_options 0;;
         --) shift ; break ;;
@@ -872,6 +879,7 @@ function clone {
 
     log "$0 requires $repo to be cloned at \$TRIPLEO_ROOT ($TRIPLEO_ROOT)"
 
+    mkdir -p $TRIPLEO_ROOT
     if [ ! -d $TRIPLEO_ROOT/$(basename $repo) ]; then
         echo "$repo not found at $TRIPLEO_ROOT/$repo, git cloning."
         pushd $TRIPLEO_ROOT
@@ -1017,6 +1025,54 @@ function bootstrap_subnodes {
     log "Bootstrap subnodes - DONE".
 }
 
+function setup_nodepool_files {
+    log "Setup nodepool files"
+
+    clone openstack-dev/devstack
+    clone openstack-infra/devstack-gate
+    clone openstack-infra/tripleo-ci
+
+    if [ ! -d $BASE/new ]; then
+        ln -s $TRIPLEO_ROOT $BASE/new
+    fi
+
+    sudo mkdir -p /etc/nodepool
+    sudo chown -R $(whoami): /etc/nodepool
+
+    if [ ! -f /etc/nodepool/id_rsa ]; then
+        ssh-keygen -N "" -t rsa -f /etc/nodepool/id_rsa
+    fi
+
+	if [ -z $PRIMARY_NODE_IP ]; then
+		echo '$PRIMARY_NODE_IP must be defined. Exiting.'
+		exit 1
+	fi
+
+    echo $PRIMARY_NODE_IP > /etc/nodepool/node
+    echo $PRIMARY_NODE_IP > /etc/nodepool/primary_node
+    echo $PRIMARY_NODE_IP > /etc/nodepool/primary_node_private
+
+    echo -n > /etc/nodepool/sub_nodes
+    echo -n > /etc/nodepool/sub_nodes_private
+    for sub_node_ip in $SUB_NODE_IPS; do
+        echo $sub_node_ip >> /etc/nodepool/sub_nodes
+        echo $sub_node_ip >> /etc/nodepool/sub_nodes_private
+
+        ssh $SSH_OPTIONS -tt $sub_node_ip sudo mkdir -p $TRIPLEO_ROOT
+        ssh $SSH_OPTIONS -tt $sub_node_ip sudo chown -R $(whoami): $TRIPLEO_ROOT
+        rsync -e "ssh $SSH_OPTIONS" -avhP $TRIPLEO_ROOT $sub_node_ip:$TRIPLEO_ROOT/..
+        rsync -e "ssh $SSH_OPTIONS" -avhP /etc/nodepool $sub_node_ip:
+        ssh $SSH_OPTIONS -tt $sub_node_ip sudo cp -r nodepool /etc
+        ssh $SSH_OPTIONS $sub_node_ip \
+            "/bin/bash -c 'cat /etc/nodepool/id_rsa.pub >> ~/.ssh/authorized_keys'"
+    done
+
+    echo "NODEPOOL_REGION=$NODEPOOL_REGION" > /etc/nodepool/provider
+    echo "NODEPOOL_CLOUD=$NODEPOOL_CLOUD" >> /etc/nodepool/provider
+
+    log "Setup nodepool files - DONE"
+}
+
 if [ "$REPO_SETUP" = 1 ]; then
     repo_setup
 fi
@@ -1091,6 +1147,10 @@ fi
 
 if [ "$BOOTSTRAP_SUBNODES" = 1 ]; then
     bootstrap_subnodes
+fi
+
+if [ "$SETUP_NODEPOOL_FILES" = 1 ]; then
+    setup_nodepool_files
 fi
 
 if [ "$ALL" = 1 ]; then
