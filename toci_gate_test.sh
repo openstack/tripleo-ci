@@ -78,6 +78,7 @@ export OVB=0
 export UCINSTANCEID=NULL
 export TOCIRUNNER="./toci_instack_ovb.sh"
 export MULTINODE=0
+export OVERCLOUD_ROLES=""
 # Whether or not we run TripleO using OpenStack Infra nodes
 export OSINFRA=0
 export CONTROLLER_HOSTS=
@@ -184,16 +185,24 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
         multinode)
             MULTINODE=1
             TOCIRUNNER="./toci_instack_osinfra.sh"
-            NODECOUNT=1
-            PACEMAKER=1
             OSINFRA=1
-
-            CONTROLLER_HOSTS=$(sed -n 1,1p /etc/nodepool/sub_nodes)
-            SUBNODES_SSH_KEY=/etc/nodepool/id_rsa
             UNDERCLOUD_SSL=0
             INTROSPECT=0
+            SUBNODES_SSH_KEY=/etc/nodepool/id_rsa
             OVERCLOUD_DEPLOY_ARGS="--libvirt-type=qemu -t $OVERCLOUD_DEPLOY_TIMEOUT"
-            OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS -e /usr/share/openstack-tripleo-heat-templates/environments/deployed-server-environment.yaml -e $MULTINODE_ENV_PATH --compute-scale 0 --overcloud-ssh-user $OVERCLOUD_SSH_USER --validation-errors-nonfatal"
+
+            if [[ "$TOCI_JOBTYPE" =~ "3nodes" ]]; then
+                NODECOUNT=2
+                PACEMAKER=1
+                OVERCLOUD_ROLES="ControllerApi Controller"
+                export ControllerApi_hosts=$(sed -n 1,1p /etc/nodepool/sub_nodes)
+                export Controller_hosts=$(sed -n 2,2p /etc/nodepool/sub_nodes)
+                OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS -e /usr/share/openstack-tripleo-heat-templates/environments/puppet-pacemaker.yaml -e /usr/share/openstack-tripleo-heat-templates/environments/deployed-server-environment.yaml -e $TRIPLEO_ROOT/tripleo-ci/test-environments/multinode-3nodes.yaml --compute-scale 0 --overcloud-ssh-user $OVERCLOUD_SSH_USER --validation-errors-nonfatal -r $TRIPLEO_ROOT/tripleo-ci/test-environments/multinode-3nodes-roles-data.yaml"
+            else
+                NODECOUNT=1
+                CONTROLLER_HOSTS=$(sed -n 1,1p /etc/nodepool/sub_nodes)
+                OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS -e /usr/share/openstack-tripleo-heat-templates/environments/deployed-server-environment.yaml -e $MULTINODE_ENV_PATH --compute-scale 0 --overcloud-ssh-user $OVERCLOUD_SSH_USER --validation-errors-nonfatal"
+            fi
             ;;
         undercloud)
             TOCIRUNNER="./toci_instack_osinfra.sh"
