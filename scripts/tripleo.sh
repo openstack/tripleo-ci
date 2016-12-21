@@ -1050,10 +1050,10 @@ function setup_nodepool_files {
         ssh-keygen -N "" -t rsa -f /etc/nodepool/id_rsa
     fi
 
-	if [ -z $PRIMARY_NODE_IP ]; then
-		echo '$PRIMARY_NODE_IP must be defined. Exiting.'
-		exit 1
-	fi
+    if [ -z $PRIMARY_NODE_IP ]; then
+        echo '$PRIMARY_NODE_IP must be defined. Exiting.'
+        exit 1
+    fi
 
     echo $PRIMARY_NODE_IP > /etc/nodepool/node
     echo $PRIMARY_NODE_IP > /etc/nodepool/primary_node
