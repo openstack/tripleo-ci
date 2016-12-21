@@ -17,5 +17,6 @@ file {"/etc/squid/squid.conf":
 } ~>
 service {"squid":
     ensure => "running",
+    enable => true,
 }
 
