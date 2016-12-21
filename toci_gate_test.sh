@@ -16,7 +16,7 @@ if [ $NODEPOOL_CLOUD == 'tripleo-test-cloud-rh1' ]; then
     # In order to save space remove the cached git repositories, at this point in
     # CI the ones we are interested in have been cloned to /opt/stack/new. We
     # can also remove some distro images cached on the images.
-    sudo swapoff /root/swapfile
+    sudo test -e /root/swapfile && sudo swapoff /root/swapfile
     sudo rm -rf /opt/git /opt/stack/cache/files/mysql.qcow2 /opt/stack/cache/files/ubuntu-12.04-x86_64.tar.gz /root/swapfile
 fi
 
