@@ -261,6 +261,11 @@ function postci(){
     # Make sure zuuls log gathering can read everything in the $WORKSPACE, it also contains a
     # link to ml2_conf.ini so this also need to be made read only
     sudo find /etc/neutron/plugins/ml2/ml2_conf.ini $WORKSPACE -type f | sudo xargs chmod 644
+    # Allow all ports before we finish up.  This should avoid
+    # https://bugs.launchpad.net/tripleo/+bug/1649742 which we've now spent far
+    # too much time debugging.  It's currently only happening on the mitaka
+    # branch anyway, so once that branch goes EOL we can probably remove this.
+    sudo iptables -I INPUT -p tcp -j ACCEPT
     return 0
 }
 
