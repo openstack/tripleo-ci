@@ -126,7 +126,12 @@ class TEWorkerThread(threading.Thread):
             with tempfile.NamedTemporaryFile('r') as fp:
                 os.environ["TE_DATAFILE"] = fp.name
                 logger.info(
-                    subprocess.check_output([self.scriptfiles[0], self.num, arguments.get("envsize","2"), arguments.get("ucinstance","")], stderr=subprocess.STDOUT))
+                    subprocess.check_output([self.scriptfiles[0],
+                                             self.num,
+                                             arguments.get("envsize","2"),
+                                             arguments.get("ucinstance",""),
+                                             arguments.get("create_undercloud", "")],
+                                            stderr=subprocess.STDOUT))
                 clientdata = fp.read()
         except subprocess.CalledProcessError as e:
             logger.error(e.output)

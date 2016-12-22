@@ -153,6 +153,8 @@ def main(args=sys.argv[1:]):
     parser.add_argument('--ucinstance',
                         help='uuid for the undercloud instance (where an '
                              'interface on the provisioning net is attached')
+    parser.add_argument('--create-undercloud', action='store_true',
+                        help='deploy the undercloud node.')
     parser.add_argument('--debug', '-d',  action='store_true',
                         help='Set to debug mode.')
     opts = parser.parse_args(args)
@@ -172,6 +174,7 @@ def main(args=sys.argv[1:]):
         "timeout": opts.timeout,
         "envsize":opts.envsize,
         "ucinstance":opts.ucinstance,
+        "create_undercloud": "true" if opts.create_undercloud else "",
     }
     job = gear.Job('lockenv', json.dumps(job_params))
     client.submitJob(job)
