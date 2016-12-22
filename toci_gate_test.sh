@@ -118,7 +118,23 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
             if [[ "$TOCI_JOBTYPE" =~ 'ovb-updates' ]] ; then
                 NODECOUNT=2
                 # TODO(bnemec): Re-enable Ceph in the updates job
-                OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS -e /usr/share/openstack-tripleo-heat-templates/environments/puppet-pacemaker.yaml -e /usr/share/openstack-tripleo-heat-templates/environments/network-isolation-v6.yaml -e $TRIPLEO_ROOT/tripleo-ci/test-environments/ipv6-network-templates/network-environment.yaml -e $TRIPLEO_ROOT/tripleo-ci/test-environments/net-iso.yaml"
+                if [[ "${STABLE_RELEASE}" =~ ^mitaka$ ]] ; then
+                    ENDPOINT_LIST_LOCATION=$TRIPLEO_ROOT/tripleo-ci/test-environments
+                    CA_ENVIRONMENT_FILE=inject-trust-anchor-ipv6.yaml
+                else
+                    ENDPOINT_LIST_LOCATION=/usr/share/openstack-tripleo-heat-templates/environments
+                    CA_ENVIRONMENT_FILE=inject-trust-anchor-hiera-ipv6.yaml
+                fi
+                OVERCLOUD_DEPLOY_ARGS="
+                    $OVERCLOUD_DEPLOY_ARGS
+                    -e /usr/share/openstack-tripleo-heat-templates/environments/puppet-pacemaker.yaml
+                    -e /usr/share/openstack-tripleo-heat-templates/environments/network-isolation-v6.yaml
+                    -e $TRIPLEO_ROOT/tripleo-ci/test-environments/ipv6-network-templates/network-environment.yaml
+                    -e $TRIPLEO_ROOT/tripleo-ci/test-environments/net-iso.yaml
+                    -e $TRIPLEO_ROOT/tripleo-ci/test-environments/enable-tls-ipv6.yaml
+                    -e $ENDPOINT_LIST_LOCATION/tls-endpoints-public-ip.yaml
+                    -e $TRIPLEO_ROOT/tripleo-ci/test-environments/$CA_ENVIRONMENT_FILE
+                "
                 OVERCLOUD_UPDATE_ARGS="-e /usr/share/openstack-tripleo-heat-templates/overcloud-resource-registry-puppet.yaml $OVERCLOUD_DEPLOY_ARGS"
                 NETISO_V6=1
                 PACEMAKER=1
