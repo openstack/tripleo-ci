@@ -282,5 +282,5 @@ if [ -z "${TE_DATAFILE:-}" -a "$OSINFRA" = "0" ] ; then
 
     ./testenv-client -b $GEARDSERVER:4730 -t $TIMEOUT_SECS --envsize $(($NODECOUNT+1)) --ucinstance $UCINSTANCEID -- $TOCIRUNNER
 else
-    LEAVE_RUNNING=1 $TOCIRUNNER
+    $TOCIRUNNER
 fi

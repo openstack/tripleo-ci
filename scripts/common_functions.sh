@@ -229,9 +229,6 @@ function postci(){
         #if [ $exit_val -eq 0 ]; then
         #    metrics_to_graphite "23.253.94.71" #Dan's temp graphite server
         #fi
-        if [ -z "${LEAVE_RUNNING:-}" ] && [ -n "${HOST_IP:-}" ] ; then
-            destroy_vms &> $WORKSPACE/logs/destroy_vms.log
-        fi
     elif [ "$OSINFRA" = "1" ] ; then
         local i=2
         $TARCMD $HOME/*.log > $WORKSPACE/logs/primary_node.tar.xz
