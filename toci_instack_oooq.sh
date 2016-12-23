@@ -48,8 +48,10 @@ export OOOQ_DEFAULT_ARGS=" --working-dir $OPT_WORKDIR --retain-inventory -T none
 export OOOQ_ARGS=" --config $CONFIG \
 -e @$TRIPLEO_ROOT/tripleo-ci/scripts/quickstart/ovb-settings.yml -e tripleo_root=$TRIPLEO_ROOT \
 -e undercloud_hieradata_override_file=~/quickstart-hieradata-overrides.yaml \
--e gating_repo_enabled=True"
-export PLAYBOOK=" --playbook ovb-playbook.yml --requirements quickstart-extras-requirements.txt "
+-e gating_repo_enabled=True \
+-e enable_vbmc=False \
+-e non_root_user=$USER"
+export PLAYBOOK=" --playbook ovb-playbook.yml --requirements requirements.txt --requirements quickstart-extras-requirements.txt "
 
 # Try to clean as much as possible
 shopt -s extglob
@@ -96,9 +98,6 @@ fi
 # and remove this function then
 collect_oooq_logs
 
-# TODO(sshnaidm): hack for collect-logs role,
-# fix it there by replacing hardcoded 'stack' user
-sed -i "s@/home/stack/@/home/jenkins/@g" $OPT_WORKDIR/usr/local/share/ansible/roles/collect-logs/tasks/create-docs.yml ||:
 # TODO(sshnaidm): fix this either in role or quickstart.sh
 # it will not duplicate logs from undercloud and 127.0.0.2
 sed -i 's/hosts: all:!localhost/hosts: all:!localhost:!127.0.0.2/' $OPT_WORKDIR/playbooks/collect-logs.yml ||:

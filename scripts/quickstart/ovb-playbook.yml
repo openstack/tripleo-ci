@@ -14,7 +14,7 @@
   hosts: undercloud
   gather_facts: no
   roles:
-    - tripleo/undercloud
+    - undercloud-deploy
 
 - include: post-undercloud-playbook.yml
   tags:
