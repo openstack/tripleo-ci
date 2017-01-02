@@ -13,11 +13,11 @@ external_interface_ip: 10.0.0.1
 external_interface_netmask: 255.255.255.0
 external_interface_hwaddr: fa:16:3e:79:e8:04
 
-floating_ip_cidr: 10.0.0.0/24
-public_net_pool_start: 10.0.0.50
-public_net_pool_end: 10.0.0.100
-public_net_gateway: 10.0.0.1
-
+float_base: "{% if not containerized_overcloud|bool %}10.0.0{% else %}192.168.24{% endif %}"
+floating_ip_cidr: "{{ float_base}}.0/24"
+public_net_pool_start: "{{ float_base}}.150"
+public_net_pool_end: "{{ float_base}}.250"
+public_net_gateway: "{{ float_base}}.1"
 
 # Running quickstart with its own config
 network_isolation_type: network-isolation
@@ -32,6 +32,9 @@ undercloud_generate_service_certificate: "{{ lookup('env','UNDERCLOUD_SSL')|bool
 enable_pacemaker: "{{ lookup('env','PACEMAKER')|bool }}"
 deploy_args: "{{ lookup('env','OVERCLOUD_DEPLOY_ARGS') }}"
 network_isolation: "{{ lookup('env','NETISO_V4')|bool }}"
+
+# Overcloud deploy
+overcloud_templates_path: /usr/share/openstack-tripleo-heat-templates
 
 # Collect logs settings
 

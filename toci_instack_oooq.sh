@@ -27,7 +27,10 @@ fi
 
 # TODO(sshnaidm): To create tripleo-ci special yaml config files in oooq
 # for every TOCI_JOBTYPE, i.e. ovb-nonha-ipv6.yml
-if [[ "$TOCI_JOBTYPE" =~ "-ha" ]]; then
+
+if [[ $CONTAINERS == 1 ]]; then
+    CONFIG=${CONFIG:-"$TRIPLEO_ROOT/tripleo-ci/scripts/quickstart/containers_minimal.yml"}
+elif [[ "$TOCI_JOBTYPE" =~ "-ha" ]]; then
     CONFIG=${CONFIG:-"$TRIPLEO_ROOT/tripleo-quickstart/config/general_config/ha.yml"}
 elif [[ "$TOCI_JOBTYPE" =~ "-nonha" ]]; then
     CONFIG=${CONFIG:-"$TRIPLEO_ROOT/tripleo-quickstart/config/general_config/minimal.yml"}
@@ -46,7 +49,8 @@ export OOOQ_LOGS=/var/log/oooq
 export OOO_WORKDIR_LOCAL=$HOME
 export OOOQ_DEFAULT_ARGS=" --working-dir $OPT_WORKDIR --retain-inventory -T none -e working_dir=$OOO_WORKDIR_LOCAL -R ${STABLE_RELEASE:-master}"
 export OOOQ_ARGS=" --config $CONFIG \
--e @$TRIPLEO_ROOT/tripleo-ci/scripts/quickstart/ovb-settings.yml -e tripleo_root=$TRIPLEO_ROOT \
+-e @$TRIPLEO_ROOT/tripleo-ci/scripts/quickstart/ovb-settings.yml \
+-e tripleo_root=$TRIPLEO_ROOT \
 -e undercloud_hieradata_override_file=~/quickstart-hieradata-overrides.yaml \
 -e gating_repo_enabled=True \
 -e enable_vbmc=False \
