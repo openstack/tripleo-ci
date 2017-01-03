@@ -176,7 +176,7 @@ TEMPEST_RUN=${TEMPEST_RUN:-""}
 TEMPEST_ARGS=${TEMPEST_ARGS:-"--parallel --subunit"}
 TEMPEST_ADD_CONFIG=${TEMPEST_ADD_CONFIG:-}
 TEMPEST_REGEX=${TEMPEST_REGEX:-"^(?=(.*smoke))(?!(tempest.api.orchestration.stacks|tempest.scenario.test_volume_boot_pattern|tempest.api.telemetry))"}
-TEMPEST_PINNED="95854ce727846110f3fc2946f3ed48f0ad189a2f"
+TEMPEST_PINNED="72ccabcb685df7c3e28cd25639b05d8a031901c8"
 SSH_OPTIONS=${SSH_OPTIONS:-'-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=Verbose -o PasswordAuthentication=no -o ConnectionAttempts=32'}
 export SCRIPTS_DIR=$(dirname ${BASH_SOURCE[0]:-$0})
 OPSTOOLS_REPO_ENABLED=${OPSTOOLS_REPO_ENABLED:-"0"}
@@ -491,7 +491,7 @@ try:
     diskimage_builder.paths.show_path("elements")
 except:
     print("/usr/share/diskimage-builder/elements")
-')    
+')
     echo -e '#!/bin/bash\nyum install -y yum-plugin-priorities' | sudo tee ${COMMON_ELEMENTS_PATH}/yum/pre-install.d/99-tmphacks
     sudo chmod +x ${COMMON_ELEMENTS_PATH}/yum/pre-install.d/99-tmphacks
 
