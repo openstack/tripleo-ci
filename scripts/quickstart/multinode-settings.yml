@@ -1,0 +1,141 @@
+extra_args: '-e /usr/share/openstack-tripleo-heat-templates/environments/deployed-server-environment.yaml \
+             -e ${TRIPLEO_ROOT}/tripleo-ci/test-environments/multinode.yaml \
+             -e ${TRIPLEO_ROOT}/tripleo-ci/test-environments/worker-config.yaml \
+             --compute-scale 0'
+ssl_overcloud: false
+network_isolation: false
+flavor_args: ""
+undercloud_local_interface: "br-ex"
+undercloud_generate_service_certificate: false
+undercloud_check_idempotency: true
+undercloud_check_sanity: true
+
+toci_vxlan_networking: true
+toci_vxlan_networking_multinode: true
+hostname_correction: true
+package_installs: true
+non_root_user_setup: true
+
+step_overcloud_image: false
+step_glance_upload: true
+step_register: false
+
+hypervisor_wait: false
+deployed_server: true
+validation_args: "--validation-errors-nonfatal"
+deploy_timeout: 30
+
+undercloud_conf_extras: "net_config_override = /opt/stack/new/tripleo-ci/undercloud-configs/net-config-multinode.json.template"
+
+enable_vbmc: false
+
+# TODO(trown): Create repo configs for each release in the release configs
+repos:
+  - type: generic
+    reponame: delorean
+    filename: delorean.repo
+    baseurl: http://buildlogs.centos.org/centos/7/cloud/x86_64/rdo-trunk-master-tripleo/
+    hash_url: http://buildlogs.centos.org/centos/7/cloud/x86_64/rdo-trunk-master-tripleo/delorean.repo
+    priority: 20
+
+  - type: generic
+    reponame: delorean-current
+    filename: delorean-current.repo
+    baseurl: http://trunk.rdoproject.org/centos7/current
+    hash_url: http://trunk.rdoproject.org/centos7/current/delorean.repo
+    priority: 10
+    includepkgs:
+      - diskimage-builder
+      - instack
+      - instack-undercloud
+      - os-apply-config
+      - os-cloud-config
+      - os-collect-config
+      - os-net-config
+      - os-refresh-config
+      - python-tripleoclient
+      - openstack-tripleo-common
+      - openstack-tripleo-heat-templates
+      - openstack-tripleo-image-elements
+      - openstack-tripleo
+      - openstack-tripleo-puppet-elements
+      - openstack-puppet-modules
+      - openstack-tripleo-ui
+      - puppet-*
+
+  - type: file
+    filename: delorean-deps.repo
+    down_url: http://trunk.rdoproject.org/centos7-master/delorean-deps.repo
+
+  - type: package
+    pkg_name: centos-release-ceph-jewel
+    custom_cmd: 'yum install -y --enablerepo=extras'
+
+artcl_publish: false
+artcl_rsync_logs: false
+artcl_collect_list:
+  - /var/log/
+  - /var/lib/mysql
+  - /home/jenkins/.instack/install-undercloud.log
+  - /home/jenkins/stackrc
+  - /home/jenkins/overcloudrc
+  - /home/jenkins/*.log
+  - /home/jenkins/*.txt
+  - /home/jenkins/*.json
+  - /home/jenkins/*.conf
+  - /home/jenkins/*.yml
+  - /home/jenkins/*.yaml
+  - /home/jenkins/*.sh
+  - /home/jenkins/deploy-overcloudrc
+  - /home/jenkins/network-environment.yaml
+  - /home/jenkins/tempest/*.xml
+  - /home/jenkins/tempest/*.html
+  - /home/jenkins/tempest/*.log
+  - /home/jenkins/tempest/*.sh
+  - /home/jenkins/tempest/etc/*.conf
+  - /home/jenkins/local_tht
+  - /usr/share/openstack-tripleo-heat-templates
+  - /tmp/*.yml
+  - /tmp/*.yaml
+  - /etc/aodh
+  - /etc/ceilometer
+  - /etc/cinder
+  - /etc/dnsmasq-ironic.conf
+  - /etc/docker-registry.yml
+  - /etc/glance
+  - /etc/gnocchi
+  - /etc/heat
+  - /etc/haproxy
+  - /etc/httpd
+  - /etc/ironic
+  - /etc/ironic-inspector
+  - /etc/keepalived
+  - /etc/keystone
+  - /etc/libvirt
+  - /etc/manila
+  - /etc/mistral
+  - /etc/mongod.conf
+  - /etc/mongos.conf
+  - /etc/neutron
+  - /etc/nova
+  - /etc/ntp
+  - /etc/ntp.conf
+  - /etc/os-collect-config.conf
+  - /etc/os-net-config
+  - /etc/puppet
+  - /etc/qpid
+  - /etc/qpidd.conf
+  - /etc/rabbitmq
+  - /etc/redis
+  - /etc/redis.conf*
+  - /etc/resolv.conf
+  - /etc/sahara
+  - /etc/selinux
+  - /etc/swift
+  - /etc/sysconfig
+  - /etc/systemd
+  - /etc/trove
+  - /etc/yum.repos.d
+  - /etc/zaqar
+artcl_gzip_only: true
+

@@ -1,0 +1,34 @@
+---
+- include: quickstart.yml
+
+- name: Prepare the undercloud for installation
+  hosts: undercloud
+  roles:
+    - undercloud-setup
+  tags:
+    - undercloud-setup
+  environment:
+    WORKSPACE: "{{ lookup('env','WORKSPACE') }}"
+    SSH_OPTIONS: "-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=Verbose -o PasswordAuthentication=no -o ConnectionAttempts=32 -l jenkins"
+
+- name: Install the undercloud
+  hosts: undercloud
+  roles:
+    - undercloud-deploy
+
+- name: Validate the undercloud
+  hosts: undercloud
+  roles:
+    - validate-undercloud
+
+- name: Run overcloud prep roles
+  hosts: undercloud
+  gather_facts: no
+  roles:
+    - { role: overcloud-prep-images, step_overcloud_image: false, step_glance_upload: true, step_register: false }
+
+- name: Deploy the overcloud
+  hosts: undercloud
+  gather_facts: no
+  roles:
+    - overcloud-deploy

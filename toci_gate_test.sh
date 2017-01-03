@@ -105,14 +105,6 @@ elif [[ "$TOCI_JOBTYPE" =~ "periodic" && "$TOCI_JOBTYPE" =~ "-nonha" ]]; then
     UNDERCLOUD_IDEMPOTENT=1
 fi
 
-# TODO(trown) remove this when we get the multinode-oooq job[1] in a reasonable
-# state. Right now it runs on every quickstart and quickstart-extras patch
-# wasting resources.
-# [1] https://review.openstack.org/#/c/416110
-if [[ $TOCI_JOBTYPE =~ multinode-oooq ]]; then
-    exit 1
-fi
-
 # start dstat early
 # TODO add it to the gate image building
 sudo yum install -y dstat nmap-ncat #nc is for metrics
@@ -252,7 +244,11 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
             ;;
         oooq)
             export OOOQ=1
-            TOCIRUNNER="./toci_instack_oooq.sh"
+            if [[ "$TOCI_JOBTYPE" =~ "multinode" ]]; then
+                TOCIRUNNER="./toci_instack_oooq_multinode.sh"
+            else
+                TOCIRUNNER="./toci_instack_oooq.sh"
+            fi
             ;;
     esac
 done
