@@ -9,6 +9,7 @@ df -h
 uptime
 sudo netstat -lpn
 sudo iptables-save
+sudo ip6tables-save
 sudo ovs-vsctl show
 ip addr
 ip route
