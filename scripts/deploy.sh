@@ -167,8 +167,8 @@ if [ "$MULTINODE" = "1" ]; then
 
     # Create dummy overcloud-full image since there is no way (yet) to disable
     # this constraint in the heat templates
-    qemu-img create -f qcow2 overcloud-full.qcow2 1G
-    if ! glance image-show overcloud-full; then
+    if ! openstack image show overcloud-full; then
+        qemu-img create -f qcow2 overcloud-full.qcow2 1G
         glance image-create \
             --container-format bare \
             --disk-format qcow2 \
