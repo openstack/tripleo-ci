@@ -52,6 +52,13 @@ trap "exit_val=\$?; [ \$exit_val != 0 ] && echo ERROR DURING PREVIOUS COMMAND ^^
 # Tempreverts/cherry-picks/pins go here.  For example:
 # temprevert tripleo-common af27127508eabf2b6873713e5e1507fa92b5f5b3 1623606
 
+# https://bugs.launchpad.net/tripleo/+bug/1654032/
+# we don't want to revert the patch for neutron's gate because they're
+# trying to fix it at this time and need the broken patch.
+if [[ "${ZUUL_PROJECT}" != "openstack/neutron" ]]; then
+    temprevert neutron 2ad9c679ed8718633732da1e97307f9fd9647dcc 1654032
+fi
+
 delorean_build_and_serve
 
 # Since we've moved a few commands from this spot before the wget, we need to
