@@ -7,3 +7,6 @@ parameter_defaults:
   ControllerExtraConfig:
     nova::compute::libvirt::services::libvirt_virt_type: qemu
     nova::compute::libvirt::libvirt_virt_type: qemu
+    # remove it https://review.openstack.org/#/c/417109 is merged.
+    glance::api::enable_v1_api: false
+    glance::api::enable_v2_api: true
