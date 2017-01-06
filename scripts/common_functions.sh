@@ -181,6 +181,9 @@ function postci(){
         extract_logs delorean_repos
     fi
 
+    # Persist the deploy.env, as it can help with debugging and local testing
+    cp $TRIPLEO_ROOT/tripleo-ci/deploy.env $WORKSPACE/logs/
+
     # Generate extra state information from the running undercloud
     sudo -E $TRIPLEO_ROOT/tripleo-ci/scripts/get_host_info.sh
     eval $JLOGCMD
@@ -319,6 +322,8 @@ function layer_ci_repo {
 
 
 function echo_vars_to_deploy_env {
+    CALLER=$(caller)
+    echo "# Written via echo_vars_to_deploy_env from $CALLER" >> $TRIPLEO_ROOT/tripleo-ci/deploy.env
     for VAR in CENTOS_MIRROR http_proxy INTROSPECT MY_IP no_proxy NODECOUNT OVERCLOUD_DEPLOY_ARGS OVERCLOUD_UPDATE_ARGS PACEMAKER SSH_OPTIONS STABLE_RELEASE TRIPLEO_ROOT TRIPLEO_SH_ARGS NETISO_V4 NETISO_V6 TOCI_JOBTYPE UNDERCLOUD_SSL RUN_TEMPEST_TESTS RUN_PING_TEST JOB_NAME OVB UNDERCLOUD_IDEMPOTENT MULTINODE CONTROLLER_HOSTS COMPUTE_HOSTS SUBNODES_SSH_KEY TEST_OVERCLOUD_DELETE OVERCLOUD OSINFRA UNDERCLOUD_SANITY_CHECK PINGTEST_TEMPLATE OVERCLOUD_PINGTEST_ARGS FEATURE_BRANCH OVERCLOUD_ROLES; do
         echo "export $VAR=\"${!VAR}\"" >> $TRIPLEO_ROOT/tripleo-ci/deploy.env
     done
