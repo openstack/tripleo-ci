@@ -67,6 +67,7 @@ export OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS --libvirt-type=qemu -t $OVE
 export OVERCLOUD_UPDATE_ARGS=
 export OVERCLOUD_PINGTEST_ARGS="--skip-pingtest-cleanup"
 export UNDERCLOUD_SSL=0
+export UNDERCLOUD_HEAT_CONVERGENCE=0
 export UNDERCLOUD_IDEMPOTENT=0
 export UNDERCLOUD_SANITY_CHECK=0
 export TRIPLEO_SH_ARGS=
@@ -202,6 +203,9 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
             NETISO_V4=0
             NETISO_V6=1
             OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS  -e /usr/share/openstack-tripleo-heat-templates/environments/network-isolation-v6.yaml -e $TRIPLEO_ROOT/tripleo-ci/test-environments/ipv6-network-templates/network-environment.yaml"
+            ;;
+        convergence)
+            UNDERCLOUD_HEAT_CONVERGENCE=1
             ;;
         multinode)
             MULTINODE=1
