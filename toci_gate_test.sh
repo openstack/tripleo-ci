@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 set -eux
+export PS4='+(${BASH_SOURCE}:${LINENO}): ${FUNCNAME[0]:+${FUNCNAME[0]}(): }'
 # Mirrors
 # NOTE(pabelanger): We have access to AFS mirrors, lets use them.
 source /etc/nodepool/provider
