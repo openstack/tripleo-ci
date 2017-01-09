@@ -26,28 +26,6 @@ the same node.
 Service testing matrix
 ----------------------
 
-|        -       | scenario001 | scenario002 | scenario003 | multinode-nonha |
-|:--------------:|:-----------:|:-----------:|:-----------:|:---------------:|
-| keystone       |      X      |      X      |      X      |        X        |
-| glance         |    file     |    swift    |    file     |      swift      |
-| cinder         |             |    iscsi    |             |      iscsi      |
-| heat           |      X      |      X      |      X      |        X        |
-| mysql          |      X      |      X      |      X      |        X        |
-| neutron        |     ovs     |     ovs     |     ovs     |        X        |
-| rabbitmq       |      X      |      X      |      X      |        X        |
-| mongodb        |      X      |             |             |                 |
-| redis          |      X      |             |             |                 |
-| haproxy        |      X      |      X      |      X      |        X        |
-| keepalived     |      X      |      X      |      X      |        X        |
-| memcached      |      X      |      X      |      X      |        X        |
-| pacemaker      |      X      |      X      |      X      |        X        |
-| nova           |     qemu    |     qemu    |     qemu    |        X        |
-| ntp            |      X      |      X      |      X      |        X        |
-| snmp           |      X      |      X      |      X      |        X        |
-| timezone       |      X      |      X      |      X      |        X        |
-| sahara         |             |             |      X      |                 |
-| swift          |             |      X      |             |        X        |
-| aodh           |      X      |             |             |                 |
-| ceilometer     |      X      |             |             |                 |
-| gnocchi        |      X      |             |             |                 |
-| barbican       |             |      X      |             |                 |
+The CI testing matrix for all scenarios is defined in
+[tripleo-heat-templates](https://git.openstack.org/cgit/openstack/tripleo-heat-templates/tree/README.rst).
+This matrix describes the services that will run in each environment.
