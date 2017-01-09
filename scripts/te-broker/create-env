@@ -28,6 +28,8 @@ else
     KEY_NAME="tripleo-cd-admins"
 fi
 
+BUILD_NODES_JSON_EXTRA_ARGS=""
+
 /bin/cp --remove-destination templates/env.yaml.example $ENVFILE
 sed -i -e "s/bmc_image:.*/bmc_image: bmc-template/" $ENVFILE
 sed -i -e "s/key_name:.*/key_name: ${KEY_NAME}/" $ENVFILE
@@ -41,6 +43,7 @@ sed -i -e "s/public_net_shared:.*/public_net_shared: true/" $ENVFILE
 if [ -n "$CREATE_UNDERCLOUD" ]; then
     sed -i -e "s/undercloud_name:.*/undercloud_name: extra-node/" $ENVFILE
     sed -i -e "s/undercloud_flavor:.*/undercloud_flavor: m1.small/" $ENVFILE
+    BUILD_NODES_JSON_EXTRA_ARGS="--add_undercloud"
 fi
 
 echo -e 'resource_registry:\n'  >> $ENVFILE
@@ -67,4 +70,5 @@ nova interface-attach --net-id $(neutron net-show -F id -f value $PROVISIONNET) 
 nova interface-attach --net-id $(neutron net-show -F id -f value $PUBLICNET) $UCINSTANCE
 
 # This writes out the env file as env-ID.yaml while overwrites the one we have created
-/opt/stack/openstack-virtual-baremetal/bin/build-nodes-json --env $ENVFILE --nodes_json ${TE_DATAFILE:-~/instackenv.json}
+/opt/stack/openstack-virtual-baremetal/bin/build-nodes-json --env $ENVFILE \
+    --nodes_json ${TE_DATAFILE:-~/instackenv.json} $BUILD_NODES_JSON_EXTRA_ARGS
