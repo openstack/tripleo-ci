@@ -124,7 +124,7 @@ OVERCLOUD_DELETE=${OVERCLOUD_DELETE:-""}
 OVERCLOUD_DELETE_TIMEOUT=${OVERCLOUD_DELETE_TIMEOUT:-"300"}
 OVERCLOUD_DEPLOY_ARGS=${OVERCLOUD_DEPLOY_ARGS:-""}
 # --validation-errors-fatal was deprecated in newton and removed in ocata
-if [[ "${STABLE_RELEASE}" =~ ^(liberty|mitaka)$ ]]; then
+if [[ "${STABLE_RELEASE}" = "mitaka" ]]; then
     OVERCLOUD_VALIDATE_ARGS=${OVERCLOUD_VALIDATE_ARGS-"--validation-errors-fatal --validation-warnings-fatal"}
 else
     OVERCLOUD_VALIDATE_ARGS=${OVERCLOUD_VALIDATE_ARGS-"--validation-warnings-fatal"}
@@ -160,8 +160,8 @@ OVERCLOUD_IMAGES_DIB_YUM_REPO_CONF=${OVERCLOUD_IMAGES_DIB_YUM_REPO_CONF:-"\
     $REPO_PREFIX/delorean.repo \
     $REPO_PREFIX/delorean-current.repo \
     $REPO_PREFIX/delorean-deps.repo"}
-# Use Ceph/Jewel for all but liberty/mitaka
-if [[ "${STABLE_RELEASE}" =~ ^(liberty|mitaka)$ ]] ; then
+# Use Ceph/Jewel for all but mitaka
+if [[ "${STABLE_RELEASE}" = "mitaka" ]] ; then
   OVERCLOUD_IMAGES_DIB_YUM_REPO_CONF=${OVERCLOUD_IMAGES_DIB_YUM_REPO_CONF}"\
     $REPO_PREFIX/CentOS-Ceph-Hammer.repo"
 else
@@ -196,7 +196,7 @@ export SCRIPTS_DIR=$(dirname ${BASH_SOURCE[0]:-$0})
 OPSTOOLS_REPO_ENABLED=${OPSTOOLS_REPO_ENABLED:-"0"}
 OPSTOOLS_REPO_URL=${OPSTOOLS_REPO_URL:-"https://raw.githubusercontent.com/centos-opstools/opstools-repo/master/opstools.repo"}
 
-if [[ "${STABLE_RELEASE}" =~ ^(liberty|mitaka)$ ]] ; then
+if [[ "${STABLE_RELEASE}" = "mitaka" ]] ; then
     export OS_IMAGE_API_VERSION=1
 fi
 # Temporary workarounds
@@ -268,7 +268,7 @@ function repo_setup {
 
     if [ "$TRIPLEO_OS_DISTRO" = "centos" ]; then
         # Enable Storage/SIG Ceph repo
-        if [[ "${STABLE_RELEASE}" =~ ^(liberty|mitaka)$ ]] ; then
+        if [[ "${STABLE_RELEASE}" = "mitaka" ]] ; then
             CEPH_REPO_RPM=centos-release-ceph-hammer
             CEPH_REPO_FILE=CentOS-Ceph-Hammer.repo
         else
@@ -451,7 +451,7 @@ function delorean_build {
         GITHASH=$(git rev-parse HEAD)
 
         # Set the branches delorean reads to the same git hash as PROJ has left for us
-        for BRANCH in master origin/master stable/liberty origin/stable/liberty stable/mitaka origin/stable/mitaka; do
+        for BRANCH in master origin/master stable/mitaka origin/stable/mitaka; do
             git checkout -b $BRANCH || git checkout $BRANCH
             git reset --hard $GITHASH
         done
@@ -546,7 +546,7 @@ except:
     log "Overcloud images saved in $OVERCLOUD_IMAGES_PATH"
     pushd $OVERCLOUD_IMAGES_PATH
     log "OVERCLOUD_IMAGES_DIB_YUM_REPO_CONF=$OVERCLOUD_IMAGES_DIB_YUM_REPO_CONF"
-    if [[ "${STABLE_RELEASE}" =~ ^(liberty|mitaka|newton)$ ]] ; then
+    if [[ "${STABLE_RELEASE}" =~ ^(mitaka|newton)$ ]] ; then
         OVERCLOUD_IMAGES_ARGS="$OVERCLOUD_IMAGES_LEGACY_ARGS"
     fi
     DIB_YUM_REPO_CONF=$OVERCLOUD_IMAGES_DIB_YUM_REPO_CONF \
@@ -573,7 +573,7 @@ function register_nodes {
     fi
 
     stackrc_check
-    if [[ "${STABLE_RELEASE}" =~ ^(liberty|mitaka)$ ]] ; then
+    if [[ "${STABLE_RELEASE}" = "mitaka" ]] ; then
         openstack baremetal import --json $INSTACKENV_JSON_PATH
         # This step is a part of the import command from Newton on
         openstack baremetal configure boot
