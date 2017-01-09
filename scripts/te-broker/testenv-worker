@@ -130,7 +130,8 @@ class TEWorkerThread(threading.Thread):
                                              self.num,
                                              arguments.get("envsize","2"),
                                              arguments.get("ucinstance",""),
-                                             arguments.get("create_undercloud", "")],
+                                             arguments.get("create_undercloud", ""),
+                                             arguments.get("ssh_key", "")],
                                             stderr=subprocess.STDOUT))
                 clientdata = fp.read()
         except subprocess.CalledProcessError as e:

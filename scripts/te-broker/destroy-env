@@ -7,6 +7,7 @@ PUBLICNET=public-${ENVNUM}
 ENVFILE=env-${ENVNUM}.yaml
 
 rm -f /opt/stack/openstack-virtual-baremetal/$ENVFILE
+rm -f /opt/stack/openstack-virtual-baremetal/temp-key-$ENVNUM.pub
 
 source /etc/nodepoolrc
 
@@ -22,6 +23,9 @@ SUBNETID=$(neutron subnet-show $PUBLICNET | awk '$2=="id" {print $4}')
 delete_ports $SUBNETID
 SUBNETID=$(neutron subnet-show $PROVISIONNET | awk '$2=="id" {print $4}')
 delete_ports $SUBNETID
+
+# If there was a keypair for this specific run, delete it.
+openstack keypair delete "tripleo-ci-key-$ENVNUM" || true
 
 # NOTE(bnemec): I'm periodically seeing the stack-delete fail to connect to
 # Heat.  It looks like a transient network issue, so let's just retry when it happens.

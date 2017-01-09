@@ -85,6 +85,7 @@ export COMPUTE_HOSTS=
 export SUBNODES_SSH_KEY=
 export TEST_OVERCLOUD_DELETE=0
 export OOOQ=0
+export DEPLOY_OVB_EXTRA_NODE=0
 
 if [[ $TOCI_JOBTYPE =~ scenario ]]; then
     # note: we don't need PINGTEST_TEMPLATE here. See tripleo.sh. Though
@@ -270,6 +271,12 @@ sudo yum install -y moreutils
 # Ensure epel-release is not installed
 sudo yum erase -y epel-release || :
 
+if [ "$DEPLOY_OVB_EXTRA_NODE" = '1' ]; then
+    TEST_ENV_EXTRA_ARGS="--create-undercloud --ssh-key \"$(cat ~/.ssh/id_rsa.pub)\""
+else
+    TEST_ENV_EXTRA_ARGS=""
+fi
+
 source $TRIPLEO_ROOT/tripleo-ci/scripts/metrics.bash
 start_metric "tripleo.testenv.wait.seconds"
 if [ -z "${TE_DATAFILE:-}" -a "$OSINFRA" = "0" ] ; then
@@ -279,7 +286,9 @@ if [ -z "${TE_DATAFILE:-}" -a "$OSINFRA" = "0" ] ; then
     # Kill the whole job if it doesn't get a testenv in 20 minutes as it likely will timout in zuul
     ( sleep 1200 ; [ ! -e /tmp/toci.started ] && sudo kill -9 $$ ) &
 
-    ./testenv-client -b $GEARDSERVER:4730 -t $TIMEOUT_SECS --envsize $(($NODECOUNT+1)) --ucinstance $UCINSTANCEID -- $TOCIRUNNER
+    ./testenv-client -b $GEARDSERVER:4730 -t $TIMEOUT_SECS \
+        --envsize $(($NODECOUNT+1)) --ucinstance $UCINSTANCEID \
+        $TEST_ENV_EXTRA_ARGS -- $TOCIRUNNER
 else
     $TOCIRUNNER
 fi
