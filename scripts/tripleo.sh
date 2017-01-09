@@ -251,19 +251,29 @@ function repo_setup {
     if [ "$TRIPLEO_OS_DISTRO" = "centos" ]; then
         # Enable Storage/SIG Ceph repo
         if [[ "${STABLE_RELEASE}" =~ ^(liberty|mitaka)$ ]] ; then
-            rpm -q centos-release-ceph-hammer || sudo yum -y install --enablerepo=extras centos-release-ceph-hammer
-            sudo sed -i -e 's%gpgcheck=.*%gpgcheck=0%' $REPO_PREFIX/CentOS-Ceph-Hammer.repo
+            CEPH_REPO_RPM=centos-release-ceph-hammer
+            CEPH_REPO_FILE=CentOS-Ceph-Hammer.repo
         else
-            if ! rpm -q centos-release-ceph-jewel; then
-                # Must erase hammer repo if it's installed b/c it conflicts
-                # with jewel repo
-                if rpm -q centos-release-ceph-hammer; then
-                    sudo yum -y erase centos-release-ceph-hammer
-                fi
-                sudo yum -y install --enablerepo=extras centos-release-ceph-jewel
+            if rpm -q centos-release-ceph-hammer; then
+                sudo yum -y erase centos-release-ceph-hammer
             fi
-            sudo sed -i -e 's%gpgcheck=.*%gpgcheck=0%' $REPO_PREFIX/CentOS-Ceph-Jewel.repo
+            CEPH_REPO_RPM=centos-release-ceph-jewel
+            CEPH_REPO_FILE=CentOS-Ceph-Jewel.repo
         fi
+
+        if [ $REPO_PREFIX != "/etc/yum.repos.d/" ]; then
+            # Note yum --installroot doesn't seem to work as it can't find the extras repos in the
+            # system yum.repos.d, so download the package then extraact the repo file
+            mkdir -p $REPO_PREFIX
+            sudo yum -y install --enablerepo=extras --downloadonly --downloaddir=$REPO_PREFIX $CEPH_REPO_RPM
+            pushd $REPO_PREFIX
+            rpm2cpio ${CEPH_REPO_RPM}*.rpm | cpio -ivd
+            mv etc/yum.repos.d/* .
+            popd
+        else
+            sudo yum -y install --enablerepo=extras $CEPH_REPO_RPM
+        fi
+        sudo sed -i -e 's%gpgcheck=.*%gpgcheck=0%' ${REPO_PREFIX}/${CEPH_REPO_FILE}
     fi
 
     if [ -z "$STABLE_RELEASE" ]; then
