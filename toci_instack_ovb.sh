@@ -26,6 +26,9 @@ echo "127.0.0.1 $(hostname) $(hostname).openstacklocal" | sudo tee -a /etc/hosts
 # TODO: xfsprogs should be a dep of DIB?
 sudo yum install -y xfsprogs
 
+# Will be used by the undercloud and needed for the TLS everywhere job
+sudo yum install -yq jq
+
 # Remove the anything on the infra image template that might interfere with CI
 sudo yum remove -y puppet hiera puppetlabs-release rdo-release
 sudo rm -rf /etc/puppet /etc/hiera.yaml
