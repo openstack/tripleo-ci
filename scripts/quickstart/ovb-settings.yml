@@ -13,7 +13,7 @@ external_interface_ip: 10.0.0.1
 external_interface_netmask: 255.255.255.0
 external_interface_hwaddr: fa:16:3e:79:e8:04
 
-float_base: "{% if not containerized_overcloud|bool %}10.0.0{% else %}192.168.24{% endif %}"
+float_base: "{% if not containerized_overcloud|default('false')|bool %}10.0.0{% else %}192.168.24{% endif %}"
 floating_ip_cidr: "{{ float_base}}.0/24"
 public_net_pool_start: "{{ float_base}}.150"
 public_net_pool_end: "{{ float_base}}.250"
