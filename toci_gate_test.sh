@@ -307,7 +307,7 @@ if [ -z "${TE_DATAFILE:-}" -a "$OSINFRA" = "0" ] ; then
     ( while :; do sleep 300; curl http://zuul.openstack.org/status.json | grep -q $ZUUL_UUID || sudo kill -9 $$; done ) &
 
     ./testenv-client -b $GEARDSERVER:4730 -t $TIMEOUT_SECS \
-        --envsize $(($NODECOUNT+1)) --ucinstance $UCINSTANCEID \
+        --envsize $NODECOUNT --ucinstance $UCINSTANCEID \
         $TEST_ENV_EXTRA_ARGS -- $TOCIRUNNER
 else
     $TOCIRUNNER
