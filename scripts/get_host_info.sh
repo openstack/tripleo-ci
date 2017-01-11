@@ -16,7 +16,7 @@ ip route
 ip -6 route
 free -h
 top -n 1 -b -o RES
-rpm -qa
+rpm -qa | sort
 yum repolist -v
 sudo os-collect-config --print
 which pcs &> /dev/null && sudo pcs status --full
