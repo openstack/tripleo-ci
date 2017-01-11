@@ -8,6 +8,7 @@ export CURRENT_DIR=$(dirname ${BASH_SOURCE[0]:-$0})
 export TRIPLEO_CI_DIR=$CURRENT_DIR/../
 
 export IP_DEVICE=${IP_DEVICE:-"eth0"}
+export ZUUL_PROJECT=${ZUUL_PROJECT:-""}
 
 source $TRIPLEO_CI_DIR/tripleo-ci/scripts/common_vars.bash
 source $TRIPLEO_CI_DIR/tripleo-ci/scripts/common_functions.sh
