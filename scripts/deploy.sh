@@ -36,6 +36,12 @@ EOF
 if [ $UNDERCLOUD_SSL == 1 ] ; then
     echo 'generate_service_certificate = True' >> ~/undercloud.conf
 fi
+
+if [ $UNDERCLOUD_HEAT_CONVERGENCE == 1 ] ; then
+    cat <<EOF >>$HOME/undercloud-hieradata-override.yaml
+heat::engine::convergence_engine: true
+EOF
+fi
 # TODO: fix this in instack-undercloud
 sudo mkdir -p /etc/puppet/hieradata
 
