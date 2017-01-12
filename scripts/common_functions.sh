@@ -228,10 +228,9 @@ function postci(){
         done <$long_times
         echo 'Finished'
         set -x
-        # NOTE(bnemec): Graphite metrics temporarily disabled while the server is down.
-        #if [ $exit_val -eq 0 ]; then
-        #    metrics_to_graphite "23.253.94.71" #Dan's temp graphite server
-        #fi
+        if [ $exit_val -eq 0 ]; then
+            metrics_to_graphite "66.187.229.172" # Graphite server in rh1
+        fi
     elif [ "$OSINFRA" = "1" ] ; then
         local i=2
         $TARCMD $HOME/*.log > $WORKSPACE/logs/primary_node.tar.xz
