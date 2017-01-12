@@ -50,10 +50,8 @@
     artg_compressed_gating_repo: "/home/jenkins/gating_repo.tar.gz"
     ansible_user: jenkins
     ansible_user_dir: /home/jenkins/
-    artg_skipped_projects:
-        - openstack/tripleo-quickstart
-        - openstack/tripleo-quickstart-extras
-        - openstack-infra/tripleo-ci
+    artg_repos_dir: "{{ tripleo_root}}"
+
   roles:
     - { role: build-test-packages, when: "{{ lookup('env', 'USE_DELOREAN')|default(0, true) }} == 1" }
 
