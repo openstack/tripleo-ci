@@ -214,20 +214,6 @@ function postci(){
         # Wait for the commands we started in the background to complete
         wait
         # post metrics
-        # This spams the postci output with largely uninteresting trace output
-        set +x
-        echo -n 'Recording Heat deployment times...'
-        # We're only interested in the resources that take the most time
-        long_times=/tmp/long-deploy-times.log
-        head -n 50 $WORKSPACE/logs/undercloud/var/log/heat-deploy-times.log > $long_times
-        while read line; do
-            # $line should look like "ResourceName 123.0", so concatenating all
-            # of this together we should end up with a call that looks like:
-            # record_metric tripleo.overcloud.ha.resources.ResourceName 123.0
-            record_metric tripleo.overcloud.${TOCI_JOBTYPE}.resources.${line}
-        done <$long_times
-        echo 'Finished'
-        set -x
         if [ $exit_val -eq 0 ]; then
             metrics_to_graphite "66.187.229.172" # Graphite server in rh1
         fi
