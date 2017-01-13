@@ -200,7 +200,9 @@ if [ -n "${OVERCLOUD_UPDATE_ARGS:-}" ] ; then
     sudo rpm -ev --nodeps openstack-tripleo-heat-templates
     sudo yum -y install openstack-tripleo-heat-templates
 
+    start_metric "tripleo.overcloud.${TOCI_JOBTYPE}.update.seconds"
     http_proxy= $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --overcloud-update ${TRIPLEO_SH_ARGS:-}
+    stop_metric "tripleo.overcloud.${TOCI_JOBTYPE}.update.seconds"
 fi
 
 if [ "$MULTINODE" == 0 ] && [ "$OVERCLOUD" == 1 ] ; then
