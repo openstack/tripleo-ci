@@ -17,6 +17,9 @@ parameter_defaults:
     - OS::TripleO::Services::NeutronServer
     - OS::TripleO::Services::NeutronCorePlugin
     - OS::TripleO::Services::NeutronOvsAgent
+    - OS::TripleO::Services::CinderApi
+    - OS::TripleO::Services::CinderScheduler
+    - OS::TripleO::Services::CinderVolume
     - OS::TripleO::Services::MySQL
     - OS::TripleO::Services::RabbitMQ
     - OS::TripleO::Services::HAproxy

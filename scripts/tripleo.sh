@@ -803,6 +803,10 @@ function overcloud_sanitytest_create {
                 run_cmd openstack network create ${SANITYTEST_CONTENT_NAME}
                 run_cmd openstack network list
                 ;;
+            "cinder_api" )
+                run_cmd openstack volume create ${SANITYTEST_CONTENT_NAME} --size 1
+                run_cmd openstack volume list
+                ;;
         esac
     done
 }
@@ -819,6 +823,9 @@ function overcloud_sanitytest_check {
                 ;;
             "neutron_api" )
                 run_cmd openstack network show ${SANITYTEST_CONTENT_NAME}
+                ;;
+            "cinder_api" )
+                run_cmd openstack volume show ${SANITYTEST_CONTENT_NAME}
                 ;;
         esac
     done
@@ -837,6 +844,9 @@ function overcloud_sanitytest_cleanup {
                 ;;
             "neutron_api" )
                 run_cmd openstack network delete ${SANITYTEST_CONTENT_NAME}
+                ;;
+            "cinder_api" )
+                run_cmd openstack volume delete ${SANITYTEST_CONTENT_NAME}
                 ;;
         esac
     done
