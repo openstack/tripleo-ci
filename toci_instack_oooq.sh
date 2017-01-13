@@ -26,11 +26,16 @@ if [[ -n "$ZUUL_CHANGES" ]]; then
     export USE_DELOREAN=1
 fi
 
+EXTRA_ARGS=""
+
 # TODO(sshnaidm): To create tripleo-ci special yaml config files in oooq
 # for every TOCI_JOBTYPE, i.e. ovb-nonha-ipv6.yml
 
 if [[ $CONTAINERS == 1 ]]; then
     CONFIG=${CONFIG:-"$TRIPLEO_ROOT/tripleo-ci/scripts/quickstart/containers_minimal.yml"}
+elif [[ "$TOCI_JOBTYPE" =~ "-nonha-tempest" ]]; then
+    CONFIG=${CONFIG:-"$TRIPLEO_ROOT/tripleo-quickstart/config/general_config/minimal_pacemaker.yml"}
+    EXTRA_ARGS="$EXTRA_ARGS -e test_ping=false -e tempest_config=true -e run_tempest=true -e test_regex='.*' -e enable_cinder_backup=true"
 elif [[ "$TOCI_JOBTYPE" =~ "-ha" ]]; then
     CONFIG=${CONFIG:-"$TRIPLEO_ROOT/tripleo-quickstart/config/general_config/ha.yml"}
 elif [[ "$TOCI_JOBTYPE" =~ "-nonha" ]]; then
@@ -95,7 +100,11 @@ if [[ -e ${OOO_WORKDIR_LOCAL}/overcloudrc ]]; then
         -t all  \
         --playbook tempest.yml  \
         --extra-vars run_tempest=True  \
-        -e test_regex='.*smoke' undercloud 2>&1| sudo tee $OOOQ_LOGS/quickstart_tempest.log && tempest_exit_value=0 || tempest_exit_value=$?
+        -e test_regex='.*smoke' \
+        $EXTRA_ARGS \
+        undercloud 2>&1| sudo tee $OOOQ_LOGS/quickstart_tempest.log && tempest_exit_value=0 || tempest_exit_value=$?
+else
+    exit_value=1
 fi
 
 # TODO(sshnaidm): to prepare collect-logs role for tripleo-ci specific paths
