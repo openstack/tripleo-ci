@@ -812,6 +812,10 @@ function overcloud_sanitytest_create {
                 openstack stack create ${SANITYTEST_CONTENT_NAME} --template /tmp/${SANITYTEST_CONTENT_NAME}.yaml
                 openstack stack list
                 ;;
+            "swift_proxy" )
+                openstack container create ${SANITYTEST_CONTENT_NAME}
+                openstack container list
+                ;;
         esac
     done
 }
@@ -838,6 +842,9 @@ function overcloud_sanitytest_check {
                 # on the actual version, but this is still good for debugging
                 run_cmd openstack orchestration template version list
                 ;;
+            "swift_proxy" )
+                run_cmd openstack container show ${SANITYTEST_CONTENT_NAME}
+                ;;
         esac
     done
 }
@@ -861,6 +868,9 @@ function overcloud_sanitytest_cleanup {
                 ;;
             "heat_api" )
                 run_cmd openstack stack delete --yes ${SANITYTEST_CONTENT_NAME}
+                ;;
+            "swift_proxy" )
+                run_cmd openstack container delete ${SANITYTEST_CONTENT_NAME}
                 ;;
         esac
     done

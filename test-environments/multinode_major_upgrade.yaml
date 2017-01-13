@@ -24,6 +24,9 @@ parameter_defaults:
     - OS::TripleO::Services::HeatApiCfn
     - OS::TripleO::Services::HeatApiCloudwatch
     - OS::TripleO::Services::HeatEngine
+    - OS::TripleO::Services::SwiftProxy
+    - OS::TripleO::Services::SwiftStorage
+    - OS::TripleO::Services::SwiftRingBuilder
     - OS::TripleO::Services::MySQL
     - OS::TripleO::Services::RabbitMQ
     - OS::TripleO::Services::HAproxy
@@ -39,5 +42,3 @@ parameter_defaults:
     # Required for Centos 7.3 and Qemu 2.6.0
     nova::compute::libvirt::libvirt_cpu_mode: 'none'
   SwiftCeilometerPipelineEnabled: False
-  # FIXME(shardy) remove the file backend when we add swift
-  GlanceBackend: file
