@@ -88,6 +88,7 @@ export SUBNODES_SSH_KEY=
 export TEST_OVERCLOUD_DELETE=0
 export OOOQ=0
 export DEPLOY_OVB_EXTRA_NODE=0
+export CONTAINERS=0
 
 if [[ $TOCI_JOBTYPE =~ scenario ]]; then
     # note: we don't need PINGTEST_TEMPLATE here. See tripleo.sh. Though
@@ -189,9 +190,11 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
             UNDERCLOUD_SSL=1
             ;;
         containers)
-            # TODO : remove this when the containers job is passing again
-            exit 1
-            TRIPLEO_SH_ARGS="--use-containers"
+            CONTAINERS=1
+            OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS \
+            -e /usr/share/openstack-tripleo-heat-templates/environments/docker.yaml \
+            -e /usr/share/openstack-tripleo-heat-templates/environments/docker-network.yaml \
+            -e ~/containers-default-parameters.yaml"
             ;;
         ovb)
             OVB=1

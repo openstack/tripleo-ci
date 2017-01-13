@@ -36,6 +36,13 @@
   roles:
     - baremetal-prep-overcloud
 
+# Prepare the overcloud for a containerized deployment
+- name:  Prepare overcloud containers
+  hosts: undercloud
+  gather_facts: no
+  roles:
+    - { role: overcloud-prep-containers, when: containerized_overcloud|default(false) }
+
 # Prepare the overcloud images for deployment
 - name:  Prepare the overcloud images for deployment
   hosts: undercloud

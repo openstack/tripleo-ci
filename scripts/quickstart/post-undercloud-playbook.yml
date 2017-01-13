@@ -26,7 +26,7 @@
     - name: Remove redundant hosts from instackenv.json
       shell: >
         cp ~/instackenv.json ~/instackenv.json.backup;
-        cat ~/instackenv.json | jq '{"nodes": .nodes[:{{ lookup('env', 'NODECOUNT') }}]}' > /tmp/instackenv1.json;
+        cat ~/instackenv.json | jq '{"nodes": .nodes[:{{ lookup('env', 'NODECOUNT') }}]}' > /tmp/instackenv1.json &&
         mv /tmp/instackenv1.json ~/instackenv.json;
 
     - name: Install ipmitool if not installed
