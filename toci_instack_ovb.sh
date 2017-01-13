@@ -54,6 +54,8 @@ gpgcheck=0
 enabled=1
 EOF
     sudo mv /tmp/delorean-ev.repo /etc/yum.repos.d
+    # And also https://bugs.launchpad.net/tripleo/+bug/1654611
+    sudo sed -i -e 's/\(\[centos-ceph-hammer\]\)/\1\npriority=1/' /etc/yum.repos.d/CentOS-Ceph-Hammer.repo
 fi
 
 # Install some useful/necessary packages
