@@ -71,8 +71,14 @@ mkdir -p $WORKSPACE/logs
 [[ ! -e $OPT_WORKDIR ]] && mkdir -p $OPT_WORKDIR && sudo chown -R ${USER} $OPT_WORKDIR
 sudo mkdir $OOOQ_LOGS && sudo chown -R ${USER} $OOOQ_LOGS
 # TODO(sshnaidm): check why it's not cloned
-[[ ! -e $TRIPLEO_ROOT/tripleo-quickstart ]] && /usr/zuul-env/bin/zuul-cloner --workspace /opt/stack/new/ https://git.openstack.org/openstack tripleo-quickstart
+[[ ! -e $TRIPLEO_ROOT/tripleo-quickstart ]] && /usr/zuul-env/bin/zuul-cloner --workspace ${TRIPLEO_ROOT} https://git.openstack.org/openstack tripleo-quickstart
+[[ ! -e $TRIPLEO_ROOT/tripleo-quickstart-extras ]] && /usr/zuul-env/bin/zuul-cloner --workspace ${TRIPLEO_ROOT} https://git.openstack.org/openstack tripleo-quickstart-extras
+
+# make the requirements point to local checkout of tripleo-quickstart-extras
+echo "file://${TRIPLEO_ROOT}/tripleo-quickstart-extras/#egg=tripleo-quickstart-extras" > ${TRIPLEO_ROOT}/tripleo-quickstart/quickstart-extras-requirements.txt
+
 cp $TRIPLEO_ROOT/tripleo-ci/scripts/hosts $OPT_WORKDIR/hosts
+
 cp $TRIPLEO_ROOT/tripleo-ci/scripts/quickstart/*yml $TRIPLEO_ROOT/tripleo-quickstart/playbooks/
 $TRIPLEO_ROOT/tripleo-quickstart/quickstart.sh --install-deps
 
