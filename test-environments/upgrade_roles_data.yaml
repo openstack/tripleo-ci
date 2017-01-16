@@ -1,0 +1,4 @@
+# Only a controller as we're doing all-in-one testing via the multinode job
+- name: Controller
+  CountDefault: 1
+  # Note services are defined in multinode_major_upgrade.yaml

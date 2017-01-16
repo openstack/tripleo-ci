@@ -163,8 +163,28 @@ fi
 if [ "$MULTINODE" = "1" ]; then
     # Start the script that will configure os-collect-config on the subnodes
     source ~/stackrc
-    /usr/share/openstack-tripleo-heat-templates/deployed-server/scripts/get-occ-config.sh 2>&1 | sudo dd of=/var/log/deployed-server-os-collect-config.log &
 
+    if [ "$OVERCLOUD_MAJOR_UPGRADE" == 1 ] ; then
+        # Download the previous release openstack-tripleo-heat-templates to a directory
+        # we then deploy this and later upgrade to the default --templates location
+        # FIXME - we should make the tht-compat package work here instead
+        OLD_THT=$(curl https://trunk.rdoproject.org/centos7-newton/current/ | grep "openstack-tripleo-heat-templates" | grep "noarch.rpm" | grep -v "tripleo-heat-templates-compat" | sed "s/^.*>openstack-tripleo-heat-templates/openstack-tripleo-heat-templates/" | cut -d "<" -f1)
+        echo "Downloading https://trunk.rdoproject.org/centos7-newton/current/$OLD_THT"
+        rm -fr $TRIPLEO_ROOT/$UPGRADE_RELEASE/*
+        mkdir -p $TRIPLEO_ROOT/$UPGRADE_RELEASE
+        curl -o $TRIPLEO_ROOT/$UPGRADE_RELEASE/$OLD_THT https://trunk.rdoproject.org/centos7-newton/current/$OLD_THT
+        pushd $TRIPLEO_ROOT/$UPGRADE_RELEASE
+        rpm2cpio openstack-tripleo-heat-templates-*.rpm | cpio -ivd
+        popd
+        # Backup current deploy args:
+        CURRENT_OVERCLOUD_DEPLOY_ARGS=$OVERCLOUD_DEPLOY_ARGS
+        # Set deploy args for newton deployment:
+        export OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS --templates $TRIPLEO_ROOT/$UPGRADE_RELEASE/usr/share/openstack-tripleo-heat-templates -e $TRIPLEO_ROOT/$UPGRADE_RELEASE/usr/share/openstack-tripleo-heat-templates/environments/deployed-server-environment.yaml"
+        echo_vars_to_deploy_env
+        $TRIPLEO_ROOT/$UPGRADE_RELEASE/usr/share/openstack-tripleo-heat-templates/deployed-server/scripts/get-occ-config.sh 2>&1 | sudo dd of=/var/log/deployed-server-os-collect-config.log &
+    else
+        /usr/share/openstack-tripleo-heat-templates/deployed-server/scripts/get-occ-config.sh 2>&1 | sudo dd of=/var/log/deployed-server-os-collect-config.log &
+    fi
     # Create dummy overcloud-full image since there is no way (yet) to disable
     # this constraint in the heat templates
     qemu-img create -f qcow2 overcloud-full.qcow2 1G
@@ -268,3 +288,16 @@ if [ "$UNDERCLOUD_MAJOR_UPGRADE" == 1 ] ; then
     $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --undercloud-upgrade 2>&1 | ts '%Y-%m-%d %H:%M:%S.000 |' | sudo dd of=/var/log/undercloud_upgrade.txt || (tail -n 50 /var/log/undercloud_upgrade.txt && false)
 fi
 
+if [ "$OVERCLOUD_MAJOR_UPGRADE" == 1 ] ; then
+    source ~/stackrc
+    # Set deploy args for newton deployment:
+    # We have to use the backward compatible
+    # update-from-deployed-server-newton.yaml environment when upgrading from
+    # newton.
+    export OVERCLOUD_DEPLOY_ARGS="$CURRENT_OVERCLOUD_DEPLOY_ARGS -e /usr/share/openstack-tripleo-heat-templates/environments/deployed-server-environment.yaml -e /usr/share/openstack-tripleo-heat-templates/environments/updates/update-from-deployed-server-newton.yaml"
+    echo_vars_to_deploy_env
+    if [ "$MULTINODE" = "1" ]; then
+        /usr/share/openstack-tripleo-heat-templates/deployed-server/scripts/get-occ-config.sh 2>&1 | sudo dd of=/var/log/deployed-server-os-collect-config-22.log &
+    fi
+    $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --overcloud-upgrade
+fi
