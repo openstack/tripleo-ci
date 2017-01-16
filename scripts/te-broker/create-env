@@ -62,6 +62,8 @@ while ! heat stack-show baremetal_${ENVNUM} | grep CREATE_COMPLETE ; do
     sleep 10
     if heat stack-show baremetal_${ENVNUM} | grep CREATE_FAILED ; then
         echo "Failed creating OVB stack" > $TE_DATAFILE
+        heat stack-show baremetal_${ENVNUM} >> $TE_DATAFILE 2>&1
+        openstack stack failures list --long baremetal_${ENVNUM} >> $TE_DATAFILE 2>&1 || echo 'Failed to list stack failures' >> $TE_DATAFILE
         exit 0
     fi
 done
