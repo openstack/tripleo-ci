@@ -10,7 +10,6 @@ parameter_defaults:
     - OS::TripleO::Services::Kernel
     - OS::TripleO::Services::Keystone
     - OS::TripleO::Services::GlanceApi
-    - OS::TripleO::Services::GlanceRegistry
     - OS::TripleO::Services::HeatApi
     - OS::TripleO::Services::HeatApiCfn
     - OS::TripleO::Services::HeatApiCloudwatch
@@ -44,4 +43,7 @@ parameter_defaults:
     nova::compute::libvirt::libvirt_virt_type: qemu
     # Required for Centos 7.3 and Qemu 2.6.0
     nova::compute::libvirt::libvirt_cpu_mode: 'none'
+    # remove it https://review.openstack.org/#/c/417109 is merged.
+    glance::api::enable_v1_api: false
+    glance::api::enable_v2_api: true
   SwiftCeilometerPipelineEnabled: False
