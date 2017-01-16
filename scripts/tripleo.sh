@@ -799,6 +799,10 @@ function overcloud_sanitytest_create {
                 run_cmd openstack image create ${SANITYTEST_CONTENT_NAME}
                 run_cmd openstack image list
                 ;;
+            "neutron_api" )
+                run_cmd openstack network create ${SANITYTEST_CONTENT_NAME}
+                run_cmd openstack network list
+                ;;
         esac
     done
 }
@@ -812,6 +816,9 @@ function overcloud_sanitytest_check {
                 ;;
             "glance_api" )
                 run_cmd openstack image show ${SANITYTEST_CONTENT_NAME}
+                ;;
+            "neutron_api" )
+                run_cmd openstack network show ${SANITYTEST_CONTENT_NAME}
                 ;;
         esac
     done
@@ -827,6 +834,9 @@ function overcloud_sanitytest_cleanup {
                 ;;
             "glance_api" )
                 run_cmd openstack image delete ${SANITYTEST_CONTENT_NAME}
+                ;;
+            "neutron_api" )
+                run_cmd openstack network delete ${SANITYTEST_CONTENT_NAME}
                 ;;
         esac
     done
