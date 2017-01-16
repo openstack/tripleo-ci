@@ -314,7 +314,7 @@ if [ -z "${TE_DATAFILE:-}" -a "$OSINFRA" = "0" ] ; then
     # Kill the testenv if the zuul job disappears.  This can happen if a new patch
     # set is pushed while a job on a previous one is still running.
     # Only check every 5 minutes to avoid hammering the status endpoint.
-    ( while :; do sleep 300; curl http://zuul.openstack.org/status.json | grep -q $ZUUL_UUID || sudo kill -9 $$; done ) &
+    ( while :; do sleep 300; curl http://zuul.openstack.org/status.json | grep -q $ZUUL_UUID || sudo kill -9 $$; done ) &> /dev/null &
 
     ./testenv-client -b $GEARDSERVER:4730 -t $TIMEOUT_SECS \
         --envsize $NODECOUNT --ucinstance $UCINSTANCEID \
