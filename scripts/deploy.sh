@@ -299,5 +299,9 @@ if [ "$OVERCLOUD_MAJOR_UPGRADE" == 1 ] ; then
     if [ "$MULTINODE" = "1" ]; then
         /usr/share/openstack-tripleo-heat-templates/deployed-server/scripts/get-occ-config.sh 2>&1 | sudo dd of=/var/log/deployed-server-os-collect-config-22.log &
     fi
+    # We run basic sanity tests before/after, which includes creating some resources which
+    # must survive the upgrade.
+    $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --overcloud-sanity --skip-sanitytest-cleanup
     $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --overcloud-upgrade
+    $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --overcloud-sanity --skip-sanitytest-create
 fi

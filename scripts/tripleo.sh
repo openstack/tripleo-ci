@@ -68,6 +68,9 @@ function show_options {
     echo "      --use-containers        -- Use a containerized compute node."
     echo "      --enable-check          -- Enable checks on update."
     echo "      --overcloud-pingtest    -- Run a tenant vm, attach and ping floating IP."
+    echo "      --overcloud-sanitytest    -- Run some basic crud checks for each service."
+    echo "      --skip-sanitytest-create  -- Do not create resources when performing a sanitytest (assume they exist)."
+    echo "      --skip-sanitytest-cleanup -- Do not delete the created resources when performing a sanitytest."
     echo "      --skip-pingtest-cleanup -- For debuging purposes, do not delete the created resources when performing a pingtest."
     echo "      --run-tempest           -- Run tempest tests."
     echo "      --all, -a               -- Run all of the above commands."
@@ -83,7 +86,7 @@ if [ ${#@} = 0 ]; then
 fi
 
 TEMP=$(getopt -o ,h \
-        -l,help,repo-setup,delorean-setup,delorean-build,multinode-setup,bootstrap-subnodes,undercloud,overcloud-images,register-nodes,introspect-nodes,overcloud-deploy,overcloud-update,overcloud-upgrade,overcloud-delete,use-containers,overcloud-pingtest,undercloud-upgrade,skip-pingtest-cleanup,all,enable-check,run-tempest,setup-nodepool-files \
+        -l,help,repo-setup,delorean-setup,delorean-build,multinode-setup,bootstrap-subnodes,undercloud,overcloud-images,register-nodes,introspect-nodes,overcloud-deploy,overcloud-update,overcloud-upgrade,overcloud-delete,use-containers,overcloud-pingtest,undercloud-upgrade,skip-pingtest-cleanup,all,enable-check,run-tempest,setup-nodepool-files,overcloud-sanitytest,skip-sanitytest-create,skip-sanitytest-cleanup \
         -o,x,h,a \
         -n $SCRIPT_NAME -- "$@")
 
@@ -144,6 +147,10 @@ UPGRADE_REPO_URL=${UPGRADE_REPO_URL:-"http://buildlogs.centos.org/centos/7/cloud
 UPGRADE_OVERCLOUD_REPO_URL=${UPGRADE_OVERCLOUD_REPO_URL:-"http://buildlogs.centos.org/centos/7/cloud/x86_64/rdo-trunk-$UPGRADE_VERSION-tested/delorean.repo"}
 UNDERCLOUD_UPGRADE=${UNDERCLOUD_UPGRADE:-""}
 UPGRADE_VERSION=${UPGRADE_VERSION:-"master"}
+OVERCLOUD_SANITYTEST_SKIP_CREATE=${OVERCLOUD_SANITYTEST_SKIP_CREATE:-""}
+OVERCLOUD_SANITYTEST_SKIP_CLEANUP=${OVERCLOUD_SANITYTEST_SKIP_CLEANUP:-""}
+OVERCLOUD_SANITYTEST=${OVERCLOUD_SANITYTEST:-""}
+SANITYTEST_CONTENT_NAME=${SANITYTEST_CONTENT_NAME:-"sanity_test"}
 SKIP_PINGTEST_CLEANUP=${SKIP_PINGTEST_CLEANUP:-""}
 OVERCLOUD_PINGTEST=${OVERCLOUD_PINGTEST:-""}
 PINGTEST_TEMPLATE=${PINGTEST_TEMPLATE:-"tenantvm_floatingip"}
@@ -209,6 +216,9 @@ while true ; do
         --overcloud-images) OVERCLOUD_IMAGES="1"; shift 1;;
         --overcloud-pingtest) OVERCLOUD_PINGTEST="1"; shift 1;;
         --skip-pingtest-cleanup) SKIP_PINGTEST_CLEANUP="1"; shift 1;;
+        --overcloud-sanitytest) OVERCLOUD_SANITYTEST="1"; shift 1;;
+        --skip-sanitytest-create) OVERCLOUD_SANITYTEST_SKIP_CREATE="1"; shift 1;;
+        --skip-sanitytest-cleanup) OVERCLOUD_SANITYTEST_SKIP_CLEANUP="1"; shift 1;;
         --run-tempest) TEMPEST_RUN="1"; shift 1;;
         --repo-setup) REPO_SETUP="1"; shift 1;;
         --delorean-setup) DELOREAN_SETUP="1"; shift 1;;
@@ -768,6 +778,86 @@ function overcloud_delete {
     fi
 }
 
+function run_cmd {
+  if ! $@; then
+      echo "Command: $@ FAILED" >&2
+      exit 1
+  else
+      echo "Command: $@ OK"
+  fi
+}
+
+function overcloud_sanitytest_create {
+    ENABLED_SERVICES=$@
+    for service in $ENABLED_SERVICES; do
+        case $service in
+            "keystone" )
+                run_cmd openstack user create ${SANITYTEST_CONTENT_NAME}
+                run_cmd openstack user list
+                ;;
+        esac
+    done
+}
+
+function overcloud_sanitytest_check {
+    ENABLED_SERVICES=$@
+    for service in $ENABLED_SERVICES; do
+        case $service in
+            "keystone" )
+                run_cmd openstack user show ${SANITYTEST_CONTENT_NAME}
+                ;;
+        esac
+    done
+}
+
+function overcloud_sanitytest_cleanup {
+    ENABLED_SERVICES=$@
+    for service in $ENABLED_SERVICES; do
+        case $service in
+            "keystone" )
+                echo "Sanity test keystone"
+                run_cmd openstack user delete ${SANITYTEST_CONTENT_NAME}
+                ;;
+        esac
+    done
+}
+
+function overcloud_sanitytest {
+
+    log "Overcloud sanitytest"
+    exitval=0
+    stackrc_check
+
+    if heat stack-show "$OVERCLOUD_NAME" | grep "stack_status " | egrep -q "(CREATE|UPDATE)_COMPLETE"; then
+
+        ENABLED_SERVICES=$(openstack stack output show overcloud EnabledServices -f json | \
+                           jq -r ".output_value" | jq '.Controller | .[]' | tr "\n" " " | sed "s/\"//g")
+        echo "Sanity Test, ENABLED_SERVICES=$ENABLED_SERVICES"
+
+        overcloudrc_check
+
+        if [ "$OVERCLOUD_SANITYTEST_SKIP_CREATE" != 1 ]; then
+            overcloud_sanitytest_create $ENABLED_SERVICES
+        fi
+
+        overcloud_sanitytest_check $ENABLED_SERVICES
+
+        if [ "$OVERCLOUD_SANITYTEST_SKIP_CLEANUP" != 1 ]; then
+            overcloud_sanitytest_cleanup $ENABLED_SERVICES
+        fi
+
+        if [ $exitval -eq 0 ]; then
+            log "Overcloud sanitytest SUCCEEDED"
+        else
+            log "Overcloud sanitytest FAILED"
+        fi
+        exit $exitval
+    else
+        log "Overcloud sanitytest FAILED - No stack $OVERCLOUD_NAME."
+        exit 1
+    fi
+}
+
 function cleanup_pingtest {
 
     log "Overcloud pingtest; cleaning environment"
@@ -784,7 +874,6 @@ function cleanup_pingtest {
     log "Overcloud pingtest - cleaning demo network 'nova'"
     neutron net-delete nova || true
 }
-
 
 function overcloud_pingtest {
 
@@ -1245,6 +1334,10 @@ fi
 
 if [ "$OVERCLOUD_PINGTEST" = 1 ]; then
     overcloud_pingtest
+fi
+
+if [ "$OVERCLOUD_SANITYTEST" = 1 ]; then
+    overcloud_sanitytest
 fi
 
 if [ "$TEMPEST_RUN" = 1 ]; then
