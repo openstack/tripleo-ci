@@ -807,6 +807,11 @@ function overcloud_sanitytest_create {
                 run_cmd openstack volume create ${SANITYTEST_CONTENT_NAME} --size 1
                 run_cmd openstack volume list
                 ;;
+            "heat_api" )
+                echo "heat_template_version: newton" > /tmp/${SANITYTEST_CONTENT_NAME}.yaml
+                openstack stack create ${SANITYTEST_CONTENT_NAME} --template /tmp/${SANITYTEST_CONTENT_NAME}.yaml
+                openstack stack list
+                ;;
         esac
     done
 }
@@ -826,6 +831,12 @@ function overcloud_sanitytest_check {
                 ;;
             "cinder_api" )
                 run_cmd openstack volume show ${SANITYTEST_CONTENT_NAME}
+                ;;
+            "heat_api" )
+                run_cmd openstack stack show ${SANITYTEST_CONTENT_NAME}
+                # FIXME(shardy): It'd be good to add pre/post upgrade checks
+                # on the actual version, but this is still good for debugging
+                run_cmd openstack orchestration template version list
                 ;;
         esac
     done
@@ -847,6 +858,9 @@ function overcloud_sanitytest_cleanup {
                 ;;
             "cinder_api" )
                 run_cmd openstack volume delete ${SANITYTEST_CONTENT_NAME}
+                ;;
+            "heat_api" )
+                run_cmd openstack stack delete --yes ${SANITYTEST_CONTENT_NAME}
                 ;;
         esac
     done
