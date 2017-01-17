@@ -24,6 +24,9 @@ function delete_ports() {
     done
 }
 
+# Save the end of the bmc log for debugging IPMI connectivity problems
+nova console-log bmc-${ENVNUM} | tail -n 100 | awk -v envnum="$ENVNUM" '$0=envnum ": " $0' >> /var/log/bmc-console-logs
+
 # Delete the ports that have been attached to the undercloud
 SUBNETID=$(neutron subnet-show $PUBLICNET | awk '$2=="id" {print $4}' || echo '')
 delete_ports $SUBNETID
