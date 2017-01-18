@@ -1,7 +1,8 @@
-extra_args: '-e /usr/share/openstack-tripleo-heat-templates/environments/deployed-server-environment.yaml \
-             -e ${TRIPLEO_ROOT}/tripleo-ci/test-environments/multinode.yaml \
-             -e ${TRIPLEO_ROOT}/tripleo-ci/test-environments/worker-config.yaml \
-             --compute-scale 0'
+extra_args: >
+    -e /usr/share/openstack-tripleo-heat-templates/environments/deployed-server-environment.yaml
+    -e ${TRIPLEO_ROOT}/tripleo-ci/test-environments/multinode.yaml
+    -e ${TRIPLEO_ROOT}/tripleo-ci/test-environments/worker-config.yaml
+    --compute-scale 0
 ssl_overcloud: false
 network_isolation: false
 flavor_args: ""
