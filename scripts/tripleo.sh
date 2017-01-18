@@ -1001,6 +1001,8 @@ function overcloud_pingtest {
                 exitval=1
             fi
         else
+            nova service-list || :
+            neutron agent-list || :
             openstack stack show tenant-stack || :
             openstack stack event list -f table tenant-stack || :
             openstack stack resource list -n5 tenant-stack || :
