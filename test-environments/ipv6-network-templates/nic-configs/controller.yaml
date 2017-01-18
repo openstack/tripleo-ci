@@ -83,66 +83,66 @@ resources:
       config:
         os_net_config:
           network_config:
-          - addresses:
+          - type: interface
+            name: nic1
+            mtu: 1350
+            use_dhcp: false
+            addresses:
             - ip_netmask:
                 list_join:
                 - /
                 - - {get_param: ControlPlaneIp}
                   - {get_param: ControlPlaneSubnetCidr}
-            mtu: 1350
-            name: nic1
             routes:
             - default: true
               ip_netmask: 0.0.0.0/0
               next_hop: {get_param: ControlPlaneDefaultRoute}
             - ip_netmask: 169.254.169.254/32
               next_hop: {get_param: EC2MetadataIp}
-            type: interface
-            use_dhcp: false
-          - addresses:
-            - ip_netmask: {get_param: ExternalIpSubnet}
-            dns_servers: {get_param: DnsServers}
-            members:
-            - mtu: 1350
-              name: nic2
-              primary: true
-              type: interface
+          - type: ovs_bridge
             name: br-ex
+            dns_servers: {get_param: DnsServers}
+            use_dhcp: false
+            addresses:
+            - ip_netmask: {get_param: ExternalIpSubnet}
             routes:
             - default: true
               ip_netmask: 0.0.0.0/0
               next_hop: {get_param: ExternalInterfaceDefaultRoute}
-            type: ovs_bridge
-            use_dhcp: false
-          - addresses:
-            - ip_netmask: {get_param: InternalApiIpSubnet}
-            mtu: 1350
-            name: nic3
-            type: interface
-            use_dhcp: false
-          - addresses:
-            - ip_netmask: {get_param: StorageIpSubnet}
-            mtu: 1350
-            name: nic4
-            type: interface
-            use_dhcp: false
-          - addresses:
-            - ip_netmask: {get_param: StorageMgmtIpSubnet}
-            mtu: 1350
-            name: nic5
-            type: interface
-            use_dhcp: false
-          - addresses:
-            - ip_netmask: {get_param: TenantIpSubnet}
-            dns_servers: {get_param: DnsServers}
             members:
-            - mtu: 1350
-              name: nic6
+            - type: interface
+              name: nic2
+              mtu: 1350
               primary: true
-              type: interface
-            name: br-tenant
-            type: ovs_bridge
+          - type: interface
+            name: nic3
+            mtu: 1350
             use_dhcp: false
+            addresses:
+            - ip_netmask: {get_param: InternalApiIpSubnet}
+          - type: interface
+            name: nic4
+            mtu: 1350
+            use_dhcp: false
+            addresses:
+            - ip_netmask: {get_param: StorageIpSubnet}
+          - type: interface
+            name: nic5
+            mtu: 1350
+            use_dhcp: false
+            addresses:
+            - ip_netmask: {get_param: StorageMgmtIpSubnet}
+          - type: ovs_bridge
+            name: br-tenant
+            dns_servers: {get_param: DnsServers}
+            use_dhcp: false
+            addresses:
+            - ip_netmask: {get_param: TenantIpSubnet}
+            members:
+            - type: interface
+              name: nic6
+              mtu: 1350
+              primary: true
       group: os-apply-config
     type: OS::Heat::StructuredConfig
 
