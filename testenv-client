@@ -157,6 +157,15 @@ def main(args=sys.argv[1:]):
                         help='deploy the undercloud node.')
     parser.add_argument('--ssh-key', default='',
                         help='ssh key for the ovb nodes to be deployed.')
+    parser.add_argument('--net-iso',
+                        default="multi-nic",
+                        choices=['none', 'multi-nic', 'public-bond'],
+                        help='"none" requests an environment without network '
+                             'isolation, "multi-nic" requests one with a '
+                             'basic multiple nic configuration, and '
+                             '"public-bond" requests one like "multi-nic" '
+                             'but with two public nics for use with bonded '
+                             'nic-configs.')
     parser.add_argument('--debug', '-d',  action='store_true',
                         help='Set to debug mode.')
     opts = parser.parse_args(args)
@@ -178,6 +187,7 @@ def main(args=sys.argv[1:]):
         "ucinstance":opts.ucinstance,
         "create_undercloud": "true" if opts.create_undercloud else "",
         "ssh_key":opts.ssh_key,
+        "net_iso":opts.net_iso,
     }
     job = gear.Job('lockenv', json.dumps(job_params))
     client.submitJob(job)

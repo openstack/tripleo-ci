@@ -12,14 +12,17 @@ rm -f /opt/stack/openstack-virtual-baremetal/temp-key-$ENVNUM.pub
 source /etc/nodepoolrc
 
 function delete_ports() {
-    local subnetid=$1
+    local subnetid=${1:-}
+    if [ -z "$subnetid" ]; then
+        return
+    fi
     for PORT in $(neutron port-list | grep $subnetid | awk '{print $2}') ; do
         neutron port-delete $PORT
     done
 }
 
 # Delete the ports that have been attached to the undercloud
-SUBNETID=$(neutron subnet-show $PUBLICNET | awk '$2=="id" {print $4}')
+SUBNETID=$(neutron subnet-show $PUBLICNET | awk '$2=="id" {print $4}' || echo '')
 delete_ports $SUBNETID
 SUBNETID=$(neutron subnet-show $PROVISIONNET | awk '$2=="id" {print $4}')
 delete_ports $SUBNETID
