@@ -120,7 +120,7 @@ CHANGES=( ${ZUUL_CHANGES//^/ } )
 NUM_CHANGES=${#CHANGES[@]}
 
 OTHER_PROJECTS="no"
-for change in ${CHANGES[@]}; do
+for change in ${CHANGES[@]-}; do
     if [[ ! "$change" =~ 'openstack-infra/tripleo-ci' ]]; then
         OTHER_PROJECTS="yes"
     fi
