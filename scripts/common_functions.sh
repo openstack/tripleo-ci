@@ -259,7 +259,7 @@ function delorean_build_and_serve {
     for PROJFULLREF in $ZUUL_CHANGES ; do
         PROJ=$(filterref $PROJFULLREF)
         # If ci is being run for a change to ci its ok not to have a ci produced repository
-        excluded_proj="tripleo-ci tripleo-quickstart tripleo-quickstart-extras"
+        excluded_proj="tripleo-ci tripleo-quickstart tripleo-quickstart-extras puppet-openstack-integration"
         if [[ " $excluded_proj " =~ " $PROJ " ]]; then
             mkdir -p $TRIPLEO_ROOT/delorean/data/repos/current
             touch $TRIPLEO_ROOT/delorean/data/repos/current/delorean-ci.repo
