@@ -32,3 +32,28 @@
   gather_facts: no
   roles:
     - overcloud-deploy
+  environment:
+    TRIPLEO_ROOT: "{{ lookup('env','TRIPLEO_ROOT') }}"
+
+- name: Add the overcloud nodes to the generated inventory
+  hosts: undercloud
+  gather_facts: yes
+  tags:
+    - overcloud-deploy
+  vars:
+    inventory: all
+  roles:
+    - tripleo-inventory
+
+- name: Check the result of the deployment
+  hosts: localhost
+  tags:
+    - overcloud-deploy
+  tasks:
+    - name: ensure the deployment result has been read into memory
+      include_vars: "{{ local_working_dir }}/overcloud_deployment_result.json"
+
+    # overcloud_deploy_result = ["failed", "passed"]
+    - name: did the deployment pass or fail?
+      debug: var=overcloud_deploy_result
+      failed_when: overcloud_deploy_result == "failed"
