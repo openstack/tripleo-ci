@@ -769,12 +769,14 @@ function overcloud_delete {
        openstack stack show $OVERCLOUD_ID
        exit 1
     fi
-    openstack overcloud plan delete "$OVERCLOUD_NAME" && exitval=0 || exitval=1
-    if [ ${exitval} -eq 0 ]; then
-        log "Overcloud $OVERCLOUD_ID plan delete SUCCESS"
-    else
-        log "Overcloud $OVERCLOUD_ID plan delete FAILED"
-        exit 1
+    if [[ "${STABLE_RELEASE}" != "mitaka" ]] ; then
+        openstack overcloud plan delete "$OVERCLOUD_NAME" && exitval=0 || exitval=1
+        if [ ${exitval} -eq 0 ]; then
+            log "Overcloud $OVERCLOUD_ID plan delete SUCCESS"
+        else
+            log "Overcloud $OVERCLOUD_ID plan delete FAILED"
+            exit 1
+        fi
     fi
 }
 
