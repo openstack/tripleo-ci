@@ -94,6 +94,17 @@ if [ $UNDERCLOUD_SSL == 1 ] ; then
     echo 'generate_service_certificate = True' >> ~/undercloud.conf
 fi
 
+if [ $UNDERCLOUD_TELEMETRY == 0 ] ; then
+    echo 'enable_telemetry = False' >> ~/undercloud.conf
+    echo 'enable_legacy_ceilometer_api = false' >> ~/undercloud.conf
+fi
+if [ $UNDERCLOUD_UI == 0 ] ; then
+    echo 'enable_ui = False' >> ~/undercloud.conf
+fi
+if [ $UNDERCLOUD_VALIDATIONS == 0 ] ; then
+    echo 'enable_validations = False' >> ~/undercloud.conf
+fi
+
 if [ $UNDERCLOUD_HEAT_CONVERGENCE == 1 ] ; then
     cat <<EOF >>$HOME/undercloud-hieradata-override.yaml
 heat::engine::convergence_engine: true
