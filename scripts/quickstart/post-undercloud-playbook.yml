@@ -22,6 +22,7 @@
     - name: Add eth2 interface from /tmp/eth2.cfg
       command: os-net-config -c /tmp/eth2.cfg -v
       become: true
+      when: network_isolation|bool
 
     - name: Remove redundant hosts from instackenv.json
       shell: >

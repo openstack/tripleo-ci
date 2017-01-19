@@ -3,10 +3,6 @@ ssl_overcloud: false
 
 step_adjust_mtu: true
 mtu: 1350
-mtu_interface:
-  - eth0
-  - eth1
-  - eth2
 
 external_interface: eth2
 external_interface_ip: 10.0.0.1
@@ -30,6 +26,15 @@ public_net_gateway: "{{ float_base}}.1"
 # Running quickstart with its own config
 network_isolation_type: network-isolation
 deploy_timeout: 110
+
+regular_interfaces:
+  - eth0
+  - eth1
+netiso_interface:
+  - eth2
+mtu_interface: "{% if network_isolation|bool %}{{ regular_interfaces + netiso_interface }}
+    {% else %}{{ regular_interfaces }}
+    {% endif %}"
 
 # Overcloud deploy
 overcloud_templates_path: /usr/share/openstack-tripleo-heat-templates
