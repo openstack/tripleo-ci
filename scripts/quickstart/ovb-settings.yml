@@ -1,3 +1,8 @@
+undercloud_user: jenkins
+non_root_user: jenkins
+enable_vbmc: false
+gating_repo_enabled: true
+
 run_tempest: false
 ssl_overcloud: false
 
@@ -41,7 +46,9 @@ overcloud_templates_path: /usr/share/openstack-tripleo-heat-templates
 
 # Collect logs settings
 
-artcl_publish: false
+artcl_gzip_only: true
+artcl_txt_rename: true
+artcl_publish: true
 artcl_rsync_logs: false
 artcl_collect_list:
   - /var/log/
@@ -106,4 +113,3 @@ artcl_collect_list:
   - /etc/trove
   - /etc/yum.repos.d
   - /etc/zaqar
-artcl_gzip_only: true

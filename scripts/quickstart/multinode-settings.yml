@@ -1,3 +1,7 @@
+undercloud_user: jenkins
+non_root_user: jenkins
+enable_vbmc: false
+
 extra_args: >
     -e /usr/share/openstack-tripleo-heat-templates/environments/deployed-server-environment.yaml
     -e ${TRIPLEO_ROOT}/tripleo-ci/test-environments/multinode.yaml
@@ -27,8 +31,6 @@ validation_args: "--validation-errors-nonfatal"
 deploy_timeout: 30
 
 undercloud_conf_extras: "net_config_override = /opt/stack/new/tripleo-ci/undercloud-configs/net-config-multinode.json.template"
-
-enable_vbmc: false
 
 # TODO(trown): Create repo configs for each release in the release configs
 repos:
@@ -72,7 +74,9 @@ repos:
     pkg_name: centos-release-ceph-jewel
     custom_cmd: 'yum install -y --enablerepo=extras'
 
-artcl_publish: false
+artcl_gzip_only: true
+artcl_txt_rename: true
+artcl_publish: true
 artcl_rsync_logs: false
 artcl_collect_list:
   - /var/log/
@@ -138,5 +142,4 @@ artcl_collect_list:
   - /etc/trove
   - /etc/yum.repos.d
   - /etc/zaqar
-artcl_gzip_only: true
 
