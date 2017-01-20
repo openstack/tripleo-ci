@@ -104,6 +104,9 @@ fi
 if [ $UNDERCLOUD_VALIDATIONS == 0 ] ; then
     echo 'enable_validations = False' >> ~/undercloud.conf
 fi
+if [ $RUN_TEMPEST_TESTS != 1 ] ; then
+    echo 'enable_tempest = False' >> ~/undercloud.conf
+fi
 
 if [ $UNDERCLOUD_HEAT_CONVERGENCE == 1 ] ; then
     cat <<EOF >>$HOME/undercloud-hieradata-override.yaml
