@@ -93,6 +93,9 @@ export OOOQ=0
 export DEPLOY_OVB_EXTRA_NODE=0
 export CONTAINERS=0
 export CA_SERVER=0
+export UNDERCLOUD_TELEMETRY=0
+export UNDERCLOUD_UI=0
+export UNDERCLOUD_VALIDATIONS=0
 
 if [[ $TOCI_JOBTYPE =~ scenario ]]; then
     # note: we don't need PINGTEST_TEMPLATE here. See tripleo.sh. Though
@@ -195,6 +198,9 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
             INTROSPECT=1
             NODECOUNT=3
             UNDERCLOUD_SSL=1
+            UNDERCLOUD_TELEMETRY=1
+            UNDERCLOUD_UI=1
+            UNDERCLOUD_VALIDATIONS=1
             ;;
         containers)
             CONTAINERS=1
@@ -248,6 +254,9 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
             UNDERCLOUD_SSL=0
             INTROSPECT=0
             UNDERCLOUD_SSL=1
+            UNDERCLOUD_TELEMETRY=1
+            UNDERCLOUD_UI=1
+            UNDERCLOUD_VALIDATIONS=1
             export UNDERCLOUD_SANITY_CHECK=1
             ;;
         periodic)
