@@ -92,6 +92,7 @@ export TEST_OVERCLOUD_DELETE=0
 export OOOQ=0
 export DEPLOY_OVB_EXTRA_NODE=0
 export CONTAINERS=0
+export CA_SERVER=0
 
 if [[ $TOCI_JOBTYPE =~ scenario ]]; then
     # note: we don't need PINGTEST_TEMPLATE here. See tripleo.sh. Though
@@ -271,6 +272,23 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
                 TOCIRUNNER="./toci_instack_oooq.sh"
             fi
             ;;
+        fakeha)
+            NODECOUNT=2
+            # In ci our overcloud nodes don't have access to an external network
+            # --ntp-server is here to make the deploy command happy, the ci env
+            # is on virt so the clocks should be in sync without it.
+            OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS --control-scale 1 --ntp-server 0.centos.pool.ntp.org -e /usr/share/openstack-tripleo-heat-templates/environments/puppet-pacemaker.yaml -e /usr/share/openstack-tripleo-heat-templates/environments/network-isolation.yaml -e $TRIPLEO_ROOT/tripleo-ci/test-environments/network-templates/network-environment.yaml -e $TRIPLEO_ROOT/tripleo-ci/test-environments/net-iso.yaml"
+            NETISO_V4=1
+            PACEMAKER=1
+            ;;
+        caserver)
+            OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS -e /usr/share/openstack-tripleo-heat-templates/environments/services/haproxy-public-tls-certmonger.yaml -e /usr/share/openstack-tripleo-heat-templates/environments/tls-everywhere-endpoints-dns.yaml -e /usr/share/openstack-tripleo-heat-templates/environments/enable-internal-tls.yaml"
+            # This is created in scripts/deploy.sh as part of the CA_SERVER
+            # section
+            OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS -e $TRIPLEO_ROOT/freeipa-enroll.yaml"
+            CA_SERVER=1
+            DEPLOY_OVB_EXTRA_NODE=1
+            ;;
     esac
 done
 
@@ -298,9 +316,13 @@ sudo yum install -y moreutils
 sudo yum erase -y epel-release || :
 
 if [ "$DEPLOY_OVB_EXTRA_NODE" = '1' ]; then
-    TEST_ENV_EXTRA_ARGS="--create-undercloud --ssh-key \"$(cat ~/.ssh/id_rsa.pub)\""
+    # This is usually done in the undercloud install, but we need it at this
+    # point since we want access to the extra node
+    ssh-keygen -t rsa -N '' -f ~/.ssh/id_rsa
+    SSH_KEY="$(cat ~/.ssh/id_rsa.pub)"
+    TEST_ENV_EXTRA_ARGS=("--create-undercloud" "--ssh-key" "$SSH_KEY")
 else
-    TEST_ENV_EXTRA_ARGS=""
+    TEST_ENV_EXTRA_ARGS=()
 fi
 
 source $TRIPLEO_ROOT/tripleo-ci/scripts/metrics.bash
@@ -321,9 +343,15 @@ if [ -z "${TE_DATAFILE:-}" -a "$OSINFRA" = "0" ] ; then
     if [ $NETISO_V4 -eq 1 -o $NETISO_V6 -eq 1 ]; then
         NETISO_ENV="multi-nic"
     fi
-    ./testenv-client -b $GEARDSERVER:4730 -t $TIMEOUT_SECS \
-        --envsize $NODECOUNT --ucinstance $UCINSTANCEID \
-        --net-iso $NETISO_ENV $TEST_ENV_EXTRA_ARGS -- $TOCIRUNNER
+    if [ ${#TEST_ENV_EXTRA_ARGS[@]} -eq 0 ]; then
+        ./testenv-client -b $GEARDSERVER:4730 -t $TIMEOUT_SECS \
+            --envsize $NODECOUNT --ucinstance $UCINSTANCEID \
+            --net-iso $NETISO_ENV -- $TOCIRUNNER
+    else
+        ./testenv-client -b $GEARDSERVER:4730 -t $TIMEOUT_SECS \
+            --envsize $NODECOUNT --ucinstance $UCINSTANCEID \
+            --net-iso $NETISO_ENV "${TEST_ENV_EXTRA_ARGS[@]}" -- $TOCIRUNNER
+    fi
 else
     $TOCIRUNNER
 fi

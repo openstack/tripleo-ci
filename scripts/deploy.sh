@@ -14,6 +14,63 @@ export PYTHONUNBUFFERED=true
 export DIB_DISTRIBUTION_MIRROR=$CENTOS_MIRROR
 export STABLE_RELEASE=${STABLE_RELEASE:-""}
 
+# the TLS everywhere job requires the undercloud to have a domain set so it can
+# enroll to FreeIPA
+if [ $CA_SERVER == 1 ] ; then
+    # This is needed since we use scripts that are located both in t-h-t and
+    # tripleo-common for setting up our test CA.
+    sudo yum install -yq openstack-tripleo-heat-templates openstack-tripleo-common
+
+    export TRIPLEO_DOMAIN=tripleodomain
+    export CA_SERVER_HOSTNAME=ipa.$TRIPLEO_DOMAIN
+    export CA_ADMIN_PASS=$(uuidgen)
+    export CA_DIR_MANAGER_PASS=$(uuidgen)
+    export CA_SECRET=$(uuidgen)
+    export UNDERCLOUD_FQDN=undercloud.$TRIPLEO_DOMAIN
+    # We can access the CA server through this address for bootstrapping
+    # purposes.
+    export CA_SERVER_PRIVATE_IP=$(jq -r '.extra_nodes[0].ips.private[0].addr' ~/instackenv.json)
+    # Address that will be used for the provisioning interface. The undercloud
+    # and the overcloud nodes should have access to this.
+    export CA_SERVER_IP="192.168.24.250"
+    export CA_SERVER_CIDR="${CA_SERVER_IP}/24"
+
+    echo "$CA_SERVER_PRIVATE_IP  $CA_SERVER_HOSTNAME" | sudo tee -a /etc/hosts
+
+    cat <<EOF >~/freeipa-setup.env
+export Hostname=$CA_SERVER_HOSTNAME
+export FreeIPAIP=$CA_SERVER_IP
+export AdminPassword=$CA_ADMIN_PASS
+export DirectoryManagerPassword=$CA_DIR_MANAGER_PASS
+export HostsSecret=$CA_SECRET
+export UndercloudFQDN=$UNDERCLOUD_FQDN
+export ProvisioningCIDR=$CA_SERVER_CIDR
+EOF
+
+    # Set undercloud FQDN
+    sudo hostnamectl set-hostname --static $UNDERCLOUD_FQDN
+
+    # Copy CA env file and installation script
+    scp $SSH_OPTIONS ~/freeipa-setup.env centos@$CA_SERVER_PRIVATE_IP:/tmp/freeipa-setup.env
+    scp $SSH_OPTIONS /usr/share/openstack-tripleo-heat-templates/ci/scripts/freeipa_setup.sh centos@$CA_SERVER_PRIVATE_IP:~/freeipa_setup.sh
+
+    # Set up CA
+    ssh $SSH_OPTIONS -tt centos@$CA_SERVER_PRIVATE_IP "sudo bash ~/freeipa_setup.sh"
+
+    # enroll to CA
+    sudo yum install -q -y ipa-client
+    sudo ipa-client-install --server $CA_SERVER_HOSTNAME \
+        --password=$CA_SECRET --domain=$TRIPLEO_DOMAIN --unattended
+
+    # Get kerberos ticket
+    sudo kinit -k -t /etc/krb5.keytab
+    # Verify we got a ticket
+    sudo klist
+
+    # Create environments for CA enrollment
+    create_freeipa_enroll_envfile.py -w $CA_SECRET -d $TRIPLEO_DOMAIN \
+        -s $CA_SERVER_HOSTNAME -i $CA_SERVER_IP -o $TRIPLEO_ROOT/freeipa-enroll.yaml
+fi
 
 cat <<EOF >$HOME/undercloud-hieradata-override.yaml
 ironic::drivers::deploy::http_port: 3816
