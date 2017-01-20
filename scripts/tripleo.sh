@@ -818,6 +818,12 @@ function overcloud_sanitytest_create {
                 openstack container create ${SANITYTEST_CONTENT_NAME}
                 openstack container list
                 ;;
+            "sahara_api" )
+                # glance_api must also be enabled
+                run_cmd openstack image create sahara_${SANITYTEST_CONTENT_NAME}
+                run_cmd openstack dataprocessing image register sahara_${SANITYTEST_CONTENT_NAME} --username centos
+                run_cmd openstack dataprocessing image list
+                ;;
         esac
     done
 }
@@ -847,6 +853,9 @@ function overcloud_sanitytest_check {
             "swift_proxy" )
                 run_cmd openstack container show ${SANITYTEST_CONTENT_NAME}
                 ;;
+            "sahara_api" )
+                run_cmd openstack dataprocessing image show sahara_${SANITYTEST_CONTENT_NAME}
+                ;;
         esac
     done
 }
@@ -873,6 +882,10 @@ function overcloud_sanitytest_cleanup {
                 ;;
             "swift_proxy" )
                 run_cmd openstack container delete ${SANITYTEST_CONTENT_NAME}
+                ;;
+            "sahara_api" )
+                run_cmd openstack dataprocessing image unregister sahara_${SANITYTEST_CONTENT_NAME}
+                run_cmd openstack image delete sahara_${SANITYTEST_CONTENT_NAME}
                 ;;
         esac
     done

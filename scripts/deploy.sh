@@ -238,7 +238,7 @@ if [ "$MULTINODE" = "1" ]; then
         # Backup current deploy args:
         CURRENT_OVERCLOUD_DEPLOY_ARGS=$OVERCLOUD_DEPLOY_ARGS
         # Set deploy args for newton deployment:
-        export OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS --templates $TRIPLEO_ROOT/$UPGRADE_RELEASE/usr/share/openstack-tripleo-heat-templates -e $TRIPLEO_ROOT/$UPGRADE_RELEASE/usr/share/openstack-tripleo-heat-templates/environments/deployed-server-environment.yaml"
+        export OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS --templates $TRIPLEO_ROOT/$UPGRADE_RELEASE/usr/share/openstack-tripleo-heat-templates -e $TRIPLEO_ROOT/$UPGRADE_RELEASE/usr/share/openstack-tripleo-heat-templates/environments/deployed-server-environment.yaml -e $TRIPLEO_ROOT/$UPGRADE_RELEASE/usr/share/openstack-tripleo-heat-templates/environments/services/sahara.yaml"
         echo_vars_to_deploy_env
         $TRIPLEO_ROOT/$UPGRADE_RELEASE/usr/share/openstack-tripleo-heat-templates/deployed-server/scripts/get-occ-config.sh 2>&1 | sudo dd of=/var/log/deployed-server-os-collect-config.log &
     else
@@ -353,7 +353,7 @@ if [ "$OVERCLOUD_MAJOR_UPGRADE" == 1 ] ; then
     # We have to use the backward compatible
     # update-from-deployed-server-newton.yaml environment when upgrading from
     # newton.
-    export OVERCLOUD_DEPLOY_ARGS="$CURRENT_OVERCLOUD_DEPLOY_ARGS -e /usr/share/openstack-tripleo-heat-templates/environments/deployed-server-environment.yaml -e /usr/share/openstack-tripleo-heat-templates/environments/updates/update-from-deployed-server-newton.yaml"
+    export OVERCLOUD_DEPLOY_ARGS="$CURRENT_OVERCLOUD_DEPLOY_ARGS -e /usr/share/openstack-tripleo-heat-templates/environments/deployed-server-environment.yaml -e /usr/share/openstack-tripleo-heat-templates/environments/updates/update-from-deployed-server-newton.yaml -e /usr/share/openstack-tripleo-heat-templates/environments/services/sahara.yaml"
     echo_vars_to_deploy_env
     if [ "$MULTINODE" = "1" ]; then
         /usr/share/openstack-tripleo-heat-templates/deployed-server/scripts/get-occ-config.sh 2>&1 | sudo dd of=/var/log/deployed-server-os-collect-config-22.log &
