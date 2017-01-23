@@ -221,7 +221,9 @@ function postci(){
         local i=2
         $TARCMD $HOME/*.log > $WORKSPACE/logs/primary_node.tar.xz
         # Extract /var/log for easy viewing
-        tar xf $WORKSPACE/logs/primary_node.tar.xz -C $WORKSPACE/logs/ var/log
+        tar xf $WORKSPACE/logs/primary_node.tar.xz -C $WORKSPACE/logs/ var/log etc
+        # Clean out symlinks, because these seem to break reporting job results
+        find $WORKSPACE/logs/etc -type l | xargs -t rm -f
         for ip in $(cat /etc/nodepool/sub_nodes_private); do
             mkdir $WORKSPACE/logs/subnode-$i/
             ssh $SSH_OPTIONS -i /etc/nodepool/id_rsa $ip \
@@ -229,8 +231,10 @@ function postci(){
             ssh $SSH_OPTIONS -i /etc/nodepool/id_rsa $ip $JLOGCMD
             ssh $SSH_OPTIONS -i /etc/nodepool/id_rsa $ip \
                 $TARCMD > $WORKSPACE/logs/subnode-$i/subnode-$i.tar.xz
-            # Extract /var/log for easy viewing
-            tar xf $WORKSPACE/logs/subnode-$i/subnode-$i.tar.xz -C $WORKSPACE/logs/subnode-$i/ var/log
+            # Extract /var/log and /etc for easy viewing
+            tar xf $WORKSPACE/logs/subnode-$i/subnode-$i.tar.xz -C $WORKSPACE/logs/subnode-$i/ var/log etc
+            # Clean out symlinks, because these seem to break reporting job results
+            find $WORKSPACE/logs/subnode-$i/etc -type l | xargs -t rm -f
             # These files are causing the publish logs ansible
             # task to fail with an rsync error:
             # "symlink has no referent"
