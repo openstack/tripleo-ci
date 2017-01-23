@@ -83,10 +83,13 @@ def process_jenkins_comment_message(message, job_names):
         if line and line[0] == '-':
             split = line.split(" ",6)
             if split[1] in job_names:
-                split[6] = " ".join(split[6].split()[:2])
+                if len(split) > 6:
+                    duration = " ".join(split[6].split()[:2])
+                else:
+                    duration = ''
                 job_results[split[1]] = {'log_url': split[2],
                                          'status': split[4],
-                                         'duration': split[6]}
+                                         'duration': duration}
     return job_results
 
 
