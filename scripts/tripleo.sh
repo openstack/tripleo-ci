@@ -403,10 +403,11 @@ function delorean_build {
     if [ -n "$STABLE_RELEASE" ]; then
         # first check if we have a stable release
         sed -i -e "s%baseurl=.*%baseurl=https://trunk.rdoproject.org/centos7-$STABLE_RELEASE%" projects.ini
-        if [ "$STABLE_RELEASE" = "newton" ]; then
-            sed -i -e "s%distro=.*%distro=$STABLE_RELEASE-rdo%" projects.ini
-        else
+        if [ "$STABLE_RELEASE" = "mitaka" ]; then
             sed -i -e "s%distro=.*%distro=rpm-$STABLE_RELEASE%" projects.ini
+        else
+            # RDO changed the distgit branch for stable releases starting from newton.
+            sed -i -e "s%distro=.*%distro=$STABLE_RELEASE-rdo%" projects.ini
         fi
         sed -i -e "s%source=.*%source=stable/$STABLE_RELEASE%" projects.ini
     elif [ -n "$FEATURE_BRANCH" ]; then
