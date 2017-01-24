@@ -11,13 +11,16 @@ rm -f /opt/stack/openstack-virtual-baremetal/temp-key-$ENVNUM.pub
 
 source /etc/nodepoolrc
 
+# NOTE(bnemec): This function starts the port deletions in the background.
+# To ensure they complete before you proceed, you must call "wait" after
+# calling this function.
 function delete_ports() {
     local subnetid=${1:-}
     if [ -z "$subnetid" ]; then
         return
     fi
     for PORT in $(neutron port-list | grep $subnetid | awk '{print $2}') ; do
-        neutron port-delete $PORT
+        neutron port-delete $PORT &
     done
 }
 
@@ -26,6 +29,8 @@ SUBNETID=$(neutron subnet-show $PUBLICNET | awk '$2=="id" {print $4}' || echo ''
 delete_ports $SUBNETID
 SUBNETID=$(neutron subnet-show $PROVISIONNET | awk '$2=="id" {print $4}')
 delete_ports $SUBNETID
+# Needed to ensure all ports have been deleted before we delete the heat stack
+wait
 
 # If there was a keypair for this specific run, delete it.
 openstack keypair delete "tripleo-ci-key-$ENVNUM" || true
