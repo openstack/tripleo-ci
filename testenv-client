@@ -180,6 +180,8 @@ def main(args=sys.argv[1:]):
     add_servers(client, opts.geard)
     client.waitForServer()
 
+    job_identifier = '%s: %s' % (os.environ['ZUUL_CHANGE'],
+                                 os.environ['TOCI_JOBTYPE'])
     job_params = {
         "callback_name": callback_name,
         "timeout": opts.timeout,
@@ -188,6 +190,7 @@ def main(args=sys.argv[1:]):
         "create_undercloud": "true" if opts.create_undercloud else "",
         "ssh_key":opts.ssh_key,
         "net_iso":opts.net_iso,
+        "job_identifier":job_identifier,
     }
     job = gear.Job('lockenv', json.dumps(job_params))
     client.submitJob(job)
