@@ -342,10 +342,6 @@ if [ -z "${TE_DATAFILE:-}" -a "$OSINFRA" = "0" ] ; then
     sudo pip install gear
     # Kill the whole job if it doesn't get a testenv in 20 minutes as it likely will timout in zuul
     ( sleep 1200 ; [ ! -e /tmp/toci.started ] && sudo kill -9 $$ ) &
-    # Kill the testenv if the zuul job disappears.  This can happen if a new patch
-    # set is pushed while a job on a previous one is still running.
-    # Only check every 5 minutes to avoid hammering the status endpoint.
-    ( while :; do sleep 300; curl http://zuul.openstack.org/status.json | grep -q $ZUUL_UUID || sudo kill -9 $$; done ) &> /dev/null &
 
     # TODO(bnemec): Add jobs that use public-bond
     NETISO_ENV="none"

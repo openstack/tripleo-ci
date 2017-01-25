@@ -31,6 +31,8 @@ import time
 import uuid
 
 import gear
+from novaclient import client as novaclient
+from novaclient import exceptions
 
 # 100Mb log files
 maxBytes=1024*1024*100
@@ -75,6 +77,8 @@ class TEWorkerThread(threading.Thread):
         self.running = True
         self.num = num
         self.worker = None
+        self.ucinstance = None
+        self.complete_event = None
 
     def run(self):
         try:
@@ -100,6 +104,7 @@ class TEWorkerThread(threading.Thread):
 
             arguments = json.loads(job.arguments)
             call_back = arguments["callback_name"]
+            self.ucinstance = arguments["ucinstance"]
             job_timeout = int(arguments.get("timeout", self.timeout))
 
             # Once this Job is called we call back to the client to run its
@@ -119,6 +124,7 @@ class TEWorkerThread(threading.Thread):
 
     def _run_callback(self, timeout, callback_name, arguments):
         client = CallbackClient()
+        self.complete_event = client.event
         self._add_servers(client, self.geard)
         client.waitForServer()
 
@@ -181,6 +187,63 @@ class TEWorkerThread(threading.Thread):
         client.shutdown()
 
 
+def _get_auth_values_from_rc():
+    """Read auth details from /etc/nodepoolrc
+
+    :returns: A dict containing the following keys: user, tenant, auth_url
+              and password.
+    """
+    values = {}
+    with open('/etc/nodepoolrc') as rc:
+        for line in rc.readlines():
+            parts = line.split('=', 1)
+            if 'OS_USERNAME' in parts[0]:
+                values['user'] = parts[1]
+            elif 'OS_TENANT' in parts[0]:
+                values['tenant'] = parts[1]
+            elif 'OS_AUTH_URL' in parts[0]:
+                values['auth_url'] = parts[1]
+            elif 'OS_PASSWORD' in parts[0]:
+                values['password'] = parts[1]
+    return {k: v.rstrip() for k, v in values.items()}
+
+
+def _get_nova_client():
+    auth_values = _get_auth_values_from_rc()
+    nclient = novaclient.Client(2,
+                                auth_values['user'],
+                                auth_values['password'],
+                                auth_values['tenant'],
+                                auth_values['auth_url']
+                                )
+    return nclient
+
+
+def _check_instance_alive(nclient, instance, event):
+    """Check that instance still exists in Nova
+
+    Attempt to get the server specified by instance.  If the server is not
+    found, set the client event to indicate the job has gone away and we
+    should clean up the testenv.
+
+    instance will be None if the worker has not yet been assigned to a
+    Jenkins slave, and we should do nothing in that case.
+
+    :param nclient: A novaclient instance
+    :param instance: The UUID of the instance to check
+    :param event: The gear client event to set if the instance has gone away.
+    """
+    if instance:
+        try:
+            i = nclient.servers.get(instance)
+        except exceptions.NotFound:
+            # There is a very brief period of time where instance could be set
+            # and event not.  It's unlikely to happen, but let's be safe.
+            if event:
+                event.set()
+            logger.info('Job instance "%s" went away.', instance)
+
+
 def main(args=sys.argv[1:]):
     parser = argparse.ArgumentParser(
         description='Registers a test environment with a gearman broker, the '
@@ -216,7 +279,16 @@ def main(args=sys.argv[1:]):
     te_worker = TEWorkerThread(opts.geard, opts.tenum, opts.timeout, opts.scriptfiles)
 
     te_worker.start()
+
+    counter = 0
+    nclient = _get_nova_client()
     while te_worker.running:
+        counter += 1
+        # Only check for instance existence once per minute to avoid DoS'ing
+        # the controller
+        if counter % 60 == 0:
+            _check_instance_alive(nclient, te_worker.ucinstance,
+                                  te_worker.complete_event)
         time.sleep(1)
 
 
