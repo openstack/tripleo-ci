@@ -153,7 +153,7 @@ if [ "$OVB" = 1 ]; then
     # check the power status of the last IPMI device we have details for
     # this ensures the BMC is ready and sanity tests that its working
     PMADDR=$(jq '.nodes[length-1].pm_addr' < ~/instackenv.json | tr '"' ' ')
-    tripleo wait_for -d 10 -l 40 -- ipmitool -I lanplus -H $PMADDR -U admin -P password power status
+    $TRIPLEO_ROOT/tripleo-ci/scripts/wait_for -d 10 -l 40 -- ipmitool -I lanplus -H $PMADDR -U admin -P password power status
 fi
 
 if [ $INTROSPECT == 1 ] ; then
