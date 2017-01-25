@@ -5,7 +5,6 @@ set -o pipefail
 ## Signal to toci_gate_test.sh we've started by
 touch /tmp/toci.started
 
-exit_value=0
 export CURRENT_DIR=$(dirname ${BASH_SOURCE[0]:-$0})
 export TRIPLEO_CI_DIR=$CURRENT_DIR/../
 
@@ -120,7 +119,7 @@ sed -i '/ansible_user: stack/d' $TRIPLEO_ROOT/tripleo-quickstart/roles/common/de
 # deploy hangs.  90m = 90 minutes = 1.5 hours
 /usr/bin/timeout --preserve-status 90m \
     $TRIPLEO_ROOT/tripleo-quickstart/quickstart.sh \
-    ${OOOQ_ARGS} 2>&1 | tee $OOOQ_LOGS/quickstart_install.log || exit_value=2
+    ${OOOQ_ARGS} 2>&1 | tee $OOOQ_LOGS/quickstart_install.log && exit_value=0 || exit_value=$?
 
 # We use the tripleo.sh pingtest rather than the validate-simple role in
 # quickstart-extras so that we can easily support the multinode scenario
@@ -133,9 +132,7 @@ fi
 
 sudo journalctl -u os-collect-config | sudo tee /var/log/os-collect-config.txt
 
-# TODO(sshnaidm): to prepare collect-logs role for tripleo-ci specific paths
-# and remove this function then
-collect_oooq_logs
+tar -czf $OOOQ_LOGS/quickstart.tar.gz $OPT_WORKDIR
 
 # TODO(sshnaidm): fix this either in role or quickstart.sh
 # it will not duplicate logs from undercloud and 127.0.0.2
@@ -145,7 +142,7 @@ $TRIPLEO_ROOT/tripleo-quickstart/quickstart.sh --bootstrap --no-clone \
         $OOOQ_DEFAULT_ARGS \
         --config $CONFIG \
         --playbook collect-logs.yml \
-        -e artcl_collect_dir=$OOOQ_LOGS/collected_logs \
+        -e artcl_collect_dir=$OOOQ_LOGS \
         -e @$TRIPLEO_ROOT/tripleo-ci/scripts/quickstart/multinode-settings.yml \
         -e tripleo_root=$TRIPLEO_ROOT \
         127.0.0.2 &> $OOOQ_LOGS/quickstart_collectlogs.log ||

@@ -175,6 +175,11 @@ function postci(){
     set -x
     set +e
     stop_metric "tripleo.${STABLE_RELEASE:-master}.${TOCI_JOBTYPE}.ci.total.seconds"
+    if [[ "$POSTCI" == "0" ]]; then
+        sudo chown -R $USER $WORKSPACE
+        sudo iptables -I INPUT -p tcp -j ACCEPT
+        return 0
+    fi
     if [ -e $TRIPLEO_ROOT/delorean/data/repos/ ] ; then
         # I'd like to tar up repos/current but tar'ed its about 8M it may be a
         # bit much for the log server, maybe when we are building less
@@ -356,12 +361,6 @@ function prepare_images_oooq {
     cp ironic-python-agent.* ~/
     cp overcloud-full.qcow2 overcloud-full.initrd overcloud-full.vmlinuz ~/
     rm -f overcloud-full.tar ipa_images.tar
-}
-
-function collect_oooq_logs {
-    sudo cp /var/log/quickstart_*.log $OOOQ_LOGS/ || true
-    tar -czf $OOOQ_LOGS/quickstart.tar.gz $OPT_WORKDIR
-    mkdir -p $OOOQ_LOGS/collected_logs
 }
 
 function subnodes_scp_deploy_env {
