@@ -574,12 +574,21 @@ function register_nodes {
     fi
 
     stackrc_check
-    openstack baremetal import --json $INSTACKENV_JSON_PATH
-    ironic node-list
     if [[ "${STABLE_RELEASE}" =~ ^(liberty|mitaka)$ ]] ; then
+        openstack baremetal import --json $INSTACKENV_JSON_PATH
         # This step is a part of the import command from Newton on
         openstack baremetal configure boot
+    else
+        if [ "$INTROSPECT_NODES" = 1 ]; then
+            # Keep the nodes in manageable state so that they may be
+            # introspected later.
+            openstack overcloud node import $INSTACKENV_JSON_PATH
+        else
+            openstack overcloud node import $INSTACKENV_JSON_PATH --provide
+        fi
     fi
+
+    ironic node-list
 
     log "Register nodes - DONE."
 
@@ -590,7 +599,16 @@ function introspect_nodes {
     log "Introspect nodes"
 
     stackrc_check
-    openstack baremetal introspection bulk start
+
+    if [[ "${STABLE_RELEASE}" = "mitaka" ]] ; then
+        openstack baremetal introspection bulk start
+    else
+        # Note: Unlike the legacy bulk command, overcloud node
+        # introspect will only run on nodes in the 'manageable'
+        # provisioning state.
+        openstack overcloud node introspect --all-manageable
+        openstack overcloud node provide --all-manageable
+    fi
 
     log "Introspect nodes - DONE."
 
