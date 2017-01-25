@@ -57,20 +57,15 @@ export OOOQ_DEFAULT_ARGS=" --working-dir $OPT_WORKDIR --retain-inventory -T none
 export OOOQ_ARGS=" --config $CONFIG \
 -e @$TRIPLEO_ROOT/tripleo-ci/scripts/quickstart/ovb-settings.yml \
 -e tripleo_root=$TRIPLEO_ROOT \
--e undercloud_hieradata_override_file=~/quickstart-hieradata-overrides.yaml \
--e gating_repo_enabled=True \
--e enable_vbmc=False \
--e non_root_user=$USER \
--e undercloud_user=$USER"
+-e undercloud_hieradata_override_file=~/quickstart-hieradata-overrides.yaml"
 export PLAYBOOK=" --playbook ovb-playbook.yml --requirements requirements.txt --requirements quickstart-extras-requirements.txt "
 
 # TODO(sshnaidm): when collect-logs role will have the same functionality,
 # replace postci function with this role (see in the end of file).
 trap "exit_val=\$?; [ \$exit_val != 0 ] && echo ERROR DURING PREVIOUS COMMAND ^^^ && echo 'See postci.txt in the logs directory for debugging details'; postci \$exit_val 2>&1 | ts '%Y-%m-%d %H:%M:%S.000 |' > $WORKSPACE/logs/postci.log 2>&1" EXIT
 
-mkdir -p $OOOQ_LOGS
-[[ ! -e $OPT_WORKDIR ]] && mkdir -p $OPT_WORKDIR && sudo chown -R ${USER} $OPT_WORKDIR
-sudo mkdir $OOOQ_LOGS && sudo chown -R ${USER} $OOOQ_LOGS
+[[ ! -e $OPT_WORKDIR ]] && mkdir -p $OPT_WORKDIR && sudo chown -R ${USER}: $OPT_WORKDIR
+sudo mkdir -p $OOOQ_LOGS && sudo chown -R ${USER}: $OOOQ_LOGS
 # TODO(sshnaidm): check why it's not cloned
 [[ ! -e $TRIPLEO_ROOT/tripleo-quickstart ]] && /usr/zuul-env/bin/zuul-cloner --workspace ${TRIPLEO_ROOT} https://git.openstack.org/openstack tripleo-quickstart
 [[ ! -e $TRIPLEO_ROOT/tripleo-quickstart-extras ]] && /usr/zuul-env/bin/zuul-cloner --workspace ${TRIPLEO_ROOT} https://git.openstack.org/openstack tripleo-quickstart-extras
@@ -91,7 +86,7 @@ $TRIPLEO_ROOT/tripleo-quickstart/quickstart.sh  --bootstrap --no-clone \
         -t all \
         $PLAYBOOK $OOOQ_ARGS \
         $OOOQ_DEFAULT_ARGS undercloud 2>&1 \
-        | sudo tee $OOOQ_LOGS/quickstart_install.log && exit_value=0 || exit_value=$?
+        | tee $OOOQ_LOGS/quickstart_install.log && exit_value=0 || exit_value=$?
 
 # TODO(sshnaidm): to include this in general ovb-playbook(?)
 if [[ -e ${OOO_WORKDIR_LOCAL}/overcloudrc ]]; then
@@ -100,11 +95,8 @@ if [[ -e ${OOO_WORKDIR_LOCAL}/overcloudrc ]]; then
         -t all  \
         --playbook tempest.yml  \
         --extra-vars run_tempest=True  \
-        -e test_regex='.*smoke' \
-        $EXTRA_ARGS \
-        undercloud 2>&1| sudo tee $OOOQ_LOGS/quickstart_tempest.log && tempest_exit_value=0 || tempest_exit_value=$?
-else
-    exit_value=1
+        -e test_regex='.*smoke' $EXTRA_ARGS \
+         undercloud 2>&1 | tee $OOOQ_LOGS/quickstart_tempest.log && tempest_exit_value=0 || tempest_exit_value=$?
 fi
 
 # TODO(sshnaidm): to prepare collect-logs role for tripleo-ci specific paths
@@ -118,13 +110,10 @@ sed -i 's/hosts: all:!localhost/hosts: all:!localhost:!127.0.0.2/' $OPT_WORKDIR/
 # TODO(sshnaidm): to move postci functionality into collect-logs role
 $TRIPLEO_ROOT/tripleo-quickstart/quickstart.sh --bootstrap --no-clone \
         $OOOQ_DEFAULT_ARGS \
-        --requirements quickstart-extras-requirements.txt \
-        --config $CONFIG \
+        $OOOQ_ARGS \
         --playbook collect-logs.yml \
         -e artcl_collect_dir=$OOOQ_LOGS/collected_logs \
-        -e @$TRIPLEO_ROOT/tripleo-ci/scripts/quickstart/ovb-settings.yml \
-        -e tripleo_root=$TRIPLEO_ROOT \
-        undercloud 2>&1| sudo tee $OOOQ_LOGS/quickstart_collectlogs.log ||:
+        undercloud > $OOOQ_LOGS/quickstart_collectlogs.log || true
 
 export ARA_DATABASE="sqlite:///${OPT_WORKDIR}/ara.sqlite"
 $OPT_WORKDIR/bin/ara generate $OOOQ_LOGS/ara || true

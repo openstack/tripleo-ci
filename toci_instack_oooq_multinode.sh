@@ -66,7 +66,7 @@ else
     export OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS -e $TRIPLEO_ROOT/tripleo-ci/test-environments/worker-config.yaml -e /usr/share/openstack-tripleo-heat-templates/environments/low-memory-usage.yaml"
 fi
 export OPT_WORKDIR=${WORKSPACE}/.quickstart
-export OOOQ_LOGS=/var/log/oooq
+export OOOQ_LOGS=${WORKSPACE}/logs/oooq
 export OOO_WORKDIR_LOCAL=$HOME
 export OOOQ_DEFAULT_ARGS=" --working-dir $OPT_WORKDIR --retain-inventory -T none -e working_dir=$OOO_WORKDIR_LOCAL -R ${STABLE_RELEASE:-master}"
 
@@ -107,8 +107,8 @@ undercloud_haproxy_public_ip=$undercloud_net_range"2"
 undercloud_haproxy_admin_ip=$undercloud_net_range"3"
 export no_proxy=$undercloud_services_ip,$undercloud_haproxy_public_ip,$undercloud_haproxy_admin_ip,$MY_IP,$MY_IP_eth1
 
-[[ ! -e $OPT_WORKDIR ]] && mkdir -p $OPT_WORKDIR && sudo chown -R ${USER} $OPT_WORKDIR
-sudo mkdir $OOOQ_LOGS && sudo chown -R ${USER} $OOOQ_LOGS
+[[ ! -e $OPT_WORKDIR ]] && mkdir -p $OPT_WORKDIR && sudo chown -R ${USER}: $OPT_WORKDIR
+sudo mkdir $OOOQ_LOGS && sudo chown -R ${USER}: $OOOQ_LOGS
 
 # make the requirements point to local checkout of tripleo-quickstart-extras
 echo "file://${TRIPLEO_ROOT}/tripleo-quickstart-extras/#egg=tripleo-quickstart-extras" > ${TRIPLEO_ROOT}/tripleo-quickstart/quickstart-extras-requirements.txt
@@ -121,13 +121,14 @@ cp $TRIPLEO_ROOT/tripleo-ci/scripts/quickstart/*yml $TRIPLEO_ROOT/tripleo-quicks
 $TRIPLEO_ROOT/tripleo-quickstart/quickstart.sh --install-deps
 
 pushd $TRIPLEO_ROOT/tripleo-quickstart/
-# TODO(sshnaidm): fix inventory role with prepares ssh.config.ansible,
-# it's not usable here right now. Hopefully ssh config is not required for us.
-export ANSIBLE_SSH_ARGS=""
+# TODO(sshnaidm): fix inventory and collect-logs roles with prepares ssh.config.ansible,
+sed -i '/ansible_user: stack/d' $TRIPLEO_ROOT/tripleo-quickstart/roles/common/defaults/main.yml
+
 # We wrap the quickstart call in a timeout, so that we can get logs if the
 # deploy hangs.  90m = 90 minutes = 1.5 hours
-/usr/bin/timeout --preserve-status 90m $TRIPLEO_ROOT/tripleo-quickstart/quickstart.sh ${OOOQ_ARGS} 2>&1 \
-        | ts '%Y-%m-%d %H:%M:%S.000 |' | sudo tee /var/log/quickstart_install.log || exit_value=2
+/usr/bin/timeout --preserve-status 90m \
+    $TRIPLEO_ROOT/tripleo-quickstart/quickstart.sh \
+    ${OOOQ_ARGS} 2>&1 | tee $OOOQ_LOGS/quickstart_install.log || exit_value=2
 
 # We use the tripleo.sh pingtest rather than the validate-simple role in
 # quickstart-extras so that we can easily support the multinode scenario
@@ -135,7 +136,7 @@ export ANSIBLE_SSH_ARGS=""
 # and use that instead.
 # https://github.com/openstack/tripleo-heat-templates/tree/master/ci/pingtests
 if [[ -e ${OOO_WORKDIR_LOCAL}/overcloudrc ]]; then
-    $TRIPLEO_CI_DIR/tripleo-ci/scripts/tripleo.sh --overcloud-pingtest 2>&1 | sudo dd of=/var/log/overcloud-pingtest.txt
+    $TRIPLEO_CI_DIR/tripleo-ci/scripts/tripleo.sh --overcloud-pingtest &>$OOOQ_LOGS/multinode-overcloud-pingtest.txt
 fi
 
 sudo journalctl -u os-collect-config | sudo tee /var/log/os-collect-config.txt
@@ -148,21 +149,17 @@ collect_oooq_logs
 # it will not duplicate logs from undercloud and 127.0.0.2
 sed -i 's/hosts: all:!localhost/hosts: all:!localhost:!127.0.0.2/' $OPT_WORKDIR/playbooks/collect-logs.yml ||:
 
-# To collect logs from the overcloud nodes we need to use the local ssh config
-export SSH_CONFIG=$OPT_WORKDIR/ssh.config.local.ansible
-
-# TODO(sshnaidm): to move postci functionality into collect-logs role
 $TRIPLEO_ROOT/tripleo-quickstart/quickstart.sh --bootstrap --no-clone \
         $OOOQ_DEFAULT_ARGS \
-        --requirements requirements.txt \
-        --requirements quickstart-extras-requirements.txt \
         --config $CONFIG \
         --playbook collect-logs.yml \
-        -e artcl_collect_dir=/var/log/oooq/collected_logs \
+        -e artcl_collect_dir=$OOOQ_LOGS/collected_logs \
         -e @$TRIPLEO_ROOT/tripleo-ci/scripts/quickstart/multinode-settings.yml \
         -e tripleo_root=$TRIPLEO_ROOT \
-        127.0.0.2 2>&1| sudo tee /var/log/quickstart_collectlogs.log ||:
+        127.0.0.2 > $OOOQ_LOGS/quickstart_collectlogs.log || true
 
+export ARA_DATABASE="sqlite:///${OPT_WORKDIR}/ara.sqlite"
+$OPT_WORKDIR/bin/ara generate $OOOQ_LOGS/ara || true
 popd
 
 echo 'Run completed.'
