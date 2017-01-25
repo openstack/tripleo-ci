@@ -237,6 +237,7 @@ if [ "$MULTINODE" = "1" ]; then
     # Start the script that will configure os-collect-config on the subnodes
     source ~/stackrc
 
+    # TODO: This whole block is not release agnostic and Newton is hardcoded. We'll need to detect which release we want to test.
     if [ "$OVERCLOUD_MAJOR_UPGRADE" == 1 ] ; then
         # Download the previous release openstack-tripleo-heat-templates to a directory
         # we then deploy this and later upgrade to the default --templates location
@@ -350,9 +351,12 @@ fi
 if [ "$UNDERCLOUD_MAJOR_UPGRADE" == 1 ] ; then
     # Reset or unset STABLE_RELEASE so that we upgrade to the next major
     # version
-    if [ "$STABLE_RELEASE" = "mitaka" ]; then
+    if [ "$STABLE_RELEASE" = "ocata" ]; then
+        export STABLE_RELEASE=""
+    elif [ "$STABLE_RELEASE" = "mitaka" ]; then
         export STABLE_RELEASE="newton"
     elif [ "$STABLE_RELEASE" = "newton" ]; then
+        # TODO: switch STABLE_RELEASE to ocata when released
         export STABLE_RELEASE=""
     fi
     echo_vars_to_deploy_env
@@ -361,6 +365,7 @@ if [ "$UNDERCLOUD_MAJOR_UPGRADE" == 1 ] ; then
     $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --undercloud-upgrade 2>&1 | ts '%Y-%m-%d %H:%M:%S.000 |' | sudo dd of=/var/log/undercloud_upgrade.txt || (tail -n 50 /var/log/undercloud_upgrade.txt && false)
 fi
 
+# TODO: This whole block is not release agnostic and Newton is hardcoded. We'll need to detect which release we want to test.
 if [ "$OVERCLOUD_MAJOR_UPGRADE" == 1 ] ; then
     source ~/stackrc
     # Set deploy args for newton deployment:

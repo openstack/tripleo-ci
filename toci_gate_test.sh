@@ -157,9 +157,12 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
             if [ $TOCI_JOBTYPE == 'undercloud-upgrades' ] ; then
                 # We want to start by installing an Undercloud
                 # from the previous stable release.
-                if [ "$STABLE_RELEASE" = "newton" ]; then
+                if [ "$STABLE_RELEASE" = "ocata" ]; then
+                    STABLE_RELEASE=newton
+                elif [ "$STABLE_RELEASE" = "newton" ]; then
                     STABLE_RELEASE=mitaka
                 elif [ -z $STABLE_RELEASE ]; then
+                    #TODO(emilien) switch to ocata when released
                     STABLE_RELEASE=newton
                 fi
                 UNDERCLOUD_MAJOR_UPGRADE=1
@@ -169,7 +172,12 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
                 # We deploy a master Undercloud and an Overcloud with the
                 # previous release. The pingtest is disable because it won't
                 # work with the few services deployed.
-                UPGRADE_RELEASE=newton
+                if [ "$STABLE_RELEASE" = "ocata" ]; then
+                    UPGRADE_RELEASE=newton
+                elif [ -z $STABLE_RELEASE ]; then
+                    #TODO(emilien) switch to ocata when released
+                    UPGRADE_RELEASE=newton
+                fi
                 OVERCLOUD_MAJOR_UPGRADE=1
                 RUN_PING_TEST=0
                 OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS --libvirt-type=qemu -t $OVERCLOUD_DEPLOY_TIMEOUT -e $TRIPLEO_ROOT/tripleo-ci/test-environments/multinode_major_upgrade.yaml -r $TRIPLEO_ROOT/tripleo-ci/test-environments/upgrade_roles_data.yaml --overcloud-ssh-user $OVERCLOUD_SSH_USER --validation-errors-nonfatal"
