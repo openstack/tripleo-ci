@@ -57,3 +57,31 @@
             bash {{ working_dir }}/inject_gating_repo.sh > {{ working_dir }}/inject_repo.log
           become: true
       when: gating_repo_file.stat.exists
+
+- name: Install built packages on multinode subnodes
+  hosts: overcloud
+  vars:
+    artg_compressed_gating_repo: "/home/jenkins/gating_repo.tar.gz"
+    ansible_user: jenkins
+    ansible_user_dir: /home/jenkins/
+  tasks:
+    - stat: path="{{ artg_compressed_gating_repo }}"
+      register: gating_repo_file
+      delegate_to: undercloud
+
+    - when:
+        - gating_repo_file.stat.exists
+        - multinode_mode|bool
+      block:
+        - name: Copy repo file to /tmp/
+          copy: src="{{ artg_compressed_gating_repo }}" dest=/tmp/gating_repo.tar.gz
+
+        - name: Create the undercloud live injection script
+          template:
+            src: "{{ tripleo_root }}/tripleo-quickstart/roles/libvirt/setup/undercloud/templates/inject_gating_repo.sh.j2"
+            dest: "/tmp/inject_gating_repo.sh"
+
+        - name: Run gating repo on live undercloud
+          shell: >
+            bash /tmp/inject_gating_repo.sh > /var/log/inject_repo.log
+          become: true

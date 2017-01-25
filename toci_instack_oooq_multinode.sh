@@ -21,16 +21,6 @@ sudo rm -rf /etc/puppet/modules/*
 sudo cp /etc/nodepool/id_rsa.pub $HOME/.ssh/
 sudo chown $USER:$USER $HOME/.ssh/id_rsa.pub
 
-export USE_DELOREAN=0
-# TODO(sshnaidm): Hack for gate role, the excluded repos should be handled
-# properly there. To fix ansible gate role.
-export ZUUL_CHANGES=${ZUUL_CHANGES:-}
-export ZUUL_CHANGES=$(echo $ZUUL_CHANGES |  python -c 'import sys; print "^".join([i for i in sys.stdin.readline().split("^") if "openstack-infra/tripleo-ci:" not in i])')
-if [[ -n "$ZUUL_CHANGES" ]]; then
-    export ZUUL_HOST="review.openstack.org"
-    export USE_DELOREAN=1
-fi
-
 # TODO(sshnaidm): To create tripleo-ci special yaml config files in oooq
 # for every TOCI_JOBTYPE, i.e. ovb-nonha-ipv6.yml
 if [[ "$TOCI_JOBTYPE" =~ "-ha" ]]; then
@@ -75,7 +65,7 @@ export OOOQ_ARGS=" --working-dir ${OPT_WORKDIR} \
                    --bootstrap \
                    --no-clone \
                    --retain-inventory \
-                   --tags undercloud-setup,undercloud-scripts,undercloud-install,undercloud-post-install,overcloud-scripts,overcloud-deploy \
+                   --tags build,undercloud-setup,undercloud-scripts,undercloud-install,undercloud-post-install,overcloud-scripts,overcloud-deploy \
                    --teardown none \
                    --release ${STABLE_RELEASE:-master} \
                    --config config/general_config/minimal.yml \
