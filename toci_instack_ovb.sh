@@ -54,11 +54,6 @@ do
     sudo sed -i 's/https/http/g' $i
 done
 
-if [ $STABLE_RELEASE = mitaka ]; then
-    # FIXME(bnemec): Work around https://bugs.launchpad.net/tripleo/+bug/1654611
-    sudo sed -i -e 's/\(\[centos-ceph-hammer\]\)/\1\npriority=1/' /etc/yum.repos.d/CentOS-Ceph-Hammer.repo
-fi
-
 # Install some useful/necessary packages
 sudo yum -y install wget python-simplejson yum-plugin-priorities qemu-img
 
