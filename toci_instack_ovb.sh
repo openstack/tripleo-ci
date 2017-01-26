@@ -121,19 +121,8 @@ fi
 cp -f $TE_DATAFILE ~/instackenv.json
 
 $TRIPLEO_ROOT/tripleo-ci/scripts/deploy.sh
-# If we got this far and its a periodic job, declare success and upload build artifacts
-# but only if we are testing no changes or a single change only in tripleo_ci
-CHANGES=( ${ZUUL_CHANGES//^/ } )
-NUM_CHANGES=${#CHANGES[@]}
 
-OTHER_PROJECTS="no"
-for change in ${CHANGES[@]-}; do
-    if [[ ! "$change" =~ 'openstack-infra/tripleo-ci' ]]; then
-        OTHER_PROJECTS="yes"
-    fi
-done
-
-if [[ $CACHEUPLOAD == 1 && $NUM_CHANGES -le 1 && $OTHER_PROJECTS == "no" ]] ; then
+if [[ $CACHEUPLOAD == 1 && can_promote ]] ; then
     # Get the IPA and overcloud images for caching
     tar -C ~ -cf - ironic-python-agent.initramfs ironic-python-agent.vmlinuz ironic-python-agent.kernel > ipa_images.tar
     tar -C ~ -cf - overcloud-full.qcow2 overcloud-full.initrd overcloud-full.vmlinuz > overcloud-full.tar
