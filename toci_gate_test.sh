@@ -176,7 +176,15 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
                 fi
                 OVERCLOUD_MAJOR_UPGRADE=1
                 RUN_PING_TEST=0
-                OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS --libvirt-type=qemu -t $OVERCLOUD_DEPLOY_TIMEOUT -e $TRIPLEO_ROOT/tripleo-ci/test-environments/multinode_major_upgrade.yaml -r $TRIPLEO_ROOT/tripleo-ci/test-environments/upgrade_roles_data.yaml --overcloud-ssh-user $OVERCLOUD_SSH_USER --validation-errors-nonfatal"
+                # TODO(emilien) remove this block when https://review.openstack.org/425690 is merged
+                # and packaged in RDO.
+                if [ -e /usr/share/openstack-tripleo-heat-templates/ci/environments/multinode_major_upgrade.yaml ]; then
+                    UPGRADE_ENV=/usr/share/openstack-tripleo-heat-templates/ci/environments/multinode_major_upgrade.yaml
+                else
+                    # For backward compatibility until https://review.openstack.org/425690 is merged & packaged.
+                    UPGRADE_ENV=$TRIPLEO_ROOT/tripleo-ci/test-environments/multinode_major_upgrade.yaml
+                fi
+                OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS --libvirt-type=qemu -t $OVERCLOUD_DEPLOY_TIMEOUT -e $UPGRADE_ENV -r $TRIPLEO_ROOT/tripleo-ci/test-environments/upgrade_roles_data.yaml --overcloud-ssh-user $OVERCLOUD_SSH_USER --validation-errors-nonfatal"
                 UNDERCLOUD_SSL=0
                 export UNDERCLOUD_SANITY_CHECK=0
             fi
