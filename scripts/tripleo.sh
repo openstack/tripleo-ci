@@ -153,7 +153,6 @@ OVERCLOUD_SANITYTEST=${OVERCLOUD_SANITYTEST:-""}
 SANITYTEST_CONTENT_NAME=${SANITYTEST_CONTENT_NAME:-"sanity_test"}
 SKIP_PINGTEST_CLEANUP=${SKIP_PINGTEST_CLEANUP:-""}
 OVERCLOUD_PINGTEST=${OVERCLOUD_PINGTEST:-""}
-PINGTEST_TEMPLATE=${PINGTEST_TEMPLATE:-"tenantvm_floatingip"}
 UNDERCLOUD_SANITY_CHECK=${UNDERCLOUD_SANITY_CHECK:-""}
 REPO_SETUP=${REPO_SETUP:-""}
 REPO_PREFIX=${REPO_PREFIX:-"/etc/yum.repos.d/"}
@@ -1007,10 +1006,12 @@ function overcloud_pingtest {
     if [ -e /usr/share/openstack-tripleo-heat-templates/ci/pingtests/$MULTINODE_ENV_NAME.yaml ]; then
         TENANT_PINGTEST_TEMPLATE=/usr/share/openstack-tripleo-heat-templates/ci/pingtests/$MULTINODE_ENV_NAME.yaml
     else
-      TENANT_PINGTEST_TEMPLATE=/usr/share/tripleo-ci/$PINGTEST_TEMPLATE.yaml
-      if [ ! -e $TENANT_PINGTEST_TEMPLATE ]; then
-          TENANT_PINGTEST_TEMPLATE=$(dirname `readlink -f -- $0`)/../templates/$PINGTEST_TEMPLATE.yaml
-      fi
+        if [ -e /usr/share/openstack-tripleo-heat-templates/ci/pingtests/$MULTINODE_ENV_NAME.yaml ]; then
+            TENANT_PINGTEST_TEMPLATE=/usr/share/openstack-tripleo-heat-templates/ci/pingtests/tenantvm_floatingip.yaml
+        else
+            # For Mitaka, we don't have tripleo-heat-templates/ci directory, so we still manage the pingtest here.
+            TENANT_PINGTEST_TEMPLATE=$TRIPLEO_ROOT/tripleo-ci/templates/tenantvm_floatingip.yaml
+        fi
     fi
     log "Overcloud pingtest, creating tenant-stack heat stack:"
     openstack stack create -f yaml -t $TENANT_PINGTEST_TEMPLATE $TENANT_STACK_DEPLOY_ARGS tenant-stack || exitval=1

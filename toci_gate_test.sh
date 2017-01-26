@@ -98,15 +98,11 @@ export UNDERCLOUD_UI=0
 export UNDERCLOUD_VALIDATIONS=0
 
 if [[ $TOCI_JOBTYPE =~ scenario ]]; then
-    # note: we don't need PINGTEST_TEMPLATE here. See tripleo.sh. Though
-    # we need to export it for logs purpose.
-    export PINGTEST_TEMPLATE=
     export MULTINODE_ENV_NAME=$TOCI_JOBTYPE
     MULTINODE_ENV_PATH=/usr/share/openstack-tripleo-heat-templates/ci/environments/$MULTINODE_ENV_NAME.yaml
 else
-    export PINGTEST_TEMPLATE=${PINGTEST_TEMPLATE:-"tenantvm_floatingip"}
     export MULTINODE_ENV_NAME='multinode'
-    MULTINODE_ENV_PATH=$TRIPLEO_ROOT/tripleo-ci/test-environments/$MULTINODE_ENV_NAME.yaml
+    MULTINODE_ENV_PATH=/usr/share/openstack-tripleo-heat-templates/ci/environments/$MULTINODE_ENV_NAME.yaml
 fi
 if [[ "$TOCI_JOBTYPE" =~ "periodic" && "$TOCI_JOBTYPE" =~ "-ha" ]]; then
     TEST_OVERCLOUD_DELETE=1
@@ -246,7 +242,7 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
                 OVERCLOUD_ROLES="ControllerApi Controller"
                 export ControllerApi_hosts=$(sed -n 1,1p /etc/nodepool/sub_nodes)
                 export Controller_hosts=$(sed -n 2,2p /etc/nodepool/sub_nodes)
-                OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS -e /usr/share/openstack-tripleo-heat-templates/environments/puppet-pacemaker.yaml -e /usr/share/openstack-tripleo-heat-templates/environments/deployed-server-environment.yaml -e $TRIPLEO_ROOT/tripleo-ci/test-environments/multinode-3nodes.yaml --compute-scale 0 --overcloud-ssh-user $OVERCLOUD_SSH_USER --validation-errors-nonfatal -r $TRIPLEO_ROOT/tripleo-ci/test-environments/multinode-3nodes-roles-data.yaml"
+                OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS -e /usr/share/openstack-tripleo-heat-templates/environments/puppet-pacemaker.yaml -e /usr/share/openstack-tripleo-heat-templates/environments/deployed-server-environment.yaml -e $TRIPLEO_ROOT/tripleo-ci/test-environments/multinode-3nodes.yaml --compute-scale 0 --overcloud-ssh-user $OVERCLOUD_SSH_USER --validation-errors-nonfatal -r /usr/share/openstack-tripleo-heat-templates/ci/environments/multinode-3nodes.yaml"
             else
                 NODECOUNT=1
                 CONTROLLER_HOSTS=$(sed -n 1,1p /etc/nodepool/sub_nodes)
