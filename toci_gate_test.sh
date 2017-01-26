@@ -101,6 +101,7 @@ export UNDERCLOUD_CONTAINERS=0
 export PREDICTABLE_PLACEMENT=0
 export OPSTOOLS_REPO_ENABLED=0
 export POSTCI=1
+export BOOTSTRAP_SUBNODES_MINIMAL=1
 
 if [[ $TOCI_JOBTYPE =~ upgrades ]]; then
     # We deploy a master Undercloud and an Overcloud with the
@@ -200,6 +201,9 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
             fi
             if [[ $TOCI_JOBTYPE =~ 'multinode-upgrades' ]] ; then
                 OVERCLOUD_MAJOR_UPGRADE=1
+                # We still bootstrap subnodes manually for multinode-upgrades
+                # because we are deploying Newton initially.
+                BOOTSTRAP_SUBNODES_MINIMAL=0
                 UNDERCLOUD_SSL=0
                 export UNDERCLOUD_SANITY_CHECK=0
                 if [[ $TOCI_JOBTYPE == 'multinode-upgrades' ]] ; then
@@ -266,6 +270,7 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
             INTROSPECT=0
             SUBNODES_SSH_KEY=/etc/nodepool/id_rsa
             OVERCLOUD_DEPLOY_ARGS="--libvirt-type=qemu -t $OVERCLOUD_DEPLOY_TIMEOUT"
+            BOOTSTRAP_SUBNODES_MINIMAL=1
 
             if [[ "$TOCI_JOBTYPE" =~ "3nodes" ]]; then
                 NODECOUNT=2
@@ -273,11 +278,11 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
                 OVERCLOUD_ROLES="ControllerApi Controller"
                 export ControllerApi_hosts=$(sed -n 1,1p /etc/nodepool/sub_nodes)
                 export Controller_hosts=$(sed -n 2,2p /etc/nodepool/sub_nodes)
-                OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS -e /usr/share/openstack-tripleo-heat-templates/environments/puppet-pacemaker.yaml -e /usr/share/openstack-tripleo-heat-templates/environments/deployed-server-environment.yaml -e $TRIPLEO_ROOT/tripleo-ci/test-environments/multinode-3nodes.yaml --compute-scale 0 --overcloud-ssh-user $OVERCLOUD_SSH_USER --validation-errors-nonfatal -r /usr/share/openstack-tripleo-heat-templates/ci/environments/multinode-3nodes.yaml"
+                OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS -e /usr/share/openstack-tripleo-heat-templates/environments/puppet-pacemaker.yaml -e /usr/share/openstack-tripleo-heat-templates/environments/deployed-server-environment.yaml -e /usr/share/openstack-tripleo-heat-templates/environments/deployed-server-bootstrap-environment-centos.yaml -e $TRIPLEO_ROOT/tripleo-ci/test-environments/multinode-3nodes.yaml --compute-scale 0 --overcloud-ssh-user $OVERCLOUD_SSH_USER --validation-errors-nonfatal -r /usr/share/openstack-tripleo-heat-templates/ci/environments/multinode-3nodes.yaml"
             else
                 NODECOUNT=1
                 CONTROLLER_HOSTS=$(sed -n 1,1p /etc/nodepool/sub_nodes)
-                OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS -e /usr/share/openstack-tripleo-heat-templates/environments/deployed-server-environment.yaml -e $MULTINODE_ENV_PATH --compute-scale 0 --overcloud-ssh-user $OVERCLOUD_SSH_USER --validation-errors-nonfatal"
+                OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS -e /usr/share/openstack-tripleo-heat-templates/environments/deployed-server-environment.yaml -e /usr/share/openstack-tripleo-heat-templates/environments/deployed-server-bootstrap-environment-centos.yaml -e $MULTINODE_ENV_PATH --compute-scale 0 --overcloud-ssh-user $OVERCLOUD_SSH_USER --validation-errors-nonfatal"
             fi
             ;;
         undercloud)
