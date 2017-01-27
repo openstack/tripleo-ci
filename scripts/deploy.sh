@@ -211,7 +211,12 @@ if [ "$OSINFRA" = "0" ]; then
     record_metric "tripleo.overcloud.${TOCI_JOBTYPE}.image.size_mb" "$OVERCLOUD_IMAGE_MB"
 
     start_metric "tripleo.register.nodes.seconds"
+    if [ $INTROSPECT == 1 ]; then
+        export INTROSPECT_NODES=1
+    fi
     $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --register-nodes
+    # We don't want to keep this set for further calls to tripleo.sh
+    unset INTROSPECT_NODES
     stop_metric "tripleo.register.nodes.seconds"
 
     if [ $INTROSPECT == 1 ] ; then
