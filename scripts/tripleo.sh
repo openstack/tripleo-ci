@@ -1310,13 +1310,14 @@ function setup_nodepool_files {
         exit 1
     fi
 
-    echo $PRIMARY_NODE_IP > /etc/nodepool/node
     echo $PRIMARY_NODE_IP > /etc/nodepool/primary_node
     echo $PRIMARY_NODE_IP > /etc/nodepool/primary_node_private
 
     echo -n > /etc/nodepool/sub_nodes
     echo -n > /etc/nodepool/sub_nodes_private
     for sub_node_ip in $SUB_NODE_IPS; do
+        echo $sub_node_ip >> /etc/nodepool/node
+        echo $sub_node_ip >> /etc/nodepool/node_private
         echo $sub_node_ip >> /etc/nodepool/sub_nodes
         echo $sub_node_ip >> /etc/nodepool/sub_nodes_private
 
@@ -1328,6 +1329,9 @@ function setup_nodepool_files {
         ssh $SSH_OPTIONS $sub_node_ip \
             "/bin/bash -c 'cat /etc/nodepool/id_rsa.pub >> ~/.ssh/authorized_keys'"
     done
+
+    echo $PRIMARY_NODE_IP > /etc/nodepool/node
+    echo $PRIMARY_NODE_IP > /etc/nodepool/node_private
 
     echo "NODEPOOL_REGION=$NODEPOOL_REGION" > /etc/nodepool/provider
     echo "NODEPOOL_CLOUD=$NODEPOOL_CLOUD" >> /etc/nodepool/provider
