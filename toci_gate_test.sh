@@ -56,6 +56,7 @@ export UNDERCLOUD_MAJOR_UPGRADE=0
 export OVERCLOUD_MAJOR_UPGRADE=0
 export MAJOR_UPGRADE=0
 export UPGRADE_RELEASE=
+export UPGRADE_ENV=
 # Whether or not we deploy an Overcloud
 export OVERCLOUD=1
 # NOTE(bnemec): At this time, the undercloud install + image build is taking from
@@ -195,21 +196,13 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
                 UNDERCLOUD_MAJOR_UPGRADE=1
                 export UNDERCLOUD_SANITY_CHECK=1
             fi
-            # TODO(emilien) remove this block when https://review.openstack.org/425690 is merged
-            # and packaged in RDO.
             if [[ $TOCI_JOBTYPE =~ 'multinode-upgrades' ]] ; then
                 OVERCLOUD_MAJOR_UPGRADE=1
                 RUN_PING_TEST=0
                 UNDERCLOUD_SSL=0
                 export UNDERCLOUD_SANITY_CHECK=0
-                if [[ ! $TOCI_JOBTYPE =~ scenario ]]; then
-                    if [ -e /usr/share/openstack-tripleo-heat-templates/ci/environments/multinode_major_upgrade.yaml ]; then
-                        UPGRADE_ENV=/usr/share/openstack-tripleo-heat-templates/ci/environments/multinode_major_upgrade.yaml
-                    else
-                        # For backward compatibility until https://review.openstack.org/425690 is merged & packaged.
-                        UPGRADE_ENV=$TRIPLEO_ROOT/tripleo-ci/test-environments/multinode_major_upgrade.yaml
-                    fi
-                    OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS -e $UPGRADE_ENV"
+                if [[ $TOCI_JOBTYPE == 'multinode-upgrades' ]] ; then
+                  export UPGRADE_ENV=/usr/share/openstack-tripleo-heat-templates/ci/environments/multinode_major_upgrade.yaml
                 fi
                 OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS --libvirt-type=qemu -t $OVERCLOUD_DEPLOY_TIMEOUT -r $TRIPLEO_ROOT/tripleo-ci/test-environments/upgrade_roles_data.yaml --overcloud-ssh-user $OVERCLOUD_SSH_USER --validation-errors-nonfatal"
             fi
