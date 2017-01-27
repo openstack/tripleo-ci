@@ -98,7 +98,7 @@ export UNDERCLOUD_UI=0
 export UNDERCLOUD_VALIDATIONS=0
 
 if [[ $TOCI_JOBTYPE =~ scenario ]]; then
-    export MULTINODE_ENV_NAME=$TOCI_JOBTYPE
+    export MULTINODE_ENV_NAME=${TOCI_JOBTYPE#periodic-}
     MULTINODE_ENV_PATH=/usr/share/openstack-tripleo-heat-templates/ci/environments/$MULTINODE_ENV_NAME.yaml
 else
     export MULTINODE_ENV_NAME='multinode'
