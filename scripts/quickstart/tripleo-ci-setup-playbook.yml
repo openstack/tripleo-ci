@@ -43,17 +43,12 @@
         src: "{{tripleo_root}}/tripleo-ci/scripts/quickstart/quickstart-hieradata-overrides.yaml.j2"
         dest: ~/quickstart-hieradata-overrides.yaml
 
-# TODO(sshnaidm): fix role for proper handle of skipped projects
-- name: Run DLRN gate role and create repo
+- name: Get images for quickstart
   hosts: undercloud
-  vars:
-    artg_compressed_gating_repo: "/home/jenkins/gating_repo.tar.gz"
-    ansible_user: jenkins
-    ansible_user_dir: /home/jenkins/
-    artg_repos_dir: "{{ tripleo_root}}"
-
-  roles:
-    - { role: build-test-packages, when: "{{ lookup('env', 'USE_DELOREAN')|default(0, true) }} == 1" }
-
-# TODO(sshnaidm): to create a separate role for this in quickstart-extras(?)
-- include: inject_repo-playbook.yml
+  gather_facts: no
+  tasks:
+    - name: Prepare images
+      shell: >
+        source {{tripleo_root}}/tripleo-ci/scripts/common_functions.sh;
+        prepare_images_oooq
+      when: "not '{{ lookup('env', 'STABLE_RELEASE') }}'"
