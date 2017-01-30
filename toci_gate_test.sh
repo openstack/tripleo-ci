@@ -318,6 +318,8 @@ done
 # Limit worker counts to avoid overloading our limited resources
 if [[ "${STABLE_RELEASE}" =~ ^(liberty|mitaka)$ ]] ; then
     OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS -e $TRIPLEO_ROOT/tripleo-ci/test-environments/worker-config-mitaka-and-below.yaml"
+elif [[ "${OVERCLOUD_MAJOR_UPGRADE}" == "1" ]]; then
+    OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS -e /usr/share/openstack-tripleo-heat-templates/environments/low-memory-usage.yaml"
 else
     OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS -e $TRIPLEO_ROOT/tripleo-ci/test-environments/worker-config.yaml -e /usr/share/openstack-tripleo-heat-templates/environments/low-memory-usage.yaml"
 fi
