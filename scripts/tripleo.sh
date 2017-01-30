@@ -625,7 +625,8 @@ function overcloud_deploy {
 
     OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS $OVERCLOUD_VALIDATE_ARGS"
     # Set dns server for the overcloud nodes
-    neutron subnet-update $(neutron net-list | grep ctlplane | cut  -d ' ' -f 6) --dns-nameserver $(cat /etc/resolv.conf | grep nameserver | awk '{ print $2 }' | sed ':a;N;$!ba;s/\n/ --dns-nameserver /g')
+    subnet_id=$(openstack network list -f value -c Name -c Subnets | grep ctlplane | cut -d " " -f 2)
+    neutron subnet-update $subnet_id --dns-nameserver $(cat /etc/resolv.conf | grep nameserver | awk '{ print $2 }' | sed ':a;N;$!ba;s/\n/ --dns-nameserver /g')
 
     if [[ $USE_CONTAINERS == 1 ]]; then
         if ! glance image-list | grep  -q atomic-image; then
