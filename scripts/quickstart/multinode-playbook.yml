@@ -1,6 +1,20 @@
 ---
 - include: quickstart.yml
 
+- name: Add the overcloud nodes to the generated inventory
+  hosts: undercloud
+  gather_facts: yes
+  tags:
+    - overcloud-deploy
+  vars:
+    inventory: multinode
+  roles:
+    - tripleo-inventory
+
+- include: build-install-playbook.yml
+  tags:
+    - build
+
 - name: Prepare the undercloud for installation
   hosts: undercloud
   roles:
@@ -34,16 +48,6 @@
     - overcloud-deploy
   environment:
     TRIPLEO_ROOT: "{{ lookup('env','TRIPLEO_ROOT') }}"
-
-- name: Add the overcloud nodes to the generated inventory
-  hosts: undercloud
-  gather_facts: yes
-  tags:
-    - overcloud-deploy
-  vars:
-    inventory: all
-  roles:
-    - tripleo-inventory
 
 - name: Check the result of the deployment
   hosts: localhost
