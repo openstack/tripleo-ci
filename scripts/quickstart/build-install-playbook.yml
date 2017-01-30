@@ -1,3 +1,14 @@
+- name: Run DLRN gate role and create repo
+  hosts: undercloud
+  vars:
+    artg_compressed_gating_repo: "/home/jenkins/gating_repo.tar.gz"
+    ansible_user: jenkins
+    ansible_user_dir: /home/jenkins/
+    artg_repos_dir: "{{ tripleo_root}}"
+
+  roles:
+    - build-test-packages
+
 # Install repo on live undercloud and overcloud image
 - name: Clone the gated DLRN repos and trigger rpm injection
   hosts: undercloud
@@ -28,17 +39,21 @@
         - name: Install virt-customize if not installed
           yum: name=libguestfs-tools-c state=latest
           become: true
-          when: overcloud_full_img.stat.exists
+          when:
+            - overcloud_full_img.stat.exists
+            - not multinode_mode
 
         - name: Inject the gating repo to overcloud image on live undercloud
           command: >
             virt-customize -a {{ working_dir }}/overcloud-full.qcow2
             --upload /tmp/gating_repo.tar.gz:/tmp/gating_repo.tar.gz
             --run '{{ working_dir }}/inject_gating_repo.sh'
-          when: overcloud_full_img.stat.exists
+          when:
+            - overcloud_full_img.stat.exists
+            - not multinode_mode
 
         - name: Run gating repo on live undercloud
           shell: >
             bash {{ working_dir }}/inject_gating_repo.sh > {{ working_dir }}/inject_repo.log
           become: true
-      when: "{{ lookup('env', 'USE_DELOREAN')|default(0, true) }} == 1 and gating_repo_file.stat.exists"
+      when: gating_repo_file.stat.exists

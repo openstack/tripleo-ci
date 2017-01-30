@@ -1,3 +1,4 @@
+multinode_mode: true
 undercloud_user: jenkins
 non_root_user: jenkins
 enable_vbmc: false

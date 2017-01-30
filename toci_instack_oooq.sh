@@ -16,16 +16,6 @@ source $TRIPLEO_CI_DIR/tripleo-ci/scripts/common_vars.bash
 source $TRIPLEO_CI_DIR/tripleo-ci/scripts/common_functions.sh
 #source $TRIPLEO_CI_DIR/tripleo-ci/scripts/metrics.bash
 
-export USE_DELOREAN=0
-# TODO(sshnaidm): Hack for gate role, the excluded repos should be handled
-# properly there. To fix ansible gate role.
-export ZUUL_CHANGES=${ZUUL_CHANGES:-}
-export ZUUL_CHANGES=$(echo $ZUUL_CHANGES |  python -c 'import sys; print "^".join([i for i in sys.stdin.readline().split("^") if "openstack-infra/tripleo-ci:" not in i])')
-if [[ -n "$ZUUL_CHANGES" ]]; then
-    export ZUUL_HOST="review.openstack.org"
-    export USE_DELOREAN=1
-fi
-
 EXTRA_ARGS=""
 
 # TODO(sshnaidm): To create tripleo-ci special yaml config files in oooq
@@ -75,7 +65,7 @@ echo "file://${TRIPLEO_ROOT}/tripleo-quickstart-extras/#egg=tripleo-quickstart-e
 
 cp $TRIPLEO_ROOT/tripleo-ci/scripts/hosts $OPT_WORKDIR/hosts
 
-cp $TRIPLEO_ROOT/tripleo-ci/scripts/quickstart/*yml $TRIPLEO_ROOT/tripleo-quickstart/playbooks/
+cp $TRIPLEO_ROOT/tripleo-ci/scripts/quickstart/*y*ml $TRIPLEO_ROOT/tripleo-quickstart/playbooks/
 $TRIPLEO_ROOT/tripleo-quickstart/quickstart.sh --install-deps
 
 pushd $TRIPLEO_ROOT/tripleo-quickstart/

@@ -117,7 +117,7 @@ echo "file://${TRIPLEO_ROOT}/tripleo-quickstart-extras/#egg=tripleo-quickstart-e
 sed -i 's/^undercloud ansible_host=undercloud/undercloud ansible_host=127.0.0.2/' $TRIPLEO_ROOT/tripleo-ci/scripts/hosts
 
 cp $TRIPLEO_ROOT/tripleo-ci/scripts/hosts $OPT_WORKDIR/hosts
-cp $TRIPLEO_ROOT/tripleo-ci/scripts/quickstart/*yml $TRIPLEO_ROOT/tripleo-quickstart/playbooks/
+cp $TRIPLEO_ROOT/tripleo-ci/scripts/quickstart/*y*ml $TRIPLEO_ROOT/tripleo-quickstart/playbooks/
 $TRIPLEO_ROOT/tripleo-quickstart/quickstart.sh --install-deps
 
 pushd $TRIPLEO_ROOT/tripleo-quickstart/

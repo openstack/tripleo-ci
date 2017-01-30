@@ -8,6 +8,8 @@
     - tripleo-inventory
 
 - include: tripleo-ci-setup-playbook.yml
+# TODO(sshnaidm): to create a separate role for this in quickstart-extras
+- include: build-install-playbook.yml
 
 # Deploy the undercloud
 - name:  Install undercloud
