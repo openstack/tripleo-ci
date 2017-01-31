@@ -9,6 +9,7 @@ export TRIPLEO_CI_DIR=$CURRENT_DIR/../
 
 export IP_DEVICE=${IP_DEVICE:-"eth0"}
 export ZUUL_PROJECT=${ZUUL_PROJECT:-""}
+export CA_SERVER=${CA_SERVER:-""}
 
 source $TRIPLEO_CI_DIR/tripleo-ci/scripts/common_vars.bash
 source $TRIPLEO_CI_DIR/tripleo-ci/scripts/common_functions.sh

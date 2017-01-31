@@ -332,7 +332,7 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
             OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS -e /usr/share/openstack-tripleo-heat-templates/environments/services/haproxy-public-tls-certmonger.yaml -e /usr/share/openstack-tripleo-heat-templates/environments/tls-everywhere-endpoints-dns.yaml -e /usr/share/openstack-tripleo-heat-templates/environments/enable-internal-tls.yaml"
             # This is created in scripts/deploy.sh as part of the CA_SERVER
             # section
-            OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS -e $TRIPLEO_ROOT/freeipa-enroll.yaml"
+            OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS -e $TRIPLEO_ROOT/cloud-names.yaml"
             CA_SERVER=1
             DEPLOY_OVB_EXTRA_NODE=1
             ;;

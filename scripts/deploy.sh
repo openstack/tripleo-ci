@@ -19,7 +19,11 @@ export STABLE_RELEASE=${STABLE_RELEASE:-""}
 if [ $CA_SERVER == 1 ] ; then
     # This is needed since we use scripts that are located both in t-h-t and
     # tripleo-common for setting up our test CA.
-    sudo yum install -yq openstack-tripleo-heat-templates openstack-tripleo-common
+    sudo yum install -yq \
+        openstack-tripleo-heat-templates \
+        openstack-tripleo-common \
+        ipa-client \
+        python-novajoin
 
     export TRIPLEO_DOMAIN=tripleodomain
     export CA_SERVER_HOSTNAME=ipa.$TRIPLEO_DOMAIN
@@ -45,6 +49,7 @@ export DirectoryManagerPassword=$CA_DIR_MANAGER_PASS
 export HostsSecret=$CA_SECRET
 export UndercloudFQDN=$UNDERCLOUD_FQDN
 export ProvisioningCIDR=$CA_SERVER_CIDR
+export UsingNovajoin=1
 EOF
 
     # Set undercloud FQDN
@@ -58,18 +63,25 @@ EOF
     ssh $SSH_OPTIONS -tt centos@$CA_SERVER_PRIVATE_IP "sudo bash ~/freeipa_setup.sh"
 
     # enroll to CA
-    sudo yum install -q -y ipa-client
-    sudo ipa-client-install --server $CA_SERVER_HOSTNAME \
-        --password=$CA_SECRET --domain=$TRIPLEO_DOMAIN --unattended
+    sudo /usr/libexec/novajoin-ipa-setup \
+        --principal admin \
+        --password $CA_ADMIN_PASS \
+        --server $CA_SERVER_HOSTNAME \
+        --realm $(echo $TRIPLEO_DOMAIN | awk '{print toupper($0)}') \
+        --domain $TRIPLEO_DOMAIN \
+        --hostname $UNDERCLOUD_FQDN \
+        --otp-file /tmp/ipa-otp.txt \
+        --precreate
 
-    # Get kerberos ticket
-    sudo kinit -k -t /etc/krb5.keytab
-    # Verify we got a ticket
-    sudo klist
-
-    # Create environments for CA enrollment
-    create_freeipa_enroll_envfile.py -w $CA_SECRET -d $TRIPLEO_DOMAIN \
-        -s $CA_SERVER_HOSTNAME -i $CA_SERVER_IP -o $TRIPLEO_ROOT/freeipa-enroll.yaml
+    cat <<EOF >$TRIPLEO_ROOT/cloud-names.yaml
+parameter_defaults:
+  CloudDomain: $TRIPLEO_DOMAIN
+  CloudName: overcloud.$TRIPLEO_DOMAIN
+  CloudNameInternal: overcloud.internalapi.$TRIPLEO_DOMAIN
+  CloudNameStorage: overcloud.storage.$TRIPLEO_DOMAIN
+  CloudNameStorageManagement: overcloud.storagemgmt.$TRIPLEO_DOMAIN
+  CloudNameCtlplane: overcloud.ctlplane.$TRIPLEO_DOMAIN
+EOF
 fi
 
 cat <<EOF >$HOME/undercloud-hieradata-override.yaml
@@ -106,6 +118,30 @@ if [ $UNDERCLOUD_VALIDATIONS == 0 ] ; then
 fi
 if [ $RUN_TEMPEST_TESTS != 1 ] ; then
     echo 'enable_tempest = False' >> ~/undercloud.conf
+fi
+if [ $CA_SERVER == 1 ] ; then
+    echo 'enable_novajoin = True' >> ~/undercloud.conf
+    echo "undercloud_hostname = $UNDERCLOUD_FQDN" >> ~/undercloud.conf
+    echo "ipa_otp = $(cat /tmp/ipa-otp.txt)" >> ~/undercloud.conf
+    echo "undercloud_nameservers = $CA_SERVER_IP" >> ~/undercloud.conf
+
+    # FIXME(jaosorior): This should be discovered from FreeIPA being the
+    # nameserver. But it isn't. So we add it here while we figure out what's
+    # missing.
+    echo "ipaclient::domain: $TRIPLEO_DOMAIN" >> ~/undercloud-hieradata-override.yaml
+    echo "ipaclient::server: $CA_SERVER_HOSTNAME" >> ~/undercloud-hieradata-override.yaml
+    echo "nova::api::vendordata_dynamic_connect_timeout: 20" >> ~/undercloud-hieradata-override.yaml
+    echo "nova::api::vendordata_dynamic_read_timeout: 20" >> ~/undercloud-hieradata-override.yaml
+
+    # NOTE(jaosorior): the DNSServers from the overcloud need to point to the
+    # CA so the domain can be discovered.
+    sed -i 's/\(DnsServers: \).*/\1["'$CA_SERVER_IP'", "8.8.8.8"]/' \
+        $TRIPLEO_ROOT/tripleo-ci/test-environments/network-templates/network-environment.yaml
+    sed -i 's/\(DnsServers: \).*/\1["'$CA_SERVER_IP'", "8.8.8.8"]/' \
+        $TRIPLEO_ROOT/tripleo-ci/test-environments/net-iso.yaml
+
+    # Use FreeIPA as nameserver
+    echo -e "nameserver 192.168.24.250\nnameserver 8.8.8.8" | sudo tee /etc/resolv.conf
 fi
 
 if [ $UNDERCLOUD_HEAT_CONVERGENCE == 1 ] ; then
