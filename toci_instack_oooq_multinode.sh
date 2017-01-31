@@ -22,7 +22,9 @@ sudo chown $USER:$USER $HOME/.ssh/id_rsa.pub
 
 # TODO(sshnaidm): To create tripleo-ci special yaml config files in oooq
 # for every TOCI_JOBTYPE, i.e. ovb-nonha-ipv6.yml
-if [[ "$TOCI_JOBTYPE" =~ "-ha" ]]; then
+if [[ "$TOCI_JOBTYPE" =~ "scenario" ]]; then
+    CONFIG=${CONFIG:-"$TRIPLEO_ROOT/tripleo-quickstart-extras/config/general_config/${TOCI_JOBTYPE/-oooq*/}.yml"}
+elif [[ "$TOCI_JOBTYPE" =~ "-ha" ]]; then
     CONFIG=${CONFIG:-"$TRIPLEO_ROOT/tripleo-quickstart/config/general_config/ha.yml"}
 elif [[ "$TOCI_JOBTYPE" =~ "-nonha" ]]; then
     CONFIG=${CONFIG:-"$TRIPLEO_ROOT/tripleo-quickstart/config/general_config/minimal.yml"}
@@ -69,8 +71,8 @@ export OOOQ_ARGS=" --working-dir ${OPT_WORKDIR} \
                    --tags build,undercloud-setup,undercloud-scripts,undercloud-install,undercloud-post-install,overcloud-scripts,overcloud-deploy \
                    --teardown none \
                    --release ${STABLE_RELEASE:-master} \
-                   --config config/general_config/minimal.yml \
                    --extra-vars @${TRIPLEO_ROOT}/tripleo-ci/scripts/quickstart/multinode-settings.yml \
+                   --config ${CONFIG} \
                    --playbook multinode-playbook.yml \
                    --requirements requirements.txt \
                    --requirements quickstart-extras-requirements.txt \
@@ -140,10 +142,10 @@ sed -i 's/hosts: all:!localhost/hosts: all:!localhost:!127.0.0.2/' $OPT_WORKDIR/
 
 $TRIPLEO_ROOT/tripleo-quickstart/quickstart.sh --bootstrap --no-clone \
         $OOOQ_DEFAULT_ARGS \
-        --config $CONFIG \
         --playbook collect-logs.yml \
         -e artcl_collect_dir=$OOOQ_LOGS \
         -e @$TRIPLEO_ROOT/tripleo-ci/scripts/quickstart/multinode-settings.yml \
+        --config $CONFIG \
         -e tripleo_root=$TRIPLEO_ROOT \
         127.0.0.2 &> $OOOQ_LOGS/quickstart_collectlogs.log ||
         echo "WARNING: quickstart collect-logs failed, check quickstart_collectlogs.log for details"
