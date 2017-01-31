@@ -970,7 +970,8 @@ function overcloud_pingtest {
     exitval=0
 
     stackrc_check
-    CTLPLANE_CIDR=$(neutron net-list -c subnets -c name -f value | grep ctlplane | awk {'print $2'})
+    SUBNET_ID=$(openstack network list -c Subnets -c Name -f value | grep ctlplane | awk {'print $2'})
+    CTLPLANE_CIDR=$(neutron subnet-show $SUBNET_ID -F cidr -f value)
     CTLPLANE_NET=$(echo $CTLPLANE_CIDR | awk -F "." {'print $1"."$2"."$3'})
 
     overcloudrc_check
