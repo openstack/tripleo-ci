@@ -48,6 +48,12 @@ dummy_ci_repo
 # Install all of the repositories we need
 $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --repo-setup
 
+# We can't use squid to cache https urls, so don't use them
+for i in /etc/yum.repos.d/delorean*
+do
+    sudo sed -i 's/https/http/g' $i
+done
+
 # FIXME(bnemec): Work around https://bugs.launchpad.net/tripleo/+bug/1654615
 if [ $STABLE_RELEASE = mitaka ]; then
     cat > /tmp/delorean-ev.repo <<EOF
