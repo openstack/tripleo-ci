@@ -35,7 +35,7 @@ else
 fi
 
 # TODO(sshnaidm): to move these variables to jobs yaml config files (see above)
-if [[ "${STABLE_RELEASE}" =~ ^(liberty|mitaka)$ ]] ; then
+if [[ "${STABLE_RELEASE}" = "mitaka" ]] ; then
     export OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS -e $TRIPLEO_ROOT/tripleo-ci/test-environments/worker-config-mitaka-and-below.yaml"
 else
     export OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS -e $TRIPLEO_ROOT/tripleo-ci/test-environments/worker-config.yaml -e /usr/share/openstack-tripleo-heat-templates/environments/low-memory-usage.yaml"

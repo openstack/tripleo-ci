@@ -1,5 +1,5 @@
-# This is for liberty and Mitaka. In newton and beyond we have a separate file
-# for the endpoints so we won't need to maintain this in two repos.
+# This is for Mitaka. In newton and beyond we have a separate file for
+# the endpoints so we won't need to maintain this in two repos.
 parameter_defaults:
   EndpointMap:
     AodhAdmin: {protocol: 'http', port: '8042', host: 'IP_ADDRESS'}

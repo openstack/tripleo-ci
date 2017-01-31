@@ -48,7 +48,7 @@ export ELEMENTS_PATH="${COMMON_ELEMENTS_PATH}:/usr/share/instack-undercloud:/usr
 
 sudo yum -y install openstack-tripleo-common
 
-if [[ "${STABLE_RELEASE}" =~ ^(liberty|mitaka)$ ]] ; then
+if [[ "${STABLE_RELEASE}" = "mitaka" ]] ; then
 ELEMENTS=$(\
 tripleo-build-images \
   --image-json-output \
@@ -86,7 +86,7 @@ sudo -E instack \
   -x delorean-repo \
   -d
 
-if [[ "${STABLE_RELEASE}" =~ ^(liberty|mitaka)$ ]] ; then
+if [[ "${STABLE_RELEASE}" = "mitaka" ]] ; then
 PACKAGES=$(\
 tripleo-build-images \
   --image-json-output \

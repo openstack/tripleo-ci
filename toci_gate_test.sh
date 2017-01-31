@@ -201,7 +201,7 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
             PREDICTABLE_PLACEMENT=1
             ;;
         nonha)
-            if [[ "${STABLE_RELEASE}" =~ ^(liberty|mitaka)$ ]] ; then
+            if [[ "${STABLE_RELEASE}" = "mitaka" ]] ; then
                 ENDPOINT_LIST_LOCATION=$TRIPLEO_ROOT/tripleo-ci/test-environments
                 CA_ENVIRONMENT_FILE=inject-trust-anchor.yaml
             else
@@ -278,7 +278,7 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
             CACHEUPLOAD=1
             OVERCLOUD_PINGTEST_ARGS=
             ;;
-        liberty|mitaka)
+        mitaka)
             # This is handled in tripleo.sh (it always uses centos7-$STABLE_RELEASE/current)
             # where $STABLE_RELEASE is derived in toci_instack.sh
             unset DELOREAN_REPO_URL
@@ -316,7 +316,7 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
 done
 
 # Limit worker counts to avoid overloading our limited resources
-if [[ "${STABLE_RELEASE}" =~ ^(liberty|mitaka)$ ]] ; then
+if [[ "${STABLE_RELEASE}" = "mitaka" ]] ; then
     OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS -e $TRIPLEO_ROOT/tripleo-ci/test-environments/worker-config-mitaka-and-below.yaml"
 elif [[ "${OVERCLOUD_MAJOR_UPGRADE}" == "1" ]]; then
     OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS -e /usr/share/openstack-tripleo-heat-templates/environments/low-memory-usage.yaml"
