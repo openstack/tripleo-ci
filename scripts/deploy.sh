@@ -225,6 +225,18 @@ if [ "$OSINFRA" = "0" ]; then
        stop_metric "tripleo.introspect.seconds"
     fi
 
+    if [ $PREDICTABLE_PLACEMENT == 1 ]; then
+        source ~/stackrc
+        NODE_ID_0=$(ironic node-list | grep available | head -n 1 | tail -n 1 | awk '{print $2}')
+        NODE_ID_1=$(ironic node-list | grep available | head -n 2 | tail -n 1 | awk '{print $2}')
+        NODE_ID_2=$(ironic node-list | grep available | head -n 3 | tail -n 1 | awk '{print $2}')
+        NODE_ID_3=$(ironic node-list | grep available | head -n 4 | tail -n 1 | awk '{print $2}')
+        ironic node-update $NODE_ID_0 replace properties/capabilities='node:controller-0,boot_option:local'
+        ironic node-update $NODE_ID_1 replace properties/capabilities='node:controller-1,boot_option:local'
+        ironic node-update $NODE_ID_2 replace properties/capabilities='node:controller-2,boot_option:local'
+        ironic node-update $NODE_ID_3 replace properties/capabilities='node:compute-0,boot_option:local'
+    fi
+
     sleep 60
 fi
 
@@ -312,10 +324,17 @@ if [ "$MULTINODE" == 0 ] && [ "$OVERCLOUD" == 1 ] ; then
         # Verify our public VIP is the one we specified
         grep -q 10.0.0.9 ~/overcloudrc || (echo "Wrong public vip deployed " && exit 1)
         # Verify our specified hostnames were used
-        nova list | grep -q controller-0-tripleo-ci-a-foo
-        nova list | grep -q controller-1-tripleo-ci-b-bar
-        nova list | grep -q controller-2-tripleo-ci-c-baz
-        nova list | grep -q compute-0-tripleo-ci-a-test
+        INSTANCE_ID_0=$(nova list | grep controller-0-tripleo-ci-a-foo | awk '{print $2}')
+        INSTANCE_ID_1=$(nova list | grep controller-1-tripleo-ci-b-bar | awk '{print $2}')
+        INSTANCE_ID_2=$(nova list | grep controller-2-tripleo-ci-c-baz | awk '{print $2}')
+        INSTANCE_ID_3=$(nova list | grep compute-0-tripleo-ci-a-test | awk '{print $2}')
+        # Verify the correct ironic nodes were used
+        echo "Verifying predictable placement configuration was honored."
+        ironic node-list | grep $INSTANCE_ID_0 | grep -q $NODE_ID_0 || (echo "$INSTANCE_ID_0 not deployed to node $NODE_ID_0" && exit 1)
+        ironic node-list | grep $INSTANCE_ID_1 | grep -q $NODE_ID_1 || (echo "$INSTANCE_ID_1 not deployed to node $NODE_ID_1" && exit 1)
+        ironic node-list | grep $INSTANCE_ID_2 | grep -q $NODE_ID_2 || (echo "$INSTANCE_ID_2 not deployed to node $NODE_ID_2" && exit 1)
+        ironic node-list | grep $INSTANCE_ID_3 | grep -q $NODE_ID_3 || (echo "$INSTANCE_ID_3 not deployed to node $NODE_ID_3" && exit 1)
+        echo "Verified."
     fi
 
     if [ $PACEMAKER == 1 ] ; then
