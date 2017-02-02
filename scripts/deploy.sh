@@ -207,7 +207,7 @@ if [ "$OSINFRA" = "0" ]; then
     $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --overcloud-images 2>&1 | ts '%Y-%m-%d %H:%M:%S.000 |' | sudo dd of=/var/log/image_build.txt || (tail -n 50 /var/log/image_build.txt && false)
     stop_metric "tripleo.overcloud.${TOCI_JOBTYPE}.images.seconds"
 
-    OVERCLOUD_IMAGE_MB=$(du -ms overcloud-full.qcow2 | cut -f 1 | sed 's|.$||')
+    OVERCLOUD_IMAGE_MB=$(du -ms overcloud-full.qcow2 | cut -f 1)
     record_metric "tripleo.overcloud.${TOCI_JOBTYPE}.image.size_mb" "$OVERCLOUD_IMAGE_MB"
 
     start_metric "tripleo.register.nodes.seconds"
