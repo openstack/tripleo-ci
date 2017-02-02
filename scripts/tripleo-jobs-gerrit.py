@@ -19,6 +19,7 @@ DEFAULT_JOB_NAMES = [
     'gate-tripleo-ci-centos-7-undercloud',
     'gate-tripleo-ci-centos-7-3nodes-multinode-nv',
     'gate-tripleo-ci-centos-7-multinode-upgrades-nv',
+    'gate-tripleo-ci-centos-7-undercloud-upgrades-nv',
 ]
 
 DEFAULT_PROJECTS = [
