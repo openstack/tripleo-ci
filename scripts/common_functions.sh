@@ -173,7 +173,7 @@ function postci(){
     local exit_val=${1:-0}
     set -x
     set +e
-    stop_metric "tripleo.ci.total.seconds"
+    stop_metric "tripleo.${STABLE_RELEASE:-master}.${TOCI_JOBTYPE}.ci.total.seconds"
     if [ -e $TRIPLEO_ROOT/delorean/data/repos/ ] ; then
         # I'd like to tar up repos/current but tar'ed its about 8M it may be a
         # bit much for the log server, maybe when we are building less
