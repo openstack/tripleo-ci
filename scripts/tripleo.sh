@@ -1009,10 +1009,10 @@ function overcloud_pingtest {
     if [ -e /usr/share/openstack-tripleo-heat-templates/ci/pingtests/$MULTINODE_ENV_NAME.yaml ]; then
         TENANT_PINGTEST_TEMPLATE=/usr/share/openstack-tripleo-heat-templates/ci/pingtests/$MULTINODE_ENV_NAME.yaml
     else
-        if [ -e /usr/share/openstack-tripleo-heat-templates/ci/pingtests/$MULTINODE_ENV_NAME.yaml ]; then
+        if [ -e /usr/share/openstack-tripleo-heat-templates/ci/pingtests/tenantvm_floatingip.yaml ]; then
             TENANT_PINGTEST_TEMPLATE=/usr/share/openstack-tripleo-heat-templates/ci/pingtests/tenantvm_floatingip.yaml
         else
-            # For Mitaka, we don't have tripleo-heat-templates/ci directory, so we still manage the pingtest here.
+            # If the template is not found, we will get the template from the tripleo-ci location for backwards compatibility.
             TENANT_PINGTEST_TEMPLATE=$TRIPLEO_ROOT/tripleo-ci/templates/tenantvm_floatingip.yaml
         fi
     fi
