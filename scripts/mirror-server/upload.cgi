@@ -8,7 +8,7 @@ import shutil
 import sys
 import tempfile
 
-basedir="/var/www/html/builds"
+basedir="/var/www/html/"
 
 print("Content-Type: text/html\n")
 def saveform(form, storagedir):
@@ -49,7 +49,13 @@ def run():
         print("repohash missing")
         return 1
 
-    storagedir = os.path.abspath(os.path.join(basedir,repohash))
+    try:
+        branch_dir = form["folder"].value
+    except KeyError:
+        print("upload folder missing")
+        return 1
+
+    storagedir = os.path.abspath(os.path.join(basedir, branch_dir, repohash))
     if basedir not in storagedir:
         print("incorrect hash")
         return 1

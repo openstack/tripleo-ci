@@ -140,12 +140,13 @@ if [[ $CACHEUPLOAD == 1 && $NUM_CHANGES -le 1 && $OTHER_PROJECTS == "no" ]] ; th
     md5sum overcloud-full.tar > overcloud-full.tar.md5
     md5sum ipa_images.tar > ipa_images.tar.md5
 
-    curl http://$MIRRORSERVER/cgi-bin/upload.cgi  -F "repohash=$TRUNKREPOUSED" -F "upload=@ipa_images.tar;filename=ipa_images.tar"
-    curl http://$MIRRORSERVER/cgi-bin/upload.cgi  -F "repohash=$TRUNKREPOUSED" -F "upload=@overcloud-full.tar;filename=overcloud-full.tar"
+    UPLOAD_FOLDER=builds${STABLE_RELEASE:+-$STABLE_RELEASE}
+    curl http://$MIRRORSERVER/cgi-bin/upload.cgi  -F "repohash=$TRUNKREPOUSED" -F "folder=$UPLOAD_FOLDER" -F "upload=@ipa_images.tar;filename=ipa_images.tar"
+    curl http://$MIRRORSERVER/cgi-bin/upload.cgi  -F "repohash=$TRUNKREPOUSED" -F "folder=$UPLOAD_FOLDER" -F "upload=@overcloud-full.tar;filename=overcloud-full.tar"
     # TODO(pabelanger): Remove qcow2 format, since centos-7 cannot mount nbd with the default kernel.
-    curl http://$MIRRORSERVER/cgi-bin/upload.cgi  -F "repohash=$TRUNKREPOUSED" -F "upload=@ipa_images.tar.md5;filename=ipa_images.tar.md5"
-    curl http://$MIRRORSERVER/cgi-bin/upload.cgi  -F "repohash=$TRUNKREPOUSED" -F "upload=@overcloud-full.tar.md5;filename=overcloud-full.tar.md5"
-    curl http://$MIRRORSERVER/cgi-bin/upload.cgi  -F "repohash=$TRUNKREPOUSED" -F "$JOB_NAME=SUCCESS"
+    curl http://$MIRRORSERVER/cgi-bin/upload.cgi  -F "repohash=$TRUNKREPOUSED" -F "folder=$UPLOAD_FOLDER" -F "upload=@ipa_images.tar.md5;filename=ipa_images.tar.md5"
+    curl http://$MIRRORSERVER/cgi-bin/upload.cgi  -F "repohash=$TRUNKREPOUSED" -F "folder=$UPLOAD_FOLDER" -F "upload=@overcloud-full.tar.md5;filename=overcloud-full.tar.md5"
+    curl http://$MIRRORSERVER/cgi-bin/upload.cgi  -F "repohash=$TRUNKREPOUSED" -F "folder=$UPLOAD_FOLDER" -F "$JOB_NAME=SUCCESS"
 fi
 
 echo 'Run completed.'

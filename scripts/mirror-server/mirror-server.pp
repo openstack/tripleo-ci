@@ -30,7 +30,22 @@ file {"/var/www/html/builds":
     ensure => "directory",
     owner  => "apache",
 }
-
+file { '/var/www/html/builds-master':
+    ensure => 'link',
+    target => '/var/www/html/builds',
+}
+file {"/var/www/html/builds-ocata":
+    ensure => "directory",
+    owner  => "apache",
+}
+file {"/var/www/html/builds-newton":
+    ensure => "directory",
+    owner  => "apache",
+}
+file {"/var/www/html/builds-mitaka":
+    ensure => "directory",
+    owner  => "apache",
+}
 
 cron {"refresh-server":
     command => "timeout 20m puppet apply /opt/stack/tripleo-ci/scripts/mirror-server/mirror-server.pp",
