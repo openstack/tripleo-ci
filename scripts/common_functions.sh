@@ -103,6 +103,7 @@ function update_image(){
     echo -e "nameserver 10.1.8.10\nnameserver 8.8.8.8" | sudo dd of=$MOUNTDIR/etc/resolv.conf
     sudo cp /etc/yum.repos.d/delorean* $MOUNTDIR/etc/yum.repos.d
     sudo rm -f $MOUNTDIR/etc/yum.repos.d/epel*
+    sudo chroot $MOUNTDIR /bin/yum clean all
     sudo chroot $MOUNTDIR /bin/yum update -y
     sudo rm -f $MOUNTDIR/etc/yum.repos.d/delorean*
     sudo mv -f $MOUNTDIR/etc/resolv.conf{_,}
