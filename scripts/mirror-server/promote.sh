@@ -46,7 +46,9 @@ for DIR in $DIRS2TEST ; do
     break
 done
 
-# Remove any files older then 3 days that arn't the current-tripleo pin
-find */*/* -type f -name metadata.txt -mtime +3 -not -samefile current-tripleo/metadata.txt | \
+# Remove any files older then 1 day that arn't the current-tripleo pin
+find */*/* -type f -name metadata.txt -mtime +0 -not -samefile current-tripleo/metadata.txt | \
     xargs --no-run-if-empty dirname | \
     xargs --no-run-if-empty -t rm -rf
+# Remove all empty nested directories
+find . -type d -empty -delete
