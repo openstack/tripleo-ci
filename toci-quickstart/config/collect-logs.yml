@@ -1,0 +1,40 @@
+# Collect logs settings
+
+# artcl_tar_gz: true
+artcl_gzip_only: true
+artcl_txt_rename: true
+artcl_publish: true
+artcl_rsync_logs: false
+artcl_collect_list:
+  - /etc/
+  - /var/log/
+  - /home/jenkins/.instack/install-undercloud.log
+  - /home/jenkins/stackrc
+  - /home/jenkins/overcloudrc
+  - /home/jenkins/*.log
+  - /home/jenkins/*.txt
+  - /home/jenkins/*.json
+  - /home/jenkins/*.conf
+  - /home/jenkins/*.yml
+  - /home/jenkins/*.yaml
+  - /home/jenkins/*.sh
+  - /home/jenkins/deploy-overcloudrc
+  - /home/jenkins/network-environment.yaml
+  - /home/jenkins/skip_file
+  - /home/jenkins/tempest/*.xml
+  - /home/jenkins/tempest/*.html
+  - /home/jenkins/tempest/*.log
+  - /home/jenkins/tempest/*.sh
+  - /home/jenkins/tempest/etc/*.conf
+  - /home/jenkins/local_tht/
+  - /usr/share/openstack-tripleo-heat-templates/
+  - /tmp/*.yml
+  - /tmp/*.yaml
+artcl_exclude_list:
+  - /etc/udev/hwdb.bin
+  - /etc/puppet/modules
+  - /etc/project-config
+  - /etc/services
+  - /etc/selinux/targeted
+  - /etc/pki/ca-trust/extracted
+  - /etc/alternatives
