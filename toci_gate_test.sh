@@ -201,7 +201,7 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
             # In ci our overcloud nodes don't have access to an external netwrok
             # --ntp-server is here to make the deploy command happy, the ci env
             # is on virt so the clocks should be in sync without it.
-            OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS --control-scale 3 --ntp-server 0.centos.pool.ntp.org -e /usr/share/openstack-tripleo-heat-templates/environments/puppet-pacemaker.yaml -e /usr/share/openstack-tripleo-heat-templates/environments/network-isolation.yaml -e $TRIPLEO_ROOT/tripleo-ci/test-environments/network-templates/network-environment.yaml -e $TRIPLEO_ROOT/tripleo-ci/test-environments/net-iso.yaml -e $TRIPLEO_ROOT/tripleo-ci/test-environments/ips-from-pool-all.yaml -e $TRIPLEO_ROOT/tripleo-ci/test-environments/hostname-map.yaml -e $TRIPLEO_ROOT/tripleo-ci/test-environments/scheduler-hints.yaml"
+            OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS --control-scale 3 --ntp-server 0.centos.pool.ntp.org -e /usr/share/openstack-tripleo-heat-templates/environments/puppet-pacemaker.yaml -e /usr/share/openstack-tripleo-heat-templates/environments/network-isolation.yaml -e $TRIPLEO_ROOT/tripleo-ci/test-environments/network-templates/network-environment.yaml -e $TRIPLEO_ROOT/tripleo-ci/test-environments/net-iso.yaml"
             NETISO_V4=1
             PACEMAKER=1
             PREDICTABLE_PLACEMENT=1
@@ -300,6 +300,7 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
             else
                 TOCIRUNNER="./toci_instack_oooq.sh"
             fi
+            PREDICTABLE_PLACEMENT=0
             ;;
         fakeha)
             NODECOUNT=2
@@ -321,6 +322,9 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
     esac
 done
 
+if [[ $PREDICTABLE_PLACEMENT == 1 ]]; then
+    OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS -e $TRIPLEO_ROOT/tripleo-ci/test-environments/ips-from-pool-all.yaml -e $TRIPLEO_ROOT/tripleo-ci/test-environments/hostname-map.yaml -e $TRIPLEO_ROOT/tripleo-ci/test-environments/scheduler-hints.yaml"
+fi
 # Limit worker counts to avoid overloading our limited resources
 if [[ "${STABLE_RELEASE}" = "mitaka" ]] ; then
     OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS -e $TRIPLEO_ROOT/tripleo-ci/test-environments/worker-config-mitaka-and-below.yaml"
