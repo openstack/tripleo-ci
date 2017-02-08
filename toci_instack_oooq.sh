@@ -40,6 +40,8 @@ if [[ "${STABLE_RELEASE}" = "mitaka" ]] ; then
 else
     export OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS -e $TRIPLEO_ROOT/tripleo-ci/test-environments/worker-config.yaml -e /usr/share/openstack-tripleo-heat-templates/environments/low-memory-usage.yaml"
 fi
+# force ansible to not output console color codes
+export ANSIBLE_NOCOLOR=1
 export OPT_WORKDIR=${WORKSPACE}/.quickstart
 export OOOQ_LOGS=${WORKSPACE}/logs/oooq
 export OOO_WORKDIR_LOCAL=$HOME
@@ -95,7 +97,7 @@ collect_oooq_logs
 
 # TODO(sshnaidm): fix this either in role or quickstart.sh
 # it will not duplicate logs from undercloud and 127.0.0.2
-sed -i 's/hosts: all:!localhost/hosts: all:!localhost:!127.0.0.2/' $OPT_WORKDIR/playbooks/collect-logs.yml ||:
+sed -i 's/hosts: all:!localhost/hosts: all:!localhost:!127.0.0.2/' $OPT_WORKDIR/playbooks/collect-logs.yml || true
 
 # TODO(sshnaidm): to move postci functionality into collect-logs role
 $TRIPLEO_ROOT/tripleo-quickstart/quickstart.sh --bootstrap --no-clone \
@@ -103,7 +105,8 @@ $TRIPLEO_ROOT/tripleo-quickstart/quickstart.sh --bootstrap --no-clone \
         $OOOQ_ARGS \
         --playbook collect-logs.yml \
         -e artcl_collect_dir=$OOOQ_LOGS/collected_logs \
-        undercloud > $OOOQ_LOGS/quickstart_collectlogs.log || true
+        undercloud &> $OOOQ_LOGS/quickstart_collectlogs.log ||
+        echo "WARNING: quickstart collect-logs failed, check quickstart_collectlogs.log for details"
 
 export ARA_DATABASE="sqlite:///${OPT_WORKDIR}/ara.sqlite"
 $OPT_WORKDIR/bin/ara generate $OOOQ_LOGS/ara || true
