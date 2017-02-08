@@ -168,6 +168,12 @@ else
   OVERCLOUD_IMAGES_DIB_YUM_REPO_CONF=${OVERCLOUD_IMAGES_DIB_YUM_REPO_CONF}"\
     $REPO_PREFIX/CentOS-Ceph-Jewel.repo"
 fi
+OPSTOOLS_REPO_ENABLED=${OPSTOOLS_REPO_ENABLED:-"0"}
+OPSTOOLS_REPO_URL=${OPSTOOLS_REPO_URL:-"https://raw.githubusercontent.com/centos-opstools/opstools-repo/master/opstools.repo"}
+if [[ "${OPSTOOLS_REPO_ENABLED}" = 1 ]]; then
+  OVERCLOUD_IMAGES_DIB_YUM_REPO_CONF=${OVERCLOUD_IMAGES_DIB_YUM_REPO_CONF}"\
+    $REPO_PREFIX/centos-opstools.repo"
+fi
 FEATURE_BRANCH=${FEATURE_BRANCH:-}
 DELOREAN_SETUP=${DELOREAN_SETUP:-""}
 DELOREAN_BUILD=${DELOREAN_BUILD:-""}
@@ -193,8 +199,6 @@ TEMPEST_REGEX=${TEMPEST_REGEX:-"^(?=(.*smoke))(?!(tempest.api.orchestration.stac
 TEMPEST_PINNED="72ccabcb685df7c3e28cd25639b05d8a031901c8"
 SSH_OPTIONS=${SSH_OPTIONS:-'-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=Verbose -o PasswordAuthentication=no -o ConnectionAttempts=32'}
 export SCRIPTS_DIR=$(dirname ${BASH_SOURCE[0]:-$0})
-OPSTOOLS_REPO_ENABLED=${OPSTOOLS_REPO_ENABLED:-"0"}
-OPSTOOLS_REPO_URL=${OPSTOOLS_REPO_URL:-"https://raw.githubusercontent.com/centos-opstools/opstools-repo/master/opstools.repo"}
 
 if [[ "${STABLE_RELEASE}" = "mitaka" ]] ; then
     export OS_IMAGE_API_VERSION=1
@@ -277,6 +281,11 @@ function repo_setup {
             fi
             CEPH_REPO_RPM=centos-release-ceph-jewel
             CEPH_REPO_FILE=CentOS-Ceph-Jewel.repo
+        fi
+
+        if [[ "${OPSTOOLS_REPO_ENABLED}" = 1 ]]; then
+            sudo curl -Lvo $REPO_PREFIX/centos-opstools.repo \
+                "${OPSTOOLS_REPO_URL}"
         fi
 
         if [ $REPO_PREFIX != "/etc/yum.repos.d/" ]; then
@@ -534,14 +543,7 @@ except:
         sudo chown -R $(id -u) ~/.cache/image-create/source-repositories
     fi
 
-    # Enable OpsTools repository
-    if [[ "$OPSTOOLS_REPO_ENABLED" == "1" ]]; then
-        sudo curl -Lo $TRIPLEO_ROOT/opstools.repo $OPSTOOLS_REPO_URL
-        export DIB_YUM_REPO_CONF="$OVERCLOUD_IMAGES_DIB_YUM_REPO_CONF \
-            $TRIPLEO_ROOT/opstools.repo"
-    else
-        export DIB_YUM_REPO_CONF=$OVERCLOUD_IMAGES_DIB_YUM_REPO_CONF
-    fi
+    export DIB_YUM_REPO_CONF=$OVERCLOUD_IMAGES_DIB_YUM_REPO_CONF
 
     log "Overcloud images saved in $OVERCLOUD_IMAGES_PATH"
     pushd $OVERCLOUD_IMAGES_PATH

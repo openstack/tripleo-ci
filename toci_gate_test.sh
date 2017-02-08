@@ -97,10 +97,16 @@ export UNDERCLOUD_TELEMETRY=0
 export UNDERCLOUD_UI=0
 export UNDERCLOUD_VALIDATIONS=0
 export PREDICTABLE_PLACEMENT=0
+export OPSTOOLS_REPO_ENABLED=0
 
 if [[ $TOCI_JOBTYPE =~ scenario ]]; then
     export MULTINODE_ENV_NAME=${TOCI_JOBTYPE#periodic-}
     MULTINODE_ENV_PATH=/usr/share/openstack-tripleo-heat-templates/ci/environments/$MULTINODE_ENV_NAME.yaml
+
+    # enable opstools repository for scenario001
+    if [[ "$MULTINODE_ENV_NAME" = scenario001-multinode ]]; then
+        OPSTOOLS_REPO_ENABLED=1
+    fi
 else
     export MULTINODE_ENV_NAME='multinode'
     MULTINODE_ENV_PATH=/usr/share/openstack-tripleo-heat-templates/ci/environments/$MULTINODE_ENV_NAME.yaml
