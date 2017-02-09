@@ -14,6 +14,11 @@ parameter_defaults:
     # rh2 disks are small, we're relying on the fact that CI jobs at different stages wont
     # ever use peak disk usage together (also they don't use all thats allocate in the flavor)
     nova::scheduler::filter::disk_allocation_ratio: 4
+    # We have a few compute nodes in rh1 that aren't using/don't have SSDs.  Since
+    # those nodes are using a 1 TB HDD instead, they tend to get preferred by the
+    # scheduler if we use the normal weighers.  In reality, we care mostly about
+    # evenly distributing the RAM across nodes, so let's only use that weigher.
+    nova::scheduler::filter::scheduler_weight_classes: nova.scheduler.weights.ram.RAMWeigher
     # More than 4 Heat engine workers allows Heat to essentially DoS the other services
     # if a lot of jobs come in at once.  This is borrowed from
     # worker-config-mitaka-and-below.yaml.  Once rh1 is on a newer release we should
