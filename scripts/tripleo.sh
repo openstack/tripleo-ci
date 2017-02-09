@@ -519,20 +519,21 @@ function overcloud_images {
 
     log "Overcloud images"
 
-    # (slagle) TODO: This needs to be fixed in python-tripleoclient or
-    # diskimage-builder!
-    # Ensure yum-plugin-priorities is installed
+    # This hack is no longer needed in ocata.
+    if [[ "${STABLE_RELEASE}" =~ ^(mitaka|newton)$ ]]; then
+        # Ensure yum-plugin-priorities is installed
 
-    # get the right path for diskimage-builder version
-    COMMON_ELEMENTS_PATH=$(python -c '
+        # get the right path for diskimage-builder version
+        COMMON_ELEMENTS_PATH=$(python -c '
 try:
     import diskimage_builder.paths
     diskimage_builder.paths.show_path("elements")
 except:
     print("/usr/share/diskimage-builder/elements")
-')
-    echo -e '#!/bin/bash\nyum install -y yum-plugin-priorities' | sudo tee ${COMMON_ELEMENTS_PATH}/yum/pre-install.d/99-tmphacks
-    sudo chmod +x ${COMMON_ELEMENTS_PATH}/yum/pre-install.d/99-tmphacks
+        ')
+        echo -e '#!/bin/bash\nyum install -y yum-plugin-priorities' | sudo tee ${COMMON_ELEMENTS_PATH}/yum/pre-install.d/99-tmphacks
+        sudo chmod +x ${COMMON_ELEMENTS_PATH}/yum/pre-install.d/99-tmphacks
+    fi
 
     # To install the undercloud instack-undercloud is run as root,
     # as a result all of the git repositories get cached to
