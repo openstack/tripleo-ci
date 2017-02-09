@@ -20,6 +20,8 @@ if [ -z "$STABLE_RELEASE" ] && [ "$ZUUL_BRANCH" != "master" ]; then
 fi
 
 export TRIPLEO_ROOT=${TRIPLEO_ROOT:-"/opt/stack/new"}
+export WORKSPACE=${WORKSPACE:-"$TRIPLEO_ROOT/workspace"}
+export DEVSTACK_GATE_TIMEOUT=${DEVSTACK_GATE_TIMEOUT:-"180"}
 export PATH=/sbin:/usr/sbin:$PATH
 
 export UNDERCLOUD_VM_NAME=instack
