@@ -133,9 +133,9 @@ fi
 
 echo "INFO: Check /var/log/undercloud_install.txt for undercloud install output"
 echo "INFO: This file can be found in logs/undercloud.tar.xz in the directory containing console.log"
-start_metric "tripleo.undercloud.install.seconds"
+start_metric "tripleo.${STABLE_RELEASE:-master}.${TOCI_JOBTYPE}.undercloud.install.seconds"
 $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --undercloud 2>&1 | ts '%Y-%m-%d %H:%M:%S.000 |' | sudo dd of=/var/log/undercloud_install.txt || (tail -n 50 /var/log/undercloud_install.txt && false)
-stop_metric "tripleo.undercloud.install.seconds"
+stop_metric "tripleo.${STABLE_RELEASE:-master}.${TOCI_JOBTYPE}.undercloud.install.seconds"
 
 if [ "$OVB" = 1 ]; then
 
@@ -203,26 +203,26 @@ if [ "$OSINFRA" = "0" ]; then
     # Directing the output of this command to a file as its extreemly verbose
     echo "INFO: Check /var/log/image_build.txt for image build output"
     echo "INFO: This file can be found in logs/undercloud.tar.xz in the directory containing console.log"
-    start_metric "tripleo.overcloud.${TOCI_JOBTYPE}.images.seconds"
+    start_metric "tripleo.${STABLE_RELEASE:-master}.${TOCI_JOBTYPE}.overcloud.images.seconds"
     $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --overcloud-images 2>&1 | ts '%Y-%m-%d %H:%M:%S.000 |' | sudo dd of=/var/log/image_build.txt || (tail -n 50 /var/log/image_build.txt && false)
-    stop_metric "tripleo.overcloud.${TOCI_JOBTYPE}.images.seconds"
+    stop_metric "tripleo.${STABLE_RELEASE:-master}.${TOCI_JOBTYPE}.overcloud.images.seconds"
 
     OVERCLOUD_IMAGE_MB=$(du -ms overcloud-full.qcow2 | cut -f 1)
-    record_metric "tripleo.overcloud.${TOCI_JOBTYPE}.image.size_mb" "$OVERCLOUD_IMAGE_MB"
+    record_metric "tripleo.${STABLE_RELEASE:-master}.${TOCI_JOBTYPE}.overcloud.image.size_mb" "$OVERCLOUD_IMAGE_MB"
 
-    start_metric "tripleo.register.nodes.seconds"
+    start_metric "tripleo.${STABLE_RELEASE:-master}.${TOCI_JOBTYPE}.register.nodes.seconds"
     if [ $INTROSPECT == 1 ]; then
         export INTROSPECT_NODES=1
     fi
     $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --register-nodes
     # We don't want to keep this set for further calls to tripleo.sh
     unset INTROSPECT_NODES
-    stop_metric "tripleo.register.nodes.seconds"
+    stop_metric "tripleo.${STABLE_RELEASE:-master}.${TOCI_JOBTYPE}.register.nodes.seconds"
 
     if [ $INTROSPECT == 1 ] ; then
-       start_metric "tripleo.introspect.seconds"
+       start_metric "tripleo.${STABLE_RELEASE:-master}.${TOCI_JOBTYPE}.introspect.seconds"
        $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --introspect-nodes
-       stop_metric "tripleo.introspect.seconds"
+       stop_metric "tripleo.${STABLE_RELEASE:-master}.${TOCI_JOBTYPE}.introspect.seconds"
     fi
 
     if [ $PREDICTABLE_PLACEMENT == 1 ]; then
@@ -290,9 +290,9 @@ fi
 
 if [ $OVERCLOUD == 1 ] ; then
     source ~/stackrc
-    start_metric "tripleo.overcloud.${TOCI_JOBTYPE}.deploy.seconds"
+    start_metric "tripleo.${STABLE_RELEASE:-master}.${TOCI_JOBTYPE}.overcloud.deploy.seconds"
     http_proxy= $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --overcloud-deploy ${TRIPLEO_SH_ARGS:-}
-    stop_metric "tripleo.overcloud.${TOCI_JOBTYPE}.deploy.seconds"
+    stop_metric "tripleo.${STABLE_RELEASE:-master}.${TOCI_JOBTYPE}.overcloud.deploy.seconds"
     # Add hosts to /etc/hosts
     openstack stack output show overcloud HostsEntry -f value -c output_value | sudo tee -a /etc/hosts
 fi
@@ -311,9 +311,9 @@ if [ -n "${OVERCLOUD_UPDATE_ARGS:-}" ] ; then
     sudo rpm -ev --nodeps openstack-tripleo-heat-templates
     sudo yum -y install openstack-tripleo-heat-templates
 
-    start_metric "tripleo.overcloud.${TOCI_JOBTYPE}.update.seconds"
+    start_metric "tripleo.${STABLE_RELEASE:-master}.${TOCI_JOBTYPE}.overcloud.update.seconds"
     http_proxy= $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --overcloud-update ${TRIPLEO_SH_ARGS:-}
-    stop_metric "tripleo.overcloud.${TOCI_JOBTYPE}.update.seconds"
+    stop_metric "tripleo.${STABLE_RELEASE:-master}.${TOCI_JOBTYPE}.overcloud.update.seconds"
 fi
 
 if [ "$MULTINODE" == 0 ] && [ "$OVERCLOUD" == 1 ] ; then
@@ -342,7 +342,7 @@ if [ "$MULTINODE" == 0 ] && [ "$OVERCLOUD" == 1 ] ; then
         # available. heat-{api,engine} are the best candidates since due to the
         # constraint ordering they are typically started last. We'll wait up to
         # 180s.
-        start_metric "tripleo.overcloud.${TOCI_JOBTYPE}.settle.seconds"
+        start_metric "tripleo.${STABLE_RELEASE:-master}.${TOCI_JOBTYPE}.overcloud.settle.seconds"
         timeout -k 10 240 ssh $SSH_OPTIONS heat-admin@$(nova list | grep controller-0 | awk '{print $12}' | cut -d'=' -f2) sudo crm_resource -r openstack-heat-api --wait || {
             exitcode=$?
             echo "crm_resource for openstack-heat-api has failed!"
@@ -353,7 +353,7 @@ if [ "$MULTINODE" == 0 ] && [ "$OVERCLOUD" == 1 ] ; then
             echo "crm_resource for openstack-heat-engine has failed!"
             exit $exitcode
             }
-         stop_metric "tripleo.overcloud.${TOCI_JOBTYPE}.settle.seconds"
+         stop_metric "tripleo.${STABLE_RELEASE:-master}.${TOCI_JOBTYPE}.overcloud.settle.seconds"
     fi
 fi
 
@@ -362,12 +362,12 @@ if [ -f ~/overcloudrc ]; then
 fi
 
 if [ $RUN_PING_TEST == 1 ] ; then
-    start_metric "tripleo.overcloud.${TOCI_JOBTYPE}.ping_test.seconds"
+    start_metric "tripleo.${STABLE_RELEASE:-master}.${TOCI_JOBTYPE}.overcloud.ping_test.seconds"
     OVERCLOUD_PINGTEST_OLD_HEATCLIENT=0 $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --overcloud-pingtest $OVERCLOUD_PINGTEST_ARGS
-    stop_metric "tripleo.overcloud.${TOCI_JOBTYPE}.ping_test.seconds"
+    stop_metric "tripleo.${STABLE_RELEASE:-master}.${TOCI_JOBTYPE}.overcloud.ping_test.seconds"
 fi
 if [ $RUN_TEMPEST_TESTS == 1 ] ; then
-    start_metric "tripleo.overcloud.${TOCI_JOBTYPE}.tempest.seconds"
+    start_metric "tripleo.${STABLE_RELEASE:-master}.${TOCI_JOBTYPE}.overcloud.tempest.seconds"
     export TEMPEST_REGEX='^(?=(.*smoke))(?!('
     export TEMPEST_REGEX="${TEMPEST_REGEX}tempest.scenario.test_volume_boot_pattern" # http://bugzilla.redhat.com/1272289
     export TEMPEST_REGEX="${TEMPEST_REGEX}|tempest.api.identity.*v3" # https://bugzilla.redhat.com/1266947
@@ -375,7 +375,7 @@ if [ $RUN_TEMPEST_TESTS == 1 ] ; then
     export TEMPEST_REGEX="${TEMPEST_REGEX}|tempest.api.data_processing" # Sahara is not enabled by default and has problem with performance
     export TEMPEST_REGEX="${TEMPEST_REGEX}))"
     bash $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --run-tempest
-    stop_metric "tripleo.overcloud.${TOCI_JOBTYPE}.tempest.seconds"
+    stop_metric "tripleo.${STABLE_RELEASE:-master}.${TOCI_JOBTYPE}.overcloud.tempest.seconds"
 fi
 if [ $TEST_OVERCLOUD_DELETE -eq 1 ] ; then
     source ~/stackrc

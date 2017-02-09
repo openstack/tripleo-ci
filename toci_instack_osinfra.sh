@@ -11,7 +11,7 @@ export IP_DEVICE=${IP_DEVICE:-"eth0"}
 source $TRIPLEO_CI_DIR/tripleo-ci/scripts/common_vars.bash
 source $TRIPLEO_CI_DIR/tripleo-ci/scripts/common_functions.sh
 source $TRIPLEO_CI_DIR/tripleo-ci/scripts/metrics.bash
-start_metric "tripleo.ci.total.seconds"
+start_metric "tripleo.${STABLE_RELEASE:-master}.${TOCI_JOBTYPE}.ci.total.seconds"
 
 mkdir -p $WORKSPACE/logs
 

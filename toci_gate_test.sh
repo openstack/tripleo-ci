@@ -361,7 +361,7 @@ else
 fi
 
 source $TRIPLEO_ROOT/tripleo-ci/scripts/metrics.bash
-start_metric "tripleo.testenv.wait.seconds"
+start_metric "tripleo.testenv.${TOCI_JOBTYPE}.wait.seconds"
 if [ -z "${TE_DATAFILE:-}" -a "$OSINFRA" = "0" ] ; then
     # NOTE(pabelanger): We need gear for testenv, but this really should be
     # handled by tox.

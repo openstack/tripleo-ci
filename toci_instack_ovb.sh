@@ -13,8 +13,8 @@ export ZUUL_PROJECT=${ZUUL_PROJECT:-""}
 source $TRIPLEO_CI_DIR/tripleo-ci/scripts/common_vars.bash
 source $TRIPLEO_CI_DIR/tripleo-ci/scripts/common_functions.sh
 source $TRIPLEO_CI_DIR/tripleo-ci/scripts/metrics.bash
-stop_metric "tripleo.testenv.wait.seconds" # start_metric in toci_gate_test.sh
-start_metric "tripleo.ci.total.seconds"
+stop_metric "tripleo.testenv.${TOCI_JOBTYPE}.wait.seconds" # start_metric in toci_gate_test.sh
+start_metric "tripleo.${STABLE_RELEASE:-master}.${TOCI_JOBTYPE}.ci.total.seconds"
 
 mkdir -p $WORKSPACE/logs
 
