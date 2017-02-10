@@ -673,6 +673,7 @@ function undercloud_upgrade {
     sudo systemctl stop openstack-*
     sudo systemctl stop neutron-*
     sudo systemctl stop openvswitch
+    sudo systemctl stop httpd
     # tripleo cli needs to be updated first
     sudo yum -y update python-tripleoclient
 
