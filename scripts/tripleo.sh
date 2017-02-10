@@ -349,6 +349,9 @@ EOF"
         sudo rpm -e epel-release
     fi
 
+    sudo yum clean all
+    sudo yum makecache
+
     log "Repository setup - DONE."
 
 }
