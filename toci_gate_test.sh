@@ -99,13 +99,31 @@ export UNDERCLOUD_VALIDATIONS=0
 export PREDICTABLE_PLACEMENT=0
 export OPSTOOLS_REPO_ENABLED=0
 
+if [[ $TOCI_JOBTYPE =~ upgrades ]]; then
+    # We deploy a master Undercloud and an Overcloud with the
+    # previous release. The pingtest is disable because it won't
+    # work with the few services deployed.
+    if [ "$STABLE_RELEASE" = "ocata" ]; then
+        UPGRADE_RELEASE=newton
+    elif [ -z $STABLE_RELEASE ]; then
+        #TODO(emilien) switch to ocata when released
+        UPGRADE_RELEASE=newton
+    fi
+fi
+
 if [[ $TOCI_JOBTYPE =~ scenario ]]; then
     export MULTINODE_ENV_NAME=${TOCI_JOBTYPE#periodic-}
-    MULTINODE_ENV_PATH=/usr/share/openstack-tripleo-heat-templates/ci/environments/$MULTINODE_ENV_NAME.yaml
 
     # enable opstools repository for scenario001
-    if [[ "$MULTINODE_ENV_NAME" = scenario001-multinode ]]; then
+    if [[ "$MULTINODE_ENV_NAME" =~ scenario001-multinode ]]; then
         OPSTOOLS_REPO_ENABLED=1
+    fi
+
+    export MULTINODE_ENV_NAME=${MULTINODE_ENV_NAME%-upgrades}
+    if [[ "$TOCI_JOBTYPE" =~ upgrades ]]; then
+        MULTINODE_ENV_PATH=$TRIPLEO_ROOT/$UPGRADE_RELEASE/usr/share/openstack-tripleo-heat-templates/ci/environments/$MULTINODE_ENV_NAME.yaml
+    else
+        MULTINODE_ENV_PATH=/usr/share/openstack-tripleo-heat-templates/ci/environments/$MULTINODE_ENV_NAME.yaml
     fi
 else
     export MULTINODE_ENV_NAME='multinode'
@@ -176,29 +194,23 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
                 UNDERCLOUD_MAJOR_UPGRADE=1
                 export UNDERCLOUD_SANITY_CHECK=1
             fi
-            if [ $TOCI_JOBTYPE == 'multinode-upgrades' ] ; then
-                # We deploy a master Undercloud and an Overcloud with the
-                # previous release. The pingtest is disable because it won't
-                # work with the few services deployed.
-                if [ "$STABLE_RELEASE" = "ocata" ]; then
-                    UPGRADE_RELEASE=newton
-                elif [ -z $STABLE_RELEASE ]; then
-                    #TODO(emilien) switch to ocata when released
-                    UPGRADE_RELEASE=newton
-                fi
+            # TODO(emilien) remove this block when https://review.openstack.org/425690 is merged
+            # and packaged in RDO.
+            if [[ $TOCI_JOBTYPE =~ 'multinode-upgrades' ]] ; then
                 OVERCLOUD_MAJOR_UPGRADE=1
                 RUN_PING_TEST=0
-                # TODO(emilien) remove this block when https://review.openstack.org/425690 is merged
-                # and packaged in RDO.
-                if [ -e /usr/share/openstack-tripleo-heat-templates/ci/environments/multinode_major_upgrade.yaml ]; then
-                    UPGRADE_ENV=/usr/share/openstack-tripleo-heat-templates/ci/environments/multinode_major_upgrade.yaml
-                else
-                    # For backward compatibility until https://review.openstack.org/425690 is merged & packaged.
-                    UPGRADE_ENV=$TRIPLEO_ROOT/tripleo-ci/test-environments/multinode_major_upgrade.yaml
-                fi
-                OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS --libvirt-type=qemu -t $OVERCLOUD_DEPLOY_TIMEOUT -e $UPGRADE_ENV -r $TRIPLEO_ROOT/tripleo-ci/test-environments/upgrade_roles_data.yaml --overcloud-ssh-user $OVERCLOUD_SSH_USER --validation-errors-nonfatal"
                 UNDERCLOUD_SSL=0
                 export UNDERCLOUD_SANITY_CHECK=0
+                if [[ ! $TOCI_JOBTYPE =~ scenario ]]; then
+                    if [ -e /usr/share/openstack-tripleo-heat-templates/ci/environments/multinode_major_upgrade.yaml ]; then
+                        UPGRADE_ENV=/usr/share/openstack-tripleo-heat-templates/ci/environments/multinode_major_upgrade.yaml
+                    else
+                        # For backward compatibility until https://review.openstack.org/425690 is merged & packaged.
+                        UPGRADE_ENV=$TRIPLEO_ROOT/tripleo-ci/test-environments/multinode_major_upgrade.yaml
+                    fi
+                    OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS -e $UPGRADE_ENV"
+                fi
+                OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS --libvirt-type=qemu -t $OVERCLOUD_DEPLOY_TIMEOUT -r $TRIPLEO_ROOT/tripleo-ci/test-environments/upgrade_roles_data.yaml --overcloud-ssh-user $OVERCLOUD_SSH_USER --validation-errors-nonfatal"
             fi
             ;;
         ha)
