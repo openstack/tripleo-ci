@@ -64,6 +64,7 @@ function show_options {
     echo "      --overcloud-deploy      -- Deploy an overcloud."
     echo "      --overcloud-update      -- Update a deployed overcloud."
     echo "      --overcloud-upgrade     -- Upgrade a deployed overcloud."
+    echo "      --overcloud-upgrade-converge -- Finish (converge) upgrade of a deployed overcloud."
     echo "      --overcloud-delete      -- Delete the overcloud."
     echo "      --use-containers        -- Use a containerized compute node."
     echo "      --enable-check          -- Enable checks on update."
@@ -86,7 +87,7 @@ if [ ${#@} = 0 ]; then
 fi
 
 TEMP=$(getopt -o ,h \
-        -l,help,repo-setup,delorean-setup,delorean-build,multinode-setup,bootstrap-subnodes,undercloud,overcloud-images,register-nodes,introspect-nodes,overcloud-deploy,overcloud-update,overcloud-upgrade,overcloud-delete,use-containers,overcloud-pingtest,undercloud-upgrade,skip-pingtest-cleanup,all,enable-check,run-tempest,setup-nodepool-files,overcloud-sanitytest,skip-sanitytest-create,skip-sanitytest-cleanup \
+        -l,help,repo-setup,delorean-setup,delorean-build,multinode-setup,bootstrap-subnodes,undercloud,overcloud-images,register-nodes,introspect-nodes,overcloud-deploy,overcloud-update,overcloud-upgrade,overcloud-upgrade-converge,overcloud-delete,use-containers,overcloud-pingtest,undercloud-upgrade,skip-pingtest-cleanup,all,enable-check,run-tempest,setup-nodepool-files,overcloud-sanitytest,skip-sanitytest-create,skip-sanitytest-cleanup \
         -o,x,h,a \
         -n $SCRIPT_NAME -- "$@")
 
@@ -131,6 +132,7 @@ else
 fi
 OVERCLOUD_UPDATE=${OVERCLOUD_UPDATE:-""}
 OVERCLOUD_UPGRADE=${OVERCLOUD_UPGRADE:-""}
+OVERCLOUD_UPGRADE_CONVERGE=${OVERCLOUD_UPGRADE_CONVERGE:-""}
 OVERCLOUD_UPDATE_RM_FILES=${OVERCLOUD_UPDATE_RM_FILES:-"1"}
 OVERCLOUD_UPDATE_ARGS=${OVERCLOUD_UPDATE_ARGS:-"$OVERCLOUD_DEPLOY_ARGS $OVERCLOUD_VALIDATE_ARGS"}
 OVERCLOUD_UPDATE_CHECK=${OVERCLOUD_UPDATE_CHECK:-}
@@ -141,7 +143,8 @@ OVERCLOUD_IMAGES_LEGACY_ARGS=${OVERCLOUD_IMAGES_LEGACY_ARGS:-"--all"}
 OVERCLOUD_IMAGES_ARGS=${OVERCLOUD_IMAGES_ARGS:-"--output-directory $OVERCLOUD_IMAGES_PATH --config-file $OVERCLOUD_IMAGES_YAML_PATH/overcloud-images.yaml --config-file $OVERCLOUD_IMAGES_YAML_PATH/overcloud-images-centos7.yaml"}
 OVERCLOUD_NAME=${OVERCLOUD_NAME:-"overcloud"}
 OVERCLOUD_UPGRADE_THT_PATH=${OVERCLOUD_UPGRADE_THT_PATH:-"/usr/share/openstack-tripleo-heat-templates"}
-OVERCLOUD_UPGRADE_ARGS=${OVERCLOUD_UPGRADE_ARGS:-"-e $OVERCLOUD_UPGRADE_THT_PATH/overcloud-resource-registry-puppet.yaml $OVERCLOUD_DEPLOY_ARGS -e $OVERCLOUD_UPGRADE_THT_PATH/environments/major-upgrade-all-in-one.yaml -e $HOME/init-repo.yaml --templates $OVERCLOUD_UPGRADE_THT_PATH"}
+OVERCLOUD_UPGRADE_ARGS=${OVERCLOUD_UPGRADE_ARGS:-"-e $OVERCLOUD_UPGRADE_THT_PATH/overcloud-resource-registry-puppet.yaml $OVERCLOUD_DEPLOY_ARGS -e $OVERCLOUD_UPGRADE_THT_PATH/environments/major-upgrade-composable-steps.yaml -e $HOME/init-repo.yaml --templates $OVERCLOUD_UPGRADE_THT_PATH"}
+OVERCLOUD_UPGRADE_CONVERGE_ARGS=${OVERCLOUD_UPGRADE_CONVERGE_ARGS:-"-e $OVERCLOUD_UPGRADE_THT_PATH/overcloud-resource-registry-puppet.yaml $OVERCLOUD_DEPLOY_ARGS -e $OVERCLOUD_UPGRADE_THT_PATH/environments/major-upgrade-converge.yaml --templates $OVERCLOUD_UPGRADE_THT_PATH"}
 UPGRADE_VERSION=${UPGRADE_VERSION:-"master"}
 UPGRADE_REPO_URL=${UPGRADE_REPO_URL:-"http://buildlogs.centos.org/centos/7/cloud/x86_64/rdo-trunk-$UPGRADE_VERSION-tested/delorean.repo"}
 UPGRADE_OVERCLOUD_REPO_URL=${UPGRADE_OVERCLOUD_REPO_URL:-"http://buildlogs.centos.org/centos/7/cloud/x86_64/rdo-trunk-$UPGRADE_VERSION-tested/delorean.repo"}
@@ -215,6 +218,7 @@ while true ; do
         --overcloud-deploy) OVERCLOUD_DEPLOY="1"; shift 1;;
         --overcloud-update) OVERCLOUD_UPDATE="1"; shift 1;;
         --overcloud-upgrade) OVERCLOUD_UPGRADE="1"; shift 1;;
+        --overcloud-upgrade-converge) OVERCLOUD_UPGRADE_CONVERGE="1"; shift 1;;
         --overcloud-delete) OVERCLOUD_DELETE="1"; shift 1;;
         --overcloud-images) OVERCLOUD_IMAGES="1"; shift 1;;
         --overcloud-pingtest) OVERCLOUD_PINGTEST="1"; shift 1;;
@@ -775,7 +779,28 @@ EOF"
             exit 1
         fi
     else
-        log "Overcloud FAILED - No stack $OVERCLOUD_NAME."
+        log "Overcloud upgrade FAILED - No stack $OVERCLOUD_NAME."
+        exit 1
+    fi
+}
+
+function overcloud_upgrade_converge {
+    stackrc_check
+    if heat stack-show "$OVERCLOUD_NAME" ; then
+        log "Overcloud upgrade converge started."
+        log "Upgrade command arguments: $OVERCLOUD_UPGRADE_CONVERGE_ARGS"
+        log "Execute major upgrade converge."
+        openstack overcloud deploy $OVERCLOUD_UPGRADE_CONVERGE_ARGS
+        log "Major upgrade converge - DONE."
+
+        if heat stack-show "$OVERCLOUD_NAME" | grep "stack_status " | egrep "UPDATE_COMPLETE"; then
+            log "Major Upgrade converge - DONE."
+        else
+            log "Major Upgrade converge FAILED."
+            exit 1
+        fi
+    else
+        log "Overcloud upgrade converge FAILED - No stack $OVERCLOUD_NAME."
         exit 1
     fi
 }
@@ -1426,6 +1451,10 @@ fi
 
 if [ "$OVERCLOUD_UPGRADE" = 1 ]; then
     overcloud_upgrade
+fi
+
+if [ "$OVERCLOUD_UPGRADE_CONVERGE" = 1 ]; then
+    overcloud_upgrade_converge
 fi
 
 if [ "$OVERCLOUD_DELETE" = 1 ]; then
