@@ -52,11 +52,6 @@ cron {"refresh-server":
     minute  => "*/30"
 }
 
-cron {"centos-cloud-images":
-    command => "cd /var/www/html && timeout 30m wget -m --no-parent --accept-regex qcow2.xz --progress=dot http://cloud.centos.org/centos/7/images/",
-    minute  => "11"
-}
-
 cron {"promote":
     command => "timeout 10m /opt/stack/tripleo-ci/scripts/mirror-server/promote.sh current-tripleo periodic-tripleo-ci-centos-7-ovb-ha periodic-tripleo-ci-centos-7-ovb-nonha &>/var/log/last_promotion.log",
     minute  => "40"
