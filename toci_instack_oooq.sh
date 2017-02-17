@@ -7,7 +7,6 @@ set -o pipefail
 ## Signal to toci_gate_test.sh we've started by
 touch /tmp/toci.started
 
-exit_value=0
 export CURRENT_DIR=$(dirname ${BASH_SOURCE[0]:-$0})
 export TRIPLEO_CI_DIR=$CURRENT_DIR/../
 
@@ -25,7 +24,7 @@ if [[ $CONTAINERS == 1 ]]; then
     CONFIG=${CONFIG:-"$TRIPLEO_ROOT/tripleo-ci/scripts/quickstart/containers_minimal.yml"}
 elif [[ "$TOCI_JOBTYPE" =~ "-nonha-tempest" ]]; then
     CONFIG=${CONFIG:-"$TRIPLEO_ROOT/tripleo-quickstart/config/general_config/minimal_pacemaker.yml"}
-    EXTRA_ARGS="$EXTRA_ARGS -e test_ping=false -e tempest_config=true -e run_tempest=true -e test_regex='.*' -e enable_cinder_backup=true"
+    EXTRA_ARGS="$EXTRA_ARGS -e test_ping=false -e test_regex='.*' -e enable_cinder_backup=true"
 elif [[ "$TOCI_JOBTYPE" =~ "-ha" ]]; then
     CONFIG=${CONFIG:-"$TRIPLEO_ROOT/tripleo-quickstart/config/general_config/ha.yml"}
 elif [[ "$TOCI_JOBTYPE" =~ "-nonha" ]]; then
@@ -77,23 +76,10 @@ sed -i '/ansible_user: stack/d' $TRIPLEO_ROOT/tripleo-quickstart/roles/common/de
 $TRIPLEO_ROOT/tripleo-quickstart/quickstart.sh  --bootstrap --no-clone \
         -t all \
         $PLAYBOOK $OOOQ_ARGS \
-        $OOOQ_DEFAULT_ARGS undercloud 2>&1 \
+        $OOOQ_DEFAULT_ARGS $EXTRA_ARGS undercloud 2>&1 \
         | tee $OOOQ_LOGS/quickstart_install.log && exit_value=0 || exit_value=$?
 
-# TODO(sshnaidm): to include this in general ovb-playbook(?)
-if [[ -e ${OOO_WORKDIR_LOCAL}/overcloudrc ]]; then
-    $TRIPLEO_ROOT/tripleo-quickstart/quickstart.sh --bootstrap \
-        $OOOQ_DEFAULT_ARGS \
-        -t all  \
-        --playbook tempest.yml  \
-        --extra-vars run_tempest=True  \
-        -e test_regex='.*smoke' $EXTRA_ARGS \
-         undercloud 2>&1 | tee $OOOQ_LOGS/quickstart_tempest.log && tempest_exit_value=0 || tempest_exit_value=$?
-fi
-
-# TODO(sshnaidm): to prepare collect-logs role for tripleo-ci specific paths
-# and remove this function then
-collect_oooq_logs
+tar -czf $OOOQ_LOGS/quickstart.tar.gz $OPT_WORKDIR
 
 # TODO(sshnaidm): fix this either in role or quickstart.sh
 # it will not duplicate logs from undercloud and 127.0.0.2
@@ -104,7 +90,7 @@ $TRIPLEO_ROOT/tripleo-quickstart/quickstart.sh --bootstrap --no-clone \
         $OOOQ_DEFAULT_ARGS \
         $OOOQ_ARGS \
         --playbook collect-logs.yml \
-        -e artcl_collect_dir=$OOOQ_LOGS/collected_logs \
+        -e artcl_collect_dir=$OOOQ_LOGS \
         undercloud &> $OOOQ_LOGS/quickstart_collectlogs.log ||
         echo "WARNING: quickstart collect-logs failed, check quickstart_collectlogs.log for details"
 
@@ -113,11 +99,4 @@ $OPT_WORKDIR/bin/ara generate $OOOQ_LOGS/ara || true
 popd
 
 echo 'Run completed.'
-# TODO(sshnaidm): remove this when we're sure there's enough space
-# Watch free space, the outage could break jobs
-sudo df -h
-if [[ "$exit_value" != 0 ]]; then
-    exit $exit_value
-elif [[ "$tempest_exit_value" != 0 ]]; then
-    exit $tempest_exit_value
-fi
+exit $exit_value

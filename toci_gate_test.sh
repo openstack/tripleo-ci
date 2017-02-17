@@ -98,6 +98,7 @@ export UNDERCLOUD_UI=0
 export UNDERCLOUD_VALIDATIONS=0
 export PREDICTABLE_PLACEMENT=0
 export OPSTOOLS_REPO_ENABLED=0
+export POSTCI=1
 
 if [[ $TOCI_JOBTYPE =~ upgrades ]]; then
     # We deploy a master Undercloud and an Overcloud with the
@@ -318,6 +319,7 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
                 TOCIRUNNER="./toci_instack_oooq.sh"
             fi
             PREDICTABLE_PLACEMENT=0
+            POSTCI=0
             ;;
         fakeha)
             NODECOUNT=2

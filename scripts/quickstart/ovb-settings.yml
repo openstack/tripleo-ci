@@ -4,7 +4,9 @@ non_root_user: jenkins
 enable_vbmc: false
 gating_repo_enabled: true
 
-run_tempest: false
+run_tempest: true
+tempest_config: true
+test_regex: '.*smoke'
 ssl_overcloud: false
 
 step_adjust_mtu: true
@@ -47,17 +49,20 @@ overcloud_templates_path: /usr/share/openstack-tripleo-heat-templates
 
 # Collect logs settings
 
+# TODO(sshnaidm): artcl_tar_gz should be tested before
+# artcl_tar_gz: true
 artcl_gzip_only: true
 artcl_txt_rename: true
 artcl_publish: true
 artcl_rsync_logs: false
 artcl_collect_list:
+  - /etc/
   - /var/log/
-  - /var/lib/mysql
   - /home/jenkins/.instack/install-undercloud.log
   - /home/jenkins/stackrc
   - /home/jenkins/overcloudrc
   - /home/jenkins/*.log
+  - /home/jenkins/*.txt
   - /home/jenkins/*.json
   - /home/jenkins/*.conf
   - /home/jenkins/*.yml
@@ -74,43 +79,11 @@ artcl_collect_list:
   - /usr/share/openstack-tripleo-heat-templates
   - /tmp/*.yml
   - /tmp/*.yaml
-  - /etc/aodh
-  - /etc/ceilometer
-  - /etc/cinder
-  - /etc/dnsmasq-ironic.conf
-  - /etc/docker-registry.yml
-  - /etc/glance
-  - /etc/gnocchi
-  - /etc/heat
-  - /etc/haproxy
-  - /etc/httpd
-  - /etc/ironic
-  - /etc/ironic-inspector
-  - /etc/keepalived
-  - /etc/keystone
-  - /etc/libvirt
-  - /etc/manila
-  - /etc/mistral
-  - /etc/mongod.conf
-  - /etc/mongos.conf
-  - /etc/neutron
-  - /etc/nova
-  - /etc/ntp
-  - /etc/ntp.conf
-  - /etc/os-collect-config.conf
-  - /etc/os-net-config
-  - /etc/puppet
-  - /etc/qpid
-  - /etc/qpidd.conf
-  - /etc/rabbitmq
-  - /etc/redis
-  - /etc/redis.conf*
-  - /etc/resolv.conf
-  - /etc/sahara
-  - /etc/selinux
-  - /etc/swift
-  - /etc/sysconfig
-  - /etc/systemd
-  - /etc/trove
-  - /etc/yum.repos.d
-  - /etc/zaqar
+artcl_exclude_list:
+  - /etc/udev/hwdb.bin
+  - /etc/puppet/modules
+  - /etc/project-config
+  - /etc/services
+  - /etc/selinux/targeted
+  - /etc/pki/ca-trust/extracted
+  - /etc/alternatives
