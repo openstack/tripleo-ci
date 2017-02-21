@@ -69,6 +69,7 @@ artcl_rsync_logs: false
 artcl_collect_list:
   - /etc/
   - /var/log/
+  - /var/lib/pacemaker/cib/cib*
   - /home/jenkins/.instack/install-undercloud.log
   - /home/jenkins/stackrc
   - /home/jenkins/overcloudrc
