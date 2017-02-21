@@ -1,6 +1,7 @@
 multinode_mode: false
 undercloud_user: jenkins
 non_root_user: jenkins
+ssh_user: jenkins
 enable_vbmc: false
 gating_repo_enabled: true
 
