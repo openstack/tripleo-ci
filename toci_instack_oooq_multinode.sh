@@ -40,7 +40,7 @@ sudo chown root:root /root/.ssh/authorized_keys
 
 # TODO(bkero): Use an ansible role to create this file
 sudo yum install -y qemu-img
-qemu-img create -f qcow2 /home/jenkins/overcloud-full.qcow2 1G
+qemu-img create -f qcow2 $HOME/overcloud-full.qcow2 1G
 
 # Bootstrap the subnodes
 $TRIPLEO_CI_DIR/tripleo-ci/scripts/tripleo.sh --bootstrap-subnodes 2>&1 | sudo dd of=/var/log/bootstrap-subnodes.log || (tail -n 50 /var/log/bootstrap-subnodes.log && false)
