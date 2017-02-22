@@ -312,8 +312,6 @@ function repo_setup {
         # Enable the Delorean Deps repository
         sudo curl -Lvo $REPO_PREFIX/delorean-deps.repo http://trunk.rdoproject.org/centos7/delorean-deps.repo
         sudo sed -i -e 's%priority=.*%priority=30%' $REPO_PREFIX/delorean-deps.repo
-        # Exclude openstack-heat-agents from -deps repo until we get a new promotion (https://bugs.launchpad.net/tripleo/+bug/1666544)
-        sudo sed -i '/\[delorean-ocata-testing\]/a exclude=openstack-heat-agents' $REPO_PREFIX/delorean-deps.repo
         cat $REPO_PREFIX/delorean-deps.repo
 
         # Enable last known good RDO Trunk Delorean repository
