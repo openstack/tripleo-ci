@@ -70,8 +70,6 @@ cp $TRIPLEO_ROOT/tripleo-ci/scripts/quickstart/*y*ml $TRIPLEO_ROOT/tripleo-quick
 $TRIPLEO_ROOT/tripleo-quickstart/quickstart.sh --install-deps
 
 pushd $TRIPLEO_ROOT/tripleo-quickstart/
-# TODO(sshnaidm): fix inventory and collect-logs roles with prepares ssh.config.ansible,
-sed -i '/ansible_user: stack/d' $TRIPLEO_ROOT/tripleo-quickstart/roles/common/defaults/main.yml
 
 $TRIPLEO_ROOT/tripleo-quickstart/quickstart.sh  --bootstrap --no-clone \
         -t all \
