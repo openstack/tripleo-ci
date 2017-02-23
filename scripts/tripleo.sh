@@ -1439,6 +1439,7 @@ function setup_nodepool_files {
 
     if [ ! -f /etc/nodepool/id_rsa ]; then
         ssh-keygen -N "" -t rsa -f /etc/nodepool/id_rsa
+        cat /etc/nodepool/id_rsa.pub >> ~/.ssh/authorized_keys
     fi
 
     if [ -z $PRIMARY_NODE_IP ]; then
