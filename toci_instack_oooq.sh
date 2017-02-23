@@ -24,7 +24,7 @@ if [[ $CONTAINERS == 1 ]]; then
     CONFIG=${CONFIG:-"$TRIPLEO_ROOT/tripleo-ci/scripts/quickstart/containers_minimal.yml"}
 elif [[ "$TOCI_JOBTYPE" =~ "-nonha-tempest" ]]; then
     CONFIG=${CONFIG:-"$TRIPLEO_ROOT/tripleo-quickstart/config/general_config/minimal_pacemaker.yml"}
-    EXTRA_ARGS="$EXTRA_ARGS -e test_ping=false -e test_regex='.*' -e enable_cinder_backup=true"
+    EXTRA_ARGS="$EXTRA_ARGS -e test_ping=false -e test_regex='.*'"
 elif [[ "$TOCI_JOBTYPE" =~ "-ha" ]]; then
     CONFIG=${CONFIG:-"$TRIPLEO_ROOT/tripleo-quickstart/config/general_config/ha.yml"}
 elif [[ "$TOCI_JOBTYPE" =~ "-nonha" ]]; then
