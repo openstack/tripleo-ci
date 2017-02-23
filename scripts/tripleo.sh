@@ -1452,8 +1452,8 @@ function setup_nodepool_files {
     echo -n > /etc/nodepool/sub_nodes
     echo -n > /etc/nodepool/sub_nodes_private
     for sub_node_ip in $SUB_NODE_IPS; do
-        echo $sub_node_ip >> /etc/nodepool/node
-        echo $sub_node_ip >> /etc/nodepool/node_private
+        echo $sub_node_ip > /etc/nodepool/node
+        echo $sub_node_ip > /etc/nodepool/node_private
         echo $sub_node_ip >> /etc/nodepool/sub_nodes
         echo $sub_node_ip >> /etc/nodepool/sub_nodes_private
 
