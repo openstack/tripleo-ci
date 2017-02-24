@@ -52,7 +52,7 @@ sudo yum -y install python-requests
 # Open up port for delorean yum repo server
 sudo iptables -I INPUT -p tcp --dport 8766 -j ACCEPT
 
-trap "exit_val=\$?; [ \$exit_val != 0 ] && echo ERROR DURING PREVIOUS COMMAND ^^^ && echo 'See postci.txt in the logs directory for debugging details'; postci \$exit_val 2>&1 | awk '{ print strftime(\"%Y-%m-%d %H:%M:%S.000\"), \"|\", \$0; fflush(); }' > $WORKSPACE/logs/postci.log 2>&1" EXIT
+trap "exit_val=\$?; [ \$exit_val != 0 ] && echo ERROR DURING PREVIOUS COMMAND ^^^ && echo 'See postci.txt in the logs directory for debugging details'; postci \$exit_val 2>&1 | awk '{ print strftime(\"%Y-%m-%d %H:%M:%S.000\"), \"|\", \$0; fflush(); }' > $WORKSPACE/logs/postci.log 2>&1; stop_dstat" EXIT
 
 # Tempreverts/cherry-picks/pins go here.  For example:
 # temprevert tripleo-common af27127508eabf2b6873713e5e1507fa92b5f5b3 1623606

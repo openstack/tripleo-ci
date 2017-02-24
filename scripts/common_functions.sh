@@ -435,3 +435,7 @@ function can_promote {
         return 1
     fi
 }
+
+function stop_dstat {
+	ps axjf | grep bin/dstat | grep -v grep | awk '{print $2;}' | sudo xargs -t -n 1 -r kill
+}
