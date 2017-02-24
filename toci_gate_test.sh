@@ -199,7 +199,6 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
             fi
             if [[ $TOCI_JOBTYPE =~ 'multinode-upgrades' ]] ; then
                 OVERCLOUD_MAJOR_UPGRADE=1
-                RUN_PING_TEST=0
                 UNDERCLOUD_SSL=0
                 export UNDERCLOUD_SANITY_CHECK=0
                 if [[ $TOCI_JOBTYPE == 'multinode-upgrades' ]] ; then
