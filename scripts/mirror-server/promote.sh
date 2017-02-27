@@ -1,23 +1,30 @@
-#!/bin/bash -ex
+#!/bin/bash
+set -ex
 
 # Here be the promote script
 # 1. Find all metadata files newer then the one currently promoted
 # 2. If any of them have all the jobs reported back that we're interested in then promote it
 #    o Bumb current-tripleo on the dlrn server
 #    o Bump current-tripleo on this server
-# ./promote.sh linkname jobname [jobname] ...
+# ./promote.sh release linkname promote-jobname test-jobname [test-jobname] ...
 
-# Yes this doesn't attempt to remove anything, that will be a exercise for later
+RELEASE=$1
+LINKNAME=$2
+PROMOTE_JOBNAME=$3
 
-BASEDIR=/var/www/html/builds
-CURRENT=$BASEDIR/$1
-CURRENT_META=$BASEDIR/current-tripleo/metadata.txt
-JOB_URL=https://ci.centos.org/job/tripleo-dlrn-promote/buildWithParameters
+BASEDIR=/var/www/html/builds-$RELEASE
+CURRENT=$BASEDIR/$LINKNAME
+CURRENT_META=$CURRENT/metadata.txt
+JOB_URL=https://ci.centos.org/job/$PROMOTE_JOBNAME/buildWithParameters
 
+shift
+shift
 shift
 
 # Working with relative paths is easier as we need to set relative links on the dlrn server
-cd $BASEDIR
+pushd $BASEDIR
+
+mkdir -p $CURRENT
 
 if [ -f $CURRENT_META ] ; then
     DIRS2TEST=$(find . -newer $CURRENT_META -name metadata.txt | xargs --no-run-if-empty ls -t)
@@ -46,9 +53,12 @@ for DIR in $DIRS2TEST ; do
     break
 done
 
-# Remove any files older then 1 day that arn't the current-tripleo pin
-find */*/* -type f -name metadata.txt -mtime +0 -not -samefile current-tripleo/metadata.txt | \
+# Remove any files older then 1 day that arn't one of the current pins
+find */*/* -type f -name metadata.txt -mtime +0 \
+    -not -samefile $LINKNAME/metadata.txt | \
     xargs --no-run-if-empty dirname | \
     xargs --no-run-if-empty -t rm -rf
 # Remove all empty nested directories
 find . -type d -empty -delete
+
+popd
