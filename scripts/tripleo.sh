@@ -402,6 +402,7 @@ function delorean_setup {
     # NOTE(pabelanger): We need to update setuptools to the latest version for
     # CentOS 7.  Also, pytz is not declared as a dependency so we need to
     # manually add it.  Lastly, use pip install . to use wheel AFS pypi mirrors.
+    ./venv/bin/pip install -U pip
     ./venv/bin/pip install -U setuptools
     ./venv/bin/pip install pytz
     ./venv/bin/pip install .
