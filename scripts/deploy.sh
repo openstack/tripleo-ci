@@ -399,6 +399,34 @@ if [ -f ~/overcloudrc ]; then
     source ~/overcloudrc
 fi
 
+if [ "$OVERCLOUD_MAJOR_UPGRADE" == 1 ] ; then
+    source ~/stackrc
+    # Set deploy args for stable deployment:
+    # We have to use the backward compatible
+    if [ ! -z $UPGRADE_ENV ]; then
+        export OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS -e $UPGRADE_ENV"
+    fi
+    # update-from-deployed-server-$UPGRADE_RELEASE.yaml environment when upgrading from
+    # $UPGRADE_RELEASE.
+    export OVERCLOUD_DEPLOY_ARGS="$CURRENT_OVERCLOUD_DEPLOY_ARGS -e /usr/share/openstack-tripleo-heat-templates/environments/deployed-server-environment.yaml -e /usr/share/openstack-tripleo-heat-templates/environments/updates/update-from-deployed-server-$UPGRADE_RELEASE.yaml -e /usr/share/openstack-tripleo-heat-templates/environments/services/sahara.yaml"
+    if [ ! -z $UPGRADE_ENV ]; then
+        export OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS -e $UPGRADE_ENV"
+    fi
+    echo_vars_to_deploy_env
+    if [ "$MULTINODE" = "1" ]; then
+        /usr/share/openstack-tripleo-heat-templates/deployed-server/scripts/get-occ-config.sh 2>&1 | sudo dd of=/var/log/deployed-server-os-collect-config-22.log &
+    fi
+    # We run basic sanity tests before/after, which includes creating some resources which
+    # must survive the upgrade.  The upgrade is performed in two steps, even though this
+    # is an all-in-one test, as this is close to how a real deployment with computes would
+    # be upgraded.
+    $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --overcloud-sanity --skip-sanitytest-cleanup
+    $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --overcloud-upgrade
+    $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --overcloud-sanity --skip-sanitytest-create --skip-sanitytest-cleanup
+    $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --overcloud-upgrade-converge
+    $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --overcloud-sanity --skip-sanitytest-create
+fi
+
 if [ $RUN_PING_TEST == 1 ] ; then
     start_metric "tripleo.${STABLE_RELEASE:-master}.${TOCI_JOBTYPE}.overcloud.ping_test.seconds"
     OVERCLOUD_PINGTEST_OLD_HEATCLIENT=0 $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --overcloud-pingtest $OVERCLOUD_PINGTEST_ARGS
@@ -436,32 +464,4 @@ if [ "$UNDERCLOUD_MAJOR_UPGRADE" == 1 ] ; then
     # Add the delorean ci repo so that we include the package being tested
     layer_ci_repo
     $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --undercloud-upgrade 2>&1 | ts '%Y-%m-%d %H:%M:%S.000 |' | sudo dd of=/var/log/undercloud_upgrade.txt || (tail -n 50 /var/log/undercloud_upgrade.txt && false)
-fi
-
-if [ "$OVERCLOUD_MAJOR_UPGRADE" == 1 ] ; then
-    source ~/stackrc
-    # Set deploy args for stable deployment:
-    # We have to use the backward compatible
-    if [ ! -z $UPGRADE_ENV ]; then
-        export OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS -e $UPGRADE_ENV"
-    fi
-    # update-from-deployed-server-$UPGRADE_RELEASE.yaml environment when upgrading from
-    # $UPGRADE_RELEASE.
-    export OVERCLOUD_DEPLOY_ARGS="$CURRENT_OVERCLOUD_DEPLOY_ARGS -e /usr/share/openstack-tripleo-heat-templates/environments/deployed-server-environment.yaml -e /usr/share/openstack-tripleo-heat-templates/environments/updates/update-from-deployed-server-$UPGRADE_RELEASE.yaml -e /usr/share/openstack-tripleo-heat-templates/environments/services/sahara.yaml"
-    if [ ! -z $UPGRADE_ENV ]; then
-        export OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS -e $UPGRADE_ENV"
-    fi
-    echo_vars_to_deploy_env
-    if [ "$MULTINODE" = "1" ]; then
-        /usr/share/openstack-tripleo-heat-templates/deployed-server/scripts/get-occ-config.sh 2>&1 | sudo dd of=/var/log/deployed-server-os-collect-config-22.log &
-    fi
-    # We run basic sanity tests before/after, which includes creating some resources which
-    # must survive the upgrade.  The upgrade is performed in two steps, even though this
-    # is an all-in-one test, as this is close to how a real deployment with computes would
-    # be upgraded.
-    $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --overcloud-sanity --skip-sanitytest-cleanup
-    $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --overcloud-upgrade
-    $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --overcloud-sanity --skip-sanitytest-create --skip-sanitytest-cleanup
-    $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --overcloud-upgrade-converge
-    $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --overcloud-sanity --skip-sanitytest-create
 fi
