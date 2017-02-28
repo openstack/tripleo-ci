@@ -84,7 +84,7 @@ sudo update-ca-trust extract
 # Don't get a file from cache if CACHEUPLOAD=1 (periodic job)
 # If this 404's it wont error just continue without a file created
 if canusecache ipa_images.tar ; then
-    wget --progress=dot:mega http://$MIRRORSERVER/builds/current-tripleo/ipa_images.tar || true
+    wget --progress=dot:mega http://$MIRRORSERVER/builds-${STABLE_RELEASE:-master}/current-tripleo${STABLE_RELEASE:+-$STABLE_RELEASE}/ipa_images.tar || true
     if [ -f ipa_images.tar ] ; then
         tar -xf ipa_images.tar
         update_image $PWD/ironic-python-agent.initramfs
@@ -95,7 +95,7 @@ fi
 
 # Same thing for the overcloud image
 if canusecache overcloud-full.tar ; then
-    wget --progress=dot:mega http://$MIRRORSERVER/builds/current-tripleo/overcloud-full.tar || true
+    wget --progress=dot:mega http://$MIRRORSERVER/builds-${STABLE_RELEASE:-master}/current-tripleo${STABLE_RELEASE:+-$STABLE_RELEASE}/overcloud-full.tar || true
     if [ -f overcloud-full.tar ] ; then
         tar -xf overcloud-full.tar
         update_image $PWD/overcloud-full.qcow2
