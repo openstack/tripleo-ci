@@ -76,8 +76,8 @@ artcl_collect_list:
   - /home/jenkins/tempest/*.log
   - /home/jenkins/tempest/*.sh
   - /home/jenkins/tempest/etc/*.conf
-  - /home/jenkins/local_tht
-  - /usr/share/openstack-tripleo-heat-templates
+  - /home/jenkins/local_tht/
+  - /usr/share/openstack-tripleo-heat-templates/
   - /tmp/*.yml
   - /tmp/*.yaml
 artcl_exclude_list:
