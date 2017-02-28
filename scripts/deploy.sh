@@ -25,7 +25,7 @@ if [ $CA_SERVER == 1 ] ; then
         ipa-client \
         python-novajoin
 
-    export TRIPLEO_DOMAIN=tripleodomain
+    export TRIPLEO_DOMAIN=tripleodomain.example.com
     export CA_SERVER_HOSTNAME=ipa.$TRIPLEO_DOMAIN
     export CA_ADMIN_PASS=$(uuidgen)
     export CA_DIR_MANAGER_PASS=$(uuidgen)
