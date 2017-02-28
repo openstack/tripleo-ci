@@ -55,17 +55,8 @@ do
     sudo sed -i 's/https/http/g' $i
 done
 
-# FIXME(bnemec): Work around https://bugs.launchpad.net/tripleo/+bug/1654615
 if [ $STABLE_RELEASE = mitaka ]; then
-    cat > /tmp/delorean-ev.repo <<EOF
-[rdo-qemu-ev]
-name=RDO CentOS-\$releasever - QEMU EV
-baseurl=http://mirror.centos.org/centos/7/virt/\$basearch/kvm-common/
-gpgcheck=0
-enabled=1
-EOF
-    sudo mv /tmp/delorean-ev.repo /etc/yum.repos.d
-    # And also https://bugs.launchpad.net/tripleo/+bug/1654611
+    # FIXME(bnemec): Work around https://bugs.launchpad.net/tripleo/+bug/1654611
     sudo sed -i -e 's/\(\[centos-ceph-hammer\]\)/\1\npriority=1/' /etc/yum.repos.d/CentOS-Ceph-Hammer.repo
 fi
 
