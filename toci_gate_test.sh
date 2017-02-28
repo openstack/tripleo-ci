@@ -202,7 +202,9 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
                 UNDERCLOUD_SSL=0
                 export UNDERCLOUD_SANITY_CHECK=0
                 if [[ $TOCI_JOBTYPE == 'multinode-upgrades' ]] ; then
-                  export UPGRADE_ENV=/usr/share/openstack-tripleo-heat-templates/ci/environments/multinode_major_upgrade.yaml
+                   export UPGRADE_ENV=/usr/share/openstack-tripleo-heat-templates/ci/environments/multinode_major_upgrade.yaml
+                else
+                   export UPGRADE_ENV=/usr/share/openstack-tripleo-heat-templates/ci/environments/$MULTINODE_ENV_NAME.yaml
                 fi
                 OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS --libvirt-type=qemu -t $OVERCLOUD_DEPLOY_TIMEOUT -r $TRIPLEO_ROOT/tripleo-ci/test-environments/upgrade_roles_data.yaml --overcloud-ssh-user $OVERCLOUD_SSH_USER --validation-errors-nonfatal"
             fi
