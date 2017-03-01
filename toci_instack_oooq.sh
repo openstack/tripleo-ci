@@ -47,9 +47,10 @@ export OOOQ_LOGS=${WORKSPACE}/logs/oooq
 export OOO_WORKDIR_LOCAL=$HOME
 export OOOQ_DEFAULT_ARGS=" --working-dir $OPT_WORKDIR --retain-inventory -T none -e working_dir=$OOO_WORKDIR_LOCAL -R ${STABLE_RELEASE:-master}"
 export OOOQ_ARGS=" --config $CONFIG \
+-e @$TRIPLEO_ROOT/tripleo-quickstart/config/release/tripleo-ci/${STABLE_RELEASE:-master}.yml \
 -e @$TRIPLEO_ROOT/tripleo-ci/scripts/quickstart/ovb-settings.yml \
--e tripleo_root=$TRIPLEO_ROOT \
--e undercloud_hieradata_override_file=~/quickstart-hieradata-overrides.yaml"
+-e @$TRIPLEO_ROOT/tripleo-ci/scripts/quickstart/${TOCI_JOBTYPE}.yml \
+-e tripleo_root=$TRIPLEO_ROOT"
 export PLAYBOOK=" --playbook ovb-playbook.yml --requirements requirements.txt --requirements quickstart-extras-requirements.txt "
 
 # TODO(sshnaidm): when collect-logs role will have the same functionality,

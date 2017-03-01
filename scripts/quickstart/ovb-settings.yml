@@ -1,3 +1,4 @@
+# OVB settings
 multinode_mode: false
 undercloud_user: jenkins
 non_root_user: jenkins
@@ -5,54 +6,57 @@ ssh_user: jenkins
 enable_vbmc: false
 gating_repo_enabled: true
 
-run_tempest: true
-tempest_config: true
+# Undercloud setup
+undercloud_ironic_ipxe_port: 3816
+non_root_user_setup: false
+step_set_undercloud_hostname: true
+undercloud_hostname: undercloud
+
+undercloud_generate_service_certificate: true
+tempest_config: false
 test_regex: '.*smoke'
 ssl_overcloud: false
+overcloud_templates_path: /usr/share/openstack-tripleo-heat-templates
 
 # Overcloud deploy
 overcloud_templates_path: /usr/share/openstack-tripleo-heat-templates
 
 # Network
+# Deploy args
+flavor_args: ""
+deploy_timeout: 110
+
+# Images settings
+image_cache_dir: "{{ working_dir }}/images-cache"
+image_cache_dir_cleanup: true
+images_working_dir: "{{ working_dir }}"
+build_image_isolated: false
+build_undercloud: false
+images_destroy_working_dir: false
+modify_image_extract_list:
+  - /tmp/builder.log
+
+# Network settings
 step_adjust_mtu: true
 mtu: 1350
 external_interface: eth2
 external_interface_ip: 10.0.0.1
 external_interface_netmask: 255.255.255.0
 external_interface_hwaddr: fa:16:3e:79:e8:04
-overcloud_dns_servers: [8.8.8.8, 8.8.4.4]
-
-# Running quickstart as tripleo-ci exactly
-step_introspect: "{{ lookup('env','INTROSPECT')|bool }}"
-undercloud_generate_service_certificate: "{{ lookup('env','UNDERCLOUD_SSL')|bool }}"
-#overcloud_nodes:
-enable_pacemaker: "{{ lookup('env','PACEMAKER')|bool }}"
-network_isolation: "{{ lookup('env','NETISO_V4')|bool }}"
-network_isolation_type: "multiple-nics"
-network_isolation_args: >-
-  -e {{ overcloud_templates_path }}/environments/network-isolation.yaml
-  -e {{ tripleo_root }}/tripleo-ci/test-environments/network-templates/network-environment.yaml
-  -e {{ tripleo_root }}/tripleo-ci/test-environments/net-iso.yaml
+overcloud_dns_servers:
+  - 10.1.8.10
+  - 8.8.8.8
+  - 8.8.4.4
 
 float_base: "{% if network_isolation|bool %}10.0.0{% else %}192.168.24{% endif %}"
 floating_ip_cidr: "{{ float_base}}.0/24"
 public_net_pool_start: "{{ float_base}}.150"
 public_net_pool_end: "{{ float_base}}.250"
 public_net_gateway: "{{ float_base}}.1"
-
-# Running quickstart with its own config
-deploy_timeout: 110
-flavor_args: ""
-
-regular_interfaces:
+mtu_interface:
   - eth0
   - eth1
-netiso_interface:
   - eth2
-mtu_interface: "{% if network_isolation|bool %}{{ regular_interfaces + netiso_interface }}
-    {% else %}{{ regular_interfaces }}
-    {% endif %}"
-
 
 # Collect logs settings
 
