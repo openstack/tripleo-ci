@@ -148,9 +148,6 @@ function canusecache(){
     # If we are uploading to the cache then we shouldn't use it
     [ "$CACHEUPLOAD" == 1 ] && return 1
 
-    # We're not currently caching artifacts for stable jobs
-    [ -n "$STABLE_RELEASE" ] && return 1
-
     # The updates job already takes a long time, always use cache for it
     [ -n "$OVERCLOUD_UPDATE_ARGS" ] && return 0
 
