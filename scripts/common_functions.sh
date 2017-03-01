@@ -195,6 +195,7 @@ function postci(){
         sudo iptables -I INPUT -p tcp -j ACCEPT
         return 0
     fi
+    start_metric "tripleo.${STABLE_RELEASE:-master}.${TOCI_JOBTYPE}.postci.seconds"
     if [ -e $TRIPLEO_ROOT/delorean/data/repos/ ] ; then
         # I'd like to tar up repos/current but tar'ed its about 8M it may be a
         # bit much for the log server, maybe when we are building less
@@ -234,6 +235,7 @@ function postci(){
         done
         # Wait for the commands we started in the background to complete
         wait
+        stop_metric "tripleo.${STABLE_RELEASE:-master}.${TOCI_JOBTYPE}.postci.seconds"
         # post metrics
         if [ $exit_val -eq 0 ]; then
             metrics_to_graphite "66.187.229.172" # Graphite server in rh1
