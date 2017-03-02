@@ -157,7 +157,11 @@ sudo update-ca-trust extract
 # The mitaka branch of instack-undercloud does not have the net-config override
 # feature, so we need to add a dummy interface so that os-net-config can
 # add it to the br-ctlplane bridge.
-sudo ip link add ci-dummy type dummy
+if [ "$STABLE_RELEASE" = "mitaka" ]; then
+    if ! ip link show ci-dummy; then
+        sudo ip link add ci-dummy type dummy
+    fi
+fi
 
 # Use $REMAINING_TIME of infra to calculate maximum time for remaning part of job
 # Leave 10 minutes for postci function
