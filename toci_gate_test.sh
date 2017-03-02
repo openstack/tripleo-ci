@@ -108,8 +108,7 @@ if [[ $TOCI_JOBTYPE =~ upgrades ]]; then
     if [ "$STABLE_RELEASE" = "ocata" ]; then
         UPGRADE_RELEASE=newton
     elif [ -z $STABLE_RELEASE ]; then
-        #TODO(emilien) switch to ocata when released
-        UPGRADE_RELEASE=newton
+        UPGRADE_RELEASE=ocata
     fi
 fi
 
