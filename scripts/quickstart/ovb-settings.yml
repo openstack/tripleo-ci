@@ -77,6 +77,7 @@ artcl_collect_list:
   - /home/jenkins/*.sh
   - /home/jenkins/deploy-overcloudrc
   - /home/jenkins/network-environment.yaml
+  - /home/jenkins/skip_file
   - /home/jenkins/tempest/*.xml
   - /home/jenkins/tempest/*.html
   - /home/jenkins/tempest/*.log
