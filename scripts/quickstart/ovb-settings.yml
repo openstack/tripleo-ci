@@ -10,21 +10,29 @@ tempest_config: true
 test_regex: '.*smoke'
 ssl_overcloud: false
 
+# Overcloud deploy
+overcloud_templates_path: /usr/share/openstack-tripleo-heat-templates
+
+# Network
 step_adjust_mtu: true
 mtu: 1350
-
 external_interface: eth2
 external_interface_ip: 10.0.0.1
 external_interface_netmask: 255.255.255.0
 external_interface_hwaddr: fa:16:3e:79:e8:04
+overcloud_dns_servers: [8.8.8.8, 8.8.4.4]
 
 # Running quickstart as tripleo-ci exactly
 step_introspect: "{{ lookup('env','INTROSPECT')|bool }}"
 undercloud_generate_service_certificate: "{{ lookup('env','UNDERCLOUD_SSL')|bool }}"
 #overcloud_nodes:
 enable_pacemaker: "{{ lookup('env','PACEMAKER')|bool }}"
-deploy_args: "{{ lookup('env','OVERCLOUD_DEPLOY_ARGS') }}"
 network_isolation: "{{ lookup('env','NETISO_V4')|bool }}"
+network_isolation_type: "multiple-nics"
+network_isolation_args: >-
+  -e {{ overcloud_templates_path }}/environments/network-isolation.yaml
+  -e {{ tripleo_root }}/tripleo-ci/test-environments/network-templates/network-environment.yaml
+  -e {{ tripleo_root }}/tripleo-ci/test-environments/net-iso.yaml
 
 float_base: "{% if network_isolation|bool %}10.0.0{% else %}192.168.24{% endif %}"
 floating_ip_cidr: "{{ float_base}}.0/24"
@@ -33,8 +41,8 @@ public_net_pool_end: "{{ float_base}}.250"
 public_net_gateway: "{{ float_base}}.1"
 
 # Running quickstart with its own config
-network_isolation_type: network-isolation
 deploy_timeout: 110
+flavor_args: ""
 
 regular_interfaces:
   - eth0
@@ -45,8 +53,6 @@ mtu_interface: "{% if network_isolation|bool %}{{ regular_interfaces + netiso_in
     {% else %}{{ regular_interfaces }}
     {% endif %}"
 
-# Overcloud deploy
-overcloud_templates_path: /usr/share/openstack-tripleo-heat-templates
 
 # Collect logs settings
 
