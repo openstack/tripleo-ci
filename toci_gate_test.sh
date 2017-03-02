@@ -97,6 +97,7 @@ export CA_SERVER=0
 export UNDERCLOUD_TELEMETRY=0
 export UNDERCLOUD_UI=0
 export UNDERCLOUD_VALIDATIONS=0
+export UNDERCLOUD_CONTAINERS=0
 export PREDICTABLE_PLACEMENT=0
 export OPSTOOLS_REPO_ENABLED=0
 export POSTCI=1
@@ -237,6 +238,7 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
             ;;
         containers)
             CONTAINERS=1
+            UNDERCLOUD_CONTAINERS=1
             OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS \
             -e /usr/share/openstack-tripleo-heat-templates/environments/docker.yaml \
             -e /usr/share/openstack-tripleo-heat-templates/environments/docker-network.yaml \
