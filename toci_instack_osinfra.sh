@@ -144,6 +144,9 @@ sudo update-ca-trust extract
 sudo ip link add ci-dummy type dummy
 
 $TRIPLEO_ROOT/tripleo-ci/scripts/deploy.sh
-
+if [[ $CACHEUPLOAD == 1 && can_promote ]] ; then
+    UPLOAD_FOLDER=builds${STABLE_RELEASE:+-$STABLE_RELEASE}
+    curl http://$MIRRORSERVER/cgi-bin/upload.cgi -F "repohash=$TRUNKREPOUSED" -F "folder=$UPLOAD_FOLDER" -F "$JOB_NAME=SUCCESS"
+fi
 exit 0
 echo 'Run completed.'
