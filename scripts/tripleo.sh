@@ -574,6 +574,7 @@ function undercloud_containers {
       echo "INSECURE_REGISTRY='--insecure-registry ${LOCAL_REGISTRY:-}'" | sudo tee /etc/sysconfig/docker
     fi
     sudo systemctl start docker
+    sudo systemctl enable docker
 
     sudo mkdir -p /etc/puppet/modules/
     sudo ln -f -s /usr/share/openstack-puppet/modules/* /etc/puppet/modules/
