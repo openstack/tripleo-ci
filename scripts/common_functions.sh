@@ -178,8 +178,14 @@ function canusecache(){
 function extract_logs(){
     local name=$1
     mkdir -p $WORKSPACE/logs/$name
-    # Exclude journal files because they're large and not useful in a browser
-    tar -C $WORKSPACE/logs/$name -xf $WORKSPACE/logs/$name.tar.xz var --exclude=journal
+    local logs_tar="$WORKSPACE/logs/$name.tar.xz"
+
+    if [[ -f $logs_tar ]]; then
+        # Exclude journal files because they're large and not useful in a browser
+        tar -C $WORKSPACE/logs/$name -xf $logs_tar var --exclude=journal
+    else
+        echo "$logs_tar doesn't exist. Nothing to untar"
+    fi
 }
 
 function postci(){
@@ -205,6 +211,7 @@ function postci(){
 
     # Generate extra state information from the running undercloud
     sudo -E $TRIPLEO_ROOT/tripleo-ci/scripts/get_host_info.sh
+    sudo -E $TRIPLEO_ROOT/tripleo-ci/scripts/get_docker_logs.sh
     eval $JLOGCMD
 
     if [ "$OVB" == "1" ] ; then
@@ -224,7 +231,9 @@ function postci(){
             NAME=${INSTANCE//=*}
             (
                 scp $SSH_OPTIONS $TRIPLEO_ROOT/tripleo-ci/scripts/get_host_info.sh heat-admin@${SANITIZED_ADDRESS}:/tmp
+                scp $SSH_OPTIONS $TRIPLEO_ROOT/tripleo-ci/scripts/get_docker_logs.sh heat-admin@${SANITIZED_ADDRESS}:/tmp
                 timeout -s 15 -k 600 300 ssh $SSH_OPTIONS heat-admin@$IP sudo /tmp/get_host_info.sh
+                timeout -s 15 -k 600 300 ssh $SSH_OPTIONS heat-admin@$IP sudo /tmp/get_docker_logs.sh
                 ssh $SSH_OPTIONS heat-admin@$IP $JLOGCMD
                 ssh $SSH_OPTIONS heat-admin@$IP $TARCMD > $WORKSPACE/logs/${NAME}.tar.xz
                 extract_logs $NAME
@@ -248,6 +257,8 @@ function postci(){
             mkdir $WORKSPACE/logs/subnode-$i/
             ssh $SSH_OPTIONS -i /etc/nodepool/id_rsa $ip \
                 sudo $TRIPLEO_ROOT/tripleo-ci/scripts/get_host_info.sh
+            ssh $SSH_OPTIONS -i /etc/nodepool/id_rsa $ip \
+                sudo $TRIPLEO_ROOT/tripleo-ci/scripts/get_docker_logs.sh
             ssh $SSH_OPTIONS -i /etc/nodepool/id_rsa $ip $JLOGCMD
             ssh $SSH_OPTIONS -i /etc/nodepool/id_rsa $ip \
                 $TARCMD > $WORKSPACE/logs/subnode-$i/subnode-$i.tar.xz
@@ -262,6 +273,7 @@ function postci(){
                 sudo rm -f /etc/sahara/rootwrap.d/sahara.filters
             ssh $SSH_OPTIONS -i /etc/nodepool/id_rsa $ip \
                 sudo rm -f /etc/cinder/rootwrap.d/os-brick.filters
+
             let i+=1
         done
     fi
