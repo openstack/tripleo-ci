@@ -32,7 +32,8 @@ sudo yum install -y xfsprogs
 sudo yum install -yq jq
 
 # Remove the anything on the infra image template that might interfere with CI
-sudo yum remove -y puppet hiera puppetlabs-release rdo-release
+# Note for tripleo-quickstart: this task is already managed in tripleo-ci-setup-playbook.yml
+sudo yum remove -y facter puppet hiera puppetlabs-release rdo-release
 sudo rm -rf /etc/puppet /etc/hiera.yaml
 
 undercloud_net_range="192.168.24."

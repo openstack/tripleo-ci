@@ -30,8 +30,10 @@ export no_proxy=$undercloud_services_ip,$undercloud_haproxy_public_ip,$underclou
 cp /etc/nodepool/id_rsa  ~/.ssh/
 cp /etc/nodepool/id_rsa.pub  ~/.ssh/
 
-# Clear out any puppet modules on the node placed their by infra configuration
-sudo rm -rf /etc/puppet/modules/*
+# Remove the anything on the infra image template that might interfere with CI
+# Note for tripleo-quickstart: this task is already managed in tripleo-ci-setup-playbook.yml
+sudo yum remove -y facter puppet hiera puppetlabs-release rdo-release
+sudo rm -rf /etc/puppet /etc/hiera.yaml
 
 # Setup delorean
 $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --delorean-setup
@@ -70,15 +72,16 @@ echo 'export OVERCLOUD_VALIDATE_ARGS=""' >> $TRIPLEO_ROOT/tripleo-ci/deploy.env
 
 source $TRIPLEO_ROOT/tripleo-ci/deploy.env
 
-# This will remove any puppet configuration done by infra setup
-sudo yum -y remove puppet facter hiera
-
 # TODO: remove later, this is for live debugging
 sudo cat /etc/nodepool/*
 
 if [ -s /etc/nodepool/sub_nodes ]; then
     for ip in $(cat /etc/nodepool/sub_nodes); do
         sanitized_address=$(sanitize_ip_address $ip)
+        ssh $SSH_OPTIONS -tt -i /etc/nodepool/id_rsa $ip \
+            sudo yum remove -y facter puppet hiera puppetlabs-release rdo-release
+        ssh $SSH_OPTIONS -tt -i /etc/nodepool/id_rsa $ip \
+            sudo rm -rf /etc/puppet /etc/hiera.yaml
         ssh $SSH_OPTIONS -tt -i /etc/nodepool/id_rsa $ip \
             sudo yum -y install wget
         ssh $SSH_OPTIONS -tt -i /etc/nodepool/id_rsa $ip \

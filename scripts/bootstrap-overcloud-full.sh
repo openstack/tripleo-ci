@@ -23,11 +23,10 @@ if rpm -q python-requests; then
     sudo yum reinstall -y python-requests
 fi
 
-# Clear out any puppet modules on the node placed their by infra configuration
-sudo rm -rf /etc/puppet/modules/*
-
-# This will remove any puppet configuration done my infra setup
-sudo yum -y remove puppet facter hiera
+# Remove the anything on the infra image template that might interfere with CI
+# Note for tripleo-quickstart: this task is already managed in tripleo-ci-setup-playbook.yml
+sudo yum remove -y facter puppet hiera puppetlabs-release rdo-release
+sudo rm -rf /etc/puppet /etc/hiera.yaml
 
 # Update everything
 sudo yum -y update
