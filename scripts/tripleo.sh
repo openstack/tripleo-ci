@@ -586,14 +586,15 @@ function undercloud_containers {
     # Custom settings can go here
     cat > $HOME/custom.yaml <<-EOF_CAT
 resource_registry:
-  OS::TripleO::Undercloud::Net::SoftwareConfig: $HOME/tripleo-heat-templates/net-config-noop.yaml
+  OS::TripleO::Undercloud::Net::SoftwareConfig: $TRIPLEO_ROOT/tripleo-ci/undercloud-configs/net-config-multinode.yaml
 
 parameter_defaults:
   UndercloudNameserver: 8.8.8.8
   NeutronServicePlugins: ""
+  ControlPlaneSubnetCidr: 24
 EOF_CAT
 
-    LOCAL_IP=${LOCAL_IP:-`/usr/sbin/ip -4 route get 8.8.8.8 | awk {'print $7'} | tr -d '\n'`}
+    LOCAL_IP=${LOCAL_IP:-192.168.24.1}
 
     cp -a /usr/share/openstack-tripleo-heat-templates ~/tripleo-heat-templates
 
