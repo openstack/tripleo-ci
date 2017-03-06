@@ -408,7 +408,10 @@ if [ "$OVERCLOUD_MAJOR_UPGRADE" == 1 ] ; then
     fi
     # update-from-deployed-server-$UPGRADE_RELEASE.yaml environment when upgrading from
     # $UPGRADE_RELEASE.
-    export OVERCLOUD_DEPLOY_ARGS="$CURRENT_OVERCLOUD_DEPLOY_ARGS -e /usr/share/openstack-tripleo-heat-templates/environments/deployed-server-environment.yaml -e /usr/share/openstack-tripleo-heat-templates/environments/updates/update-from-deployed-server-$UPGRADE_RELEASE.yaml -e /usr/share/openstack-tripleo-heat-templates/environments/services/sahara.yaml"
+    export OVERCLOUD_DEPLOY_ARGS="$CURRENT_OVERCLOUD_DEPLOY_ARGS -e /usr/share/openstack-tripleo-heat-templates/environments/deployed-server-environment.yaml -e /usr/share/openstack-tripleo-heat-templates/environments/services/sahara.yaml"
+    if [ "$UPGRADE_RELEASE" == "newton" ]; then
+        export OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS -e /usr/share/openstack-tripleo-heat-templates/environments/updates/update-from-deployed-server-$UPGRADE_RELEASE.yaml"
+    fi
     if [ ! -z $UPGRADE_ENV ]; then
         export OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS -e $UPGRADE_ENV"
     fi
