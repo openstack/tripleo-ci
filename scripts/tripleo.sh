@@ -418,22 +418,25 @@ function delorean_build {
 
     pushd $TRIPLEO_ROOT/delorean
 
-    if [ -n "$STABLE_RELEASE" ]; then
+    if [ -n "$REVIEW_RELEASE" ]; then
+        log "Building for release $REVIEW_RELEASE"
         # first check if we have a stable release
-        sed -i -e "s%baseurl=.*%baseurl=https://trunk.rdoproject.org/centos7-$STABLE_RELEASE%" projects.ini
-        if [ "$STABLE_RELEASE" = "mitaka" ]; then
-            sed -i -e "s%distro=.*%distro=rpm-$STABLE_RELEASE%" projects.ini
+        sed -i -e "s%baseurl=.*%baseurl=https://trunk.rdoproject.org/centos7-$REVIEW_RELEASE%" projects.ini
+        if [ "$REVIEW_RELEASE" = "mitaka" ]; then
+            sed -i -e "s%distro=.*%distro=rpm-$REVIEW_RELEASE%" projects.ini
         else
             # RDO changed the distgit branch for stable releases starting from newton.
-            sed -i -e "s%distro=.*%distro=$STABLE_RELEASE-rdo%" projects.ini
+            sed -i -e "s%distro=.*%distro=$REVIEW_RELEASE-rdo%" projects.ini
         fi
-        sed -i -e "s%source=.*%source=stable/$STABLE_RELEASE%" projects.ini
+        sed -i -e "s%source=.*%source=stable/$REVIEW_RELEASE%" projects.ini
     elif [ -n "$FEATURE_BRANCH" ]; then
         # next, check if we are testing for a feature branch
+        log "Building for feature branch $FEATURE_BRANCH"
         sed -i -e "s%baseurl=.*%baseurl=https://trunk.rdoproject.org/centos7%" projects.ini
         sed -i -e "s%distro=.*%distro=rpm-$FEATURE_BRANCH%" projects.ini
         sed -i -e "s%source=.*%source=$FEATURE_BRANCH%" projects.ini
     else
+        log "Building for master"
         sed -i -e "s%baseurl=.*%baseurl=https://trunk.rdoproject.org/centos7%" projects.ini
         sed -i -e "s%distro=.*%distro=rpm-master%" projects.ini
         sed -i -e "s%source=.*%source=master%" projects.ini
@@ -454,9 +457,9 @@ function delorean_build {
         # Clone the repo if it doesn't yet exist
         if [ ! -d $TRIPLEO_ROOT/$PROJ ]; then
             git clone https://git.openstack.org/openstack/$PROJ.git $TRIPLEO_ROOT/$PROJ
-            if [ ! -z "$STABLE_RELEASE" ]; then
+            if [ ! -z "$REVIEW_RELEASE" ]; then
                 pushd $TRIPLEO_ROOT/$PROJ
-                git checkout -b stable/$STABLE_RELEASE origin/stable/$STABLE_RELEASE
+                git checkout -b stable/$REVIEW_RELEASE origin/stable/$REVIEW_RELEASE
                 popd
             fi
         fi
