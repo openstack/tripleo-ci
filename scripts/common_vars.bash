@@ -5,8 +5,13 @@ export ZUUL_BRANCH=${ZUUL_BRANCH:-""}
 export OVERRIDE_ZUUL_BRANCH=${OVERRIDE_ZUUL_BRANCH:-""}
 export STABLE_RELEASE=${STABLE_RELEASE:-""}
 export FEATURE_BRANCH=${FEATURE_BRANCH:-""}
+# In upgrade jobs STABLE_RELEASE is changed to point to the initial
+# deployment branch but we need to keep the actual release for the review
+# to be used in delorean-build phase.
+export REVIEW_RELEASE=${REVIEW_RELEASE:-""}
 if [[ $ZUUL_BRANCH =~ ^stable/ ]]; then
     export STABLE_RELEASE=${ZUUL_BRANCH#stable/}
+    export REVIEW_RELEASE=${ZUUL_BRANCH#stable/}
 fi
 
 if [[ $OVERRIDE_ZUUL_BRANCH =~ ^stable/ ]]; then
