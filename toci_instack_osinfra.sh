@@ -115,6 +115,16 @@ if [ -s /etc/nodepool/sub_nodes ]; then
         # Update the local deploy.env only so that the undercloud will install
         # at the current $STABLE_RELEASE
         echo_vars_to_deploy_env
+
+        # Disable the delorean-ci repo for the initial overcloud deploy, as
+        # ZUUL_REFS, and thus the contents of delorean-ci can only reference
+        # patches for the current branch, not UPGRADE_RELEASE
+        if [ -s /etc/nodepool/sub_nodes ]; then
+          for ip in $(cat /etc/nodepool/sub_nodes); do
+            ssh $SSH_OPTIONS -tt -i /etc/nodepool/id_rsa $ip \
+              sudo sed -i -e \"s/enabled=1/enabled=0/\" /etc/yum.repos.d/delorean-ci.repo
+          done
+        fi
     fi
 
     $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --multinode-setup
