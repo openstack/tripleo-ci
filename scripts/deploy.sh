@@ -125,11 +125,6 @@ if [ $CA_SERVER == 1 ] ; then
     echo "ipa_otp = $(cat /tmp/ipa-otp.txt)" >> ~/undercloud.conf
     echo "undercloud_nameservers = $CA_SERVER_IP" >> ~/undercloud.conf
 
-    # FIXME(jaosorior): This should be discovered from FreeIPA being the
-    # nameserver. But it isn't. So we add it here while we figure out what's
-    # missing.
-    echo "ipaclient::domain: $TRIPLEO_DOMAIN" >> ~/undercloud-hieradata-override.yaml
-    echo "ipaclient::server: $CA_SERVER_HOSTNAME" >> ~/undercloud-hieradata-override.yaml
     echo "nova::api::vendordata_dynamic_connect_timeout: 20" >> ~/undercloud-hieradata-override.yaml
     echo "nova::api::vendordata_dynamic_read_timeout: 20" >> ~/undercloud-hieradata-override.yaml
 
