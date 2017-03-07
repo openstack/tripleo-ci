@@ -191,8 +191,8 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
                 elif [ "$STABLE_RELEASE" = "newton" ]; then
                     STABLE_RELEASE=mitaka
                 elif [ -z $STABLE_RELEASE ]; then
-                    #TODO(emilien) switch to ocata when released
-                    STABLE_RELEASE=newton
+                    #TODO(emilien) switch to pike when released
+                    STABLE_RELEASE=ocata
                 fi
                 UNDERCLOUD_MAJOR_UPGRADE=1
                 export UNDERCLOUD_SANITY_CHECK=1
