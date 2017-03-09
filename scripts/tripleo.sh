@@ -111,6 +111,7 @@ fi
 ALL=${ALL:-""}
 CONTAINER_ARGS=${CONTAINER_ARGS:-"-e /usr/share/openstack-tripleo-heat-templates/environments/docker.yaml -e /usr/share/openstack-tripleo-heat-templates/environments/docker-network.yaml --libvirt-type=qemu"}
 STABLE_RELEASE=${STABLE_RELEASE:-}
+REVIEW_RELEASE=${REVIEW_RELEASE:-$STABLE_RELEASE}
 UPGRADE_RELEASE=${UPGRADE_RELEASE:-""}
 DELOREAN_REPO_FILE=${DELOREAN_REPO_FILE:-"delorean.repo"}
 DELOREAN_REPO_URL=${DELOREAN_REPO_URL:-"\
