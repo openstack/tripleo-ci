@@ -7,6 +7,7 @@ gating_repo_enabled: true
 tripleo_root: "{{ lookup('env','TRIPLEO_ROOT') }}"
 extra_args: >
     -e /usr/share/openstack-tripleo-heat-templates/environments/deployed-server-environment.yaml
+    -e /usr/share/openstack-tripleo-heat-templates/environments/deployed-server-bootstrap-environment-centos.yaml
     -e ${TRIPLEO_ROOT}/tripleo-ci/test-environments/worker-config.yaml
     -e /usr/share/openstack-tripleo-heat-templates/environments/debug.yaml
     --compute-scale 0

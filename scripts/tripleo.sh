@@ -1390,13 +1390,20 @@ function bootstrap_subnodes {
 
     bootstrap_subnodes_repos
 
+    local bootstrap_script
+    if [ "$BOOTSTRAP_SUBNODES_MINIMAL" = "1" ]; then
+        bootstrap_script=bootstrap-overcloud-full-minimal.sh
+    else
+        bootstrap_script=bootstrap-overcloud-full.sh
+    fi
+
     for ip in $sub_nodes; do
         log "Bootstrapping $ip"
         # Run overcloud full bootstrap script
         log "Running bootstrap-overcloud-full.sh on $ip"
         ssh $SSH_OPTIONS -t -i /etc/nodepool/id_rsa $ip \
             TRIPLEO_ROOT=$TRIPLEO_ROOT \
-            $TRIPLEO_ROOT/tripleo-ci/scripts/bootstrap-overcloud-full.sh
+            $TRIPLEO_ROOT/tripleo-ci/scripts/$bootstrap_script
     done
 
     log "Bootstrap subnodes - DONE".
