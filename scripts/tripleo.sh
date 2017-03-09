@@ -535,6 +535,7 @@ function undercloud_containers {
     # FIXME: eventually we will wire this into 'openstack undercloud install'
     # but for now we manually do these things to mimic that functionality today
     sudo setenforce permissive
+    sudo sed -i 's/SELINUX=.*/SELINUX=permissive/' /etc/selinux/config
     sudo yum install -y \
       openstack-heat-api \
       openstack-heat-engine \
