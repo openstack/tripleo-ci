@@ -15,6 +15,21 @@
   tags:
     - build
 
+- name: Create configs on subnodes
+  hosts: overcloud
+  roles:
+    - repo-setup
+  tasks:
+    - name: Create a clean hosts file on subnodes
+      copy:
+        dest: /etc/hosts
+        content: |
+          127.0.0.1 localhost localhost.localdomain localhost4 localhost4.localdomain4
+          ::1        localhost localhost.localdomain localhost6 localhost6.localdomain6
+      become: true
+  tags:
+    - undercloud-setup
+
 - name: Prepare the undercloud for installation
   hosts: undercloud
   roles:
@@ -61,3 +76,12 @@
     - name: did the deployment pass or fail?
       debug: var=overcloud_deploy_result
       failed_when: overcloud_deploy_result == "failed"
+
+# Validate the deployment
+- name:  validate the overcloud
+  hosts: undercloud
+  tags:
+    - overcloud-validate
+  gather_facts: no
+  roles:
+    - { role: validate-simple, when: test_ping|bool }

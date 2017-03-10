@@ -22,14 +22,23 @@ sudo chown $USER:$USER $HOME/.ssh/id_rsa.pub
 
 # TODO(sshnaidm): To create tripleo-ci special yaml config files in oooq
 # for every TOCI_JOBTYPE, i.e. ovb-nonha-ipv6.yml
-if [[ "$TOCI_JOBTYPE" =~ "scenario" ]]; then
-    CONFIG=${CONFIG:-"$TRIPLEO_ROOT/tripleo-quickstart-extras/config/general_config/${TOCI_JOBTYPE/-oooq*/}.yml"}
+if [[ "$TOCI_JOBTYPE" =~ "multinode" ]]; then
+    CONFIG=${CONFIG:-"$TRIPLEO_CI_DIR/tripleo-ci/scripts/quickstart/multinode-settings.yml"}
 elif [[ "$TOCI_JOBTYPE" =~ "-ha" ]]; then
     CONFIG=${CONFIG:-"$TRIPLEO_ROOT/tripleo-quickstart/config/general_config/ha.yml"}
 elif [[ "$TOCI_JOBTYPE" =~ "-nonha" ]]; then
     CONFIG=${CONFIG:-"$TRIPLEO_ROOT/tripleo-quickstart/config/general_config/minimal.yml"}
 else
     CONFIG=${CONFIG:-"$TRIPLEO_ROOT/tripleo-quickstart/config/general_config/minimal.yml"}
+fi
+
+# This needs to be set for tripleo.sh's pingtest to be passed the correct template
+# See tripleo.sh $TENANT_PINGTEST_TEMPLATE for more details
+MULTINODE_ENV_NAME=${MULTINODE_ENV_NAME/-oooq/}
+
+# Generate a scenario quickstart ARGs snippet
+if [[ "$TOCI_JOBTYPE" =~ "scenario" ]]; then
+    SCENARIO_ARGS="--extra-vars @${SCENARIO_ARGS:-$TRIPLEO_ROOT/tripleo-quickstart-extras/config/general_config/${TOCI_JOBTYPE/-oooq*/}.yml}"
 fi
 
 # Add jenkin user's SSH key to root authorized_keys for Ansible to run
@@ -68,11 +77,12 @@ export OOOQ_ARGS=" --working-dir ${OPT_WORKDIR} \
                    --bootstrap \
                    --no-clone \
                    --retain-inventory \
-                   --tags build,undercloud-setup,undercloud-scripts,undercloud-install,undercloud-post-install,overcloud-scripts,overcloud-deploy \
+                   --tags build,undercloud-setup,undercloud-scripts,undercloud-install,undercloud-post-install,overcloud-scripts,overcloud-deploy,overcloud-validate \
                    --teardown none \
                    --release ${STABLE_RELEASE:-master} \
-                   --extra-vars @${TRIPLEO_ROOT}/tripleo-ci/scripts/quickstart/multinode-settings.yml \
                    --config ${CONFIG} \
+                   --extra-vars @$TRIPLEO_ROOT/tripleo-quickstart/config/release/tripleo-ci/${STABLE_RELEASE:-master}.yml \
+                   ${SCENARIO_ARGS:-""} \
                    --playbook multinode-playbook.yml \
                    --requirements requirements.txt \
                    --requirements quickstart-extras-requirements.txt \
@@ -114,8 +124,6 @@ cp $TRIPLEO_ROOT/tripleo-ci/scripts/quickstart/*y*ml $TRIPLEO_ROOT/tripleo-quick
 $TRIPLEO_ROOT/tripleo-quickstart/quickstart.sh --install-deps
 
 pushd $TRIPLEO_ROOT/tripleo-quickstart/
-# TODO(sshnaidm): fix inventory and collect-logs roles with prepares ssh.config.ansible,
-sed -i '/ansible_user: stack/d' $TRIPLEO_ROOT/tripleo-quickstart/roles/common/defaults/main.yml
 
 # We wrap the quickstart call in a timeout, so that we can get logs if the
 # deploy hangs.  90m = 90 minutes = 1.5 hours
@@ -123,14 +131,6 @@ sed -i '/ansible_user: stack/d' $TRIPLEO_ROOT/tripleo-quickstart/roles/common/de
     $TRIPLEO_ROOT/tripleo-quickstart/quickstart.sh \
     ${OOOQ_ARGS} 2>&1 | tee $OOOQ_LOGS/quickstart_install.log && exit_value=0 || exit_value=$?
 
-# We use the tripleo.sh pingtest rather than the validate-simple role in
-# quickstart-extras so that we can easily support the multinode scenario
-# pingtests. We should add support for that to the validate simple role,
-# and use that instead.
-# https://github.com/openstack/tripleo-heat-templates/tree/master/ci/pingtests
-if [[ -e ${OOO_WORKDIR_LOCAL}/overcloudrc ]]; then
-    $TRIPLEO_CI_DIR/tripleo-ci/scripts/tripleo.sh --overcloud-pingtest &>$OOOQ_LOGS/multinode-overcloud-pingtest.txt
-fi
 
 sudo journalctl -u os-collect-config | sudo tee /var/log/os-collect-config.txt
 

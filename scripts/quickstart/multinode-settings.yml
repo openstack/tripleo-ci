@@ -3,14 +3,14 @@ undercloud_user: jenkins
 non_root_user: jenkins
 enable_vbmc: false
 gating_repo_enabled: true
+test_ping: true
 
 tripleo_root: "{{ lookup('env','TRIPLEO_ROOT') }}"
 extra_args: >
-    -e /usr/share/openstack-tripleo-heat-templates/environments/deployed-server-environment.yaml
-    -e /usr/share/openstack-tripleo-heat-templates/environments/deployed-server-bootstrap-environment-centos.yaml
     -e ${TRIPLEO_ROOT}/tripleo-ci/test-environments/worker-config.yaml
     -e /usr/share/openstack-tripleo-heat-templates/environments/debug.yaml
     --compute-scale 0
+    --overcloud-ssh-user {{ lookup('env','USER') }}
 
 deploy_composable_scenario: true
 composable_scenario: "multinode.yaml"
@@ -36,51 +36,9 @@ step_register: false
 hypervisor_wait: false
 deployed_server: true
 validation_args: "--validation-errors-nonfatal"
-deploy_timeout: 30
+deploy_timeout: 80
 
 undercloud_conf_extras: "net_config_override = /opt/stack/new/tripleo-ci/undercloud-configs/net-config-multinode.json.template"
-
-# TODO(trown): Create repo configs for each release in the release configs
-repos:
-  - type: generic
-    reponame: delorean
-    filename: delorean.repo
-    baseurl: http://buildlogs.centos.org/centos/7/cloud/x86_64/rdo-trunk-master-tripleo/
-    hash_url: http://buildlogs.centos.org/centos/7/cloud/x86_64/rdo-trunk-master-tripleo/delorean.repo
-    priority: 20
-
-  - type: generic
-    reponame: delorean-current
-    filename: delorean-current.repo
-    baseurl: http://trunk.rdoproject.org/centos7/current
-    hash_url: http://trunk.rdoproject.org/centos7/current/delorean.repo
-    priority: 10
-    includepkgs:
-      - diskimage-builder
-      - instack
-      - instack-undercloud
-      - os-apply-config
-      - os-cloud-config
-      - os-collect-config
-      - os-net-config
-      - os-refresh-config
-      - python-tripleoclient
-      - openstack-tripleo-common
-      - openstack-tripleo-heat-templates
-      - openstack-tripleo-image-elements
-      - openstack-tripleo
-      - openstack-tripleo-puppet-elements
-      - openstack-puppet-modules
-      - openstack-tripleo-ui
-      - puppet-*
-
-  - type: file
-    filename: delorean-deps.repo
-    down_url: http://trunk.rdoproject.org/centos7-master/delorean-deps.repo
-
-  - type: package
-    pkg_name: centos-release-ceph-jewel
-    custom_cmd: 'yum install -y --enablerepo=extras'
 
 # TODO(sshnaidm): artcl_tar_gz should be tested before
 # artcl_tar_gz: true
