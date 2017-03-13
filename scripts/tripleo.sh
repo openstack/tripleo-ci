@@ -585,9 +585,9 @@ EOF_CAT
     sudo openstack undercloud deploy --templates=$HOME/tripleo-heat-templates \
         --local-ip=$LOCAL_IP \
         --heat-native \
-        -e $HOME/tripleo-heat-templates/environments/services/ironic.yaml \
-        -e $HOME/tripleo-heat-templates/environments/services/mistral.yaml \
-        -e $HOME/tripleo-heat-templates/environments/services/zaqar.yaml \
+        -e $HOME/tripleo-heat-templates/environments/services-docker/ironic.yaml \
+        -e $HOME/tripleo-heat-templates/environments/services-docker/mistral.yaml \
+        -e $HOME/tripleo-heat-templates/environments/services-docker/zaqar.yaml \
         -e $HOME/tripleo-heat-templates/environments/docker.yaml \
         -e $HOME/tripleo-heat-templates/environments/mongodb-nojournal.yaml \
         -e $HOME/custom.yaml
