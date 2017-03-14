@@ -1,5 +1,4 @@
 # TRIPLEO-CI environment settings
-multinode_mode: true
 undercloud_user: jenkins
 non_root_user: jenkins
 extra_args: >

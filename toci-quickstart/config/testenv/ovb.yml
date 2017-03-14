@@ -1,4 +1,3 @@
-multinode_mode: false
 undercloud_user: jenkins
 non_root_user: jenkins
 ssh_user: jenkins
