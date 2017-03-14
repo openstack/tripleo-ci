@@ -23,6 +23,8 @@ deploy_timeout: 110
 # Images settings
 image_cache_dir: "{{ working_dir }}/images-cache"
 image_cache_dir_cleanup: true
+# user home (working_dir default) is the base dir for all images operations
+# if it's changed, nothing will work
 images_working_dir: "{{ working_dir }}"
 build_image_isolated: false
 build_undercloud: false
