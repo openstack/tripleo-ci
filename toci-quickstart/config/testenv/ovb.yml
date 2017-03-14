@@ -1,0 +1,40 @@
+multinode_mode: false
+undercloud_user: jenkins
+non_root_user: jenkins
+ssh_user: jenkins
+enable_vbmc: false
+gating_repo_enabled: true
+
+step_adjust_mtu: true
+mtu: 1350
+external_interface: eth2
+external_interface_ip: 10.0.0.1
+external_interface_netmask: 255.255.255.0
+external_interface_hwaddr: fa:16:3e:79:e8:04
+overcloud_dns_servers: [8.8.8.8, 8.8.4.4]
+undercloud_hieradata_override_file: ~/quickstart-hieradata-overrides.yaml
+
+flavor_args: ""
+
+float_base: "{% if network_isolation|bool %}10.0.0{% else %}192.168.24{% endif %}"
+floating_ip_cidr: "{{ float_base}}.0/24"
+public_net_pool_start: "{{ float_base}}.150"
+public_net_pool_end: "{{ float_base}}.250"
+public_net_gateway: "{{ float_base}}.1"
+
+
+regular_interfaces:
+  - eth0
+  - eth1
+netiso_interface:
+  - eth2
+mtu_interface: "{% if network_isolation|bool %}{{ regular_interfaces + netiso_interface }}
+    {% else %}{{ regular_interfaces }}
+    {% endif %}"
+
+
+# Without this wildcard, the deployment will fail with "no valid host found"
+# since nova will try to find defined flavors in the capabilities of the node
+# and nothing currently is configured to modify those.
+#extra_args: " --control-flavor baremetal --compute-flavor baremetal --ceph-storage-flavor baremetal"
+
