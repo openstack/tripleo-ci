@@ -343,6 +343,21 @@ function echo_vars_to_deploy_env {
     done
 }
 
+# Same function as above, but for oooq jobs (less variables defined)
+function echo_vars_to_deploy_env_oooq {
+    CALLER=$(caller)
+    echo "# Written via echo_vars_to_deploy_env from $CALLER" >> $TRIPLEO_ROOT/tripleo-ci/deploy.env
+    for VAR in CENTOS_MIRROR http_proxy MY_IP no_proxy NODECOUNT SSH_OPTIONS STABLE_RELEASE TRIPLEO_ROOT TOCI_JOBTYPE JOB_NAME SUBNODES_SSH_KEY FEATURE_BRANCH BOOTSTRAP_SUBNODES_MINIMAL; do
+        echo "export $VAR=\"${!VAR}\"" >> $TRIPLEO_ROOT/tripleo-ci/deploy.env
+    done
+    # TODO(gcerami) uncomment this code if 3nodes jobs are implemented before the bootstrap role
+    # in quickstart. If the bootstrap role is implemented first, this function can be completely
+    # removed
+    #for role in $OVERCLOUD_ROLES; do
+    #    eval hosts=\${${role}_hosts}
+    #    echo "export ${role}_hosts=\"${hosts}\"" >> $TRIPLEO_ROOT/tripleo-ci/deploy.env
+    #done
+}
 
 # Enclose IPv6 addresses in brackets.
 # This is needed for scp command where the first column of IPv6 address gets
