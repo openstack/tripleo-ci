@@ -16,7 +16,6 @@ export DEFAULT_ARGS="
     --no-clone
     --working-dir $LOCAL_WORKING_DIR
     --retain-inventory
-    --ansible-debug
     --teardown none
     --extra-vars tripleo_root=$TRIPLEO_ROOT
     --extra-vars working_dir=$WORKING_DIR
