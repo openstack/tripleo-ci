@@ -181,21 +181,6 @@ else
     sudo chown root:root /root/.ssh/authorized_keys
     # everything below here *MUST* be translated to a role ASAP
     # empty image to fool overcloud deployment
-    qemu-img create -f qcow2 /home/jenkins/overcloud-full.qcow2 1G
-
-    # multinode bootstrap script
-    export BOOTSTRAP_SUBNODES_MINIMAL=0
-    if [[ -z $STABLE_RELEASE || "$STABLE_RELEASE" = "ocata"  ]]; then
-        BOOTSTRAP_SUBNODES_MINIMAL=1
-    fi
-    $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh \
-        --bootstrap-subnodes \
-        2>&1 | sudo dd of=/var/log/bootstrap-subnodes.log \
-        || (tail -n 50 /var/log/bootstrap-subnodes.log && false)
-
-    # create logs dir (check if collect-logs doesn't already do this)
-    mkdir -p $WORKSPACE/logs
-
     # set no_proxy variable
     export IP_DEVICE=${IP_DEVICE:-"eth0"}
     MY_IP=$(ip addr show dev $IP_DEVICE | awk '/inet / {gsub("/.*", "") ; print $2}')
@@ -207,6 +192,24 @@ else
     undercloud_haproxy_public_ip=$undercloud_net_range"2"
     undercloud_haproxy_admin_ip=$undercloud_net_range"3"
     export no_proxy=$undercloud_services_ip,$undercloud_haproxy_public_ip,$undercloud_haproxy_admin_ip,$MY_IP,$MY_IP_eth1
+
+    qemu-img create -f qcow2 /home/jenkins/overcloud-full.qcow2 1G
+
+    # multinode bootstrap script
+    export BOOTSTRAP_SUBNODES_MINIMAL=0
+    if [[ -z $STABLE_RELEASE || "$STABLE_RELEASE" = "ocata"  ]]; then
+        BOOTSTRAP_SUBNODES_MINIMAL=1
+    fi
+    source $TRIPLEO_ROOT/tripleo-ci/scripts/common_functions.sh
+    echo_vars_to_deploy_env_oooq
+    subnodes_scp_deploy_env
+    $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh \
+        --bootstrap-subnodes \
+        2>&1 | sudo dd of=/var/log/bootstrap-subnodes.log \
+        || (tail -n 50 /var/log/bootstrap-subnodes.log && false)
+
+    # create logs dir (check if collect-logs doesn't already do this)
+    mkdir -p $WORKSPACE/logs
 
     # finally, run quickstart
     ./toci_quickstart.sh
