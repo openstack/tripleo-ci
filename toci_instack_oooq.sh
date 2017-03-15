@@ -22,6 +22,7 @@ EXTRA_ARGS=""
 
 if [[ $CONTAINERS == 1 ]]; then
     CONFIG=${CONFIG:-"$TRIPLEO_ROOT/tripleo-ci/scripts/quickstart/containers_minimal.yml"}
+    EXTRA_ARGS="$EXTRA_ARGS -e run_tempest=false"
 elif [[ "$TOCI_JOBTYPE" =~ "-nonha-tempest" ]]; then
     CONFIG=${CONFIG:-"$TRIPLEO_ROOT/tripleo-quickstart/config/general_config/minimal_pacemaker.yml"}
     EXTRA_ARGS="$EXTRA_ARGS -e test_ping=false -e test_regex='.*'"
