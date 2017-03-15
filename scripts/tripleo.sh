@@ -822,6 +822,7 @@ parameter_defaults:
     # script and tripleo.sh expects it. Just reuse the same value from the
     # current undercloud user.
     yum clean all
+    export STABLE_RELEASE=$STABLE_RELEASE
     HOME=$HOME $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --repo-setup
     yum clean all
     yum install -y python-heat-agent-*
