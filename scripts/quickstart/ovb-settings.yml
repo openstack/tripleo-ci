@@ -84,10 +84,29 @@ artcl_collect_list:
   - /home/jenkins/tempest/*.sh
   - /home/jenkins/tempest/etc/*.conf
   - /home/jenkins/local_tht/
-  - /usr/share/openstack-tripleo-heat-templates/
   - /tmp/*.yml
   - /tmp/*.yaml
 artcl_exclude_list:
+  - /etc/asound.conf
+  - /etc/at.deny
+  - /etc/bash_completion.d/
+  - /etc/bashrc
+  - /etc/csh*
+  - /etc/dbus-1
+  - /etc/dhcp
+  - /etc/DIR_COLORS*
+  - /etc/favicon.png
+  - /etc/fonts
+  - /etc/GeoIP*
+  - /etc/GREP_COLORS
+  - /etc/grub*
+  - /etc/ld.so.conf*
+  - /etc/pam*
+  - /etc/postfix*
+  - /etc/pulse
+  - /etc/samba*
+  - /etc/X11
+  - /etc/xinetd*
   - /etc/udev/hwdb.bin
   - /etc/puppet/modules
   - /etc/project-config
@@ -95,3 +114,4 @@ artcl_exclude_list:
   - /etc/selinux/targeted
   - /etc/pki/ca-trust/extracted
   - /etc/alternatives
+  - /var/log/extra/lsof*
