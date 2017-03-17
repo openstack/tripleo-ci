@@ -52,6 +52,7 @@
   vars:
     ib_repo_host: undercloud
   roles:
+    - repo-setup
     - { role: install-built-repo, when: "hostvars['undercloud']['compressed_gating_repo'] is defined" }
   tags:
     - build
