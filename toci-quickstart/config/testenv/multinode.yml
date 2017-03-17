@@ -11,8 +11,7 @@ undercloud_docker_registry_mirror: "{{ lookup('env','NODEPOOL_DOCKER_REGISTRY_PR
 
 dlrn_use_local_mirrors: true
 
-toci_vxlan_networking: true
-toci_vxlan_networking_multinode: true
+vxlan_networking: true
 hostname_correction: true # workaround restriction on toci images
 
 # environment settings, not TRIPLEO-CI specific

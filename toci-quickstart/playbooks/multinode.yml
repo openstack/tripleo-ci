@@ -36,9 +36,6 @@
     - undercloud-setup
   tags:
     - undercloud-setup
-  environment:
-    WORKSPACE: "{{ lookup('env','WORKSPACE') }}"
-    SSH_OPTIONS: "-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=Verbose -o PasswordAuthentication=no -o ConnectionAttempts=32 -l {{ undercloud_user }}"
 
 - name: Run DLRN gate role and install repo
   hosts: undercloud
