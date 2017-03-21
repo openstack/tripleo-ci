@@ -395,6 +395,8 @@ function prepare_images_oooq {
 function subnodes_scp_deploy_env {
     for ip in $(cat /etc/nodepool/sub_nodes); do
         sanitized_address=$(sanitize_ip_address $ip)
+        ssh $SSH_OPTIONS -tt -i /etc/nodepool/id_rsa $ip \
+            sudo mkdir -p $TRIPLEO_ROOT/tripleo-ci
         scp $SSH_OPTIONS -i /etc/nodepool/id_rsa \
             $TRIPLEO_ROOT/tripleo-ci/deploy.env ${sanitized_address}:
         ssh $SSH_OPTIONS -tt -i /etc/nodepool/id_rsa $ip \
