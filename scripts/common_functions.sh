@@ -325,7 +325,7 @@ function layer_ci_repo {
 
     # Layer the ci repository on top of it
     sudo wget http://$MY_IP:8766/current/delorean-ci.repo -O /etc/yum.repos.d/delorean-ci.repo
-    # rewrite the baseurl in delorean-ci.repo as its currently pointing a http://trunk.rdoproject.org/..
+    # rewrite the baseurl in delorean-ci.repo as its currently pointing a https://trunk.rdoproject.org/..
     sudo sed -i -e "s%baseurl=.*%baseurl=http://$MY_IP:8766/current/%" /etc/yum.repos.d/delorean-ci.repo
     sudo sed -i -e 's%priority=.*%priority=1%' /etc/yum.repos.d/delorean-ci.repo
 }
