@@ -76,6 +76,9 @@ $QUICKSTART_COLLECTLOGS_CMD \
     > $LOGS_DIR/quickstart_collect_logs.log || \
     echo "WARNING: quickstart collect-logs failed, check quickstart_collectlogs.log for details"
 
+# Temporary workaround to make postci log visible as it was before
+cp $LOGS_DIR/undercloud/var/log/postci.txt.gz $LOGS_DIR/ || true
+
 export ARA_DATABASE="sqlite:///$LOCAL_WORKING_DIR/ara.sqlite"
 $LOCAL_WORKING_DIR/bin/ara generate $LOGS_DIR/ara || true
 popd
