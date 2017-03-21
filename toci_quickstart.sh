@@ -82,7 +82,7 @@ $QUICKSTART_COLLECTLOGS_CMD \
 cp $LOGS_DIR/undercloud/var/log/postci.txt.gz $LOGS_DIR/ || true
 
 export ARA_DATABASE="sqlite:///$LOCAL_WORKING_DIR/ara.sqlite"
-$LOCAL_WORKING_DIR/bin/ara generate $LOGS_DIR/ara || true
+$LOCAL_WORKING_DIR/bin/ara generate html $LOGS_DIR/ara_oooq || true
 popd
 
 echo 'Quickstart completed.'

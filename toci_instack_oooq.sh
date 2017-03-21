@@ -102,7 +102,7 @@ $TRIPLEO_ROOT/tripleo-quickstart/quickstart.sh --bootstrap --no-clone \
 cp $OOOQ_LOGS/undercloud/home/jenkins/tempest/testrepository.subunit.gz ${WORKSPACE}/logs || true
 
 export ARA_DATABASE="sqlite:///${OPT_WORKDIR}/ara.sqlite"
-$OPT_WORKDIR/bin/ara generate html $OOOQ_LOGS/ara || true
+$OPT_WORKDIR/bin/ara generate html $OOOQ_LOGS/ara_oooq || true
 popd
 
 echo 'Run completed.'
