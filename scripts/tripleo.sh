@@ -115,7 +115,7 @@ REVIEW_RELEASE=${REVIEW_RELEASE:-$STABLE_RELEASE}
 UPGRADE_RELEASE=${UPGRADE_RELEASE:-""}
 DELOREAN_REPO_FILE=${DELOREAN_REPO_FILE:-"delorean.repo"}
 DELOREAN_REPO_URL=${DELOREAN_REPO_URL:-"\
-    http://trunk.rdoproject.org/centos7/current-tripleo/"}
+    https://trunk.rdoproject.org/centos7/current-tripleo/"}
 DELOREAN_STABLE_REPO_URL=${DELOREAN_STABLE_REPO_URL:-"\
     https://trunk.rdoproject.org/centos7-$STABLE_RELEASE/current/"}
 ATOMIC_URL=${ATOMIC_URL:-"https://download.fedoraproject.org/pub/alt/atomic/stable/Cloud-Images/x86_64/Images/Fedora-Cloud-Atomic-23-20160308.x86_64.qcow2"}
@@ -148,8 +148,8 @@ OVERCLOUD_UPGRADE_THT_PATH=${OVERCLOUD_UPGRADE_THT_PATH:-"/usr/share/openstack-t
 OVERCLOUD_UPGRADE_ARGS=${OVERCLOUD_UPGRADE_ARGS:-"-e $OVERCLOUD_UPGRADE_THT_PATH/overcloud-resource-registry-puppet.yaml $OVERCLOUD_DEPLOY_ARGS -e $OVERCLOUD_UPGRADE_THT_PATH/environments/major-upgrade-composable-steps.yaml -e $HOME/init-repo.yaml --templates $OVERCLOUD_UPGRADE_THT_PATH"}
 OVERCLOUD_UPGRADE_CONVERGE_ARGS=${OVERCLOUD_UPGRADE_CONVERGE_ARGS:-"-e $OVERCLOUD_UPGRADE_THT_PATH/overcloud-resource-registry-puppet.yaml $OVERCLOUD_DEPLOY_ARGS -e $OVERCLOUD_UPGRADE_THT_PATH/environments/major-upgrade-converge.yaml --templates $OVERCLOUD_UPGRADE_THT_PATH"}
 UPGRADE_VERSION=${UPGRADE_VERSION:-"master"}
-UPGRADE_REPO_URL=${UPGRADE_REPO_URL:-"http://buildlogs.centos.org/centos/7/cloud/x86_64/rdo-trunk-$UPGRADE_VERSION-tested/delorean.repo"}
-UPGRADE_OVERCLOUD_REPO_URL=${UPGRADE_OVERCLOUD_REPO_URL:-"http://buildlogs.centos.org/centos/7/cloud/x86_64/rdo-trunk-$UPGRADE_VERSION-tested/delorean.repo"}
+UPGRADE_REPO_URL=${UPGRADE_REPO_URL:-"https://buildlogs.centos.org/centos/7/cloud/x86_64/rdo-trunk-$UPGRADE_VERSION-tested/delorean.repo"}
+UPGRADE_OVERCLOUD_REPO_URL=${UPGRADE_OVERCLOUD_REPO_URL:-"https://buildlogs.centos.org/centos/7/cloud/x86_64/rdo-trunk-$UPGRADE_VERSION-tested/delorean.repo"}
 UNDERCLOUD_UPGRADE=${UNDERCLOUD_UPGRADE:-""}
 UNDERCLOUD_CONTAINERS=${UNDERCLOUD_CONTAINERS:-""}
 UPGRADE_VERSION=${UPGRADE_VERSION:-"master"}
@@ -314,7 +314,7 @@ function repo_setup {
     log "Stable release: $STABLE_RELEASE"
     if [ -z "$STABLE_RELEASE" ]; then
         # Enable the Delorean Deps repository
-        sudo curl -Lvo $REPO_PREFIX/delorean-deps.repo http://trunk.rdoproject.org/centos7/delorean-deps.repo
+        sudo curl -Lvo $REPO_PREFIX/delorean-deps.repo https://trunk.rdoproject.org/centos7/delorean-deps.repo
         sudo sed -i -e 's%priority=.*%priority=30%' $REPO_PREFIX/delorean-deps.repo
         cat $REPO_PREFIX/delorean-deps.repo
 
@@ -324,7 +324,7 @@ function repo_setup {
         cat $REPO_PREFIX/delorean.repo
 
         # Enable latest RDO Trunk Delorean repository
-        sudo curl -Lvo $REPO_PREFIX/delorean-current.repo http://trunk.rdoproject.org/centos7/current/delorean.repo
+        sudo curl -Lvo $REPO_PREFIX/delorean-current.repo https://trunk.rdoproject.org/centos7/current/delorean.repo
         sudo sed -i -e 's%priority=.*%priority=10%' $REPO_PREFIX/delorean-current.repo
         sudo sed -i 's/\[delorean\]/\[delorean-current\]/' $REPO_PREFIX/delorean-current.repo
         sudo /bin/bash -c "cat <<-EOF>>$REPO_PREFIX/delorean-current.repo
@@ -334,7 +334,7 @@ EOF"
         cat $REPO_PREFIX/delorean-current.repo
     else
         # Enable the Delorean Deps repository
-        sudo curl -Lvo $REPO_PREFIX/delorean-deps.repo http://trunk.rdoproject.org/centos7-$STABLE_RELEASE/delorean-deps.repo
+        sudo curl -Lvo $REPO_PREFIX/delorean-deps.repo https://trunk.rdoproject.org/centos7-$STABLE_RELEASE/delorean-deps.repo
         sudo sed -i -e 's%priority=.*%priority=30%' $REPO_PREFIX/delorean-deps.repo
         cat $REPO_PREFIX/delorean-deps.repo
 
