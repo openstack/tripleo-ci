@@ -53,7 +53,10 @@ $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --repo-setup
 # We can't use squid to cache https urls, so don't use them
 for i in /etc/yum.repos.d/delorean*
 do
-    sudo sed -i 's/https/http/g' $i
+    # NOTE(bnemec): It seems that using http urls for CBS repos causes a lot
+    # of spurious failures due to the forced redirect to https.  Limit this
+    # to only the delorean repos that actually allow http access.
+    sudo sed -i 's|https://trunk.rdoproject.org|http://trunk.rdoproject.org|g' $i
 done
 
 # Install some useful/necessary packages
