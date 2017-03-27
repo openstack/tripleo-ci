@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 source $(dirname $0)/scripts/common_vars.bash
+export START_JOB_TIME=$(date +%s)
 
 # Maintain compatibility with the old jobtypes
 if [[ ! $TOCI_JOBTYPE =~ "featureset" ]]; then

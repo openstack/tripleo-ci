@@ -10,6 +10,7 @@ NODEPOOL_MIRROR_HOST=${NODEPOOL_MIRROR_HOST:-mirror.$NODEPOOL_REGION.$NODEPOOL_C
 NODEPOOL_MIRROR_HOST=$(echo $NODEPOOL_MIRROR_HOST|tr '[:upper:]' '[:lower:]')
 export CENTOS_MIRROR=http://$NODEPOOL_MIRROR_HOST/centos
 export EPEL_MIRROR=http://$NODEPOOL_MIRROR_HOST/epel
+export START_JOB_TIME=$(date +%s)
 
 if [ $NODEPOOL_CLOUD == 'tripleo-test-cloud-rh1' ]; then
     source $(dirname $0)/scripts/rh2.env
