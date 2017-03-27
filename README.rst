@@ -27,7 +27,57 @@ the same node.
 Usage Details
 -------------
 
-Job parameters are configured in ``toci_gate_test.sh``.  Control passes to
+On March 2017, the ansible quickstart framework was added to TOCI to gradually
+replace the bash scripts that drove the jobs. Part of the original framework has
+been changed to allow the new framework to handle jobs, but maintaining
+backwards compatibility with the original framework while jobs are being
+transitioned
+
+TOCI entry point
+~~~~~~~~~~~~~~~~
+
+Upon starting a job, based on the configuration of its layout, zuul will call
+devstack-gate, which is needed for the basic nodepool node setup, but will then
+pass the control to ``toci_gate_test.sh``.
+During the transition, this will be a symbolic link to
+``toci_gate_test-oooq.sh``.
+
+Quickstart Transition scripts
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The initial part of  ``toci_gate_test-oooq.sh`` script decides whether to exec
+the original workflow or continue with the quickstart workflow, based on the job
+type passed down by zuul layout parameters. To move a job to the new quickstart
+framework, it is enough to propose a change to zuul layout to add a "featureset"
+keyword on its type.
+When using the quickstart workflow, the rest of the script will assemble a set of
+arguments to pass to quickstart scripts, based on the components of the job type
+separated by dashes e.g. a job type value of "periodic-ovb-featureset001"
+will make the script assemble arguments to deal with "ovb" provisioning,
+and set featurset001 to be the test matrix for the job.
+This script will also invoke the test environment broker to create the proper
+ovb environment.
+At the end the ``toci_gate_test-oooq.sh`` will pass control to
+``toci_quickstart.sh`` script that will actually call quickstart with its
+parameters.
+
+Quickstart Framework
+~~~~~~~~~~~~~~~~~~~~
+
+ ``toci_quickstart.sh`` consists of three parts, setup, invocationo and logs
+ collection.
+For more information about feature sets and test matrix please see
+.. _Featureset Documentation: https://docs.openstack.org/developer/tripleo-quickstart/feature-configuration.html
+from quickstart documentation
+The new workflow uses the directory toci-quickstart/ to store TripleO ci specific
+configurations, roles or playbooks for the quickstart workflow
+The parts of quickstart under scripts/ are instead handled by the original
+framework only
+
+Original Framework
+~~~~~~~~~~~~~~~~~~
+
+Job parameters are configured in ``toci_gate_test-orig.sh``. Control passes to
 one of the ``toci_instack_*.sh`` scripts (depending on the type of job being
 run) which do environment-specific setup. These scripts then call
 ``scripts/deploy.sh`` to run the actual deployment steps.  For most things,
