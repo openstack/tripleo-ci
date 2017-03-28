@@ -35,7 +35,6 @@ DEFAULT_PROJECTS = [
     'openstack/instack',
     'openstack/instack-undercloud',
     'openstack/os-apply-config',
-    'openstack/os-cloud-config',
     'openstack/os-collect-config',
     'openstack/os-net-config',
     'openstack/os-refresh-config',
