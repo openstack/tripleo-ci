@@ -73,6 +73,15 @@
   roles:
     - { role: overcloud-prep-images, step_overcloud_image: false, step_glance_upload: true, step_register: false }
 
+- name: Prepare for containerized deployment
+  hosts: undercloud
+  gather_facts: no
+  tags:
+    - overcloud-prep-containers
+  roles:
+    - role: overcloud-prep-containers
+      when: containerized_overcloud|bool or containerized_overcloud_upgrade|bool
+
 - name: Deploy the overcloud
   hosts: undercloud
   gather_facts: no
@@ -93,6 +102,15 @@
     - name: did the deployment pass or fail?
       debug: var=overcloud_deploy_result
       failed_when: overcloud_deploy_result == "failed"
+
+- name:  Upgrade Tripleo
+  hosts: undercloud
+  tags:
+    - overcloud-upgrade
+  gather_facts: no
+  roles:
+    - role: overcloud-upgrade
+      when: containerized_overcloud_upgrade|bool
 
 # Validate the deployment
 - name:  validate the overcloud
