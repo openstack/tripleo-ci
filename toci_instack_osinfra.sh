@@ -25,8 +25,8 @@ undercloud_haproxy_public_ip=$undercloud_net_range"2"
 undercloud_haproxy_admin_ip=$undercloud_net_range"3"
 export no_proxy=$undercloud_services_ip,$undercloud_haproxy_public_ip,$undercloud_haproxy_admin_ip,$MY_IP,$MY_IP_eth1
 
-# Copy nodepool ssh keys for the jenkins user because apparently id_rsa.pub is
-# missing from /home/jenkins/.ssh
+# Copy nodepool ssh keys for the current user because apparently id_rsa.pub is
+# missing from ~/.ssh
 cp /etc/nodepool/id_rsa  ~/.ssh/
 cp /etc/nodepool/id_rsa.pub  ~/.ssh/
 
@@ -47,6 +47,7 @@ $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --repo-setup
 sudo yum -y install wget python-simplejson yum-plugin-priorities
 # Need to reinstall requests since it's rm'd in toci_gate_test.sh
 sudo rpm -e --nodeps python-requests || :
+sudo rpm -e --nodeps python2-requests || :
 sudo yum -y install python-requests
 # Open up port for delorean yum repo server
 sudo iptables -I INPUT -p tcp --dport 8766 -j ACCEPT

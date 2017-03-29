@@ -8,26 +8,26 @@ artcl_rsync_logs: false
 artcl_collect_list:
   - /etc/
   - /var/log/
-  - /home/jenkins/.instack/install-undercloud.log
-  - /home/jenkins/stackrc
-  - /home/jenkins/overcloudrc
-  - /home/jenkins/*.log
-  - /home/jenkins/*.txt
-  - /home/jenkins/*.json
-  - /home/jenkins/*.conf
-  - /home/jenkins/*.yml
-  - /home/jenkins/*.yaml
-  - /home/jenkins/*.sh
-  - /home/jenkins/deploy-overcloudrc
-  - /home/jenkins/network-environment.yaml
-  - /home/jenkins/skip_file
-  - /home/jenkins/tempest/*.xml
-  - /home/jenkins/tempest/*.html
-  - /home/jenkins/tempest/*.log
-  - /home/jenkins/tempest/*.subunit
-  - /home/jenkins/tempest/*.sh
-  - /home/jenkins/tempest/etc/*.conf
-  - /home/jenkins/local_tht/
+  - /home/{{ undercloud_user }}/.instack/install-undercloud.log
+  - /home/{{ undercloud_user }}/stackrc
+  - /home/{{ undercloud_user }}/overcloudrc
+  - /home/{{ undercloud_user }}/*.log
+  - /home/{{ undercloud_user }}/*.txt
+  - /home/{{ undercloud_user }}/*.json
+  - /home/{{ undercloud_user }}/*.conf
+  - /home/{{ undercloud_user }}/*.yml
+  - /home/{{ undercloud_user }}/*.yaml
+  - /home/{{ undercloud_user }}/*.sh
+  - /home/{{ undercloud_user }}/deploy-overcloudrc
+  - /home/{{ undercloud_user }}/network-environment.yaml
+  - /home/{{ undercloud_user }}/skip_file
+  - /home/{{ undercloud_user }}/tempest/*.xml
+  - /home/{{ undercloud_user }}/tempest/*.html
+  - /home/{{ undercloud_user }}/tempest/*.log
+  - /home/{{ undercloud_user }}/tempest/*.subunit
+  - /home/{{ undercloud_user }}/tempest/*.sh
+  - /home/{{ undercloud_user }}/tempest/etc/*.conf
+  - /home/{{ undercloud_user }}/local_tht/
   - /tmp/*.yml
   - /tmp/*.yaml
 artcl_exclude_list:

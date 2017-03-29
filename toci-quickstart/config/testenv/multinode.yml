@@ -1,11 +1,11 @@
 # TRIPLEO-CI environment settings
-undercloud_user: jenkins
-non_root_user: jenkins
+undercloud_user: "{{ lookup('env','USER') }}"
+non_root_user: "{{ undercloud_user }}"
 extra_args: >
     -e {{ tripleo_root }}/tripleo-ci/test-environments/worker-config.yaml
     -e /usr/share/openstack-tripleo-heat-templates/environments/debug.yaml
     --compute-scale 0
-    --overcloud-ssh-user {{ lookup('env','USER') }}
+    --overcloud-ssh-user {{ undercloud_user }}
 
 toci_vxlan_networking: true
 toci_vxlan_networking_multinode: true
