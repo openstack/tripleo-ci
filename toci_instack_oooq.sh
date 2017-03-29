@@ -72,7 +72,10 @@ $TRIPLEO_ROOT/tripleo-quickstart/quickstart.sh --install-deps
 
 pushd $TRIPLEO_ROOT/tripleo-quickstart/
 
-$TRIPLEO_ROOT/tripleo-quickstart/quickstart.sh  --bootstrap --no-clone \
+# Use $REMAINING_TIME of infra to calculate maximum time for remaning part of job
+# Leave 15 minutes for quickstart logs collection
+TIME_FOR_DEPLOY=$(( REMAINING_TIME - ($(date +%s) - START_JOB_TIME)/60 - 15 ))
+/usr/bin/timeout --preserve-status ${TIME_FOR_DEPLOY}m $TRIPLEO_ROOT/tripleo-quickstart/quickstart.sh  --bootstrap --no-clone \
         -t all \
         $PLAYBOOK $OOOQ_ARGS \
         $OOOQ_DEFAULT_ARGS $EXTRA_ARGS undercloud 2>&1 \

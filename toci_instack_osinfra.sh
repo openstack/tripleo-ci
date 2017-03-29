@@ -156,7 +156,10 @@ sudo update-ca-trust extract
 # add it to the br-ctlplane bridge.
 sudo ip link add ci-dummy type dummy
 
-$TRIPLEO_ROOT/tripleo-ci/scripts/deploy.sh
+# Use $REMAINING_TIME of infra to calculate maximum time for remaning part of job
+# Leave 10 minutes for postci function
+TIME_FOR_DEPLOY=$(( REMAINING_TIME - ($(date +%s) - START_JOB_TIME)/60 - 10 ))
+/usr/bin/timeout --preserve-status ${TIME_FOR_DEPLOY}m $TRIPLEO_ROOT/tripleo-ci/scripts/deploy.sh
 if [[ $CACHEUPLOAD == 1 && can_promote ]] ; then
     UPLOAD_FOLDER=builds${STABLE_RELEASE:+-$STABLE_RELEASE}
     curl http://$MIRRORSERVER/cgi-bin/upload.cgi -F "repohash=$TRUNKREPOUSED" -F "folder=$UPLOAD_FOLDER" -F "$JOB_NAME=SUCCESS"

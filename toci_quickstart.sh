@@ -6,7 +6,6 @@ export ANSIBLE_NOCOLOR=1
 LOCAL_WORKING_DIR="$WORKSPACE/.quickstart"
 WORKING_DIR="$HOME"
 LOGS_DIR=$WORKSPACE/logs
-QUICKSTART_INSTALL_TIMEOUT=$((REMAINING_TIME - 15))
 
 
 ## Signal to toci_gate_test.sh we've started by
@@ -63,8 +62,10 @@ pushd $TRIPLEO_ROOT/tripleo-quickstart/
 
 $QUICKSTART_PREPARE_CMD
 
-# Save time for log collection
-/usr/bin/timeout --preserve-status ${QUICKSTART_INSTALL_TIMEOUT}m $QUICKSTART_INSTALL_CMD \
+# Use $REMAINING_TIME of infra to calculate maximum time for remaning part of job
+# Leave 15 minutes for quickstart logs collection
+TIME_FOR_DEPLOY=$(( REMAINING_TIME - ($(date +%s) - START_JOB_TIME)/60 - 15 ))
+/usr/bin/timeout --preserve-status ${TIME_FOR_DEPLOY}m  $QUICKSTART_INSTALL_CMD \
     2>&1 | tee $LOGS_DIR/quickstart_install.log && exit_value=0 || exit_value=$?
 
 ## LOGS COLLECTION
