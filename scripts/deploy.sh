@@ -299,8 +299,13 @@ if [ "$MULTINODE" = "1" ]; then
         popd
         # Backup current deploy args:
         CURRENT_OVERCLOUD_DEPLOY_ARGS=$OVERCLOUD_DEPLOY_ARGS
+        # Rewrite all template paths to be rooted from the stable release
+        # location
+        TEMPLATE_PATH="/usr/share/openstack-tripleo-heat-templates"
+        STABLE_TEMPLATE_PATH="$TRIPLEO_ROOT/$UPGRADE_RELEASE/$TEMPLATE_PATH"
+        OVERCLOUD_DEPLOY_ARGS=${OVERCLOUD_DEPLOY_ARGS/$TEMPLATE_PATH/$STABLE_TEMPLATE_PATH}
         # Set deploy args for stable deployment:
-        export OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS --templates $TRIPLEO_ROOT/$UPGRADE_RELEASE/usr/share/openstack-tripleo-heat-templates -e $TRIPLEO_ROOT/$UPGRADE_RELEASE/usr/share/openstack-tripleo-heat-templates/environments/deployed-server-environment.yaml -e $TRIPLEO_ROOT/$UPGRADE_RELEASE/usr/share/openstack-tripleo-heat-templates/environments/services/sahara.yaml"
+        export OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS --templates $STABLE_TEMPLATE_PATH -e $STABLE_TEMPLATE_PATH/environments/deployed-server-environment.yaml -e $STABLE_TEMPLATE_PATH/environments/services/sahara.yaml"
         if [ ! -z $UPGRADE_ENV ]; then
             export OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS -e $TRIPLEO_ROOT/$UPGRADE_RELEASE/$UPGRADE_ENV"
         fi
