@@ -1,0 +1,34 @@
+ssl_overcloud: false
+step_introspect: false
+undercloud_generate_service_certificate: false
+run_tempest: false
+
+# Network settings
+external_interface: eth2
+external_interface_ip: 10.0.0.1
+external_interface_netmask: 255.255.255.0
+external_interface_hwaddr: fa:16:3e:79:e8:04
+overcloud_dns_servers:
+  - 10.1.8.10
+  - 8.8.8.8
+  - 8.8.4.4
+enable_pacemaker: true
+network_isolation: true
+network_isolation_type: "multiple-nics"
+network_isolation_args: >-
+  -e {{ overcloud_templates_path }}/environments/network-isolation.yaml
+  -e {{ tripleo_root }}/tripleo-ci/test-environments/network-templates/network-environment.yaml
+  -e {{ tripleo_root }}/tripleo-ci/test-environments/net-iso.yaml
+
+float_base: "10.0.0"
+floating_ip_cidr: "{{ float_base}}.0/24"
+public_net_pool_start: "{{ float_base}}.150"
+public_net_pool_end: "{{ float_base}}.250"
+public_net_gateway: "{{ float_base}}.1"
+step_adjust_mtu: true
+mtu: 1350
+mtu_interface:
+  - eth0
+  - eth1
+  - eth2
+overcloud_nodes_count: 4
