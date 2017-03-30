@@ -53,7 +53,7 @@ cron {"refresh-server":
 }
 
 cron {"promote-master":
-    command => "timeout 10m /opt/stack/tripleo-ci/scripts/mirror-server/promote.sh master current-tripleo tripleo-dlrn-promote periodic-tripleo-ci-centos-7-ovb-ha periodic-tripleo-ci-centos-7-ovb-nonha periodic-tripleo-ci-centos-7-ovb-updates &>/var/log/last_master_promotion.log",
+    command => "timeout 10m /opt/stack/tripleo-ci/scripts/mirror-server/promote.sh master current-tripleo tripleo-dlrn-promote periodic-tripleo-ci-centos-7-ovb-ha periodic-tripleo-ci-centos-7-ovb-nonha &>/var/log/last_master_promotion.log",
     minute  => "40"
 }
 
