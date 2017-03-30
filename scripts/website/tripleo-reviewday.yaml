@@ -7,7 +7,6 @@ projects:
   - name: instack-undercloud
     launchpad_project: tripleo
   - name: os-apply-config
-  - name: os-cloud-config
   - name: os-collect-config
   - name: os-net-config
   - name: os-refresh-config
