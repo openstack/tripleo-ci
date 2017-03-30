@@ -30,7 +30,7 @@ export EPEL_MIRROR=http://$NODEPOOL_MIRROR_HOST/epel
 
 # host setup
 if [ $NODEPOOL_CLOUD == 'tripleo-test-cloud-rh1' ]; then
-    source $(dirname $0)/scripts/rh2.env
+    source $(dirname $0)/scripts/rh1.env
 
     # In order to save space remove the cached git repositories, at this point in
     # CI the ones we are interested in have been cloned to /opt/stack/new. We
