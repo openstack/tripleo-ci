@@ -66,6 +66,8 @@ export OVERCLOUD=1
 # the deploy.  Hopefully that's enough, while still leaving some cushion to come
 # in under the gate timeout so we can collect logs.
 OVERCLOUD_DEPLOY_TIMEOUT=$((DEVSTACK_GATE_TIMEOUT-90))
+# NOTE(bnemec): Hard-coding this to 45 minutes based on current Graphite metrics
+OVERCLOUD_UPDATE_TIMEOUT=45
 export OVERCLOUD_SSH_USER=${OVERCLOUD_SSH_USER:-"jenkins"}
 export OVERCLOUD_DEPLOY_ARGS=${OVERCLOUD_DEPLOY_ARGS:-""}
 export OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS --libvirt-type=qemu -t $OVERCLOUD_DEPLOY_TIMEOUT -e /usr/share/openstack-tripleo-heat-templates/environments/debug.yaml"
@@ -363,6 +365,9 @@ fi
 # If we're running an update job, regenerate the args to reflect the above changes
 if [ -n "$OVERCLOUD_UPDATE_ARGS" ]; then
     OVERCLOUD_UPDATE_ARGS="-e /usr/share/openstack-tripleo-heat-templates/overcloud-resource-registry-puppet.yaml $OVERCLOUD_DEPLOY_ARGS"
+    # We need a shorter timeout for the update step.  80 minutes puts us past
+    # the gate timeout in most cases.
+    OVERCLOUD_UPDATE_ARGS=$(echo "$OVERCLOUD_UPDATE_ARGS" | sed "s/-t $OVERCLOUD_DEPLOY_TIMEOUT/-t $OVERCLOUD_UPDATE_TIMEOUT/")
 fi
 
 TIMEOUT_SECS=$((DEVSTACK_GATE_TIMEOUT*60))
