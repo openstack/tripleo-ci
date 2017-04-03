@@ -158,6 +158,7 @@ sudo ip link add ci-dummy type dummy
 
 # Use $REMAINING_TIME of infra to calculate maximum time for remaning part of job
 # Leave 10 minutes for postci function
+REMAINING_TIME=${REMAINING_TIME:-180}
 TIME_FOR_DEPLOY=$(( REMAINING_TIME - ($(date +%s) - START_JOB_TIME)/60 - 10 ))
 /usr/bin/timeout --preserve-status ${TIME_FOR_DEPLOY}m $TRIPLEO_ROOT/tripleo-ci/scripts/deploy.sh
 if [[ $CACHEUPLOAD == 1 && can_promote ]] ; then

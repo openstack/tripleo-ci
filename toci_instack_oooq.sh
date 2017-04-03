@@ -75,6 +75,7 @@ pushd $TRIPLEO_ROOT/tripleo-quickstart/
 
 # Use $REMAINING_TIME of infra to calculate maximum time for remaning part of job
 # Leave 15 minutes for quickstart logs collection
+REMAINING_TIME=${REMAINING_TIME:-180}
 TIME_FOR_DEPLOY=$(( REMAINING_TIME - ($(date +%s) - START_JOB_TIME)/60 - 15 ))
 /usr/bin/timeout --preserve-status ${TIME_FOR_DEPLOY}m $TRIPLEO_ROOT/tripleo-quickstart/quickstart.sh  --bootstrap --no-clone \
         -t all \
