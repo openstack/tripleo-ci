@@ -24,6 +24,7 @@ artcl_collect_list:
   - /home/jenkins/tempest/*.xml
   - /home/jenkins/tempest/*.html
   - /home/jenkins/tempest/*.log
+  - /home/jenkins/tempest/*.subunit
   - /home/jenkins/tempest/*.sh
   - /home/jenkins/tempest/etc/*.conf
   - /home/jenkins/local_tht/
