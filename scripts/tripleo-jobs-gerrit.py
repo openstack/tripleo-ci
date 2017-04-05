@@ -7,6 +7,8 @@ import json
 import re
 import datetime
 
+# Do not include the -nv suffix in the job name here.  The code will handle
+# reading both the voting and non-voting forms of the job if they exist.
 DEFAULT_JOB_NAMES = [
     'gate-tripleo-ci-centos-7-ovb-nonha',
     'gate-tripleo-ci-centos-7-ovb-ha',
@@ -17,10 +19,10 @@ DEFAULT_JOB_NAMES = [
     'gate-tripleo-ci-centos-7-scenario003-multinode-oooq',
     'gate-tripleo-ci-centos-7-scenario004-multinode-oooq',
     'gate-tripleo-ci-centos-7-undercloud-oooq',
-    'gate-tripleo-ci-centos-7-3nodes-multinode-nv',
-    'gate-tripleo-ci-centos-7-multinode-upgrades-nv',
-    'gate-tripleo-ci-centos-7-undercloud-upgrades-nv',
-    'gate-tripleo-ci-centos-7-ovb-containers-oooq-nv',
+    'gate-tripleo-ci-centos-7-3nodes-multinode',
+    'gate-tripleo-ci-centos-7-multinode-upgrades',
+    'gate-tripleo-ci-centos-7-undercloud-upgrades',
+    'gate-tripleo-ci-centos-7-ovb-containers-oooq',
 ]
 
 DEFAULT_PROJECTS = [
@@ -84,14 +86,17 @@ def process_jenkins_comment_message(message, job_names):
     for line in message.split('\n'):
         if line and line[0] == '-':
             split = line.split(" ",6)
-            if split[1] in job_names:
+            voting_job_name = split[1]
+            if voting_job_name.endswith('-nv'):
+                voting_job_name = voting_job_name[:-3]
+            if voting_job_name in job_names:
                 if len(split) > 6:
                     duration = " ".join(split[6].split()[:2])
                 else:
                     duration = ''
-                job_results[split[1]] = {'log_url': split[2],
-                                         'status': split[4],
-                                         'duration': duration}
+                job_results[voting_job_name] = {'log_url': split[2],
+                                                'status': split[4],
+                                                'duration': duration}
     return job_results
 
 
