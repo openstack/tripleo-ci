@@ -4,36 +4,36 @@ ssh_user: jenkins
 enable_vbmc: false
 gating_repo_enabled: true
 
-step_adjust_mtu: true
-mtu: 1350
-external_interface: eth2
-external_interface_ip: 10.0.0.1
-external_interface_netmask: 255.255.255.0
-external_interface_hwaddr: fa:16:3e:79:e8:04
-overcloud_dns_servers: [8.8.8.8, 8.8.4.4]
-undercloud_hieradata_override_file: ~/quickstart-hieradata-overrides.yaml
+# Undercloud setup
+undercloud_ironic_ipxe_port: 3816
+non_root_user_setup: false
+step_set_undercloud_hostname: true
+undercloud_hostname: undercloud
 
+run_tempest: false
+tempest_config: false
+test_regex: '.*smoke'
+
+# Overcloud deploy
+overcloud_templates_path: /usr/share/openstack-tripleo-heat-templates
+
+# Network
+# Deploy args
 flavor_args: ""
 
-float_base: "{% if network_isolation|bool %}10.0.0{% else %}192.168.24{% endif %}"
-floating_ip_cidr: "{{ float_base}}.0/24"
-public_net_pool_start: "{{ float_base}}.150"
-public_net_pool_end: "{{ float_base}}.250"
-public_net_gateway: "{{ float_base}}.1"
+deploy_timeout: 110
 
-
-regular_interfaces:
-  - eth0
-  - eth1
-netiso_interface:
-  - eth2
-mtu_interface: "{% if network_isolation|bool %}{{ regular_interfaces + netiso_interface }}
-    {% else %}{{ regular_interfaces }}
-    {% endif %}"
-
+# Images settings
+image_cache_dir: "{{ working_dir }}/images-cache"
+image_cache_dir_cleanup: true
+images_working_dir: "{{ working_dir }}"
+build_image_isolated: false
+build_undercloud: false
+images_destroy_working_dir: false
+modify_image_extract_list:
+  - /tmp/builder.log
 
 # Without this wildcard, the deployment will fail with "no valid host found"
 # since nova will try to find defined flavors in the capabilities of the node
 # and nothing currently is configured to modify those.
 #extra_args: " --control-flavor baremetal --compute-flavor baremetal --ceph-storage-flavor baremetal"
-
