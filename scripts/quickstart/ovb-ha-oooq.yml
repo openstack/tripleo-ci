@@ -1,6 +1,6 @@
-ssl_overcloud: false
-step_introspect: false
-undercloud_generate_service_certificate: false
+ssl_overcloud: true
+undercloud_generate_service_certificate: true
+step_introspect: true
 run_tempest: false
 
 # Network settings
@@ -32,3 +32,6 @@ mtu_interface:
   - eth1
   - eth2
 overcloud_nodes_count: 4
+# TO-DO's
+undercloud_ui: true # TODO
+undercloud_validation: true # TODO
