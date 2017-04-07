@@ -97,6 +97,10 @@ $TRIPLEO_ROOT/tripleo-quickstart/quickstart.sh --bootstrap --no-clone \
         undercloud &> $OOOQ_LOGS/quickstart_collectlogs.log ||
         echo "WARNING: quickstart collect-logs failed, check quickstart_collectlogs.log for details"
 
+# Copy testrepository.subunit to root log dir in order to be consumed by
+# openstack-health
+cp $OOOQ_LOGS/undercloud/home/jenkins/tempest/testrepository.subunit.gz ${WORKSPACE}/logs || true
+
 export ARA_DATABASE="sqlite:///${OPT_WORKDIR}/ara.sqlite"
 $OPT_WORKDIR/bin/ara generate html $OOOQ_LOGS/ara || true
 popd
