@@ -839,11 +839,6 @@ parameter_defaults:
     # https://bugs.launchpad.net/tripleo/+bug/1649284
     # will be release and landed in the packages
     yum remove -y python-UcsSdk openstack-neutron-bigswitch-agent python-networking-bigswitch openstack-neutron-bigswitch-lldp python-networking-odl
-    # Ref https://review.openstack.org/#/c/392615 disable the old hiera hook
-    # FIXME - this should probably be handled via packaging?
-    rm -f /usr/libexec/os-apply-config/templates/etc/puppet/hiera.yaml
-    rm -f /usr/libexec/os-refresh-config/configure.d/40-hiera-datafiles
-    rm -f /etc/puppet/hieradata/*.yaml
 EOF"
         log "Overcloud upgrade started."
         log "Upgrade command arguments: $OVERCLOUD_UPGRADE_ARGS"
