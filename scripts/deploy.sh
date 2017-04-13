@@ -165,7 +165,7 @@ fi
 echo "INFO: Check /var/log/undercloud_install.txt for undercloud install output"
 echo "INFO: This file can be found in logs/undercloud.tar.xz in the directory containing console.log"
 start_metric "tripleo.${STABLE_RELEASE:-master}.${TOCI_JOBTYPE}.undercloud.install.seconds"
-$TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --undercloud 2>&1 | ts '%Y-%m-%d %H:%M:%S.000 |' | sudo dd of=/var/log/undercloud_install.txt || (tail -n 50 /var/log/undercloud_install.txt && false)
+$TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --undercloud 2>&1 | awk '{ print strftime("%Y-%m-%d %H:%M:%S.000"), "|", $0; fflush(); }' | sudo dd of=/var/log/undercloud_install.txt || (tail -n 50 /var/log/undercloud_install.txt && false)
 stop_metric "tripleo.${STABLE_RELEASE:-master}.${TOCI_JOBTYPE}.undercloud.install.seconds"
 
 if [ "$OVB" = 1 ]; then
@@ -235,7 +235,7 @@ if [ "$OSINFRA" = "0" ]; then
     echo "INFO: Check /var/log/image_build.txt for image build output"
     echo "INFO: This file can be found in logs/undercloud.tar.xz in the directory containing console.log"
     start_metric "tripleo.${STABLE_RELEASE:-master}.${TOCI_JOBTYPE}.overcloud.images.seconds"
-    $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --overcloud-images 2>&1 | ts '%Y-%m-%d %H:%M:%S.000 |' | sudo dd of=/var/log/image_build.txt || (tail -n 50 /var/log/image_build.txt && false)
+    $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --overcloud-images 2>&1 | awk '{ print strftime("%Y-%m-%d %H:%M:%S.000"), "|", $0; fflush(); }' | sudo dd of=/var/log/image_build.txt || (tail -n 50 /var/log/image_build.txt && false)
     stop_metric "tripleo.${STABLE_RELEASE:-master}.${TOCI_JOBTYPE}.overcloud.images.seconds"
 
     OVERCLOUD_IMAGE_MB=$(du -ms overcloud-full.qcow2 | cut -f 1)
@@ -476,5 +476,5 @@ if [ "$UNDERCLOUD_MAJOR_UPGRADE" == 1 ] ; then
     echo_vars_to_deploy_env
     # Add the delorean ci repo so that we include the package being tested
     layer_ci_repo
-    $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --undercloud-upgrade 2>&1 | ts '%Y-%m-%d %H:%M:%S.000 |' | sudo dd of=/var/log/undercloud_upgrade.txt || (tail -n 50 /var/log/undercloud_upgrade.txt && false)
+    $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --undercloud-upgrade 2>&1 | awk '{ print strftime("%Y-%m-%d %H:%M:%S.000"), "|", $0; fflush(); }' | sudo dd of=/var/log/undercloud_upgrade.txt || (tail -n 50 /var/log/undercloud_upgrade.txt && false)
 fi

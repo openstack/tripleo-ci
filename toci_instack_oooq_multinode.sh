@@ -95,7 +95,7 @@ export OOOQ_ARGS=" --working-dir ${OPT_WORKDIR} \
 
 # TODO(sshnaidm): when collect-logs role will have the same functionality,
 # replace postci function with this role (see in the end of file).
-trap "exit_val=\$?; [ \$exit_val != 0 ] && echo ERROR DURING PREVIOUS COMMAND ^^^ && echo 'See postci.txt in the logs directory for debugging details'; postci \$exit_val 2>&1 | ts '%Y-%m-%d %H:%M:%S.000 |' > $WORKSPACE/logs/postci.log 2>&1" EXIT
+trap "exit_val=\$?; [ \$exit_val != 0 ] && echo ERROR DURING PREVIOUS COMMAND ^^^ && echo 'See postci.txt in the logs directory for debugging details'; postci \$exit_val 2>&1 | awk '{ print strftime(\"%Y-%m-%d %H:%M:%S.000\"), \"|\", \$0; fflush(); }' > $WORKSPACE/logs/postci.log 2>&1" EXIT
 
 mkdir -p $WORKSPACE/logs
 

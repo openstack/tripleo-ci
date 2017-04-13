@@ -375,13 +375,6 @@ TIMEOUT_SECS=$((DEVSTACK_GATE_TIMEOUT*60))
 # run it in a separate group to avoid getting killed along with it
 set -m
 
-# install moreutils for timestamping postci.log with ts
-# This comes from epel, so we need to install it before removing that repo
-sudo yum install -y moreutils
-
-# Ensure epel-release is not installed
-sudo yum erase -y epel-release || :
-
 if [ "$DEPLOY_OVB_EXTRA_NODE" = '1' ]; then
     # This is usually done in the undercloud install, but we need it at this
     # point since we want access to the extra node

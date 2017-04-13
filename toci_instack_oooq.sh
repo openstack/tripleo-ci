@@ -54,7 +54,7 @@ export PLAYBOOK=" --playbook ovb-playbook.yml --requirements requirements.txt --
 
 # TODO(sshnaidm): when collect-logs role will have the same functionality,
 # replace postci function with this role (see in the end of file).
-trap "exit_val=\$?; [ \$exit_val != 0 ] && echo ERROR DURING PREVIOUS COMMAND ^^^ && echo 'See postci.txt in the logs directory for debugging details'; postci \$exit_val 2>&1 | ts '%Y-%m-%d %H:%M:%S.000 |' > $WORKSPACE/logs/postci.log 2>&1" EXIT
+trap "exit_val=\$?; [ \$exit_val != 0 ] && echo ERROR DURING PREVIOUS COMMAND ^^^ && echo 'See postci.txt in the logs directory for debugging details'; postci \$exit_val 2>&1 | awk '{ print strftime(\"%Y-%m-%d %H:%M:%S.000\"), \"|\", \$0; fflush(); }' > $WORKSPACE/logs/postci.log 2>&1" EXIT
 
 [[ ! -e $OPT_WORKDIR ]] && mkdir -p $OPT_WORKDIR && sudo chown -R ${USER}: $OPT_WORKDIR
 sudo mkdir -p $OOOQ_LOGS && sudo chown -R ${USER}: $OOOQ_LOGS
