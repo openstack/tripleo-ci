@@ -21,6 +21,7 @@ export PS4='+(${BASH_SOURCE}:${LINENO}): ${FUNCNAME[0]:+${FUNCNAME[0]}(): }'
 source /etc/nodepool/provider
 
 # source variables common across all the scripts.
+source /etc/ci/mirror_info.sh
 
 # set up distribution mirrors in openstack
 NODEPOOL_MIRROR_HOST=${NODEPOOL_MIRROR_HOST:-mirror.$NODEPOOL_REGION.$NODEPOOL_CLOUD.openstack.org}
@@ -84,9 +85,11 @@ export SUBNODES_SSH_KEY=
 OVERCLOUD_DEPLOY_TIMEOUT=$((DEVSTACK_GATE_TIMEOUT-90))
 TIMEOUT_SECS=$((DEVSTACK_GATE_TIMEOUT*60))
 export EXTRA_VARS="--extra-vars deploy_timeout=$OVERCLOUD_DEPLOY_TIMEOUT"
+if [ -n "$NODEPOOL_DOCKER_REGISTRY_PROXY" ]; then
+    export EXTRA_VARS="$EXTRA_VARS --extra-vars undercloud_docker_registry_mirror=$NODEPOOL_DOCKER_REGISTRY_PROXY"
+fi
 export NODES_ARGS=""
 export COLLECT_CONF="$TRIPLEO_ROOT/tripleo-ci/toci-quickstart/config/collect-logs.yml"
-
 
 # Assemble quickstart configuration based on job type keywords
 for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
