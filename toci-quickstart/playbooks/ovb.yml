@@ -2,14 +2,57 @@
 - name: Add the undercloud node to the generated inventory
   hosts: localhost
   gather_facts: yes
-  tags:
-    - undercloud-scripts
   roles:
     - tripleo-inventory
+  tags:
+    - undercloud-scripts
 
-- include: tripleo-ci-setup-playbook.yml
-# TODO(sshnaidm): to create a separate role for this in quickstart-extras
-- include: build-install-playbook.yml
+- include: prepare_slave.yml
+  tags:
+    - local
+
+- name: Set up CentOS undercloud node to run TripleO Quickstart
+  hosts: undercloud
+  gather_facts: no
+  roles:
+    - undercloud-setup
+  tasks:
+
+    - name: Add eth2 interface from eth2.conf
+      command: os-net-config -c {{ working_dir }}/eth2.conf -v
+      become: true
+      when: network_isolation|bool
+
+    - name: Check if we need to build images
+      set_fact:
+        to_build: "{{ lookup('pipe', '{{ tripleo_root }}/tripleo-ci/scripts/to_build')|default('false')|bool }}"
+
+- name: Run DLRN gate role and install repo
+  hosts: undercloud
+  vars:
+    artg_compressed_gating_repo: "${HOME}/gating_repo.tar.gz"
+    artg_repos_dir: "{{ tripleo_root}}"
+  roles:
+    - build-test-packages
+    - { role: install-built-repo, when: compressed_gating_repo is defined }
+  tags:
+    - build
+
+- name: Get images for quickstart
+  hosts: undercloud
+  gather_facts: no
+  vars:
+    ib_repo_image_inject: "{{ not to_build|bool }}"
+    ib_repo_run_live: false
+    modify_image_vc_ram: 4096
+    modify_image_vc_cpu: 4
+    modify_image_vc_verbose: true
+  roles:
+    - { role: fetch-images, when: not to_build|bool }
+    - { role: repo-setup, repo_inject_image_path: "$HOME/overcloud-full.qcow2", repo_run_live: false, when: not to_build|bool }
+    # TODO:(sshnaidm) Support update of initramfs image https://bugs.launchpad.net/tripleo/+bug/1677275
+    # - { role: repo-setup, repo_inject_image_path: "$HOME/ironic-python-agent.initramfs", repo_run_live: false }
+    - { role: install-built-repo, when: compressed_gating_repo is defined and not to_build|bool }
 
 # Deploy the undercloud
 - name:  Install undercloud
@@ -17,14 +60,17 @@
   gather_facts: no
   roles:
     - undercloud-deploy
-
-- include: post-undercloud-playbook.yml
   tags:
-    - post-undercloud
+    - undercloud-deploy
 
-- include: get_images-playbook.yml
+- name: Build images for quickstart
+  hosts: undercloud
+  gather_facts: no
+  roles:
+    - { role: build-images, when: to_build|bool }
   tags:
-    - image-build
+    - get-images
+    - images
 
 - name:  Prepare configuration files for the overcloud deployment
   hosts: undercloud
