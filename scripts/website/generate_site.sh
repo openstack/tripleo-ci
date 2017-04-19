@@ -32,6 +32,9 @@ else
   pushd tripleo-docs
   git reset --hard origin/master
   git pull
+  # NOTE(bnemec): We need to rebuild this venv each time or changes to
+  # tripleosphinx won't be picked up.
+  tox -re docs
   popd
 fi
 
