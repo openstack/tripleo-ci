@@ -20,6 +20,7 @@ resource_registry:
   OS::TripleO::Network::StorageMgmt: ../network/storage_mgmt.yaml
   OS::TripleO::Network::Ports::StorageMgmtVipPort: ../network/ports/storage_mgmt.yaml
   OS::TripleO::Controller::Ports::StorageMgmtPort: ../network/ports/storage_mgmt.yaml
+  OS::TripleO::Compute::Ports::StorageMgmtPort: ../network/ports/storage_mgmt.yaml
   OS::TripleO::CephStorage::Ports::StorageMgmtPort: ../network/ports/storage_mgmt.yaml
   # Tenant
   OS::TripleO::Network::Tenant: ../network/tenant.yaml
