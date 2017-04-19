@@ -1,6 +1,7 @@
 containerized_overcloud: true
 ssl_overcloud: false
 undercloud_generate_service_certificate: true
+undercloud_docker_registry_mirror: "{{ lookup('env','NODEPOOL_DOCKER_REGISTRY_PROXY') }}"
 step_introspect: true
 
 # Network settings
