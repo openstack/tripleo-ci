@@ -164,14 +164,19 @@ OVERCLOUD_IMAGES_DIB_YUM_REPO_CONF=${OVERCLOUD_IMAGES_DIB_YUM_REPO_CONF:-"\
     $REPO_PREFIX/delorean-deps.repo"}
 # Use Ceph/Jewel for all but mitaka
 if [[ "${STABLE_RELEASE}" = "mitaka" ]] ; then
-  OVERCLOUD_IMAGES_DIB_YUM_REPO_CONF=${OVERCLOUD_IMAGES_DIB_YUM_REPO_CONF}"\
-    $REPO_PREFIX/CentOS-Ceph-Hammer.repo"
+  CEPH_RELEASE=hammer
 else
-  OVERCLOUD_IMAGES_DIB_YUM_REPO_CONF=${OVERCLOUD_IMAGES_DIB_YUM_REPO_CONF}"\
-    $REPO_PREFIX/CentOS-Ceph-Jewel.repo"
+  CEPH_RELEASE=jewel
 fi
+CEPH_REPO_FILE=centos-ceph-$CEPH_RELEASE.repo
+if [[ -e /etc/ci/mirror_info.sh ]]; then
+    source /etc/ci/mirror_info.sh
+fi
+NODEPOOL_CENTOS_MIRROR=${NODEPOOL_CENTOS_MIRROR:-http://mirror.centos.org/centos}
+NODEPOOL_RDO_PROXY=${NODEPOOL_RDO_PROXY:-https://trunk.rdoproject.org}
+OVERCLOUD_IMAGES_DIB_YUM_REPO_CONF=${OVERCLOUD_IMAGES_DIB_YUM_REPO_CONF}"\
+  $REPO_PREFIX/$CEPH_REPO_FILE"
 OPSTOOLS_REPO_ENABLED=${OPSTOOLS_REPO_ENABLED:-"0"}
-OPSTOOLS_REPO_URL=${OPSTOOLS_REPO_URL:-"https://raw.githubusercontent.com/centos-opstools/opstools-repo/master/opstools.repo"}
 if [[ "${OPSTOOLS_REPO_ENABLED}" = 1 ]]; then
   OVERCLOUD_IMAGES_DIB_YUM_REPO_CONF=${OVERCLOUD_IMAGES_DIB_YUM_REPO_CONF}"\
     $REPO_PREFIX/centos-opstools.repo"
@@ -277,34 +282,30 @@ function repo_setup {
     if [ "$TRIPLEO_OS_DISTRO" = "centos" ]; then
         # Enable Storage/SIG Ceph repo
         if [[ "${STABLE_RELEASE}" = "mitaka" ]] ; then
-            CEPH_REPO_RPM=centos-release-ceph-hammer
-            CEPH_REPO_FILE=CentOS-Ceph-Hammer.repo
+            if rpm -q centos-release-ceph-jewel; then
+                sudo yum -y erase centos-release-ceph-jewel
+            fi
         else
             if rpm -q centos-release-ceph-hammer; then
                 sudo yum -y erase centos-release-ceph-hammer
             fi
-            CEPH_REPO_RPM=centos-release-ceph-jewel
-            CEPH_REPO_FILE=CentOS-Ceph-Jewel.repo
         fi
-
+        sudo /bin/bash -c "cat <<-EOF>$REPO_PREFIX/$CEPH_REPO_FILE
+[centos-ceph-$CEPH_RELEASE]
+name=centos-ceph-$CEPH_RELEASE
+baseurl=$NODEPOOL_CENTOS_MIRROR/7/storage/x86_64/ceph-jewel/
+gpgcheck=0
+enabled=1
+EOF"
         if [[ "${OPSTOOLS_REPO_ENABLED}" = 1 ]]; then
-            sudo curl -Lvo $REPO_PREFIX/centos-opstools.repo \
-                "${OPSTOOLS_REPO_URL}"
+            sudo /bin/bash -c "cat <<-EOF>$REPO_PREFIX/centos-opstools.repo
+[centos-opstools]
+name=centos-opstools
+baseurl=$NODEPOOL_CENTOS_MIRROR/7/opstools/x86_64/
+gpgcheck=0
+enabled=1
+EOF"
         fi
-
-        if [ $REPO_PREFIX != "/etc/yum.repos.d/" ]; then
-            # Note yum --installroot doesn't seem to work as it can't find the extras repos in the
-            # system yum.repos.d, so download the package then extraact the repo file
-            mkdir -p $REPO_PREFIX
-            yumdownloader --destdir $REPO_PREFIX $CEPH_REPO_RPM
-            pushd $REPO_PREFIX
-            rpm2cpio ${CEPH_REPO_RPM}*.rpm | cpio -ivd
-            mv etc/yum.repos.d/* .
-            popd
-        else
-            sudo yum -y install --enablerepo=extras $CEPH_REPO_RPM
-        fi
-        sudo sed -i -e 's%gpgcheck=.*%gpgcheck=0%' ${REPO_PREFIX}/${CEPH_REPO_FILE}
     fi
     # @matbu TBR debuginfo:
     log "Stable release: $STABLE_RELEASE"
@@ -312,17 +313,20 @@ function repo_setup {
         # Enable the Delorean Deps repository
         sudo curl -Lvo $REPO_PREFIX/delorean-deps.repo https://trunk.rdoproject.org/centos7/delorean-deps.repo
         sudo sed -i -e 's%priority=.*%priority=30%' $REPO_PREFIX/delorean-deps.repo
+        sudo sed -i -e "s~http://mirror.centos.org/centos~$NODEPOOL_CENTOS_MIRROR~" $REPO_PREFIX/delorean-deps.repo
         cat $REPO_PREFIX/delorean-deps.repo
 
         # Enable last known good RDO Trunk Delorean repository
         sudo curl -Lvo $REPO_PREFIX/delorean.repo $DELOREAN_REPO_URL/$DELOREAN_REPO_FILE
         sudo sed -i -e 's%priority=.*%priority=20%' $REPO_PREFIX/delorean.repo
+        sudo sed -i -e "s~https://trunk.rdoproject.org~$NODEPOOL_RDO_PROXY~" $REPO_PREFIX/delorean.repo
         cat $REPO_PREFIX/delorean.repo
 
         # Enable latest RDO Trunk Delorean repository
         sudo curl -Lvo $REPO_PREFIX/delorean-current.repo https://trunk.rdoproject.org/centos7/current/delorean.repo
         sudo sed -i -e 's%priority=.*%priority=10%' $REPO_PREFIX/delorean-current.repo
         sudo sed -i 's/\[delorean\]/\[delorean-current\]/' $REPO_PREFIX/delorean-current.repo
+        sudo sed -i -e "s~https://trunk.rdoproject.org~$NODEPOOL_RDO_PROXY~" $REPO_PREFIX/delorean-current.repo
         sudo /bin/bash -c "cat <<-EOF>>$REPO_PREFIX/delorean-current.repo
 
 includepkgs=diskimage-builder,instack,instack-undercloud,os-apply-config,os-collect-config,os-net-config,os-refresh-config,python-tripleoclient,openstack-tripleo-common,openstack-tripleo-heat-templates,openstack-tripleo-image-elements,openstack-tripleo,openstack-tripleo-puppet-elements,openstack-puppet-modules,openstack-tripleo-ui,puppet-*
@@ -332,11 +336,13 @@ EOF"
         # Enable the Delorean Deps repository
         sudo curl -Lvo $REPO_PREFIX/delorean-deps.repo https://trunk.rdoproject.org/centos7-$STABLE_RELEASE/delorean-deps.repo
         sudo sed -i -e 's%priority=.*%priority=30%' $REPO_PREFIX/delorean-deps.repo
+        sudo sed -i -e "s~http://mirror.centos.org/centos~$NODEPOOL_CENTOS_MIRROR~" $REPO_PREFIX/delorean-deps.repo
         cat $REPO_PREFIX/delorean-deps.repo
 
         # Enable delorean current for the stable version
         sudo curl -Lvo $REPO_PREFIX/delorean.repo $DELOREAN_STABLE_REPO_URL/$DELOREAN_REPO_FILE
         sudo sed -i -e 's%priority=.*%priority=20%' $REPO_PREFIX/delorean.repo
+        sudo sed -i -e "s~https://trunk.rdoproject.org~$NODEPOOL_RDO_PROXY~" $REPO_PREFIX/delorean.repo
         cat $REPO_PREFIX/delorean.repo
 
         # Create empty delorean-current for dib image building
@@ -419,7 +425,7 @@ function delorean_build {
     if [ -n "$REVIEW_RELEASE" ]; then
         log "Building for release $REVIEW_RELEASE"
         # first check if we have a stable release
-        sed -i -e "s%baseurl=.*%baseurl=https://trunk.rdoproject.org/centos7-$REVIEW_RELEASE%" projects.ini
+        sed -i -e "s%baseurl=.*%baseurl=$NODEPOOL_RDO_PROXY/centos7-$REVIEW_RELEASE%" projects.ini
         if [ "$REVIEW_RELEASE" = "mitaka" ]; then
             sed -i -e "s%distro=.*%distro=rpm-$REVIEW_RELEASE%" projects.ini
         else
@@ -430,12 +436,12 @@ function delorean_build {
     elif [ -n "$FEATURE_BRANCH" ]; then
         # next, check if we are testing for a feature branch
         log "Building for feature branch $FEATURE_BRANCH"
-        sed -i -e "s%baseurl=.*%baseurl=https://trunk.rdoproject.org/centos7%" projects.ini
+        sed -i -e "s%baseurl=.*%baseurl=$NODEPOOL_RDO_PROXY/centos7%" projects.ini
         sed -i -e "s%distro=.*%distro=rpm-$FEATURE_BRANCH%" projects.ini
         sed -i -e "s%source=.*%source=$FEATURE_BRANCH%" projects.ini
     else
         log "Building for master"
-        sed -i -e "s%baseurl=.*%baseurl=https://trunk.rdoproject.org/centos7%" projects.ini
+        sed -i -e "s%baseurl=.*%baseurl=$NODEPOOL_RDO_PROXY/centos7%" projects.ini
         sed -i -e "s%distro=.*%distro=rpm-master%" projects.ini
         sed -i -e "s%source=.*%source=master%" projects.ini
     fi
