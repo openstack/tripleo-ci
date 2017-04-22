@@ -894,7 +894,7 @@ function overcloud_delete {
     OVERCLOUD_ID=$(openstack stack list | grep "$OVERCLOUD_NAME" | awk '{print $2}')
     wait_command="openstack stack show $OVERCLOUD_ID"
     openstack stack delete --yes "$OVERCLOUD_NAME"
-    if $($TRIPLEO_ROOT/tripleo-ci/scripts/wait_for -w $OVERCLOUD_DELETE_TIMEOUT -d 10 -s "DELETE_COMPLETE" -- "$wait_command"); then
+    if $($(dirname $0)/wait_for -w $OVERCLOUD_DELETE_TIMEOUT -d 10 -s "DELETE_COMPLETE" -- "$wait_command"); then
        log "Overcloud $OVERCLOUD_ID DELETE_COMPLETE"
     else
        log "Overcloud $OVERCLOUD_ID delete failed or timed out:"
@@ -1065,7 +1065,7 @@ function cleanup_pingtest {
     overcloudrc_check
     wait_command="openstack stack show tenant-stack"
     openstack stack delete --yes tenant-stack || true
-    if $TRIPLEO_ROOT/tripleo-ci/scripts/wait_for -w 300 -d 10 -s "Stack not found" -- "$wait_command"; then
+    if $(dirname $0)/wait_for -w 300 -d 10 -s "Stack not found" -- "$wait_command"; then
         log "Overcloud pingtest - deleted the tenant-stack heat stack"
     else
         log "Overcloud pingtest - time out waiting to delete tenant heat stack, please check manually"
@@ -1141,14 +1141,14 @@ function overcloud_pingtest {
         # some key services *might* work for 'fail faster', but where things
         # can be so slow already it might just cause more pain.
         #
-        if $TRIPLEO_ROOT/tripleo-ci/scripts/wait_for -w 300 -d 10 -s "CREATE_COMPLETE" -f "CREATE_FAILED" -- $WAIT_FOR_COMMAND; then
+        if $(dirname $0)/wait_for -w 300 -d 10 -s "CREATE_COMPLETE" -f "CREATE_FAILED" -- $WAIT_FOR_COMMAND; then
             log "Overcloud pingtest, heat stack CREATE_COMPLETE";
 
             vm1_ip=`openstack stack output show tenant-stack server1_public_ip | grep value | awk '{print $4}'`
 
             log "Overcloud pingtest, trying to ping the floating IPs $vm1_ip"
 
-            if $TRIPLEO_ROOT/tripleo-ci/scripts/wait_for -w 360 -d 10 -s "bytes from $vm1_ip" -- "ping -c 1 $vm1_ip" ; then
+            if $(dirname $0)/wait_for -w 360 -d 10 -s "bytes from $vm1_ip" -- "ping -c 1 $vm1_ip" ; then
                 ping -c 1 $vm1_ip
                 log "Overcloud pingtest, SUCCESS"
             else
