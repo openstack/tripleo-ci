@@ -79,8 +79,11 @@ def get_jenkins_comment_message(review):
             if comment['reviewer']['name'] == 'Jenkins':
                 if "NOT_REGISTERED" in comment['message']:
                     continue
-                if "check-tripleo pipeline" not in comment['message'] and \
-                    "check pipeline" not in comment['message']:
+                # NOTE(bnemec): For some reason the experimental-tripleo
+                # message does not include "pipeline".
+                if ("check-tripleo pipeline" not in comment['message'] and
+                        "check pipeline" not in comment['message'] and
+                        "experimental-tripleo" not in comment['message']):
                     continue
                 jenkins_messages[comment['timestamp']] = comment['message']
     return jenkins_messages
