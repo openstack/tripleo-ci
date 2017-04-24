@@ -279,6 +279,7 @@ function postci(){
     fi
 
     sudo chown -R $USER $WORKSPACE
+    sudo find $WORKSPACE -type d -exec chmod 755 {} \;
     # Make sure zuuls log gathering can read everything in the $WORKSPACE, it also contains a
     # link to ml2_conf.ini so this also need to be made read only
     sudo find /etc/neutron/plugins/ml2/ml2_conf.ini $WORKSPACE -type f | sudo xargs chmod 644
