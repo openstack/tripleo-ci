@@ -293,7 +293,7 @@ function repo_setup {
         sudo /bin/bash -c "cat <<-EOF>$REPO_PREFIX/$CEPH_REPO_FILE
 [centos-ceph-$CEPH_RELEASE]
 name=centos-ceph-$CEPH_RELEASE
-baseurl=$NODEPOOL_CENTOS_MIRROR/7/storage/x86_64/ceph-jewel/
+baseurl=$NODEPOOL_CENTOS_MIRROR/7/storage/x86_64/ceph-$CEPH_RELEASE/
 gpgcheck=0
 enabled=1
 EOF"
