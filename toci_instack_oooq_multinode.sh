@@ -151,7 +151,7 @@ $TRIPLEO_ROOT/tripleo-quickstart/quickstart.sh --bootstrap --no-clone \
         echo "WARNING: quickstart collect-logs failed, check quickstart_collectlogs.log for details"
 
 export ARA_DATABASE="sqlite:///${OPT_WORKDIR}/ara.sqlite"
-$OPT_WORKDIR/bin/ara generate html $OOOQ_LOGS/ara || true
+$OPT_WORKDIR/bin/ara generate html $OOOQ_LOGS/ara_oooq || true
 popd
 
 echo 'Run completed.'
