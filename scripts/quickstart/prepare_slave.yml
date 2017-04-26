@@ -16,7 +16,7 @@
         fi;
         cat ~/.ssh/id_rsa.pub | sudo tee -a /root/.ssh/authorized_keys | tee -a ~/.ssh/authorized_keys;
 
-        sudo yum remove -y puppet hiera puppetlabs-release rdo-release centos-release-openstack-*;
+        sudo yum remove -y puppet hiera puppetlabs-release rdo-release centos-release-openstack-* centos-release-ceph-*;
         sudo rm -rf /etc/puppet /etc/hiera.yaml;
         sudo cp {{tripleo_root}}/tripleo-ci/test-environments/overcloud-cacert.pem /etc/pki/ca-trust/source/anchors/;
         sudo update-ca-trust extract;
