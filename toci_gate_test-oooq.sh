@@ -97,6 +97,13 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
         featureset*)
             FEATURESET_FILE="config/general_config/$JOB_TYPE_PART.yml"
             FEATURESET_CONF="$FEATURESET_CONF --config $FEATURESET_FILE"
+            # FIXME: conditionals based on particular featuresets is
+            # not what we want to do in general. This could be
+            # refactored to look into the contents of the featureset
+            # using shyaml and see if we want mixed_release.
+            if [ "$JOB_TYPE_PART" = "featureset011" -a -z "$STABLE_RELEASE" ]; then
+                export UPGRADE_RELEASE=ocata
+            fi
         ;;
         ovb)
             OVB=1
@@ -116,7 +123,7 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
             "
             EXTRA_VARS="$EXTRA_VARS --extra-vars @$TRIPLEO_ROOT/tripleo-ci/toci-quickstart/config/testenv/multinode.yml"
             UNDERCLOUD="127.0.0.2"
-            TAGS="build,undercloud-setup,undercloud-scripts,undercloud-install,undercloud-post-install,overcloud-scripts,overcloud-prep-containers,overcloud-deploy,overcloud-upgrade,overcloud-validate"
+            TAGS="build,undercloud-setup,undercloud-scripts,undercloud-install,undercloud-post-install,overcloud-scripts,overcloud-prep-config,overcloud-prep-containers,overcloud-deploy,overcloud-upgrade,overcloud-validate"
             CONTROLLER_HOSTS=$(sed -n 1,1p /etc/nodepool/sub_nodes)
         ;;
         singlenode)

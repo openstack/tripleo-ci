@@ -11,6 +11,13 @@ LOGS_DIR=$WORKSPACE/logs
 ## Signal to toci_gate_test.sh we've started by
 touch /tmp/toci.started
 
+if [ -z "${QUICKSTART_RELEASE:-}" ]; then
+    QUICKSTART_RELEASE="${STABLE_RELEASE:-master}"
+    if [ -n "${UPGRADE_RELEASE:-}" ]; then
+        QUICKSTART_RELEASE="$QUICKSTART_RELEASE-undercloud-$UPGRADE_RELEASE-overcloud"
+    fi
+fi
+
 export DEFAULT_ARGS="
     --no-clone
     --working-dir $LOCAL_WORKING_DIR
@@ -19,7 +26,7 @@ export DEFAULT_ARGS="
     --extra-vars tripleo_root=$TRIPLEO_ROOT
     --extra-vars working_dir=$WORKING_DIR
     --extra-vars validation_args='--validation-errors-nonfatal'
-    --release tripleo-ci/${STABLE_RELEASE:-master}
+    --release tripleo-ci/$QUICKSTART_RELEASE
 "
 
 # --install-deps arguments installs deps and then quits, no other arguments are
