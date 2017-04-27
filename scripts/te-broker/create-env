@@ -54,6 +54,8 @@ if [ $COMPUTE_NODECOUNT -gt 0 ]; then
 fi
 
 echo -e 'resource_registry:\n'  >> $ENVFILE
+echo '  OS::OVB::UndercloudPorts: templates/undercloud-ports-port-security.yaml' >> $ENVFILE
+echo '  OS::OVB::BMCPort: templates/bmc-port-port-security.yaml' >> $ENVFILE
 
 if [ -z "$CREATE_UNDERCLOUD" ]; then
     echo '  OS::OVB::UndercloudEnvironment: OS::Heat::None' >> $ENVFILE
@@ -64,12 +66,12 @@ function add_net_iso_overrides() {
     local outfile=$1
     if [ $NETISO == 'multi-nic' ]; then
         echo '  OS::OVB::BaremetalNetworks: templates/baremetal-networks-all.yaml' >> $outfile
-        echo '  OS::OVB::BaremetalPorts: templates/baremetal-ports-all.yaml' >> $outfile
+        echo '  OS::OVB::BaremetalPorts: templates/baremetal-ports-all-port-security.yaml' >> $outfile
     elif [ $NETISO == 'public-bond' ]; then
         echo '  OS::OVB::BaremetalNetworks: templates/baremetal-networks-all.yaml' >> $outfile
-        echo '  OS::OVB::BaremetalPorts: templates/baremetal-ports-public-bond.yaml' >> $outfile
+        echo '  OS::OVB::BaremetalPorts: templates/baremetal-ports-public-bond-port-security.yaml' >> $outfile
     else
-        echo '  OS::OVB::BaremetalPorts: templates/baremetal-ports-default.yaml' >> $outfile
+        echo '  OS::OVB::BaremetalPorts: templates/baremetal-ports-default-port-security.yaml' >> $outfile
     fi
 }
 add_net_iso_overrides $ENVFILE
