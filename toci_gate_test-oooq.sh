@@ -116,7 +116,7 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
             "
             EXTRA_VARS="$EXTRA_VARS --extra-vars @$TRIPLEO_ROOT/tripleo-ci/toci-quickstart/config/testenv/multinode.yml"
             UNDERCLOUD="127.0.0.2"
-            TAGS="build,undercloud-setup,undercloud-scripts,undercloud-install,undercloud-post-install,overcloud-scripts,overcloud-deploy,overcloud-validate"
+            TAGS="build,undercloud-setup,undercloud-scripts,undercloud-install,undercloud-post-install,overcloud-scripts,overcloud-prep-containers,overcloud-deploy,overcloud-upgrade,overcloud-validate"
             CONTROLLER_HOSTS=$(sed -n 1,1p /etc/nodepool/sub_nodes)
         ;;
         singlenode)
