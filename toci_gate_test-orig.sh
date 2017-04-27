@@ -309,6 +309,7 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
             ;;
         periodic)
             export DELOREAN_REPO_URL=https://trunk.rdoproject.org/centos7/consistent
+            export DELOREAN_STABLE_REPO_URL=https://trunk.rdoproject.org/centos7-$STABLE_RELEASE/consistent/
             CACHEUPLOAD=1
             OVERCLOUD_PINGTEST_ARGS=
             ;;
