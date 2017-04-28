@@ -815,7 +815,7 @@ function overcloud_update {
 
 function overcloud_upgrade {
     stackrc_check
-    if heat stack-show "$OVERCLOUD_NAME" ; then
+    if heat stack-show "$OVERCLOUD_NAME" 2>&1 > /dev/null ; then
         log "Create overcloud repo template file"
         /bin/bash -c "cat <<EOF>$HOME/init-repo.yaml
 
@@ -866,7 +866,7 @@ EOF"
 
 function overcloud_upgrade_converge {
     stackrc_check
-    if heat stack-show "$OVERCLOUD_NAME" ; then
+    if heat stack-show "$OVERCLOUD_NAME" 2>&1 > /dev/null; then
         log "Overcloud upgrade converge started."
         log "Upgrade command arguments: $OVERCLOUD_UPGRADE_CONVERGE_ARGS"
         log "Execute major upgrade converge."
