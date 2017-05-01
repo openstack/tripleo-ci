@@ -25,7 +25,7 @@ sudo yum -y install python-requests
 
 # Remove the anything on the infra image template that might interfere with CI
 # Note for tripleo-quickstart: this task is already managed in tripleo-ci-setup-playbook.yml
-sudo yum remove -y facter puppet hiera puppetlabs-release rdo-release centos-release-openstack-* centos-release-ceph-*
+sudo yum remove -y facter puppet hiera puppetlabs-release rdo-release centos-release-[a-z]*
 sudo rm -rf /etc/puppet /etc/hiera.yaml
 
 # Update everything
