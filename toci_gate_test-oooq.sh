@@ -110,7 +110,8 @@ export CONTROLLER_HOSTS=
 export SUBNODES_SSH_KEY=
 OVERCLOUD_DEPLOY_TIMEOUT=$((DEVSTACK_GATE_TIMEOUT-90))
 TIMEOUT_SECS=$((DEVSTACK_GATE_TIMEOUT*60))
-export EXTRA_VARS="--extra-vars deploy_timeout=$OVERCLOUD_DEPLOY_TIMEOUT"
+export EXTRA_VARS=${EXTRA_VARS:-""}
+export EXTRA_VARS="$EXTRA_VARS --extra-vars deploy_timeout=$OVERCLOUD_DEPLOY_TIMEOUT"
 export NODES_ARGS=""
 export COLLECT_CONF="$TRIPLEO_ROOT/tripleo-ci/toci-quickstart/config/collect-logs.yml"
 
