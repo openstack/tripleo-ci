@@ -16,30 +16,32 @@ fi
 
 source $TRIPLEO_ROOT/tripleo-ci/scripts/oooq_common_functions.sh
 
-# this sets
-# NODEPOOL_PROVIDER (e.g tripleo-test-cloud-rh1)
-# NODEPOOL_CLOUD (e.g.tripleo-test-cloud-rh1)
-# NODEPOOL_REGION (e.g. regionOne)
-# NODEPOOL_AZ
-source /etc/nodepool/provider
+if [ -f /etc/nodepool/provider ] ; then
+    # this sets
+    # NODEPOOL_PROVIDER (e.g tripleo-test-cloud-rh1)
+    # NODEPOOL_CLOUD (e.g.tripleo-test-cloud-rh1)
+    # NODEPOOL_REGION (e.g. regionOne)
+    # NODEPOOL_AZ
+    source /etc/nodepool/provider
 
-# source variables common across all the scripts.
-source /etc/ci/mirror_info.sh
+    # source variables common across all the scripts.
+    source /etc/ci/mirror_info.sh
 
-# set up distribution mirrors in openstack
-NODEPOOL_MIRROR_HOST=${NODEPOOL_MIRROR_HOST:-mirror.$NODEPOOL_REGION.$NODEPOOL_CLOUD.openstack.org}
-NODEPOOL_MIRROR_HOST=$(echo $NODEPOOL_MIRROR_HOST|tr '[:upper:]' '[:lower:]')
-export CENTOS_MIRROR=http://$NODEPOOL_MIRROR_HOST/centos
-export EPEL_MIRROR=http://$NODEPOOL_MIRROR_HOST/epel
+    # set up distribution mirrors in openstack
+    NODEPOOL_MIRROR_HOST=${NODEPOOL_MIRROR_HOST:-mirror.$NODEPOOL_REGION.$NODEPOOL_CLOUD.openstack.org}
+    NODEPOOL_MIRROR_HOST=$(echo $NODEPOOL_MIRROR_HOST|tr '[:upper:]' '[:lower:]')
+    export CENTOS_MIRROR=http://$NODEPOOL_MIRROR_HOST/centos
+    export EPEL_MIRROR=http://$NODEPOOL_MIRROR_HOST/epel
 
-# host setup
-if [ $NODEPOOL_CLOUD == 'tripleo-test-cloud-rh1' ]; then
-    source $(dirname $0)/scripts/rh1.env
+    # host setup
+    if [ $NODEPOOL_CLOUD == 'tripleo-test-cloud-rh1' ]; then
+        source $(dirname $0)/scripts/rh1.env
 
-    # In order to save space remove the cached git repositories, at this point in
-    # CI the ones we are interested in have been cloned to /opt/stack/new. We
-    # can also remove some distro images cached on the images.
-    sudo rm -rf /opt/git /opt/stack/cache/files/mysql.qcow2 /opt/stack/cache/files/ubuntu-12.04-x86_64.tar.gz
+        # In order to save space remove the cached git repositories, at this point in
+        # CI the ones we are interested in have been cloned to /opt/stack/new. We
+        # can also remove some distro images cached on the images.
+        sudo rm -rf /opt/git /opt/stack/cache/files/mysql.qcow2 /opt/stack/cache/files/ubuntu-12.04-x86_64.tar.gz
+    fi
 fi
 
 # create logs dir (check if collect-logs doesn't already do this)
