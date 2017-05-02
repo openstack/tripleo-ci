@@ -168,6 +168,64 @@ start_metric "tripleo.${STABLE_RELEASE:-master}.${TOCI_JOBTYPE}.undercloud.insta
 $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --undercloud 2>&1 | awk '{ print strftime("%Y-%m-%d %H:%M:%S.000"), "|", $0; fflush(); }' | sudo dd of=/var/log/undercloud_install.txt || (tail -n 50 /var/log/undercloud_install.txt && false)
 stop_metric "tripleo.${STABLE_RELEASE:-master}.${TOCI_JOBTYPE}.undercloud.install.seconds"
 
+# FreeIPA contains an LDAP server, so we're gonna use that to set up a keystone
+# domain that reads from that ldap server.
+if [ $CA_SERVER == 1 ] ; then
+    export LDAP_DOMAIN_NAME=freeipadomain
+    export LDAP_READER_INIT_PASS=$(uuidgen)
+    export LDAP_READER_PASS=$(uuidgen)
+    export DEMO_USER_INIT_PASS=$(uuidgen)
+    export DEMO_USER_PASS=$(uuidgen)
+
+    echo $CA_ADMIN_PASS | kinit admin
+    echo "$LDAP_READER_INIT_PASS" | ipa user-add keystone --cn="keystone user" \
+        --first="keystone" --last="user" --password
+    echo "$DEMO_USER_INIT_PASS" | ipa user-add demo --cn="demo user" \
+        --first="demo" --last="user" --password
+    kdestroy -A
+
+    # Reset password. Since kerberos prompts for the password to be reset on
+    # first usage.
+    echo -e "$LDAP_READER_INIT_PASS\n$LDAP_READER_PASS\n$LDAP_READER_PASS" | kinit keystone
+    kdestroy -A
+    echo -e "$DEMO_USER_INIT_PASS\n$DEMO_USER_PASS\n$DEMO_USER_PASS" | kinit demo
+    kdestroy -A
+
+    export LDAP_SUFFIX=$(echo $TRIPLEO_DOMAIN | sed -e 's/^/dc=/' -e 's/\./,dc=/g')
+
+    # Create LDAP configuration in heat environment
+    cat <<EOF >$TRIPLEO_ROOT/keystone-ldap.yaml
+parameter_defaults:
+  KeystoneLDAPDomainEnable: true
+  KeystoneLDAPBackendConfigs:
+    $LDAP_DOMAIN_NAME:
+      url: ldaps://$CA_SERVER_HOSTNAME
+      user: uid=keystone,cn=users,cn=accounts,$LDAP_SUFFIX
+      password: $LDAP_READER_PASS
+      suffix: $LDAP_SUFFIX
+      user_tree_dn: cn=users,cn=accounts,$LDAP_SUFFIX
+      user_objectclass: inetOrgPerson
+      user_id_attribute: uid
+      user_name_attribute: uid
+      user_mail_attribute: mail
+      user_allow_create: false
+      user_allow_update: false
+      user_allow_delete: false
+      group_tree_dn: cn=groups,cn=accounts,$LDAP_SUFFIX
+      group_objectclass: groupOfNames
+      group_id_attribute: cn
+      group_name_attribute: cn
+      group_member_attribute: member
+      group_desc_attribute: description
+      group_allow_create: false
+      group_allow_update: false
+      group_allow_delete: false
+      user_enabled_attribute: nsAccountLock
+      user_enabled_default: False
+      user_enabled_invert: true
+EOF
+fi
+
 if [ "$OVB" = 1 ]; then
 
     # eth1 is on the provisioning netwrok and doesn't have dhcp, so we need to set its MTU manually.
@@ -438,6 +496,53 @@ if [ "$OVERCLOUD_MAJOR_UPGRADE" == 1 ] ; then
     $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --overcloud-sanity --skip-sanitytest-create --skip-sanitytest-cleanup
     $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --overcloud-upgrade-converge
     $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --overcloud-sanity --skip-sanitytest-create
+fi
+
+if [ $CA_SERVER == 1 ] ; then
+    source ~/overcloudrc.v3
+
+    # Verify that the domain exists
+    openstack domain show $LDAP_DOMAIN_NAME
+
+    # Add admin role to admin user for freeipadomain
+    openstack role add admin --domain $LDAP_DOMAIN_NAME --user admin --user-domain Default
+
+    # Verify we can access the users in the given domain
+    openstack user list --domain $LDAP_DOMAIN_NAME
+
+    # Add demo project to domain
+    openstack project create demo --domain $LDAP_DOMAIN_NAME
+
+    # Add admin role to user for that project
+    openstack role add admin --project demo --project-domain $LDAP_DOMAIN_NAME \
+        --user demo --user-domain $LDAP_DOMAIN_NAME
+
+    # Create rc file for demo user
+    cat <<EOF >~/overcloudrc.demouser
+# Clear any old environment that may conflict.
+for key in \$( set | awk '{FS="="}  /^OS_/ {print \$1}' ); do unset \$key ; done
+export OS_USERNAME=demo
+export OS_USER_DOMAIN_NAME=$LDAP_DOMAIN_NAME
+export OS_PROJECT_DOMAIN_NAME=$LDAP_DOMAIN_NAME
+export OS_BAREMETAL_API_VERSION=1.29
+export NOVA_VERSION=1.1
+export OS_PROJECT_NAME=demo
+export OS_PASSWORD=$DEMO_USER_PASS
+export OS_NO_CACHE=True
+export COMPUTE_API_VERSION=1.1
+export no_proxy=,overcloud.$TRIPLEO_DOMAIN,overcloud.ctlplane.$TRIPLEO_DOMAIN,overcloud.$TRIPLEO_DOMAIN,overcloud.ctlplane.$TRIPLEO_DOMAIN
+export OS_CLOUDNAME=overcloud
+export OS_AUTH_URL=https://overcloud.$TRIPLEO_DOMAIN:13000/v3
+export IRONIC_API_VERSION=1.29
+export OS_IDENTITY_API_VERSION=3
+export OS_AUTH_TYPE=password
+export PYTHONWARNINGS="ignore:Certificate has no, ignore:A true SSLContext object is not available"
+EOF
+
+    # Tell tripleo.sh/pingtest to use demouserrc instead of overcloudrc. Note
+    # that we don't include the $HOME path prefix on the variable, as this is
+    # implicitly added in tripleo.sh
+    export ALT_OVERCLOUDRC=overcloudrc.demouser
 fi
 
 if [ $RUN_PING_TEST == 1 ] ; then
