@@ -127,15 +127,16 @@ if [[ $TOCI_JOBTYPE =~ scenario ]]; then
     fi
 
     export MULTINODE_ENV_NAME=${MULTINODE_ENV_NAME%-upgrades}
-    if [[ "$TOCI_JOBTYPE" =~ upgrades ]]; then
-        MULTINODE_ENV_PATH=$TRIPLEO_ROOT/$UPGRADE_RELEASE/usr/share/openstack-tripleo-heat-templates/ci/environments/$MULTINODE_ENV_NAME.yaml
-    else
-        MULTINODE_ENV_PATH=/usr/share/openstack-tripleo-heat-templates/ci/environments/$MULTINODE_ENV_NAME.yaml
-    fi
 else
     export MULTINODE_ENV_NAME='multinode'
+fi
+
+if [[ $TOCI_JOBTYPE =~ upgrades ]]; then
+    MULTINODE_ENV_PATH=$TRIPLEO_ROOT/$UPGRADE_RELEASE/usr/share/openstack-tripleo-heat-templates/ci/environments/$MULTINODE_ENV_NAME.yaml
+else
     MULTINODE_ENV_PATH=/usr/share/openstack-tripleo-heat-templates/ci/environments/$MULTINODE_ENV_NAME.yaml
 fi
+
 if [[ "$TOCI_JOBTYPE" =~ "periodic" && "$TOCI_JOBTYPE" =~ "-ha" ]]; then
     TEST_OVERCLOUD_DELETE=1
 elif [[ "$TOCI_JOBTYPE" =~ "periodic" && "$TOCI_JOBTYPE" =~ "-nonha" ]]; then
