@@ -9,6 +9,9 @@ tempest_config: true
 test_regex: '.*'
 test_ping: false
 
+# Image build
+to_build: false
+
 # Network settings
 enable_pacemaker: false
 network_isolation: false
