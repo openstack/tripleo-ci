@@ -13,7 +13,7 @@ undercloud_hostname: undercloud
 run_tempest: false
 tempest_config: false
 test_regex: '.*smoke'
-
+skip_pingtest_cleanup: true
 # Overcloud deploy
 overcloud_templates_path: /usr/share/openstack-tripleo-heat-templates
 

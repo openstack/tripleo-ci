@@ -65,7 +65,7 @@ $QUICKSTART_PREPARE_CMD
 # Use $REMAINING_TIME of infra to calculate maximum time for remaning part of job
 # Leave 15 minutes for quickstart logs collection
 REMAINING_TIME=${REMAINING_TIME:-180}
-TIME_FOR_DEPLOY=$(( REMAINING_TIME - ($(date +%s) - START_JOB_TIME)/60 - 15 ))
+TIME_FOR_DEPLOY=$(( REMAINING_TIME - ($(date +%s) - START_JOB_TIME)/60 - 10 ))
 /usr/bin/timeout --preserve-status ${TIME_FOR_DEPLOY}m  $QUICKSTART_INSTALL_CMD \
     2>&1 | tee $LOGS_DIR/quickstart_install.log && exit_value=0 || exit_value=$?
 
