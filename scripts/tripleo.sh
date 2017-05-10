@@ -206,6 +206,7 @@ TEMPEST_ADD_CONFIG=${TEMPEST_ADD_CONFIG:-}
 TEMPEST_REGEX=${TEMPEST_REGEX:-"^(?=(.*smoke))(?!(tempest.api.orchestration.stacks|tempest.scenario.test_volume_boot_pattern|tempest.api.telemetry))"}
 TEMPEST_PINNED="72ccabcb685df7c3e28cd25639b05d8a031901c8"
 SSH_OPTIONS=${SSH_OPTIONS:-'-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=Verbose -o PasswordAuthentication=no -o ConnectionAttempts=32'}
+ALT_OVERCLOUDRC=${ALT_OVERCLOUDRC:-""}
 export SCRIPTS_DIR=$(dirname ${BASH_SOURCE[0]:-$0})
 
 if [[ "${STABLE_RELEASE}" = "mitaka" ]] ; then
@@ -268,7 +269,11 @@ function stackrc_check {
 }
 
 function overcloudrc_check {
-    source_rc "overcloudrc"
+    if [ -z "$ALT_OVERCLOUDRC" ]; then
+        source_rc "overcloudrc"
+    else
+        source_rc "$ALT_OVERCLOUDRC"
+    fi
 }
 
 function repo_setup {
