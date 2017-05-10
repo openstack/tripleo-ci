@@ -64,6 +64,11 @@
   tags:
     - undercloud-deploy
 
+- name: Validate the undercloud
+  hosts: undercloud
+  roles:
+    - validate-undercloud
+
 - name: Build images for quickstart
   hosts: undercloud
   gather_facts: no
@@ -167,3 +172,12 @@
   gather_facts: no
   roles:
     - { role: validate-tempest, when: run_tempest|bool }
+
+- name: Delete the overcloud
+  hosts: undercloud
+  tags:
+    - overcloud-delete
+  gather_facts: no
+  roles:
+    - { role: overcloud-delete, when: step_delete_overcloud|bool }
+
