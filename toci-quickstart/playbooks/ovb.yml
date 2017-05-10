@@ -32,6 +32,7 @@
   vars:
     artg_compressed_gating_repo: "${HOME}/gating_repo.tar.gz"
     artg_repos_dir: "{{ tripleo_root}}"
+    ib_create_web_repo: "{{ to_build|bool }}"
   roles:
     - build-test-packages
     - { role: install-built-repo, when: compressed_gating_repo is defined }
