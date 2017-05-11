@@ -10,8 +10,7 @@ import datetime
 # Do not include the -nv suffix in the job name here.  The code will handle
 # reading both the voting and non-voting forms of the job if they exist.
 DEFAULT_JOB_NAMES = [
-    'gate-tripleo-ci-centos-7-ovb-nonha',
-    'gate-tripleo-ci-centos-7-ovb-ha',
+    'gate-tripleo-ci-centos-7-ovb-ha-oooq',
     'gate-tripleo-ci-centos-7-ovb-updates',
     'gate-tripleo-ci-centos-7-nonha-multinode-oooq',
     'gate-tripleo-ci-centos-7-scenario001-multinode-oooq',
