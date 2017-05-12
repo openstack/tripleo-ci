@@ -39,17 +39,24 @@ if [ $NODEPOOL_CLOUD == 'tripleo-test-cloud-rh1' ]; then
     sudo rm -rf /opt/git /opt/stack/cache/files/mysql.qcow2 /opt/stack/cache/files/ubuntu-12.04-x86_64.tar.gz
 fi
 
+# Remove epel, either by epel-release, or unpackaged repo files
+rpm -q epel-release && sudo yum -y erase epel-release
+sudo rm -f /etc/yum.repos.d/epel*
+
 # Clean any cached yum metadata, it maybe stale
-sudo rm /etc/yum.repos.d/epel*
 sudo yum clean all
 
 # Install additional packages
-sudo yum install -y \
-    qemu-img # used by multinode to create empty image
+rpm -q qemu-img || \
+    sudo yum install -y \
+        qemu-img # used by multinode to create empty image
 
 # NOTE(pabelanger): Current hack to make centos-7 dib work.
 # TODO(pabelanger): Why is python-requests installed from pip?
 sudo rm -rf /usr/lib/python2.7/site-packages/requests
+sudo rpm -e --nodeps python-requests || :
+sudo rpm -e --nodeps python2-requests || :
+sudo yum -y install python-requests
 
 # JOB_NAME used to be available from jenkins, we need to create it ourselves until
 # we remove our reliance on it.
@@ -142,6 +149,8 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
     esac
 done
 
+command -v pip || \
+    (curl "https://bootstrap.pypa.io/get-pip.py" -o "get-pip.py"; sudo python get-pip.py)
 sudo pip install shyaml
 if [[ ! -z $NODES_FILE ]]; then
     pushd $TRIPLEO_ROOT/tripleo-quickstart
@@ -173,7 +182,7 @@ else
     # Clear out any puppet modules on the node placed their by infra configuration
     sudo rm -rf /etc/puppet/modules/*
 
-    # Copy nodepool keys to jenkins user
+    # Copy nodepool keys to current user
     sudo cp /etc/nodepool/id_rsa* $HOME/.ssh/
     sudo chown $USER:$USER $HOME/.ssh/id_rsa*
     chmod 0600 $HOME/.ssh/id_rsa*
@@ -197,7 +206,7 @@ else
     undercloud_haproxy_admin_ip=$undercloud_net_range"3"
     export no_proxy=$undercloud_services_ip,$undercloud_haproxy_public_ip,$undercloud_haproxy_admin_ip,$MY_IP,$MY_IP_eth1
 
-    qemu-img create -f qcow2 /home/jenkins/overcloud-full.qcow2 1G
+    qemu-img create -f qcow2 $HOME/overcloud-full.qcow2 1G
 
     # multinode bootstrap script
     export BOOTSTRAP_SUBNODES_MINIMAL=0

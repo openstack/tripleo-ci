@@ -28,6 +28,9 @@ sudo yum clean all
 # NOTE(pabelanger): Current hack to make centos-7 dib work.
 # TODO(pabelanger): Why is python-requests installed from pip?
 sudo rm -rf /usr/lib/python2.7/site-packages/requests
+sudo rpm -e --nodeps python-requests || :
+sudo rpm -e --nodeps python2-requests || :
+sudo yum -y install python-requests
 
 # Remove metrics from a previous run
 rm -f /tmp/metric-start-times /tmp/metrics-data
@@ -144,13 +147,14 @@ elif [[ "$TOCI_JOBTYPE" =~ "periodic" && "$TOCI_JOBTYPE" =~ "-nonha" ]]; then
 fi
 
 # Test version of ssh package for bug https://bugzilla.redhat.com/show_bug.cgi?id=1415218
+rpm -q wget || sudo yum install -y wget
 http_proxy= wget -P /tmp -T 60 --tries=3 --progress=dot:mega http://66.187.229.139/test/openssh-6.6.1p1-33.el7.x86_64.rpm
 http_proxy= wget -P /tmp -T 60 --tries=3 --progress=dot:mega http://66.187.229.139/test/openssh-server-6.6.1p1-33.el7.x86_64.rpm
 sudo rpm -ivh --force /tmp/openssh-6.6.1p1-33.el7.x86_64.rpm /tmp/openssh-server-6.6.1p1-33.el7.x86_64.rpm
 
 # start dstat early
 # TODO add it to the gate image building
-sudo yum install -y dstat nmap-ncat #nc is for metrics
+rpm -q dstat nmap-ncat || sudo yum install -y dstat nmap-ncat #nc is for metrics
 mkdir -p "$WORKSPACE/logs"
 dstat -tcmndrylpg --top-cpu-adv --top-io-adv --nocolor | tee --append $WORKSPACE/logs/dstat.log > /dev/null &
 disown

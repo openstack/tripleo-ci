@@ -31,6 +31,10 @@ export PATH=/sbin:/usr/sbin:$PATH
 
 export UNDERCLOUD_VM_NAME=instack
 
+export REMAINING_TIME=${REMAINING_TIME:-180}
+export NODEPOOL_DOCKER_REGISTRY_PROXY=${NODEPOOL_DOCKER_REGISTRY_PROXY:-""}
+export CENTOS_MIRROR=${CENTOS_MIRROR:-""}
+
 # post ci chores to run at the end of ci
 SSH_OPTIONS='-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=Verbose -o PasswordAuthentication=no -o ConnectionAttempts=32'
 

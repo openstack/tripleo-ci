@@ -1,5 +1,5 @@
 # set the working_dir on the undercloud
-working_dir: /home/jenkins
+working_dir: {{ lookup('env','HOME') }}
 
 # Define a single controller node and a single compute node.
 overcloud_nodes:
@@ -43,7 +43,7 @@ tempest_workers: 4
 #overcloud_templates_refspec:
 
 # Config for custom tripleo-common
-#overcloud_tripleo_common_path: /home/jenkins/tripleo-common
+#overcloud_tripleo_common_path: {{ lookup('env','HOME') }}/tripleo-common
 #overcloud_tripleo_common_repo: https://git.openstack.org/openstack/tripleo-common
 # use overcloud_tripleo_common _branch when not testing with an unmerged review
 #overcloud_tripleo_common_branch: master
