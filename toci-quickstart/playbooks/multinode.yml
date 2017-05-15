@@ -14,7 +14,11 @@
 - name: Create configs on subnodes
   hosts: overcloud
   roles:
-    - repo-setup
+    # When doing mixed upgrade, we need different repos on undercloud
+    # vs. overcloud. Rely on $UPGRADE_RELEASE together with
+    # bootstrap-overcloud-full-minimal.sh to setup overcloud.
+    - role: repo-setup
+      when: not mixed_upgrade|default(false)|bool
   tasks:
     - name: Create a clean hosts file on subnodes
       copy:
@@ -52,8 +56,11 @@
   vars:
     ib_repo_host: undercloud
   roles:
-    - repo-setup
-    - { role: install-built-repo, when: "hostvars['undercloud']['compressed_gating_repo'] is defined" }
+    - role: repo-setup
+      when: not mixed_upgrade|default(false)|bool
+    - role: install-built-repo
+      when: hostvars['undercloud']['compressed_gating_repo'] is defined and not mixed_upgrade|default(false)|bool
+
   tags:
     - build
 
@@ -66,6 +73,16 @@
   hosts: undercloud
   roles:
     - validate-undercloud
+
+- name: Run overcloud prep config
+  hosts: undercloud
+  gather_facts: no
+  roles:
+    - role: overcloud-prep-config
+      # only run when we know we have to, save time otherwise
+      when: mixed_upgrade|default(false)|bool
+  tags:
+    - overcloud-prep-config
 
 - name: Run overcloud prep roles
   hosts: undercloud
