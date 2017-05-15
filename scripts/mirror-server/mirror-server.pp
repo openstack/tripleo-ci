@@ -52,6 +52,11 @@ cron {"refresh-server":
     minute  => "*/30"
 }
 
+cron {"parse-periodic-multinode":
+    command => "timeout 10m /opt/stack/tripleo-ci/scripts/mirror-server/multinode_status.py &>/var/log/last_multinode_jobs_status.log",
+    minute  => "30"
+}
+
 cron {"promote-master":
     command => "timeout 10m /opt/stack/tripleo-ci/scripts/mirror-server/promote.sh master current-tripleo tripleo-dlrn-promote periodic-tripleo-ci-centos-7-ovb-ha-oooq periodic-tripleo-ci-centos-7-ovb-updates &>/var/log/last_master_promotion.log",
     minute  => "40"
