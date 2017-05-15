@@ -13,6 +13,8 @@ fi
 set -eux
 export PS4='+(${BASH_SOURCE}:${LINENO}): ${FUNCNAME[0]:+${FUNCNAME[0]}(): }'
 
+source $TRIPLEO_ROOT/tripleo-ci/scripts/oooq_common_functions.sh
+
 # this sets
 # NODEPOOL_PROVIDER (e.g tripleo-test-cloud-rh1)
 # NODEPOOL_CLOUD (e.g.tripleo-test-cloud-rh1)
@@ -97,13 +99,6 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
         featureset*)
             FEATURESET_FILE="config/general_config/$JOB_TYPE_PART.yml"
             FEATURESET_CONF="$FEATURESET_CONF --config $FEATURESET_FILE"
-            # FIXME: conditionals based on particular featuresets is
-            # not what we want to do in general. This could be
-            # refactored to look into the contents of the featureset
-            # using shyaml and see if we want mixed_release.
-            if [ "$JOB_TYPE_PART" = "featureset011" -a -z "$STABLE_RELEASE" ]; then
-                export UPGRADE_RELEASE=ocata
-            fi
         ;;
         ovb)
             OVB=1
@@ -150,6 +145,12 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
 done
 
 sudo pip install shyaml
+
+# Set UPGRADE_RELEASE if applicable
+if is_featureset_mixed_upgrade "$TRIPLEO_ROOT/tripleo-quickstart/$FEATURESET_FILE"; then
+    export UPGRADE_RELEASE=$(previous_release_from "$STABLE_RELEASE")
+fi
+
 if [[ ! -z $NODES_FILE ]]; then
     pushd $TRIPLEO_ROOT/tripleo-quickstart
     NODECOUNT=$(shyaml get-value node_count < $NODES_FILE)
