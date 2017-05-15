@@ -356,12 +356,25 @@ if [ "$MULTINODE" = "1" ]; then
         rpm2cpio openstack-tripleo-heat-templates-*.rpm | cpio -ivd
         popd
         # Backup current deploy args:
-        CURRENT_OVERCLOUD_DEPLOY_ARGS=$OVERCLOUD_DEPLOY_ARGS
-        # Rewrite all template paths to be rooted from the stable release
-        # location
+        UPGRADE_OVERCLOUD_DEPLOY_ARGS=$OVERCLOUD_DEPLOY_ARGS
+        # Rewrite all template paths to ensure paths match the
+        # --templates location
         TEMPLATE_PATH="/usr/share/openstack-tripleo-heat-templates"
-        STABLE_TEMPLATE_PATH="$TRIPLEO_ROOT/$UPGRADE_RELEASE/$TEMPLATE_PATH"
-        OVERCLOUD_DEPLOY_ARGS=${OVERCLOUD_DEPLOY_ARGS/$TEMPLATE_PATH/$STABLE_TEMPLATE_PATH}
+        ENV_PATH="-e $TEMPLATE_PATH"
+        STABLE_TEMPLATE_PATH="$TRIPLEO_ROOT/$UPGRADE_RELEASE/usr/share/openstack-tripleo-heat-templates"
+        STABLE_ENV_PATH="-e $STABLE_TEMPLATE_PATH"
+        echo "SHDEBUG OVERCLOUD_DEPLOY_ARGS BEFORE=$OVERCLOUD_DEPLOY_ARGS"
+        UPGRADE_OVERCLOUD_DEPLOY_ARGS=${UPGRADE_OVERCLOUD_DEPLOY_ARGS//$STABLE_ENV_PATH/$ENV_PATH}
+        OVERCLOUD_DEPLOY_ARGS=${OVERCLOUD_DEPLOY_ARGS//$ENV_PATH/$STABLE_ENV_PATH}
+        echo "UPGRADE_OVERCLOUD_DEPLOY_ARGS=$UPGRADE_OVERCLOUD_DEPLOY_ARGS"
+        echo "OVERCLOUD_DEPLOY_ARGS=$OVERCLOUD_DEPLOY_ARGS"
+        # On upgrade, we want to maintain the same scenario, as we're testing
+        # the upgrade of those services initially deployed.  However we also
+        # need the path to be a subdirectory of the --templates location
+        # because some environment files reference j2 rendered files.
+        # So we copy MULTINODE_ENV_PATH under TEMPLATE_PATH
+        sudo cp $MULTINODE_ENV_PATH /usr/share/openstack-tripleo-heat-templates/ci/environments/
+        echo "Copied $MULTINODE_ENV_PATH to /usr/share/openstack-tripleo-heat-templates/ci/environments/"
         # Set deploy args for stable deployment:
         export OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS --templates $STABLE_TEMPLATE_PATH -e $STABLE_TEMPLATE_PATH/environments/deployed-server-environment.yaml -e $STABLE_TEMPLATE_PATH/environments/services/sahara.yaml"
         if [ ! -z $UPGRADE_ENV ]; then
@@ -476,7 +489,7 @@ if [ "$OVERCLOUD_MAJOR_UPGRADE" == 1 ] ; then
     fi
     # update-from-deployed-server-$UPGRADE_RELEASE.yaml environment when upgrading from
     # $UPGRADE_RELEASE.
-    export OVERCLOUD_DEPLOY_ARGS="$CURRENT_OVERCLOUD_DEPLOY_ARGS -e /usr/share/openstack-tripleo-heat-templates/environments/deployed-server-environment.yaml -e /usr/share/openstack-tripleo-heat-templates/environments/services/sahara.yaml"
+    export OVERCLOUD_DEPLOY_ARGS="$UPGRADE_OVERCLOUD_DEPLOY_ARGS -e /usr/share/openstack-tripleo-heat-templates/environments/deployed-server-environment.yaml -e /usr/share/openstack-tripleo-heat-templates/environments/services/sahara.yaml"
     if [ "$UPGRADE_RELEASE" == "newton" ]; then
         export OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS -e /usr/share/openstack-tripleo-heat-templates/environments/updates/update-from-deployed-server-$UPGRADE_RELEASE.yaml"
     fi
