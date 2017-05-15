@@ -162,9 +162,5 @@ sudo ip link add ci-dummy type dummy
 REMAINING_TIME=${REMAINING_TIME:-180}
 TIME_FOR_DEPLOY=$(( REMAINING_TIME - ($(date +%s) - START_JOB_TIME)/60 - 10 ))
 /usr/bin/timeout --preserve-status ${TIME_FOR_DEPLOY}m $TRIPLEO_ROOT/tripleo-ci/scripts/deploy.sh
-if [[ $CACHEUPLOAD == 1 && can_promote ]] ; then
-    UPLOAD_FOLDER=builds${STABLE_RELEASE:+-$STABLE_RELEASE}
-    curl http://$MIRRORSERVER/cgi-bin/upload.cgi -F "repohash=$TRUNKREPOUSED" -F "folder=$UPLOAD_FOLDER" -F "$JOB_NAME=SUCCESS"
-fi
 exit 0
 echo 'Run completed.'
