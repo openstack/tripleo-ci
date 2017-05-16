@@ -109,6 +109,8 @@ export PREDICTABLE_PLACEMENT=0
 export OPSTOOLS_REPO_ENABLED=0
 export POSTCI=1
 export BOOTSTRAP_SUBNODES_MINIMAL=1
+export DO_BOOTSTRAP_SUBNODES=${DO_BOOTSTRAP_SUBNODES:-1}
+
 
 if [[ $TOCI_JOBTYPE =~ upgrades ]]; then
     # We deploy a master Undercloud and an Overcloud with the

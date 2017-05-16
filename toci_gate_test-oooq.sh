@@ -216,6 +216,7 @@ else
     qemu-img create -f qcow2 $HOME/overcloud-full.qcow2 1G
 
     # multinode bootstrap script
+    export DO_BOOTSTRAP_SUBNODES=${DO_BOOTSTRAP_SUBNODES:-1}
     export BOOTSTRAP_SUBNODES_MINIMAL=0
     if [[ -z $STABLE_RELEASE || "$STABLE_RELEASE" = "ocata"  ]]; then
         BOOTSTRAP_SUBNODES_MINIMAL=1
@@ -223,10 +224,12 @@ else
     source $TRIPLEO_ROOT/tripleo-ci/scripts/common_functions.sh
     echo_vars_to_deploy_env_oooq
     subnodes_scp_deploy_env
-    $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh \
-        --bootstrap-subnodes \
-        2>&1 | sudo dd of=/var/log/bootstrap-subnodes.log \
-        || (tail -n 50 /var/log/bootstrap-subnodes.log && false)
+    if [ "$DO_BOOTSTRAP_SUBNODES" = "1" ]; then
+        $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh \
+            --bootstrap-subnodes \
+            2>&1 | sudo dd of=/var/log/bootstrap-subnodes.log \
+            || (tail -n 50 /var/log/bootstrap-subnodes.log && false)
+    fi
 
     # create logs dir (check if collect-logs doesn't already do this)
     mkdir -p $WORKSPACE/logs

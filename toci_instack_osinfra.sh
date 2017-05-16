@@ -130,7 +130,9 @@ if [ -s /etc/nodepool/sub_nodes ]; then
 
     $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --multinode-setup
     echo "INFO: Check /var/log/boostrap-subnodes.log for boostrap subnodes output"
-    $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --bootstrap-subnodes 2>&1 | sudo dd of=/var/log/bootstrap-subnodes.log || (tail -n 50 /var/log/bootstrap-subnodes.log && false)
+    if [ "$DO_BOOTSTRAP_SUBNODES" = "1" ]; then
+        $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --bootstrap-subnodes 2>&1 | sudo dd of=/var/log/bootstrap-subnodes.log || (tail -n 50 /var/log/bootstrap-subnodes.log && false)
+    fi
 
     # This needs to be done after the --multinode-setup otherwise /etc/hosts will
     # get overwritten
