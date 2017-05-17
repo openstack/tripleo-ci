@@ -73,6 +73,8 @@ fi
 export CACHEUPLOAD=0
 # Stores OVB undercloud instance id
 export UCINSTANCEID="null"
+# Define environment variables file
+export ENV_VARS=""
 # Define file with set of features to test
 export FEATURESET_FILE=""
 export FEATURESET_CONF=""
@@ -112,7 +114,7 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
             ENVIRONMENT="ovb"
             UCINSTANCEID=$(http_proxy= curl http://169.254.169.254/openstack/2015-10-15/meta_data.json | python -c 'import json, sys; print json.load(sys.stdin)["uuid"]') 
             PLAYBOOK="ovb.yml"
-            EXTRA_VARS="$EXTRA_VARS --extra-vars @$TRIPLEO_ROOT/tripleo-ci/toci-quickstart/config/testenv/ovb.yml"
+            ENV_VARS="$ENV_VARS --extra-vars @$TRIPLEO_ROOT/tripleo-ci/toci-quickstart/config/testenv/ovb.yml"
             UNDERCLOUD="undercloud"
         ;;
         multinode)
@@ -123,7 +125,7 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
                 --extra-vars @config/general_config/featureset-multinode-common.yml
                 $FEATURESET_CONF
             "
-            EXTRA_VARS="$EXTRA_VARS --extra-vars @$TRIPLEO_ROOT/tripleo-ci/toci-quickstart/config/testenv/multinode.yml"
+            ENV_VARS="$ENV_VARS --extra-vars @$TRIPLEO_ROOT/tripleo-ci/toci-quickstart/config/testenv/multinode.yml"
             UNDERCLOUD="127.0.0.2"
             TAGS="build,undercloud-setup,undercloud-scripts,undercloud-install,undercloud-post-install,overcloud-scripts,overcloud-prep-config,overcloud-prep-containers,overcloud-deploy,overcloud-upgrade,overcloud-validate"
             CONTROLLER_HOSTS=$(sed -n 1,1p /etc/nodepool/sub_nodes)
@@ -136,7 +138,7 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
                 --extra-vars @config/general_config/featureset-multinode-common.yml
                 $FEATURESET_CONF
             "
-            EXTRA_VARS="$EXTRA_VARS --extra-vars @$TRIPLEO_ROOT/tripleo-ci/toci-quickstart/config/testenv/multinode.yml"
+            ENV_VARS="$ENV_VARS --extra-vars @$TRIPLEO_ROOT/tripleo-ci/toci-quickstart/config/testenv/multinode.yml"
             TAGS="build,undercloud-setup,undercloud-scripts,undercloud-install,undercloud-validate"
         ;;
         periodic)

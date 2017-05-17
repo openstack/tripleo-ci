@@ -42,6 +42,7 @@ QUICKSTART_INSTALL_CMD="
     --tags $TAGS
     $DEFAULT_ARGS
     $NODES_ARGS
+    $ENV_VARS
     $FEATURESET_CONF
     $EXTRA_VARS
     --playbook $PLAYBOOK
@@ -51,11 +52,12 @@ QUICKSTART_INSTALL_CMD="
 QUICKSTART_COLLECTLOGS_CMD="
     ./quickstart.sh
     $DEFAULT_ARGS
-    $EXTRA_VARS
     --extra-vars @$COLLECT_CONF
     --tags all
     $NODES_ARGS
+    $ENV_VARS
     $FEATURESET_CONF
+    $EXTRA_VARS
     --playbook collect-logs.yml
     --extra-vars artcl_collect_dir=$LOGS_DIR
     $UNDERCLOUD
