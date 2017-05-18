@@ -120,6 +120,12 @@
       debug: var=overcloud_deploy_result
       failed_when: overcloud_deploy_result == "failed"
 
+- name: Set up repos on subnodes for upgrading
+  hosts: overcloud
+  roles:
+    - role: repo-setup
+      when: mixed_upgrade|default(false)|bool
+
 - name:  Upgrade Tripleo
   hosts: undercloud
   tags:
