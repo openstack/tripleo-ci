@@ -296,6 +296,10 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
 
             if [ "$STABLE_RELEASE" = "newton" ]; then
                 BOOTSTRAP_SUBNODES_MINIMAL=0
+            elif [[ $TOCI_JOBTYPE =~ 'multinode-upgrades' && "$STABLE_RELEASE" = "ocata" ]] ; then
+                # When doing a multinode upgrade test, an ocata test starts by installing
+                # newton, so we need to do the newton compatible bootstrap
+                BOOTSTRAP_SUBNODES_MINIMAL=0
             else
                 BOOTSTRAP_SUBNODES_MINIMAL=1
                 OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS -e /usr/share/openstack-tripleo-heat-templates/environments/deployed-server-bootstrap-environment-centos.yaml "
