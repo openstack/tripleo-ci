@@ -152,6 +152,7 @@ $TRIPLEO_ROOT/tripleo-quickstart/quickstart.sh --bootstrap --no-clone \
 
 export ARA_DATABASE="sqlite:///${OPT_WORKDIR}/ara.sqlite"
 $OPT_WORKDIR/bin/ara generate html $OOOQ_LOGS/ara_oooq || true
+gzip --best --recursive $OOOQ_LOGS/ara_oooq || true
 popd
 
 echo 'Run completed.'

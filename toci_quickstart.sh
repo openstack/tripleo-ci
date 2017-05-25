@@ -98,6 +98,7 @@ fi
 
 export ARA_DATABASE="sqlite:///$LOCAL_WORKING_DIR/ara.sqlite"
 $LOCAL_WORKING_DIR/bin/ara generate html $LOGS_DIR/ara_oooq || true
+gzip --best --recursive $LOGS_DIR/ara_oooq || true
 popd
 
 echo 'Quickstart completed.'
