@@ -7,7 +7,7 @@ vcsrepo {"/opt/stack/tripleo-ci":
 }
 
 cron {"refresh-server":
-    command => "timeout 20m puppet apply /opt/stack/tripleo-ci/scripts/te-broker/te-broker.pp",
+    command => "timeout 20m puppet apply /opt/stack/tripleo-ci/scripts/proxy-server/proxy-server.pp",
     minute  => "*/30"
 }
 
