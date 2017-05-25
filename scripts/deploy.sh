@@ -368,13 +368,6 @@ if [ "$MULTINODE" = "1" ]; then
         OVERCLOUD_DEPLOY_ARGS=${OVERCLOUD_DEPLOY_ARGS//$ENV_PATH/$STABLE_ENV_PATH}
         echo "UPGRADE_OVERCLOUD_DEPLOY_ARGS=$UPGRADE_OVERCLOUD_DEPLOY_ARGS"
         echo "OVERCLOUD_DEPLOY_ARGS=$OVERCLOUD_DEPLOY_ARGS"
-        # On upgrade, we want to maintain the same scenario, as we're testing
-        # the upgrade of those services initially deployed.  However we also
-        # need the path to be a subdirectory of the --templates location
-        # because some environment files reference j2 rendered files.
-        # So we copy MULTINODE_ENV_PATH under TEMPLATE_PATH
-        sudo cp $MULTINODE_ENV_PATH /usr/share/openstack-tripleo-heat-templates/ci/environments/
-        echo "Copied $MULTINODE_ENV_PATH to /usr/share/openstack-tripleo-heat-templates/ci/environments/"
         # Set deploy args for stable deployment:
         export OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS --templates $STABLE_TEMPLATE_PATH -e $STABLE_TEMPLATE_PATH/environments/deployed-server-environment.yaml -e $STABLE_TEMPLATE_PATH/environments/services/sahara.yaml"
         if [ ! -z $UPGRADE_ENV ]; then
