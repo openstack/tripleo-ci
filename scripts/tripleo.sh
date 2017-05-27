@@ -212,6 +212,11 @@ export SCRIPTS_DIR=$(dirname ${BASH_SOURCE[0]:-$0})
 if [[ "${STABLE_RELEASE}" = "mitaka" ]] ; then
     export OS_IMAGE_API_VERSION=1
 fi
+# Make sure we use Puppet to deploy packages on scenario upgrades jobs from newton to ocata.
+if [[ "${STABLE_RELEASE}" = "ocata" ]] ; then
+    OVERCLOUD_UPGRADE_ARGS="$OVERCLOUD_UPGRADE_ARGS -e $TRIPLEO_ROOT/tripleo-ci/test-environments/enable_package_install.yaml "
+    OVERCLOUD_UPGRADE_CONVERGE_ARGS="$OVERCLOUD_UPGRADE_CONVERGE_ARGS -e $TRIPLEO_ROOT/tripleo-ci/test-environments/enable_package_install.yaml "
+fi
 # Temporary workarounds
 
 while true ; do
