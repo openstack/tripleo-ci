@@ -16,12 +16,12 @@ sudo yum erase -y epel-release || :
 
 # Copied from toci_gate_test.sh...need to apply this fix on subnodes as well
 # TODO(pabelanger): Why is python-requests installed from pip?
-sudo rm -rf /usr/lib/python2.7/site-packages/requests
 # Reinstall python-requests if it was already installed, otherwise it will be
 # installed later when other packages are installed.
-sudo rpm -e --nodeps python-requests || :
-sudo rpm -e --nodeps python2-requests || :
-sudo yum -y install python-requests
+sudo rm -rf /usr/lib/python2.7/site-packages/requests /usr/lib/python2.7/site-packages/urllib3
+sudo rpm -e --nodeps python-requests python-urllib3 || :
+sudo rpm -e --nodeps python2-requests python2-urllib3 || :
+sudo yum -y install python-requests python-urllib3
 
 # Remove the anything on the infra image template that might interfere with CI
 # Note for tripleo-quickstart: this task is already managed in tripleo-ci-setup-playbook.yml

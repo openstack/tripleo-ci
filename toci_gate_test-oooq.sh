@@ -55,10 +55,10 @@ rpm -q qemu-img || \
 
 # NOTE(pabelanger): Current hack to make centos-7 dib work.
 # TODO(pabelanger): Why is python-requests installed from pip?
-sudo rm -rf /usr/lib/python2.7/site-packages/requests
-sudo rpm -e --nodeps python-requests || :
-sudo rpm -e --nodeps python2-requests || :
-sudo yum -y install python-requests
+sudo rm -rf /usr/lib/python2.7/site-packages/requests /usr/lib/python2.7/site-packages/urllib3
+sudo rpm -e --nodeps python-requests python-urllib3 || :
+sudo rpm -e --nodeps python2-requests python2-urllib3 || :
+sudo yum -y install python-requests python-urllib3
 
 # JOB_NAME used to be available from jenkins, we need to create it ourselves until
 # we remove our reliance on it.

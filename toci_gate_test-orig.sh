@@ -27,11 +27,10 @@ sudo yum clean all
 
 # NOTE(pabelanger): Current hack to make centos-7 dib work.
 # TODO(pabelanger): Why is python-requests installed from pip?
-sudo rm -rf /usr/lib/python2.7/site-packages/requests
-sudo rpm -e --nodeps python-requests || :
-sudo rpm -e --nodeps python2-requests || :
-sudo yum -y install python-requests
-
+sudo rm -rf /usr/lib/python2.7/site-packages/requests /usr/lib/python2.7/site-packages/urllib3
+sudo rpm -e --nodeps python-requests python-urllib3 || :
+sudo rpm -e --nodeps python2-requests python2-urllib3 || :
+sudo yum -y install python-requests python-urllib3
 # Remove metrics from a previous run
 rm -f /tmp/metric-start-times /tmp/metrics-data
 

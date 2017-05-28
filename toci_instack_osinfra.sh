@@ -44,11 +44,10 @@ dummy_ci_repo
 $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --repo-setup
 
 # Install some useful/necessary packages
-sudo yum -y install wget python-simplejson yum-plugin-priorities
-# Need to reinstall requests since it's rm'd in toci_gate_test.sh
-sudo rpm -e --nodeps python-requests || :
-sudo rpm -e --nodeps python2-requests || :
-sudo yum -y install python-requests
+sudo rm -rf /usr/lib/python2.7/site-packages/requests /usr/lib/python2.7/site-packages/urllib3
+sudo rpm -e --nodeps python-requests python-urllib3 || :
+sudo rpm -e --nodeps python2-requests python2-urllib3 || :
+sudo yum -y install python-requests python-urllib3
 # Open up port for delorean yum repo server
 sudo iptables -I INPUT -p tcp --dport 8766 -j ACCEPT
 
