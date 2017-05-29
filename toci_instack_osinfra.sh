@@ -44,9 +44,13 @@ dummy_ci_repo
 $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --repo-setup
 
 # Install some useful/necessary packages
-sudo rm -rf /usr/lib/python2.7/site-packages/requests /usr/lib/python2.7/site-packages/urllib3
-sudo rpm -e --nodeps python-requests python-urllib3 || :
-sudo rpm -e --nodeps python2-requests python2-urllib3 || :
+# TODO(amoralej): remove after https://review.openstack.org/#/c/468872/ is merged
+sudo pip uninstall certifi -y || true
+sudo pip uninstall urllib3 -y || true
+sudo pip uninstall requests -y || true
+sudo rpm -e --nodeps python2-certifi || :
+sudo rpm -e --nodeps python2-urllib3 || :
+sudo rpm -e --nodeps python2-requests || :
 sudo yum -y install python-requests python-urllib3
 # Open up port for delorean yum repo server
 sudo iptables -I INPUT -p tcp --dport 8766 -j ACCEPT

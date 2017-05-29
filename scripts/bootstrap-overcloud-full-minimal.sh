@@ -16,9 +16,13 @@ sudo yum erase -y epel-release || :
 
 # Copied from toci_gate_test.sh...need to apply this fix on subnodes as well
 # TODO(pabelanger): Why is python-requests installed from pip?
-sudo rm -rf /usr/lib/python2.7/site-packages/requests /usr/lib/python2.7/site-packages/urllib3
-sudo rpm -e --nodeps python-requests python-urllib3 || :
-sudo rpm -e --nodeps python2-requests python2-urllib3 || :
+# TODO(amoralej): remove after https://review.openstack.org/#/c/468872/ is merged
+sudo pip uninstall certifi -y || true
+sudo pip uninstall urllib3 -y || true
+sudo pip uninstall requests -y || true
+sudo rpm -e --nodeps python2-certifi || :
+sudo rpm -e --nodeps python2-urllib3 || :
+sudo rpm -e --nodeps python2-requests || :
 sudo yum -y install python-requests python-urllib3
 
 # Clear out any puppet modules on the node placed their by infra configuration
