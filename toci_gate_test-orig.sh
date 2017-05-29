@@ -185,6 +185,11 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
                     --ceph-storage-scale 1
                     -e /usr/share/openstack-tripleo-heat-templates/environments/storage-environment.yaml
                 "
+                # Disabling Telemetry after Newton, since we have scenario001 already covering it.
+                # https://bugs.launchpad.net/tripleo/+bug/1693174
+                if [ "$STABLE_RELEASE" != "newton" ]; then
+                    OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS -e /usr/share/openstack-tripleo-heat-templates/environments/disable-telemetry.yaml"
+                fi
                 OVERCLOUD_UPDATE_ARGS="-e /usr/share/openstack-tripleo-heat-templates/overcloud-resource-registry-puppet.yaml $OVERCLOUD_DEPLOY_ARGS"
                 NETISO_V6=1
                 PACEMAKER=1
