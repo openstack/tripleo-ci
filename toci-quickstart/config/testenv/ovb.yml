@@ -27,8 +27,7 @@ images_working_dir: "{{ working_dir }}"
 build_image_isolated: false
 build_undercloud: false
 images_destroy_working_dir: false
-modify_image_extract_list:
-  - /tmp/builder.log
+libguestfs_mode: false
 
 # Without this wildcard, the deployment will fail with "no valid host found"
 # since nova will try to find defined flavors in the capabilities of the node

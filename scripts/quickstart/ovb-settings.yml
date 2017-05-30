@@ -33,8 +33,7 @@ images_working_dir: "{{ working_dir }}"
 build_image_isolated: false
 build_undercloud: false
 images_destroy_working_dir: false
-modify_image_extract_list:
-  - /tmp/builder.log
+libguestfs_mode: false
 
 # Network settings
 step_adjust_mtu: true
