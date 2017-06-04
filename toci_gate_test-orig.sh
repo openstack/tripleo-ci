@@ -239,6 +239,9 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
             # --ntp-server is here to make the deploy command happy, the ci env
             # is on virt so the clocks should be in sync without it.
             OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS --control-scale 3 --ntp-server 0.centos.pool.ntp.org -e /usr/share/openstack-tripleo-heat-templates/environments/puppet-pacemaker.yaml -e $TRIPLEO_ROOT/tripleo-ci/test-environments/network-templates/network-isolation-absolute.yaml -e $TRIPLEO_ROOT/tripleo-ci/test-environments/network-templates/network-environment.yaml -e $TRIPLEO_ROOT/tripleo-ci/test-environments/net-iso.yaml"
+            if [ "$STABLE_RELEASE" != "newton" ]; then
+                    OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS -e /usr/share/openstack-tripleo-heat-templates/environments/disable-telemetry.yaml"
+            fi
             NETISO_V4=1
             PACEMAKER=1
             PREDICTABLE_PLACEMENT=1
@@ -252,6 +255,9 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
                 CA_ENVIRONMENT_FILE=inject-trust-anchor-hiera.yaml
             fi
             OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS -e $TRIPLEO_ROOT/tripleo-ci/test-environments/enable-tls.yaml -e $ENDPOINT_LIST_LOCATION/tls-endpoints-public-ip.yaml -e $TRIPLEO_ROOT/tripleo-ci/test-environments/$CA_ENVIRONMENT_FILE --ceph-storage-scale 1 -e /usr/share/openstack-tripleo-heat-templates/environments/storage-environment.yaml"
+            if [ "$STABLE_RELEASE" != "newton" ]; then
+                    OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS -e /usr/share/openstack-tripleo-heat-templates/environments/disable-telemetry.yaml"
+            fi
             INTROSPECT=1
             NODECOUNT=3
             UNDERCLOUD_SSL=1
