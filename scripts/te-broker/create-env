@@ -46,6 +46,8 @@ if [ -n "$CREATE_UNDERCLOUD" ]; then
     sed -i -e "s/undercloud_flavor:.*/undercloud_flavor: m1.small/" $ENVFILE
     BUILD_NODES_JSON_EXTRA_ARGS="--add_undercloud"
 fi
+echo 'parameter_defaults:' >> $ENVFILE
+echo '  bmc_use_cache: True' >> $ENVFILE
 
 echo -e 'resource_registry:\n'  >> $ENVFILE
 
