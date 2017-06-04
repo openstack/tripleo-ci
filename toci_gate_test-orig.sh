@@ -189,6 +189,7 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
                     -e $TRIPLEO_ROOT/tripleo-ci/test-environments/$CA_ENVIRONMENT_FILE
                     --ceph-storage-scale 1
                     -e /usr/share/openstack-tripleo-heat-templates/environments/storage-environment.yaml
+                    -e $TRIPLEO_ROOT/tripleo-ci/test-environments/ceph-min-osds.yaml
                 "
                 # Disabling Telemetry after Newton, since we have scenario001 already covering it.
                 # https://bugs.launchpad.net/tripleo/+bug/1693174
