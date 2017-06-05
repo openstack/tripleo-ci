@@ -26,6 +26,8 @@ DEFAULT_JOB_NAMES = [
     'gate-tripleo-ci-centos-7-multinode-upgrades',
     'gate-tripleo-ci-centos-7-undercloud-upgrades',
     'gate-tripleo-ci-centos-7-undercloud-containers',
+    'gate-tripleo-ci-centos-7-containers-multinode',
+    'gate-tripleo-ci-centos-7-containers-multinode-upgrades',
     'gate-tripleo-ci-centos-7-ovb-containers-oooq',
     'gate-tripleo-ci-centos-7-ovb-fakeha-caserver',
 ]
