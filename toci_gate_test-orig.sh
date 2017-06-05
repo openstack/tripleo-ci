@@ -255,7 +255,7 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
                 ENDPOINT_LIST_LOCATION=/usr/share/openstack-tripleo-heat-templates/environments
                 CA_ENVIRONMENT_FILE=inject-trust-anchor-hiera.yaml
             fi
-            OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS -e $TRIPLEO_ROOT/tripleo-ci/test-environments/enable-tls.yaml -e $ENDPOINT_LIST_LOCATION/tls-endpoints-public-ip.yaml -e $TRIPLEO_ROOT/tripleo-ci/test-environments/$CA_ENVIRONMENT_FILE --ceph-storage-scale 1 -e /usr/share/openstack-tripleo-heat-templates/environments/storage-environment.yaml"
+            OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS -e $TRIPLEO_ROOT/tripleo-ci/test-environments/enable-tls.yaml -e $ENDPOINT_LIST_LOCATION/tls-endpoints-public-ip.yaml -e $TRIPLEO_ROOT/tripleo-ci/test-environments/$CA_ENVIRONMENT_FILE --ceph-storage-scale 1 -e /usr/share/openstack-tripleo-heat-templates/environments/storage-environment.yaml -e $TRIPLEO_ROOT/tripleo-ci/test-environments/ceph-min-osds.yaml"
             if [ "$STABLE_RELEASE" != "newton" ]; then
                     OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS -e /usr/share/openstack-tripleo-heat-templates/environments/disable-telemetry.yaml"
             fi
