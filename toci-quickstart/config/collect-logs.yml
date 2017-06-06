@@ -21,6 +21,7 @@ artcl_collect_list:
   - /home/{{ undercloud_user }}/deploy-overcloudrc
   - /home/{{ undercloud_user }}/network-environment.yaml
   - /home/{{ undercloud_user }}/skip_file
+  - /home/{{ undercloud_user }}/*.subunit
   - /home/{{ undercloud_user }}/tempest/*.xml
   - /home/{{ undercloud_user }}/tempest/*.html
   - /home/{{ undercloud_user }}/tempest/*.log

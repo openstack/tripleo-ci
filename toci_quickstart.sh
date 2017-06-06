@@ -90,6 +90,12 @@ $QUICKSTART_COLLECTLOGS_CMD \
 # Temporary workaround to make postci log visible as it was before
 cp $LOGS_DIR/undercloud/var/log/postci.txt.gz $LOGS_DIR/ || true
 
+if [[ -e $LOGS_DIR/undercloud/home/$USER/tempest/testrepository.subunit.gz ]]; then
+    cp $LOGS_DIR/undercloud/home/$USER/tempest/testrepository.subunit.gz ${LOGS_DIR}/testrepository.subunit.gz
+elif [[ -e $LOGS_DIR/undercloud/home/$USER/pingtest.subunit.gz ]]; then
+    cp $LOGS_DIR/undercloud/home/$USER/pingtest.subunit.gz ${LOGS_DIR}/testrepository.subunit.gz
+fi
+
 export ARA_DATABASE="sqlite:///$LOCAL_WORKING_DIR/ara.sqlite"
 $LOCAL_WORKING_DIR/bin/ara generate html $LOGS_DIR/ara_oooq || true
 popd

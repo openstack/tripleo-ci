@@ -15,3 +15,4 @@ hostname_correction: true # workaround restriction on toci images
 undercloud_local_interface: "br-ex" # related to osinfra network configuration
 flavor_args: ""
 undercloud_conf_extras: "net_config_override = /opt/stack/new/tripleo-ci/undercloud-configs/net-config-multinode.json.template"
+generate_pingtest_subunit: true
