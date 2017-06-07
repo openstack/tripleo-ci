@@ -90,7 +90,7 @@
   hosts: undercloud
   gather_facts: no
   roles:
-    - { role: overcloud-prep-containers, when: containerized_overcloud|default(false) }
+    - { role: overcloud-prep-containers, when: containerized_overcloud|default(false)|bool }
 
 # Prepare the overcloud images for deployment
 - name:  Prepare the overcloud images for deployment
