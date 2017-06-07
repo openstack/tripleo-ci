@@ -34,6 +34,10 @@ test_ping: true
 run_tempest: false
 tempest_workers: 4
 
+# Workaround for limited disk space on undercloud
+# https://bugs.launchpad.net/tripleo/+bug/1694709
+delete_docker_cache: true
+
 # Config for custom tripleo-heat-templates
 #overcloud_templates_path: /usr/share/openstack-tripleo-heat-templates
 #overcloud_templates_repo: https://git.openstack.org/openstack/tripleo-heat-templates
