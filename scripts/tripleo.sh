@@ -544,6 +544,13 @@ function undercloud {
 
     openstack undercloud install
 
+    # Masquerade traffic to external networks from controllers on baremetal undercloud
+    # In ovb deployments, baremental nodes use undercloud as default route to reach DNS etc...
+    if [ $OVB -eq 1 ]; then
+        sudo iptables -A BOOTSTACK_MASQ -s 10.0.0.0/24 ! -d 10.0.0.0/24 -j MASQUERADE -t nat
+        sudo iptables-save | sudo tee /etc/sysconfig/iptables
+    fi
+
     log "Undercloud install - DONE."
 
 }
