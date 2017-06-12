@@ -241,6 +241,25 @@ function postci(){
         done
         # Wait for the commands we started in the background to complete
         wait
+        # This spams the postci output with largely uninteresting trace output
+        set +x
+        echo -n 'Recording Heat deployment times...'
+        # We can't record all of the Heat deployment times because a number of
+        # them include IDs that change every run, which makes them pretty
+        # useless as Graphite metrics.  However, there are some important ones
+        # we do want to record over time, so explicitly capture those.
+        captured_deploy_times=/tmp/captured-deploy-times.log
+        # Make sure there is a trailing space after all the names so they don't
+        # match resources that have ids appended.
+        egrep 'overcloud |AllNodesDeploySteps |ControllerDeployment_Step. |ComputeDeployment_Step. |CephStorageDeploymentStep. |Controller |CephStorage |Compute |ServiceChain |NetworkDeployment |UpdateDeployment ' $WORKSPACE/logs/undercloud/var/log/heat-deploy-times.log > $captured_deploy_times
+        while read line; do
+            # $line should look like "ResourceName 123.0", so concatenating all
+            # of this together we should end up with a call that looks like:
+            # record_metric tripleo.master.ha.overcloud.resources.ResourceName 123.0
+            record_metric tripleo.${STABLE_RELEASE:-master}.${TOCI_JOBTYPE}.overcloud.resources.${line}
+        done <$captured_deploy_times
+        echo 'Finished'
+        set -x
         stop_metric "tripleo.${STABLE_RELEASE:-master}.${TOCI_JOBTYPE}.postci.seconds"
         # post metrics
         if [ $exit_val -eq 0 ]; then
