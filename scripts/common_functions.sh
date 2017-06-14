@@ -458,3 +458,13 @@ function can_promote {
 function stop_dstat {
 	ps axjf | grep bin/dstat | grep -v grep | awk '{print $2;}' | sudo xargs -t -n 1 -r kill
 }
+
+function item_in_array () {
+    local item
+    for item in "${@:2}"; do
+        if [[ "$item" == "$1" ]]; then
+            return 0
+        fi
+    done
+    return 1
+}

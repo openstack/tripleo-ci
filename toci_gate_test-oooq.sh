@@ -1,7 +1,11 @@
 #!/usr/bin/env bash
 
 source $(dirname $0)/scripts/common_vars.bash
+source $(dirname $0)/scripts/common_functions.sh
+
+set -eux
 export START_JOB_TIME=$(date +%s)
+export PS4='+(${BASH_SOURCE}:${LINENO}): ${FUNCNAME[0]:+${FUNCNAME[0]}(): }'
 
 # Maintain compatibility with the old jobtypes
 if [[ ! $TOCI_JOBTYPE =~ "featureset" ]]; then
@@ -9,9 +13,6 @@ if [[ ! $TOCI_JOBTYPE =~ "featureset" ]]; then
     echo "TO USE THE NEW DEPLOYMENT METHOD WITH QUICKSTART, SETUP A FEATURESET FILE AND ADD featuresetXXX TO THE JOB TYPE"
     exec $TRIPLEO_ROOT/tripleo-ci/toci_gate_test-orig.sh
 fi
-
-set -eux
-export PS4='+(${BASH_SOURCE}:${LINENO}): ${FUNCNAME[0]:+${FUNCNAME[0]}(): }'
 
 source $TRIPLEO_ROOT/tripleo-ci/scripts/oooq_common_functions.sh
 
@@ -44,7 +45,6 @@ fi
 # Remove epel, either by epel-release, or unpackaged repo files
 rpm -q epel-release && sudo yum -y erase epel-release
 sudo rm -f /etc/yum.repos.d/epel*
-
 # Clean any cached yum metadata, it maybe stale
 sudo yum clean all
 
@@ -106,6 +106,7 @@ fi
 export NODES_ARGS=""
 export COLLECT_CONF="$TRIPLEO_ROOT/tripleo-ci/toci-quickstart/config/collect-logs.yml"
 
+
 # Assemble quickstart configuration based on job type keywords
 for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
     case $JOB_TYPE_PART in
@@ -146,7 +147,7 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
             TAGS="build,undercloud-setup,undercloud-scripts,undercloud-install,undercloud-validate"
         ;;
         periodic)
-            ALLOW_PROMOTE=1
+            # Do nothing, we just recognize the job type part
         ;;
         gate)
         ;;
@@ -228,7 +229,6 @@ else
     if [[ -z $STABLE_RELEASE || "$STABLE_RELEASE" = "ocata"  ]]; then
         BOOTSTRAP_SUBNODES_MINIMAL=1
     fi
-    source $TRIPLEO_ROOT/tripleo-ci/scripts/common_functions.sh
     echo_vars_to_deploy_env_oooq
     subnodes_scp_deploy_env
     if [ "$DO_BOOTSTRAP_SUBNODES" = "1" ]; then
@@ -243,6 +243,29 @@ else
 
     # finally, run quickstart
     ./toci_quickstart.sh
+fi
+
+export http_proxy=
+# TODO(gcerami) expand this list
+JOBS_ALLOW_PROMOTE=(periodic-ovb-3ctlr_1comp-featureset002)
+# TODO(gcerami) move the remaining condition in can_promote function ?
+if item_in_array $TOCI_JOBTYPE ${JOBS_ALLOW_PROMOTE[@]} && can_promote; then
+    UPLOAD_FOLDER=builds${STABLE_RELEASE:+-$STABLE_RELEASE}
+    TRUNKREPOUSED=$(grep -Eom 1 "[0-9a-z]{2}/[0-9a-z]{2}/[0-9a-z]{40}_[0-9a-z]+" /etc/yum.repos.d/delorean.repo)
+    # only allow the first item on the list to upload an image
+    if [[ $TOCI_JOBTYPE == ${JOBS_ALLOW_PROMOTE[0]} ]]; then
+        # There's no easy way to extract the information on where the images are built, so this value
+        # must be manually set as the same value as images_working_dir in toci-quickstart/config/testenv/ovb.yml
+        pushd ~
+        # FIXME: at the moment we don't allow oooq jobs to upload images.
+        echo curl http://$MIRRORIP/cgi-bin/upload.cgi  -F "repohash=$TRUNKREPOUSED" -F "folder=$UPLOAD_FOLDER" -F "upload=@ironic-python-agent.tar;filename=ipa_images.tar"
+        echo curl http://$MIRRORIP/cgi-bin/upload.cgi  -F "repohash=$TRUNKREPOUSED" -F "folder=$UPLOAD_FOLDER" -F "upload=@overcloud-full.tar;filename=overcloud-full.tar"
+        echo curl http://$MIRRORIP/cgi-bin/upload.cgi  -F "repohash=$TRUNKREPOUSED" -F "folder=$UPLOAD_FOLDER" -F "upload=@ironic-python-agent.tar.md5;filename=ipa_images.tar.md5"
+        echo curl http://$MIRRORIP/cgi-bin/upload.cgi  -F "repohash=$TRUNKREPOUSED" -F "folder=$UPLOAD_FOLDER" -F "upload=@overcloud-full.tar.md5;filename=overcloud-full.tar.md5"
+        popd
+    fi
+    # if everything is ok, mark job as success
+    curl http://$MIRRORIP/cgi-bin/upload.cgi  -F "repohash=$TRUNKREPOUSED" -F "folder=$UPLOAD_FOLDER" -F "$JOB_NAME=SUCCESS"
 fi
 
 echo "Run completed"
