@@ -50,8 +50,6 @@ except:
 ')
 export ELEMENTS_PATH="${COMMON_ELEMENTS_PATH}:/usr/share/instack-undercloud:/usr/share/tripleo-image-elements:/usr/share/tripleo-puppet-elements"
 
-sudo yum -y install openstack-tripleo-common
-
 if [[ "${STABLE_RELEASE}" = "mitaka" ]] ; then
 ELEMENTS=$(\
 tripleo-build-images \
