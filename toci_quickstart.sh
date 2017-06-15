@@ -89,6 +89,12 @@ elif [[ -e $LOGS_DIR/undercloud/home/$USER/pingtest.subunit.gz ]]; then
     cp $LOGS_DIR/undercloud/home/$USER/pingtest.subunit.gz ${LOGS_DIR}/testrepository.subunit.gz
 fi
 
+# Copy tempest and .testrepository directory to /opt/stack/new/tempest and
+# unzip
+sudo mkdir -p /opt/stack/new
+sudo cp -Rf $LOGS_DIR/undercloud/home/jenkins/tempest /opt/stack/new || true
+sudo gzip -d -r /opt/stack/new/tempest/.testrepository || true
+
 export ARA_DATABASE="sqlite:///$LOCAL_WORKING_DIR/ara.sqlite"
 $LOCAL_WORKING_DIR/bin/ara generate html $LOGS_DIR/ara_oooq || true
 gzip --best --recursive $LOGS_DIR/ara_oooq || true
