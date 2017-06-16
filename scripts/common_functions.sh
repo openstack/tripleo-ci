@@ -439,6 +439,11 @@ function subnodes_scp_deploy_env {
 function can_promote {
     # If we got this far and its a periodic job, declare success and upload build artifacts
     # but only if we are testing no changes or a single change only in tripleo_ci
+    if [[ -z $ZUUL_CHANGES ]]; then
+        # Periodic jobs can always promote
+        return 0
+    fi
+
     CHANGES=( ${ZUUL_CHANGES//^/ } )
     NUM_CHANGES=${#CHANGES[@]}
 
