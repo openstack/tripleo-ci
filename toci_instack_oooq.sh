@@ -82,8 +82,6 @@ TIME_FOR_DEPLOY=$(( REMAINING_TIME - ($(date +%s) - START_JOB_TIME)/60 - 15 ))
         $OOOQ_DEFAULT_ARGS $EXTRA_ARGS undercloud 2>&1 \
         | tee $OOOQ_LOGS/quickstart_install.log && exit_value=0 || exit_value=$?
 
-tar -czf $OOOQ_LOGS/quickstart.tar.gz $OPT_WORKDIR
-
 # TODO(sshnaidm): fix this either in role or quickstart.sh
 # it will not duplicate logs from undercloud and 127.0.0.2
 sed -i 's/hosts: all:!localhost/hosts: all:!localhost:!127.0.0.2/' $OPT_WORKDIR/playbooks/collect-logs.yml || true
