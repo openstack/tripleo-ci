@@ -17,7 +17,10 @@ if [ -z "${QUICKSTART_RELEASE:-}" ]; then
         QUICKSTART_RELEASE="$QUICKSTART_RELEASE-undercloud-$UPGRADE_RELEASE-overcloud"
     fi
 fi
-
+# Use consistent repositories for promotion
+if [[ $CACHEUPLOAD == 1 && $QUICKSTART_RELEASE == 'master' ]]; then
+    QUICKSTART_RELEASE='consistent-master'
+fi
 export DEFAULT_ARGS="
     --no-clone
     --working-dir $LOCAL_WORKING_DIR

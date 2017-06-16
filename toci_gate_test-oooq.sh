@@ -147,7 +147,7 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
             TAGS="build,undercloud-setup,undercloud-scripts,undercloud-install,undercloud-validate"
         ;;
         periodic)
-            # Do nothing, we just recognize the job type part
+            CACHEUPLOAD=1
         ;;
         gate)
         ;;
