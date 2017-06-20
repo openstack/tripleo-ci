@@ -257,11 +257,10 @@ if item_in_array $TOCI_JOBTYPE ${JOBS_ALLOW_PROMOTE[@]} && can_promote; then
         # There's no easy way to extract the information on where the images are built, so this value
         # must be manually set as the same value as images_working_dir in toci-quickstart/config/testenv/ovb.yml
         pushd ~
-        # FIXME: at the moment we don't allow oooq jobs to upload images.
-        echo curl http://$MIRRORIP/cgi-bin/upload.cgi  -F "repohash=$TRUNKREPOUSED" -F "folder=$UPLOAD_FOLDER" -F "upload=@ironic-python-agent.tar;filename=ipa_images.tar"
-        echo curl http://$MIRRORIP/cgi-bin/upload.cgi  -F "repohash=$TRUNKREPOUSED" -F "folder=$UPLOAD_FOLDER" -F "upload=@overcloud-full.tar;filename=overcloud-full.tar"
-        echo curl http://$MIRRORIP/cgi-bin/upload.cgi  -F "repohash=$TRUNKREPOUSED" -F "folder=$UPLOAD_FOLDER" -F "upload=@ironic-python-agent.tar.md5;filename=ipa_images.tar.md5"
-        echo curl http://$MIRRORIP/cgi-bin/upload.cgi  -F "repohash=$TRUNKREPOUSED" -F "folder=$UPLOAD_FOLDER" -F "upload=@overcloud-full.tar.md5;filename=overcloud-full.tar.md5"
+        curl http://$MIRRORIP/cgi-bin/upload.cgi  -F "repohash=$TRUNKREPOUSED" -F "folder=$UPLOAD_FOLDER" -F "upload=@ironic-python-agent.tar;filename=ipa_images.tar"
+        curl http://$MIRRORIP/cgi-bin/upload.cgi  -F "repohash=$TRUNKREPOUSED" -F "folder=$UPLOAD_FOLDER" -F "upload=@overcloud-full.tar;filename=overcloud-full.tar"
+        curl http://$MIRRORIP/cgi-bin/upload.cgi  -F "repohash=$TRUNKREPOUSED" -F "folder=$UPLOAD_FOLDER" -F "upload=@ironic-python-agent.tar.md5;filename=ipa_images.tar.md5"
+        curl http://$MIRRORIP/cgi-bin/upload.cgi  -F "repohash=$TRUNKREPOUSED" -F "folder=$UPLOAD_FOLDER" -F "upload=@overcloud-full.tar.md5;filename=overcloud-full.tar.md5"
         popd
     fi
     # if everything is ok, mark job as success
