@@ -364,7 +364,14 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
             # In ci our overcloud nodes don't have access to an external network
             # --ntp-server is here to make the deploy command happy, the ci env
             # is on virt so the clocks should be in sync without it.
-            OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS --control-scale 1 --ntp-server 0.centos.pool.ntp.org -e /usr/share/openstack-tripleo-heat-templates/environments/puppet-pacemaker.yaml -e $TRIPLEO_ROOT/tripleo-ci/test-environments/network-templates/network-isolation-absolute.yaml -e $TRIPLEO_ROOT/tripleo-ci/test-environments/network-templates/network-environment.yaml -e $TRIPLEO_ROOT/tripleo-ci/test-environments/net-iso.yaml"
+            OVERCLOUD_DEPLOY_ARGS="
+                $OVERCLOUD_DEPLOY_ARGS --control-scale 1
+                --ntp-server 0.centos.pool.ntp.org
+                -e /usr/share/openstack-tripleo-heat-templates/environments/puppet-pacemaker.yaml
+                -e $TRIPLEO_ROOT/tripleo-ci/test-environments/network-templates/network-isolation-absolute.yaml
+                -e $TRIPLEO_ROOT/tripleo-ci/test-environments/network-templates/network-environment.yaml
+                -e $TRIPLEO_ROOT/tripleo-ci/test-environments/net-iso.yaml
+                -e /usr/share/openstack-tripleo-heat-templates/environments/disable-telemetry.yaml"
             NETISO_V4=1
             PACEMAKER=1
             ;;
