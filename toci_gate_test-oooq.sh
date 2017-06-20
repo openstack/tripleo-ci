@@ -100,9 +100,6 @@ export SUBNODES_SSH_KEY=
 OVERCLOUD_DEPLOY_TIMEOUT=$((DEVSTACK_GATE_TIMEOUT-90))
 TIMEOUT_SECS=$((DEVSTACK_GATE_TIMEOUT*60))
 export EXTRA_VARS="--extra-vars deploy_timeout=$OVERCLOUD_DEPLOY_TIMEOUT"
-if [ -n "$NODEPOOL_DOCKER_REGISTRY_PROXY" ]; then
-    export EXTRA_VARS="$EXTRA_VARS --extra-vars undercloud_docker_registry_mirror=$NODEPOOL_DOCKER_REGISTRY_PROXY"
-fi
 export NODES_ARGS=""
 export COLLECT_CONF="$TRIPLEO_ROOT/tripleo-ci/toci-quickstart/config/collect-logs.yml"
 
