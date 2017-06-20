@@ -63,6 +63,11 @@ sudo rm -f /etc/yum.repos.d/epel*
 # Clean any cached yum metadata, it maybe stale
 sudo yum clean all
 
+# NOTE(trown): In openstack-infra we have pip already, but this will ensure we
+# have it available in other environments.
+command -v pip || \
+    (curl "https://bootstrap.pypa.io/get-pip.py" -o "get-pip.py"; sudo python get-pip.py)
+
 # NOTE(pabelanger): Current hack to make centos-7 dib work.
 # TODO(pabelanger): Why is python-requests installed from pip?
 # TODO(amoralej): remove after https://review.openstack.org/#/c/468872/ is merged
@@ -73,6 +78,8 @@ sudo rpm -e --nodeps python2-certifi || :
 sudo rpm -e --nodeps python2-urllib3 || :
 sudo rpm -e --nodeps python2-requests || :
 sudo yum -y install python-requests python-urllib3
+sudo pip install shyaml
+
 
 # JOB_NAME used to be available from jenkins, we need to create it ourselves until
 # we remove our reliance on it.
@@ -162,12 +169,20 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
                 --extra-vars @config/general_config/featureset-multinode-common.yml
                 $FEATURESET_CONF
             "
-            ENV_VARS="$ENV_VARS --environment $TRIPLEO_ROOT/tripleo-ci/toci-quickstart/config/testenv/multinode.yml"
-            TAGS="build,undercloud-setup,undercloud-scripts,undercloud-install,undercloud-validate"
+            if [[ $NODEPOOL_PROVIDER == "rdo-cloud-tripleo" ]]; then
+                ENV_VARS="$ENV_VARS --environment $TRIPLEO_ROOT/tripleo-ci/toci-quickstart/config/testenv/multinode-rdocloud.yml"
+            else
+                ENV_VARS="$ENV_VARS --environment $TRIPLEO_ROOT/tripleo-ci/toci-quickstart/config/testenv/multinode.yml"
+            fi
+            TAGS="build,undercloud-setup,undercloud-scripts,undercloud-install,undercloud-validate,images"
         ;;
         periodic)
             PERIODIC=1
-            QUICKSTART_RELEASE="consistent-${QUICKSTART_RELEASE}"
+            if [[ -z $DELOREAN_LINK ]]; then
+                QUICKSTART_RELEASE="consistent-${QUICKSTART_RELEASE}"
+            else
+                QUICKSTART_RELEASE="promotion-testing-hash-${QUICKSTART_RELEASE}"
+            fi
         ;;
         gate)
         ;;
@@ -177,10 +192,6 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
         ;;
     esac
 done
-
-command -v pip || \
-    (curl "https://bootstrap.pypa.io/get-pip.py" -o "get-pip.py"; sudo python get-pip.py)
-sudo pip install shyaml
 
 # Set UPGRADE_RELEASE if applicable
 if is_featureset_mixed_upgrade "$TRIPLEO_ROOT/tripleo-quickstart/$FEATURESET_FILE"; then

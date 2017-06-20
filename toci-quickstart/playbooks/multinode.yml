@@ -34,6 +34,10 @@
   hosts: undercloud
   roles:
     - undercloud-setup
+  tasks:
+    - name: Check if we need to build images
+      set_fact:
+        to_build: "{{ lookup('pipe', '{{ tripleo_root }}/tripleo-ci/scripts/to_build')|default('false')|bool }}"
   tags:
     - undercloud-setup
   environment:
@@ -68,6 +72,15 @@
   hosts: undercloud
   roles:
     - undercloud-deploy
+
+- name: Build images for quickstart
+  hosts: undercloud
+  gather_facts: no
+  roles:
+    - { role: build-images, when: to_build|bool }
+  tags:
+    - get-images
+    - images
 
 - name: Validate the undercloud
   hosts: undercloud
