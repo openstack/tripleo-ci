@@ -74,7 +74,9 @@ if [[ -z "${JOB_NAME-}" ]]; then
 fi
 
 # Sets whether or not this job will upload images.
-export CACHEUPLOAD=0
+export PERIODIC=0
+# Sets which repositories to use in the job
+export QUICKSTART_RELEASE="${STABLE_RELEASE:-master}"
 # Stores OVB undercloud instance id
 export UCINSTANCEID="null"
 # Define environment variables file
@@ -147,7 +149,8 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
             TAGS="build,undercloud-setup,undercloud-scripts,undercloud-install,undercloud-validate"
         ;;
         periodic)
-            CACHEUPLOAD=1
+            PERIODIC=1
+            QUICKSTART_RELEASE="consistent-${QUICKSTART_RELEASE}"
         ;;
         gate)
         ;;
@@ -165,6 +168,7 @@ sudo pip install shyaml
 # Set UPGRADE_RELEASE if applicable
 if is_featureset_mixed_upgrade "$TRIPLEO_ROOT/tripleo-quickstart/$FEATURESET_FILE"; then
     export UPGRADE_RELEASE=$(previous_release_from "$STABLE_RELEASE")
+    QUICKSTART_RELEASE="$QUICKSTART_RELEASE-undercloud-$UPGRADE_RELEASE-overcloud"
 fi
 
 if [[ ! -z $NODES_FILE ]]; then
