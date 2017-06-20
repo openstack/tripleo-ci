@@ -387,7 +387,7 @@ function delorean_setup {
     log "Delorean setup"
 
     # Install delorean as per combination of toci-instack and delorean docs
-    sudo yum install -y createrepo git mock rpm-build yum-plugin-priorities yum-utils gcc
+    sudo yum install -y createrepo git mock rpm-build yum-plugin-priorities yum-utils gcc rpmdevtools redhat-rpm-config
 
     # NOTE(pabelanger): Check if virtualenv is already install, if not install
     # from packages.
