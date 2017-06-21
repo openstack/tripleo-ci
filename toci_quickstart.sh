@@ -11,16 +11,6 @@ LOGS_DIR=$WORKSPACE/logs
 ## Signal to toci_gate_test.sh we've started by
 touch /tmp/toci.started
 
-if [ -z "${QUICKSTART_RELEASE:-}" ]; then
-    QUICKSTART_RELEASE="${STABLE_RELEASE:-master}"
-    if [ -n "${UPGRADE_RELEASE:-}" ]; then
-        QUICKSTART_RELEASE="$QUICKSTART_RELEASE-undercloud-$UPGRADE_RELEASE-overcloud"
-    fi
-fi
-# Use consistent repositories for promotion
-if [[ $CACHEUPLOAD == 1 && $QUICKSTART_RELEASE == 'master' ]]; then
-    QUICKSTART_RELEASE='consistent-master'
-fi
 export DEFAULT_ARGS="
     --no-clone
     --working-dir $LOCAL_WORKING_DIR

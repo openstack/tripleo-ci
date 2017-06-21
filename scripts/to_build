@@ -5,7 +5,7 @@ function set_env {
     exit
 }
 # If we are uploading to the cache then we shouldn't use it
-[[ "$CACHEUPLOAD" == 1 ]] && set_env "true"
+[[ "$PERIODIC" == 1 ]] && set_env "true"
 # The updates job already takes a long time, always use cache for it
 [[ "$TOCI_JOBTYPE" =~ updates ]] && set_env "false"
 # There are some projects that require images building
