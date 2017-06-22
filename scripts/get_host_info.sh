@@ -27,13 +27,14 @@ which ceph &> /dev/null && sudo ceph status
 sudo facter
 find ~jenkins -iname tripleo-overcloud-passwords -execdir cat '{}' ';'
 sudo systemctl list-units --full --all
-
 EOF
 
 if [ -e ~/stackrc ] ; then
     source ~/stackrc
 
     nova list | tee /tmp/nova-list.txt
+    openstack workflow list
+    openstack workflow execution list
     # If there's no overcloud then there's no point in continuing
     openstack stack show --no-resolve-outputs --format yaml overcloud || (echo 'No active overcloud found' && exit 0)
     openstack stack resource list -n5 --format yaml overcloud
