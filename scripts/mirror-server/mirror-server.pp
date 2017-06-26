@@ -58,16 +58,11 @@ cron {"promote-master":
 }
 
 cron {"promote-ocata":
-    command => "timeout 10m /opt/stack/tripleo-ci/scripts/mirror-server/promote.sh ocata current-tripleo-ocata tripleo-dlrn-promote-ocata periodic-tripleo-ci-centos-7-ovb-ha-oooq-ocata &>/var/log/last_ocata_promotion.log",
+    command => "timeout 10m /opt/stack/tripleo-ci/scripts/mirror-server/promote.sh ocata current-tripleo-ocata tripleo-dlrn-promote-ocata periodic-tripleo-ci-centos-7-ovb-ha-ocata-oooq &>/var/log/last_ocata_promotion.log",
     minute  => "40"
 }
 
 cron {"promote-newton":
-    command => "timeout 10m /opt/stack/tripleo-ci/scripts/mirror-server/promote.sh newton current-tripleo-newton tripleo-dlrn-promote-newton periodic-tripleo-ci-centos-7-ovb-ha-oooq-newton &>/var/log/last_newton_promotion.log",
-    minute  => "40"
-}
-
-cron {"promote-mitaka":
-    command => "timeout 10m /opt/stack/tripleo-ci/scripts/mirror-server/promote.sh mitaka current-tripleo-mitaka tripleo-dlrn-promote-mitaka periodic-tripleo-ci-centos-7-ovb-ha-oooq-mitaka &>/var/log/last_mitaka_promotion.log",
+    command => "timeout 10m /opt/stack/tripleo-ci/scripts/mirror-server/promote.sh newton current-tripleo-newton tripleo-dlrn-promote-newton periodic-tripleo-ci-centos-7-ovb-ha-newton-oooq &>/var/log/last_newton_promotion.log",
     minute  => "40"
 }
