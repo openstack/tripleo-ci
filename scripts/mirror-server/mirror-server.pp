@@ -58,7 +58,7 @@ cron {"parse-periodic-multinode":
 }
 
 cron {"promote-master":
-    command => "timeout 10m /opt/stack/tripleo-ci/scripts/mirror-server/promote.sh master current-tripleo tripleo-dlrn-promote periodic-tripleo-ci-centos-7-ovb-ha-oooq periodic-tripleo-ci-centos-7-ovb-updates &>/var/log/last_master_promotion.log",
+    command => "timeout 10m /opt/stack/tripleo-ci/scripts/mirror-server/promote.sh master current-tripleo tripleo-dlrn-promote periodic-tripleo-ci-centos-7-ovb-ha-oooq periodic-tripleo-ci-centos-7-ovb-updates periodic-tripleo-ci-centos-7-scenario001-multinode-oooq periodic-tripleo-ci-centos-7-scenario002-multinode-oooq periodic-tripleo-ci-centos-7-scenario003-multinode-oooq periodic-tripleo-ci-centos-7-scenario004-multinode-oooq &>/var/log/last_master_promotion.log",
     minute  => "40"
 }
 
