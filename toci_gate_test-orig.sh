@@ -370,8 +370,7 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
                 -e /usr/share/openstack-tripleo-heat-templates/environments/puppet-pacemaker.yaml
                 -e $TRIPLEO_ROOT/tripleo-ci/test-environments/network-templates/network-isolation-absolute.yaml
                 -e $TRIPLEO_ROOT/tripleo-ci/test-environments/network-templates/network-environment.yaml
-                -e $TRIPLEO_ROOT/tripleo-ci/test-environments/net-iso.yaml
-                -e /usr/share/openstack-tripleo-heat-templates/environments/disable-telemetry.yaml"
+                -e $TRIPLEO_ROOT/tripleo-ci/test-environments/net-iso.yaml"
             NETISO_V4=1
             PACEMAKER=1
             ;;
