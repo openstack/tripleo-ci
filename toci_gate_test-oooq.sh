@@ -42,6 +42,13 @@ if [ $NODEPOOL_CLOUD == 'tripleo-test-cloud-rh1' ]; then
     sudo rm -rf /opt/git /opt/stack/cache/files/mysql.qcow2 /opt/stack/cache/files/ubuntu-12.04-x86_64.tar.gz
 fi
 
+# create logs dir (check if collect-logs doesn't already do this)
+mkdir -p $WORKSPACE/logs
+
+# Set job as failed until it's overwritten by pingtest/tempest real test subunit
+sudo yum install -y python-os-testr
+generate-subunit $(date +%s) 10 fail pingtest | gzip - > $WORKSPACE/logs/testrepository.subunit.gz
+
 # Remove epel, either by epel-release, or unpackaged repo files
 rpm -q epel-release && sudo yum -y erase epel-release
 sudo rm -f /etc/yum.repos.d/epel*
@@ -239,8 +246,6 @@ else
             || (tail -n 50 /var/log/bootstrap-subnodes.log && false)
     fi
 
-    # create logs dir (check if collect-logs doesn't already do this)
-    mkdir -p $WORKSPACE/logs
 
     # finally, run quickstart
     ./toci_quickstart.sh
