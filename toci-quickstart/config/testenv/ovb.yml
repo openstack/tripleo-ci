@@ -31,7 +31,19 @@ build_undercloud: false
 images_destroy_working_dir: false
 libguestfs_mode: false
 generate_pingtest_subunit: true
-# Without this wildcard, the deployment will fail with "no valid host found"
-# since nova will try to find defined flavors in the capabilities of the node
-# and nothing currently is configured to modify those.
-#extra_args: " --control-flavor baremetal --compute-flavor baremetal --ceph-storage-flavor baremetal"
+# Network settings
+overcloud_dns_servers:
+  - 10.1.8.10
+  - 8.8.8.8
+  - 8.8.4.4
+step_adjust_mtu: true
+mtu: 1350
+host_network_interfaces:
+  - eth0
+  - eth1
+  - "{% if network_isolation|default(true)|bool %}eth2{% endif %}"
+mtu_interface: "{{ host_network_interfaces|select()|list }}"
+floating_ip_cidr: >-
+  {%- if network_isolation|default(true)|bool %}10.0.0.0/24
+  {%- else %}192.168.24.0/24
+  {%- endif %}
