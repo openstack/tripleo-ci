@@ -122,7 +122,7 @@ def process_job(run):
 def found(dlrn):
     if not dlrn:
         return False
-    metadata = os.path.join(config.base_dir, dlrn, "/metadata.txt")
+    metadata = os.path.join(config.base_dir, dlrn, "metadata.txt")
     return os.path.exists(metadata)
 
 
