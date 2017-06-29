@@ -38,7 +38,7 @@ def process_events(all_events, events):
         if name in events:
             if status == 'CREATE_IN_PROGRESS':
                 times[name] = {'start': etime, 'elapsed': None}
-            elif status == 'CREATE_COMPLETE':
+            elif status == 'CREATE_COMPLETE' or status == 'CREATE_FAILED':
                 times[name]['elapsed'] = etime - times[name]['start']
     for name, data in sorted(times.items(),
                              key = lambda x: x[1]['elapsed'],
