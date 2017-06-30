@@ -617,6 +617,7 @@ EOF_CAT
         -e $HOME/tripleo-heat-templates/environments/services-docker/mistral.yaml \
         -e $HOME/tripleo-heat-templates/environments/services-docker/zaqar.yaml \
         -e $HOME/tripleo-heat-templates/environments/docker.yaml \
+        -e $HOME/tripleo-heat-templates/environments/docker-centos-tripleoupstream.yaml \
         -e $HOME/tripleo-heat-templates/environments/mongodb-nojournal.yaml \
         -e $HOME/custom.yaml
 
