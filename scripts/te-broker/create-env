@@ -35,10 +35,6 @@ BUILD_NODES_JSON_EXTRA_ARGS=""
 sed -i -e "s/bmc_image:.*/bmc_image: bmc-template/" $ENVFILE
 sed -i -e "s/key_name:.*/key_name: ${KEY_NAME}/" $ENVFILE
 sed -i -e "s/node_count:.*/node_count: ${NODECOUNT}/" $ENVFILE
-sed -i -e "s/os_auth_url:.*/os_auth_url: ${OS_AUTH_URL//\//\/}/" $ENVFILE
-sed -i -e "s/os_password:.*/os_password: $OS_PASSWORD/" $ENVFILE
-sed -i -e "s/os_tenant:.*/os_tenant: $OS_TENANT_NAME/" $ENVFILE
-sed -i -e "s/os_user:.*/os_user: $OS_USERNAME/" $ENVFILE
 sed -i -e "s/provision_net_shared:.*/provision_net_shared: true/" $ENVFILE
 sed -i -e "s/public_net_shared:.*/public_net_shared: true/" $ENVFILE
 if [ -n "$CREATE_UNDERCLOUD" ]; then
