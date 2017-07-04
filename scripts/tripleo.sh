@@ -1399,9 +1399,17 @@ function undercloud_sanity_check {
     neutron subnet-list
     neutron net-list
     neutron agent-list
-    # This verifies that at least one conductor comes up, and at least one
-    # IPMI-based driver was successfully enabled.
-    ironic driver-list | grep -q ipmi
+    if [[ ! "${STABLE_RELEASE}" =~ ^(newton|ocata) ]]; then
+      # This verifies that at least one conductor comes up, and at least one
+      # IPMI-based driver was successfully enabled.
+      ipmi_drivers="$(grep -c ipmi <(ironic driver-list))"
+      if [[ $ipmi_drivers -eq 0 ]]; then
+        log "ERROR: Check ironic driver-list"
+        exit 1
+      fi
+    else
+      ironic node-list
+    fi
     openstack stack list
     # FIXME undercloud with containers does not yet have the UI
     if [ "$UNDERCLOUD_CONTAINERS" != 1 ]; then

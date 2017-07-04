@@ -9,13 +9,14 @@ export FEATURE_BRANCH=${FEATURE_BRANCH:-""}
 # deployment branch but we need to keep the actual release for the review
 # to be used in delorean-build phase.
 export REVIEW_RELEASE=${REVIEW_RELEASE:-""}
-if [[ $ZUUL_BRANCH =~ ^stable/ ]]; then
-    export STABLE_RELEASE=${ZUUL_BRANCH#stable/}
-    export REVIEW_RELEASE=${ZUUL_BRANCH#stable/}
-fi
-
-if [[ $OVERRIDE_ZUUL_BRANCH =~ ^stable/ ]]; then
-    export STABLE_RELEASE=${OVERRIDE_ZUUL_BRANCH#stable/}
+if [[ -z $STABLE_RELEASE ]]; then
+    if [[ $ZUUL_BRANCH =~ ^stable/ ]]; then
+        export STABLE_RELEASE=${ZUUL_BRANCH#stable/}
+        export REVIEW_RELEASE=${ZUUL_BRANCH#stable/}
+    fi
+    if [[ $OVERRIDE_ZUUL_BRANCH =~ ^stable/ ]]; then
+        export STABLE_RELEASE=${OVERRIDE_ZUUL_BRANCH#stable/}
+    fi
 fi
 
 # if we still don't have an stable branch, check if that

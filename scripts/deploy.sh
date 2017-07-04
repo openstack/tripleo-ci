@@ -577,12 +577,12 @@ if [ "$UNDERCLOUD_MAJOR_UPGRADE" == 1 ] ; then
     # Reset or unset STABLE_RELEASE so that we upgrade to the next major
     # version
     if [ "$STABLE_RELEASE" = "ocata" ]; then
+        # TODO: switch STABLE_RELEASE to pike when released
         export STABLE_RELEASE=""
     elif [ "$STABLE_RELEASE" = "mitaka" ]; then
         export STABLE_RELEASE="newton"
     elif [ "$STABLE_RELEASE" = "newton" ]; then
-        # TODO: switch STABLE_RELEASE to ocata when released
-        export STABLE_RELEASE=""
+        export STABLE_RELEASE="ocata"
     fi
     echo_vars_to_deploy_env
     # Add the delorean ci repo so that we include the package being tested
