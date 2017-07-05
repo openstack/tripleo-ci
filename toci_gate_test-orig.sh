@@ -173,13 +173,8 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
         updates)
             if [[ "$TOCI_JOBTYPE" =~ 'ovb-updates' ]] ; then
                 NODECOUNT=3
-                if [[ "${STABLE_RELEASE}" =~ ^mitaka$ ]] ; then
-                    ENDPOINT_LIST_LOCATION=$TRIPLEO_ROOT/tripleo-ci/test-environments
-                    CA_ENVIRONMENT_FILE=inject-trust-anchor-ipv6.yaml
-                else
-                    ENDPOINT_LIST_LOCATION=/usr/share/openstack-tripleo-heat-templates/environments
-                    CA_ENVIRONMENT_FILE=inject-trust-anchor-hiera-ipv6.yaml
-                fi
+                ENDPOINT_LIST_LOCATION=/usr/share/openstack-tripleo-heat-templates/environments
+                CA_ENVIRONMENT_FILE=inject-trust-anchor-hiera-ipv6.yaml
                 OVERCLOUD_DEPLOY_ARGS="
                     $OVERCLOUD_DEPLOY_ARGS
                     -e /usr/share/openstack-tripleo-heat-templates/environments/puppet-pacemaker.yaml
@@ -252,13 +247,8 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
             PREDICTABLE_PLACEMENT=1
             ;;
         nonha)
-            if [[ "${STABLE_RELEASE}" = "mitaka" ]] ; then
-                ENDPOINT_LIST_LOCATION=$TRIPLEO_ROOT/tripleo-ci/test-environments
-                CA_ENVIRONMENT_FILE=inject-trust-anchor.yaml
-            else
-                ENDPOINT_LIST_LOCATION=/usr/share/openstack-tripleo-heat-templates/environments
-                CA_ENVIRONMENT_FILE=inject-trust-anchor-hiera.yaml
-            fi
+            ENDPOINT_LIST_LOCATION=/usr/share/openstack-tripleo-heat-templates/environments
+            CA_ENVIRONMENT_FILE=inject-trust-anchor-hiera.yaml
             OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS -e $TRIPLEO_ROOT/tripleo-ci/test-environments/enable-tls.yaml -e $ENDPOINT_LIST_LOCATION/tls-endpoints-public-ip.yaml -e $TRIPLEO_ROOT/tripleo-ci/test-environments/$CA_ENVIRONMENT_FILE --ceph-storage-scale 1 -e /usr/share/openstack-tripleo-heat-templates/environments/storage-environment.yaml -e $TRIPLEO_ROOT/tripleo-ci/test-environments/ceph-min-osds.yaml"
             if [ "$STABLE_RELEASE" != "newton" ]; then
                     OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS -e /usr/share/openstack-tripleo-heat-templates/environments/disable-telemetry.yaml"
@@ -345,11 +335,6 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
             CACHEUPLOAD=1
             OVERCLOUD_PINGTEST_ARGS=
             ;;
-        mitaka)
-            # This is handled in tripleo.sh (it always uses centos7-$STABLE_RELEASE/current)
-            # where $STABLE_RELEASE is derived in toci_instack.sh
-            unset DELOREAN_REPO_URL
-            ;;
         tempest)
             export RUN_TEMPEST_TESTS=1
             export RUN_PING_TEST=0
@@ -394,9 +379,7 @@ if [[ $PREDICTABLE_PLACEMENT == 1 ]]; then
     OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS -e $TRIPLEO_ROOT/tripleo-ci/test-environments/ips-from-pool-all.yaml -e $TRIPLEO_ROOT/tripleo-ci/test-environments/hostname-map.yaml -e $TRIPLEO_ROOT/tripleo-ci/test-environments/scheduler-hints.yaml"
 fi
 # Limit worker counts to avoid overloading our limited resources
-if [[ "${STABLE_RELEASE}" = "mitaka" ]] ; then
-    OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS -e $TRIPLEO_ROOT/tripleo-ci/test-environments/worker-config-mitaka-and-below.yaml"
-elif [[ "${OVERCLOUD_MAJOR_UPGRADE}" == "1" ]]; then
+if [[ "${OVERCLOUD_MAJOR_UPGRADE}" == "1" ]]; then
     OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS -e /usr/share/openstack-tripleo-heat-templates/environments/low-memory-usage.yaml"
 else
     OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS -e $TRIPLEO_ROOT/tripleo-ci/test-environments/worker-config.yaml -e /usr/share/openstack-tripleo-heat-templates/environments/low-memory-usage.yaml"

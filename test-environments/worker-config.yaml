@@ -1,7 +1,7 @@
 # TODO(bnemec): Should these settings be moved to low-memory-usage.yaml
 # in tripleo-heat-templates?
 parameter_defaults:
-  controllerExtraConfig:
+  ControllerExtraConfig:
     heat::api_cloudwatch::enabled: false
     heat::api_cfn::enabled: false
     heat::rpc_response_timeout: 600

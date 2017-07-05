@@ -1,6 +1,6 @@
 parameter_defaults:
   CloudName: ci-overcloud.rh1.tripleo.org
-  controllerExtraConfig:
+  ControllerExtraConfig:
     tripleo::loadbalancer::public_virtual_ip: 66.187.229.2
     neutron::agents::ml2::ovs::prevent_arp_spoofing: false
     # https://bugs.launchpad.net/tripleo/+bug/1590101
