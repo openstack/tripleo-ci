@@ -1,0 +1,26 @@
+# TRIPLEO-CI environment settings
+undercloud_user: "{{ lookup('env','USER') }}"
+non_root_user: "{{ undercloud_user }}"
+extra_args: >
+    -e {{ tripleo_root }}/tripleo-ci/test-environments/worker-config.yaml
+    -e /usr/share/openstack-tripleo-heat-templates/environments/debug.yaml
+    --overcloud-ssh-user {{ undercloud_user }}
+
+composable_roles: true
+overcloud_roles:
+  - name: Controller
+    CountDefault: 1
+    tags:
+      - primary
+      - controller
+
+toci_vxlan_networking: true
+toci_vxlan_networking_multinode: true
+vxlan_mtu: 1350
+hostname_correction: true # workaround restriction on toci images
+
+# environment settings, not TRIPLEO-CI specific
+undercloud_local_interface: "br-ex" # related to osinfra network configuration
+flavor_args: ""
+undercloud_conf_extras: "net_config_override = /opt/stack/new/tripleo-ci/undercloud-configs/net-config-multinode.json.template"
+generate_pingtest_subunit: true
