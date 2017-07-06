@@ -432,3 +432,5 @@ fi
 sudo unbound-control dump_cache > /tmp/dns_cache.txt
 sudo chown ${USER}: /tmp/dns_cache.txt
 cat /tmp/dns_cache.txt | gzip - > $WORKSPACE/logs/dns_cache.txt.gz
+
+echo "tripleo.${STABLE_RELEASE:-master}.${TOCI_JOBTYPE}.logs.size_mb" "$(du -sm $WORKSPACE/logs | awk {'print $1'})" "$(date +%s)" | nc 66.187.229.172 2003 || true
