@@ -1,0 +1,15 @@
+# This file contains settings that are specific to RDO Cloud.
+# These settings will override the ovb default settings
+
+bmc_flavor: ci.m1.small
+baremetal_flavor: ci.m1.large
+undercloud_flavor: ci.m1.large
+
+custom_nameserver:
+    - 38.145.33.91
+    - 38.145.32.66
+    - 38.145.32.79
+undercloud_undercloud_nameservers: "{{ custom_nameserver }}"
+external_net: '38.145.32.0/22'
+overcloud_dns_servers: "{{ custom_nameserver }}"
+ntp_server: 'pool.ntp.org'
