@@ -94,5 +94,9 @@ $LOCAL_WORKING_DIR/bin/ara generate html $LOGS_DIR/ara_oooq || true
 gzip --best --recursive $LOGS_DIR/ara_oooq || true
 popd
 
+# record the size of the logs directory
+# -L, --dereference     dereference all symbolic links
+du -L -sch $LOGS_DIR &> $LOGS_DIR/log-size.txt || true
+
 echo 'Quickstart completed.'
 exit $exit_value
