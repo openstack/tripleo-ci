@@ -8,9 +8,12 @@ CREATE_UNDERCLOUD=${4:-""}
 SSH_KEY=${5:-""}
 # We recognize 3 values for NETISO: none, multi-nic, public-bond
 NETISO=${6:-'multi-nic'}
+COMPUTE_NODECOUNT=${7:-0}
 PROVISIONNET=provision-${ENVNUM}
 PUBLICNET=public-${ENVNUM}
-ENVFILE=env-${ENVNUM}.yaml
+ENVFILE=env-${ENVNUM}-base.yaml
+COMPUTE_ENVFILE=env-${ENVNUM}-compute.yaml
+ROLE_ARGS=
 
 source /etc/nodepoolrc
 
@@ -45,22 +48,45 @@ fi
 echo 'parameter_defaults:' >> $ENVFILE
 echo '  bmc_use_cache: True' >> $ENVFILE
 
+if [ $COMPUTE_NODECOUNT -gt 0 ]; then
+    echo 'parameter_defaults:' >> $ENVFILE
+    echo '  role: control' >> $ENVFILE
+fi
+
 echo -e 'resource_registry:\n'  >> $ENVFILE
 
 if [ -z "$CREATE_UNDERCLOUD" ]; then
     echo '  OS::OVB::UndercloudEnvironment: OS::Heat::None' >> $ENVFILE
 fi
 echo '  OS::OVB::UndercloudFloating: templates/undercloud-floating-none.yaml' >> $ENVFILE
-if [ $NETISO == 'multi-nic' ]; then
-    echo '  OS::OVB::BaremetalNetworks: templates/baremetal-networks-all.yaml' >> $ENVFILE
-    echo '  OS::OVB::BaremetalPorts: templates/baremetal-ports-all.yaml' >> $ENVFILE
-elif [ $NETISO == 'public-bond' ]; then
-    echo '  OS::OVB::BaremetalNetworks: templates/baremetal-networks-all.yaml' >> $ENVFILE
-    echo '  OS::OVB::BaremetalPorts: templates/baremetal-ports-public-bond.yaml' >> $ENVFILE
+
+function add_net_iso_overrides() {
+    local outfile=$1
+    if [ $NETISO == 'multi-nic' ]; then
+        echo '  OS::OVB::BaremetalNetworks: templates/baremetal-networks-all.yaml' >> $outfile
+        echo '  OS::OVB::BaremetalPorts: templates/baremetal-ports-all.yaml' >> $outfile
+    elif [ $NETISO == 'public-bond' ]; then
+        echo '  OS::OVB::BaremetalNetworks: templates/baremetal-networks-all.yaml' >> $outfile
+        echo '  OS::OVB::BaremetalPorts: templates/baremetal-ports-public-bond.yaml' >> $outfile
+    else
+        echo '  OS::OVB::BaremetalPorts: templates/baremetal-ports-default.yaml' >> $outfile
+    fi
+}
+add_net_iso_overrides $ENVFILE
+
+if [ $COMPUTE_NODECOUNT -gt 0 ]; then
+    /bin/cp --remove-destination templates/env-role.yaml.example $COMPUTE_ENVFILE
+    sed -i -e "s/baremetal_flavor:.*/baremetal_flavor: baremetal-compute/" $COMPUTE_ENVFILE
+    sed -i -e "s/key_name:.*/key_name: ${KEY_NAME}/" $COMPUTE_ENVFILE
+    sed -i -e "s/node_count:.*/node_count: ${COMPUTE_NODECOUNT}/" $COMPUTE_ENVFILE
+    # This is already the default in the template, but just to be safe.
+    sed -i -e "s/role:.*/role: compute/" $COMPUTE_ENVFILE
+    echo 'resource_registry:' >> $COMPUTE_ENVFILE
+    add_net_iso_overrides $COMPUTE_ENVFILE
+    ROLE_ARGS="--role $COMPUTE_ENVFILE"
 fi
 
-
-/opt/stack/openstack-virtual-baremetal/bin/deploy.py --env $ENVFILE --name baremetal_${ENVNUM} --quintupleo --id ${ENVNUM}
+/opt/stack/openstack-virtual-baremetal/bin/deploy.py --env $ENVFILE --name baremetal_${ENVNUM} --quintupleo --id ${ENVNUM} $ROLE_ARGS
 
 while ! heat stack-show baremetal_${ENVNUM} | grep CREATE_COMPLETE ; do
     sleep 10
@@ -78,5 +104,5 @@ if [ $NETISO != 'none' ]; then
 fi
 
 # This writes out the env file as env-ID.yaml while overwrites the one we have created
-/opt/stack/openstack-virtual-baremetal/bin/build-nodes-json --env $ENVFILE \
+/opt/stack/openstack-virtual-baremetal/bin/build-nodes-json --env env-${ENVNUM}.yaml \
     --nodes_json ${TE_DATAFILE:-~/instackenv.json} $BUILD_NODES_JSON_EXTRA_ARGS

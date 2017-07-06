@@ -150,6 +150,13 @@ def main(args=sys.argv[1:]):
                              'be killed.')
     parser.add_argument('--envsize', default="2",
                         help='Number of baremetal nodes to request')
+    parser.add_argument('--compute-envsize', default='0',
+                        help='Number of compute baremetal nodes to request. '
+                             'When this is set to a value > 0, the primary '
+                             'nodes will be tagged with the controller '
+                             'profile and the extra nodes with compute.  The '
+                             'compute nodes will be a smaller flavor in order '
+                             'to use less resources.')
     parser.add_argument('--ucinstance',
                         help='uuid for the undercloud instance (where an '
                              'interface on the provisioning net is attached')
@@ -186,6 +193,7 @@ def main(args=sys.argv[1:]):
         "callback_name": callback_name,
         "timeout": opts.timeout,
         "envsize":opts.envsize,
+        "compute_envsize":opts.compute_envsize,
         "ucinstance":opts.ucinstance,
         "create_undercloud": "true" if opts.create_undercloud else "",
         "ssh_key":opts.ssh_key,

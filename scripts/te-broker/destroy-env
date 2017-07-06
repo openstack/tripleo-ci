@@ -4,9 +4,12 @@ set -xe
 ENVNUM=${1:-$(date +%s)}
 PROVISIONNET=provision-${ENVNUM}
 PUBLICNET=public-${ENVNUM}
-ENVFILE=env-${ENVNUM}.yaml
+ENVFILE=env-${ENVNUM}-base.yaml
+COMPUTE_ENVFILE=env-${ENVNUM}-compute.yaml
 
 rm -f /opt/stack/openstack-virtual-baremetal/$ENVFILE
+rm -f /opt/stack/openstack-virtual-baremetal/env-${ENVNUM}.yaml
+rm -f /opt/stack/openstack-virtual-baremetal/$COMPUTE_ENVFILE
 rm -f /opt/stack/openstack-virtual-baremetal/temp-key-$ENVNUM.pub
 
 source /etc/nodepoolrc
@@ -38,16 +41,27 @@ wait
 # If there was a keypair for this specific run, delete it.
 openstack keypair delete "tripleo-ci-key-$ENVNUM" || true
 
-# NOTE(bnemec): I'm periodically seeing the stack-delete fail to connect to
-# Heat.  It looks like a transient network issue, so let's just retry when it happens.
-for i in $(seq 10); do
-    heat stack-delete -y baremetal_${ENVNUM} && break
-    sleep 5
-done
-while heat stack-show baremetal_${ENVNUM} 2>&1 > /dev/null ; do
-    # If the delete failed, try again
-    if heat stack-show baremetal_${ENVNUM} | grep DELETE_FAILED ; then
-        heat stack-delete -y baremetal_${ENVNUM} || true
+function delete_stack() {
+    local stackname=$1
+    # Nothing to do if the specified stack doesn't exist
+    if ! heat stack-show $stackname; then
+        return 0
     fi
-    sleep 20
-done
+    # NOTE(bnemec): I'm periodically seeing the stack-delete fail to connect to
+    # Heat.  It looks like a transient network issue, so let's just retry when it happens.
+    for i in $(seq 10); do
+        heat stack-delete -y $stackname && break
+        sleep 5
+    done
+    while heat stack-show $stackname 2>&1 > /dev/null ; do
+        # If the delete failed, try again
+        if heat stack-show $stackname | grep DELETE_FAILED ; then
+            heat stack-delete -y $stackname || true
+        fi
+        sleep 20
+    done
+}
+
+# Extra role stacks must be deleted first
+delete_stack baremetal_${ENVNUM}-compute
+delete_stack baremetal_${ENVNUM}
