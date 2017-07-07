@@ -35,7 +35,8 @@ if command -v docker && systemctl is-active docker; then
         docker cp $cont:/var/lib/kolla/config_files/config.json $INFO_DIR/config.json
         # NOTE(flaper87): This should go away. Services should be
         # using a `logs` volume
-        docker cp $cont:/var/log $INFO_DIR/log
+        # Removing the following line as openstack infra needs our log size reduced
+        # docker cp $cont:/var/log $INFO_DIR/log
 
         # Delete symlinks because they break log collection and are generally
         # not useful
