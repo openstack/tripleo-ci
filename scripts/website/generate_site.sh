@@ -54,7 +54,8 @@ fi
 
 # swap in custom tripleosphinx
 pushd tripleo-docs
-sed -e "s|oslosphinx|tripleosphinx|g" -i doc/source/conf.py
+sed -e "s|openstackdocstheme|tripleosphinx|g" -i doc/source/conf.py
+sed -e "s|html_theme.*||g" -i doc/source/conf.py
 popd
 
 #REVIEWDAY
