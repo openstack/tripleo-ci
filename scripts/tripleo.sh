@@ -608,6 +608,9 @@ parameter_defaults:
   ControlPlaneSubnetCidr: 24
 EOF_CAT
 
+    # generate container-images.yaml for tripleoupstream
+    openstack overcloud container image prepare --env-file $HOME/container-images.yaml
+
     LOCAL_IP=${LOCAL_IP:-192.168.24.1}
 
     cp -a /usr/share/openstack-tripleo-heat-templates ~/tripleo-heat-templates
@@ -619,8 +622,8 @@ EOF_CAT
         -e $HOME/tripleo-heat-templates/environments/services-docker/mistral.yaml \
         -e $HOME/tripleo-heat-templates/environments/services-docker/zaqar.yaml \
         -e $HOME/tripleo-heat-templates/environments/docker.yaml \
-        -e $HOME/tripleo-heat-templates/environments/docker-centos-tripleoupstream.yaml \
         -e $HOME/tripleo-heat-templates/environments/mongodb-nojournal.yaml \
+        -e $HOME/container-images.yaml \
         -e $HOME/custom.yaml
 
     # the new installer requires root privs to avoid sudo'ing everything,
