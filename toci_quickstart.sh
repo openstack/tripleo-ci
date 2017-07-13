@@ -96,7 +96,7 @@ popd
 
 # record the size of the logs directory
 # -L, --dereference     dereference all symbolic links
-du -L -sch $LOGS_DIR &> $LOGS_DIR/log-size.txt || true
+du -L -ch $LOGS_DIR/* | sort -rh | head -n 200 &> $LOGS_DIR/log-size.txt || true
 
 echo 'Quickstart completed.'
 exit $exit_value

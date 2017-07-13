@@ -307,6 +307,11 @@ function postci(){
     # too much time debugging.  It's currently only happening on the mitaka
     # branch anyway, so once that branch goes EOL we can probably remove this.
     sudo iptables -I INPUT -p tcp -j ACCEPT
+
+    # record the size of the logs directory
+    # -L, --dereference     dereference all symbolic links
+    du -L -ch $WORKSPACE/logs/* | sort -rh | head -n 200 &> $WORKSPACE/logs/log-size.txt || true
+
     return 0
 }
 
