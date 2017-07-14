@@ -781,14 +781,13 @@ function undercloud_upgrade {
     # Setup repositories
     repo_setup
 
-    # NOTE(emilien):
-    # If we don't stop OpenStack services before the upgrade, Puppet run will hang forever.
-    # This thing might be an ugly workaround but we need to to upgrade the undercloud.
-    # The question is: where to do it? in tripleoclient? or instack-undercloud?
-    sudo systemctl stop openstack-*
-    sudo systemctl stop neutron-*
-    sudo systemctl stop openvswitch
-    sudo systemctl stop httpd
+    # In pike and above this is handled by the pre-upgrade hook
+    if [[ "$STABLE_RELEASE" =~ ^(newton|ocata)$ ]]; then
+        sudo systemctl stop openstack-*
+        sudo systemctl stop neutron-*
+        sudo systemctl stop openvswitch
+        sudo systemctl stop httpd
+    fi
     # tripleo cli needs to be updated first
     sudo yum -y update python-tripleoclient
 
