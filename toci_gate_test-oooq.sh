@@ -253,7 +253,7 @@ fi
 
 export http_proxy=
 # TODO(gcerami) expand this list
-JOBS_ALLOW_PROMOTE=(periodic-ovb-3ctlr_1comp-featureset002)
+JOBS_ALLOW_PROMOTE=(periodic-ovb-3ctlr_1comp-featureset002 periodic-ovb-1ctlr_1comp_1ceph-featureset024)
 # TODO(gcerami) move the remaining condition in can_promote function ?
 if item_in_array $TOCI_JOBTYPE ${JOBS_ALLOW_PROMOTE[@]} && can_promote; then
     UPLOAD_FOLDER=builds${STABLE_RELEASE:+-$STABLE_RELEASE}
