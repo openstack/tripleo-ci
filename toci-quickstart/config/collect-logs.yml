@@ -60,3 +60,4 @@ artcl_exclude_list:
   - /etc/pki/ca-trust/extracted
   - /etc/alternatives
   - /var/log/extra/lsof*
+  - /var/log/journal/*
