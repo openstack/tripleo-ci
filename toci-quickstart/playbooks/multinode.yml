@@ -147,3 +147,4 @@
   gather_facts: no
   roles:
     - { role: validate-simple, when: test_ping|bool }
+    - { role: validate-tempest, when: run_tempest|bool }
