@@ -293,12 +293,12 @@ function repo_setup {
     if [ "$TRIPLEO_OS_DISTRO" = "centos" ]; then
         # Enable Storage/SIG Ceph repo
         if [[ "${STABLE_RELEASE}" = "mitaka" ]] ; then
-            if rpm -q centos-release-ceph-jewel; then
-                sudo yum -y erase centos-release-ceph-jewel
-            fi
-        else
             if rpm -q centos-release-ceph-hammer; then
                 sudo yum -y erase centos-release-ceph-hammer
+            fi
+        else
+            if rpm -q centos-release-ceph-jewel; then
+                sudo yum -y erase centos-release-ceph-jewel
             fi
         fi
         sudo /bin/bash -c "cat <<-EOF>$REPO_PREFIX/$CEPH_REPO_FILE
@@ -526,7 +526,7 @@ function undercloud {
 
     log "Undercloud install"
 
-    sudo yum install -y python-tripleoclient
+    sudo yum install -y python-tripleoclient ceph-ansible
 
     if [ ! -f ~/undercloud.conf ]; then
         cp -b -f $UNDERCLOUD_CONF ~/undercloud.conf
