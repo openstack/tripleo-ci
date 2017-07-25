@@ -1495,9 +1495,6 @@ function setup_nodepool_files {
     echo $PRIMARY_NODE_IP > /etc/nodepool/node
     echo $PRIMARY_NODE_IP > /etc/nodepool/node_private
 
-    echo "NODEPOOL_REGION=$NODEPOOL_REGION" > /etc/nodepool/provider
-    echo "NODEPOOL_CLOUD=$NODEPOOL_CLOUD" >> /etc/nodepool/provider
-
     log "Setup nodepool files - DONE"
 }
 

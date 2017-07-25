@@ -3,8 +3,8 @@ set -eux
 export PS4='+(${BASH_SOURCE}:${LINENO}): ${FUNCNAME[0]:+${FUNCNAME[0]}(): }'
 # Mirrors
 # NOTE(pabelanger): We have access to AFS mirrors, lets use them.
-source /etc/nodepool/provider
-source /etc/ci/mirror_info.sh
+[ -f /etc/nodepool/provider ] && source /etc/nodepool/provider
+[ -f /etc/ci/mirror_info.sh ] && source /etc/ci/mirror_info.sh
 
 source $(dirname $0)/scripts/common_vars.bash
 NODEPOOL_MIRROR_HOST=${NODEPOOL_MIRROR_HOST:-mirror.$NODEPOOL_REGION.$NODEPOOL_CLOUD.openstack.org}
