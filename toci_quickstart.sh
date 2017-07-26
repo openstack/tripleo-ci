@@ -89,6 +89,9 @@ elif [[ -e $LOGS_DIR/undercloud/home/$USER/pingtest.subunit.gz ]]; then
     cp $LOGS_DIR/undercloud/home/$USER/pingtest.subunit.gz ${LOGS_DIR}/testrepository.subunit.gz
 fi
 
+# Copy tempest.html to root dir
+cp $LOGS_DIR/undercloud/home/$USER/tempest/tempest.html.gz ${LOGS_DIR} || true
+
 # Copy tempest and .testrepository directory to /opt/stack/new/tempest and
 # unzip
 sudo mkdir -p /opt/stack/new
