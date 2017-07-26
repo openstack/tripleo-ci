@@ -12,20 +12,6 @@ undercloud_docker_registry_mirror: "{{ lookup('env','NODEPOOL_DOCKER_REGISTRY_PR
 
 dlrn_use_local_mirrors: true
 
-composable_roles: true
-overcloud_roles:
-  - name: Controller
-    CountDefault: 1
-    tags:
-      - primary
-      - controller
-    networks:
-      - External
-      - InternalApi
-      - Storage
-      - StorageMgmt
-      - Tenant
-
 toci_vxlan_networking: true
 toci_vxlan_networking_multinode: true
 hostname_correction: true # workaround restriction on toci images
