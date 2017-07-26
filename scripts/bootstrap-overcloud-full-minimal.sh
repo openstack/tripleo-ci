@@ -37,3 +37,18 @@ sudo yum -y update
 # git is needed since oooq multinode jobs does a git clone
 # See https://bugs.launchpad.net/tripleo-quickstart/+bug/1667043
 sudo yum -y install git python-heat-agent*
+
+# create a loop device for ceph-ansible
+# device name is static so we know what to point to from ceph-ansible
+# job names might change, but multinode implies ceph as per scenario001-multinode.yaml
+if [[ "${TOCI_JOBTYPE:-''}" =~ multinode ]]; then
+    if [[ ! -e /dev/loop3 ]]; then # ensure /dev/loop3 does not exist before making it
+        command -v losetup >/dev/null 2>&1 || { sudo yum -y install util-linux; }
+        sudo dd if=/dev/zero of=/var/lib/ceph-osd.img bs=1 count=0 seek=7G
+        sudo losetup /dev/loop3 /var/lib/ceph-osd.img
+    else
+        echo "ERROR: /dev/loop3 already exists, not using it with losetup"
+        exit 1
+    fi
+    sudo lsblk
+fi
