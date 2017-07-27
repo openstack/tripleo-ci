@@ -124,6 +124,7 @@ if [ $CA_SERVER == 1 ] ; then
     echo "undercloud_hostname = $UNDERCLOUD_FQDN" >> ~/undercloud.conf
     echo "ipa_otp = $(cat /tmp/ipa-otp.txt)" >> ~/undercloud.conf
     echo "undercloud_nameservers = $CA_SERVER_IP" >> ~/undercloud.conf
+    echo "overcloud_domain_name = $TRIPLEO_DOMAIN" >> ~/undercloud.conf
 
     echo "nova::api::vendordata_dynamic_connect_timeout: 20" >> ~/undercloud-hieradata-override.yaml
     echo "nova::api::vendordata_dynamic_read_timeout: 20" >> ~/undercloud-hieradata-override.yaml
