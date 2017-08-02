@@ -50,6 +50,9 @@ if [ -f /etc/nodepool/provider ] ; then
     fi
 fi
 
+# default $NODEPOOL_PROVIDER if not already set as it's used later
+export NODEPOOL_PROVIDER=${NODEPOOL_PROVIDER:-""}
+
 # create logs dir (check if collect-logs doesn't already do this)
 mkdir -p $WORKSPACE/logs
 
