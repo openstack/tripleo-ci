@@ -120,7 +120,9 @@ if [[ $TOCI_JOBTYPE =~ upgrades ]]; then
     # We deploy a master Undercloud and an Overcloud with the
     # previous release. The pingtest is disable because it won't
     # work with the few services deployed.
-    if [ "$STABLE_RELEASE" = "ocata" ]; then
+    if [ "$STABLE_RELEASE" = "pike" ]; then
+        UPGRADE_RELEASE=ocata
+    elif [ "$STABLE_RELEASE" = "ocata" ]; then
         UPGRADE_RELEASE=newton
     elif [ -z $STABLE_RELEASE ]; then
         UPGRADE_RELEASE=ocata
@@ -208,7 +210,9 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
             if [ $TOCI_JOBTYPE == 'undercloud-upgrades' ] ; then
                 # We want to start by installing an Undercloud
                 # from the previous stable release.
-                if [ "$STABLE_RELEASE" = "ocata" ]; then
+                if [ "$STABLE_RELEASE" = "pike" ]; then
+                    STABLE_RELEASE=ocata
+                elif [ "$STABLE_RELEASE" = "ocata" ]; then
                     STABLE_RELEASE=newton
                 elif [ "$STABLE_RELEASE" = "newton" ]; then
                     STABLE_RELEASE=mitaka

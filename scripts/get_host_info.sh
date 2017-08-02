@@ -36,15 +36,9 @@ if [ -e ~/stackrc ] ; then
     openstack workflow list
     openstack workflow execution list
     # If there's no overcloud then there's no point in continuing
-    if [[ ! "${STABLE_RELEASE}" =~ ^(newton|ocata) ]]; then
-      openstack stack show --no-resolve-outputs --format yaml overcloud || (echo 'No active overcloud found' && exit 0)
-      openstack stack resource list -n5 --format yaml overcloud
-      openstack stack event list overcloud
-    else
-      heat stack-show overcloud || (echo 'No active overcloud found' && exit 0)
-      heat resource-list -n5 overcloud
-      heat event-list overcloud
-    fi
+    openstack stack show --no-resolve-outputs --format yaml overcloud || (echo 'No active overcloud found' && exit 0)
+    openstack stack resource list -n5 --format yaml overcloud
+    openstack stack event list overcloud
     # --nested-depth 2 seems to get us a reasonable list of resources without
     # taking an excessive amount of time
     openstack stack event list --nested-depth 2 -f json overcloud | $TRIPLEO_ROOT/tripleo-ci/scripts/heat-deploy-times.py | tee /var/log/heat-deploy-times.log || echo 'Failed to process resource deployment times. This is expected for stable/liberty.'

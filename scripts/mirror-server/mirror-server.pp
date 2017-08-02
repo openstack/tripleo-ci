@@ -34,6 +34,10 @@ file { '/var/www/html/builds-master':
     ensure => 'link',
     target => '/var/www/html/builds',
 }
+file {"/var/www/html/builds-pike":
+    ensure => "directory",
+    owner  => "apache",
+}
 file {"/var/www/html/builds-ocata":
     ensure => "directory",
     owner  => "apache",
@@ -59,6 +63,11 @@ cron {"parse-periodic-multinode":
 
 cron {"promote-master":
     command => "timeout 10m /opt/stack/tripleo-ci/scripts/mirror-server/promote.sh master current-tripleo tripleo-dlrn-promote periodic-tripleo-ci-centos-7-ovb-ha-oooq periodic-tripleo-ci-centos-7-ovb-1ctlr_1comp_1ceph-featureset024 periodic-tripleo-ci-centos-7-scenario001-multinode-oooq periodic-tripleo-ci-centos-7-scenario002-multinode-oooq periodic-tripleo-ci-centos-7-scenario003-multinode-oooq periodic-tripleo-ci-centos-7-scenario004-multinode-oooq &>/var/log/last_master_promotion.log",
+    minute  => "40"
+}
+
+cron {"promote-pike":
+    command => "timeout 10m /opt/stack/tripleo-ci/scripts/mirror-server/promote.sh pike current-tripleo-pike tripleo-dlrn-promote-pike periodic-tripleo-ci-centos-7-ovb-ha-pike-oooq &>/var/log/last_pike_promotion.log",
     minute  => "40"
 }
 

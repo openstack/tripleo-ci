@@ -213,8 +213,8 @@ OVB=${OVB:-0}
 if [[ "${STABLE_RELEASE}" = "mitaka" ]] ; then
     export OS_IMAGE_API_VERSION=1
 fi
-# Make sure we use Puppet to deploy packages on scenario upgrades jobs from newton to ocata.
-if [[ "${STABLE_RELEASE}" = "ocata" ]] ; then
+# Make sure we use Puppet to deploy packages on scenario upgrades jobs after ocata release
+if [[ "${STABLE_RELEASE}" != "newton" ]] ; then
     OVERCLOUD_UPGRADE_ARGS="$OVERCLOUD_UPGRADE_ARGS -e $TRIPLEO_ROOT/tripleo-ci/test-environments/enable_package_install.yaml "
     OVERCLOUD_UPGRADE_CONVERGE_ARGS="$OVERCLOUD_UPGRADE_CONVERGE_ARGS -e $TRIPLEO_ROOT/tripleo-ci/test-environments/enable_package_install.yaml "
 fi
@@ -494,7 +494,7 @@ function delorean_build {
         GITHASH=$(git rev-parse HEAD)
 
         # Set the branches delorean reads to the same git hash as PROJ has left for us
-        for BRANCH in master origin/master stable/mitaka origin/stable/mitaka stable/newton origin/stable/newton stable/ocata origin/stable/ocata; do
+        for BRANCH in master origin/master stable/mitaka origin/stable/mitaka stable/newton origin/stable/newton stable/ocata origin/stable/ocata stable/pike origin/stable/pike; do
             git checkout -b $BRANCH || git checkout $BRANCH
             git reset --hard $GITHASH
         done
