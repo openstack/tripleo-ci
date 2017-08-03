@@ -1114,7 +1114,11 @@ function overcloud_pingtest {
 
     overcloudrc_check
 
-    cleanup_pingtest
+    if [ "$SKIP_PINGTEST_CLEANUP" != 1 ]; then
+        cleanup_pingtest
+    else
+        log "Skipping pre-pingtest cleanup because --skip-pingtest-cleanup was specified."
+    fi
 
     # NOTE(bnemec): We have to use the split cirros image here to avoid
     # https://bugs.launchpad.net/cirros/+bug/1312199  With the separate
