@@ -105,7 +105,8 @@ export UNDERCLOUD=""
 export TAGS=all
 # Identify in which environment we're deploying
 export ENVIRONMENT=""
-# Set the overcloud controller hosts for multinode
+# Set the overcloud hosts for multinode
+export OVERCLOUD_HOSTS=
 export CONTROLLER_HOSTS=
 export SUBNODES_SSH_KEY=
 OVERCLOUD_DEPLOY_TIMEOUT=$((DEVSTACK_GATE_TIMEOUT-90))
@@ -147,6 +148,7 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
             UNDERCLOUD="127.0.0.2"
             TAGS="build,undercloud-setup,undercloud-scripts,undercloud-install,undercloud-post-install,overcloud-scripts,overcloud-prep-config,overcloud-prep-containers,overcloud-deploy,overcloud-upgrade,overcloud-validate"
             CONTROLLER_HOSTS=$(sed -n 1,1p /etc/nodepool/sub_nodes)
+            OVERCLOUD_HOSTS=$(cat /etc/nodepool/sub_nodes)
         ;;
         singlenode)
             ENVIRONMENT="osinfra"
