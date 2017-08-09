@@ -17,6 +17,10 @@ Tools to help run CI jobs for TripleO. Includes things like:
 * Heat templates to help deploy and maintain test environment nodes
   using an undercloud.
 * Helper script(s) to generate CI status reports. (tox -ecireport -- -f)
+* Helper `getthelogs` script to download important job logs locally.
+  Then you may want to inspect the logs for known errors and contribute
+  discovered search patterns as the
+  `elastic-recheck queries <https://git.openstack.org/cgit/openstack-infra/elastic-recheck/tree/queries>`_.
 
 
 OpenStack Infrastructure is deploying multiple jobs with different scenarios.
