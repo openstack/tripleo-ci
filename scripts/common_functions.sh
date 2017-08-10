@@ -320,7 +320,8 @@ function delorean_build_and_serve {
     for PROJFULLREF in $ZUUL_CHANGES ; do
         PROJ=$(filterref $PROJFULLREF)
         # If ci is being run for a change to ci its ok not to have a ci produced repository
-        excluded_proj="tripleo-ci tripleo-quickstart tripleo-quickstart-extras puppet-openstack-integration grenade"
+        # Exclude networking-bagpipe, RPM package is broken: bug #1709428
+        excluded_proj="tripleo-ci tripleo-quickstart tripleo-quickstart-extras puppet-openstack-integration grenade networking-bagpipe"
         if [[ " $excluded_proj " =~ " $PROJ " ]]; then
             mkdir -p $TRIPLEO_ROOT/delorean/data/repos/current
             touch $TRIPLEO_ROOT/delorean/data/repos/current/delorean-ci.repo
