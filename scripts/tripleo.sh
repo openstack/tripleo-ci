@@ -175,6 +175,7 @@ if [[ -e /etc/ci/mirror_info.sh ]]; then
 fi
 NODEPOOL_CENTOS_MIRROR=${NODEPOOL_CENTOS_MIRROR:-http://mirror.centos.org/centos}
 NODEPOOL_RDO_PROXY=${NODEPOOL_RDO_PROXY:-https://trunk.rdoproject.org}
+NODEPOOL_BUILDLOGS_CENTOS_PROXY="${NODEPOOL_BUILDLOGS_CENTOS_PROXY:-https://buildlogs.centos.org}"
 OVERCLOUD_IMAGES_DIB_YUM_REPO_CONF=${OVERCLOUD_IMAGES_DIB_YUM_REPO_CONF}"\
   $REPO_PREFIX/$CEPH_REPO_FILE"
 OPSTOOLS_REPO_ENABLED=${OPSTOOLS_REPO_ENABLED:-"0"}
@@ -326,6 +327,7 @@ EOF"
         sudo curl -Lvo $REPO_PREFIX/delorean-deps.repo https://trunk.rdoproject.org/centos7/delorean-deps.repo
         sudo sed -i -e 's%priority=.*%priority=30%' $REPO_PREFIX/delorean-deps.repo
         sudo sed -i -e "s~http://mirror.centos.org/centos~$NODEPOOL_CENTOS_MIRROR~" $REPO_PREFIX/delorean-deps.repo
+        sudo sed -i -e "s~https://buildlogs.centos.org~$NODEPOOL_BUILDLOGS_CENTOS_PROXY~" $REPO_PREFIX/delorean-deps.repo
         cat $REPO_PREFIX/delorean-deps.repo
 
         # Enable last known good RDO Trunk Delorean repository
@@ -354,6 +356,7 @@ EOF"
         sudo curl -Lvo $REPO_PREFIX/delorean-deps.repo https://trunk.rdoproject.org/centos7-$STABLE_RELEASE/delorean-deps.repo
         sudo sed -i -e 's%priority=.*%priority=30%' $REPO_PREFIX/delorean-deps.repo
         sudo sed -i -e "s~http://mirror.centos.org/centos~$NODEPOOL_CENTOS_MIRROR~" $REPO_PREFIX/delorean-deps.repo
+        sudo sed -i -e "s~https://buildlogs.centos.org~$NODEPOOL_BUILDLOGS_CENTOS_PROXY~" $REPO_PREFIX/delorean-deps.repo
         cat $REPO_PREFIX/delorean-deps.repo
 
         # Enable delorean current for the stable version
