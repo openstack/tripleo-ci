@@ -31,7 +31,6 @@ if command -v docker && systemctl is-active docker; then
             $cmd >> $INFO_FILE
         done
         docker logs $cont > $INFO_DIR/stdout.log
-        docker cp $cont:/etc $INFO_DIR/etc
         docker cp $cont:/var/lib/kolla/config_files/config.json $INFO_DIR/config.json
         # NOTE(flaper87): This should go away. Services should be
         # using a `logs` volume
@@ -42,6 +41,7 @@ if command -v docker && systemctl is-active docker; then
         # not useful
         find $INFO_DIR -type l -delete
     done
+    cp -r /var/lib/config-data/puppet-generated /var/log/config-data
 
     if [[ -d /var/lib/docker/volumes/logs/_data ]]; then
         cp -r /var/lib/docker/volumes/logs/_data $BASE_DOCKER_EXTRA/logs
