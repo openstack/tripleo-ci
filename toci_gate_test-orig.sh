@@ -154,12 +154,6 @@ elif [[ "$TOCI_JOBTYPE" =~ "periodic" && "$TOCI_JOBTYPE" =~ "-nonha" ]]; then
     UNDERCLOUD_IDEMPOTENT=1
 fi
 
-# Test version of ssh package for bug https://bugzilla.redhat.com/show_bug.cgi?id=1415218
-rpm -q wget || sudo yum install -y wget
-http_proxy= wget -P /tmp -T 60 --tries=3 --progress=dot:mega http://66.187.229.139/test/openssh-6.6.1p1-33.el7.x86_64.rpm
-http_proxy= wget -P /tmp -T 60 --tries=3 --progress=dot:mega http://66.187.229.139/test/openssh-server-6.6.1p1-33.el7.x86_64.rpm
-sudo rpm -ivh --force /tmp/openssh-6.6.1p1-33.el7.x86_64.rpm /tmp/openssh-server-6.6.1p1-33.el7.x86_64.rpm
-
 # start dstat early
 # TODO add it to the gate image building
 rpm -q dstat nmap-ncat || sudo yum install -y dstat nmap-ncat #nc is for metrics
