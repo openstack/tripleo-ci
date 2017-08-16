@@ -36,7 +36,10 @@ if command -v docker && systemctl is-active docker; then
         # using a `logs` volume
         # Removing the following line as openstack infra needs our log size reduced
         # docker cp $cont:/var/log $INFO_DIR/log
-
+        # NOTE(gfidente): Just copy Ceph
+        if docker exec --user root $cont stat /var/log/ceph > /dev/null; then
+            docker cp $cont:/var/log/ceph $INFO_DIR/log
+        fi
         # Delete symlinks because they break log collection and are generally
         # not useful
         find $INFO_DIR -type l -delete
