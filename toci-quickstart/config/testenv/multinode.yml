@@ -10,6 +10,8 @@ extra_args: >
 # undercloud deployment
 undercloud_docker_registry_mirror: "{{ lookup('env','NODEPOOL_DOCKER_REGISTRY_PROXY') }}"
 
+dlrn_use_local_mirrors: true
+
 composable_roles: true
 overcloud_roles:
   - name: Controller
