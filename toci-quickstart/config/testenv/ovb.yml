@@ -9,6 +9,7 @@ undercloud_ironic_ipxe_port: 3816
 non_root_user_setup: false
 step_set_undercloud_hostname: true
 undercloud_hostname: undercloud
+undercloud_docker_registry_mirror: "{{ lookup('env','NODEPOOL_DOCKER_REGISTRY_PROXY') }}"
 
 skip_pingtest_cleanup: true
 # Overcloud deploy

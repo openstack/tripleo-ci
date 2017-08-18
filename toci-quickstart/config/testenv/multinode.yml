@@ -7,6 +7,9 @@ extra_args: >
     -e /usr/share/openstack-tripleo-heat-templates/environments/debug.yaml
     --overcloud-ssh-user {{ undercloud_user }}
 
+# undercloud deployment
+undercloud_docker_registry_mirror: "{{ lookup('env','NODEPOOL_DOCKER_REGISTRY_PROXY') }}"
+
 composable_roles: true
 overcloud_roles:
   - name: Controller
