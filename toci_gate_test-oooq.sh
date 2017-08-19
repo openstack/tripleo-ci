@@ -57,11 +57,6 @@ sudo rm -f /etc/yum.repos.d/epel*
 # Clean any cached yum metadata, it maybe stale
 sudo yum clean all
 
-# Install additional packages
-rpm -q qemu-img || \
-    sudo yum install -y \
-        qemu-img # used by multinode to create empty image
-
 # NOTE(pabelanger): Current hack to make centos-7 dib work.
 # TODO(pabelanger): Why is python-requests installed from pip?
 # TODO(amoralej): remove after https://review.openstack.org/#/c/468872/ is merged
@@ -238,7 +233,7 @@ else
     undercloud_haproxy_admin_ip=$undercloud_net_range"3"
     export no_proxy=$undercloud_services_ip,$undercloud_haproxy_public_ip,$undercloud_haproxy_admin_ip,$MY_IP,$MY_IP_eth1
 
-    qemu-img create -f qcow2 $HOME/overcloud-full.qcow2 1G
+
 
     # multinode bootstrap script
     export DO_BOOTSTRAP_SUBNODES=${DO_BOOTSTRAP_SUBNODES:-1}
