@@ -34,8 +34,14 @@ if [ -f /etc/nodepool/provider ] ; then
     export EPEL_MIRROR=http://$NODEPOOL_MIRROR_HOST/epel
 
     # host setup
+    export RHCLOUD=''
     if [ $NODEPOOL_CLOUD == 'tripleo-test-cloud-rh1' ]; then
-        source $(dirname $0)/scripts/rh1.env
+        RHCLOUD='rh1'
+    elif [ $NODEPOOL_PROVIDER == 'rdo-cloud-tripleo' ]; then
+        RHCLOUD='rdocloud'
+    fi
+    if [ $RHCLOUD != '' ]; then
+        source $(dirname $0)/scripts/$RHCLOUD.env
 
         # In order to save space remove the cached git repositories, at this point in
         # CI the ones we are interested in have been cloned to /opt/stack/new. We
@@ -125,6 +131,9 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
             UCINSTANCEID=$(http_proxy= curl http://169.254.169.254/openstack/2015-10-15/meta_data.json | python -c 'import json, sys; print json.load(sys.stdin)["uuid"]')
             PLAYBOOK="ovb.yml"
             ENV_VARS="$ENV_VARS --environment $TRIPLEO_ROOT/tripleo-ci/toci-quickstart/config/testenv/ovb.yml"
+            if [[ -f  "$TRIPLEO_ROOT/tripleo-ci/toci-quickstart/config/testenv/ovb-$RHCLOUD.yml" ]]; then
+                ENV_VARS="$ENV_VARS --extra-vars @$TRIPLEO_ROOT/tripleo-ci/toci-quickstart/config/testenv/ovb-$RHCLOUD.yml"
+            fi
             UNDERCLOUD="undercloud"
         ;;
         multinode)

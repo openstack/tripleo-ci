@@ -1,8 +1,12 @@
 #!/bin/bash
+source /etc/nodepoolrc
 
 # Keep X number of testenv workers running, each testenv worker exists after processing a single job
 BASEPATH=$(realpath $(dirname $0)/../..)
 ENVFILE=$BASEPATH/scripts/rh1.env
+if [[ $NODEPOOL_PROVIDER == "rdo-cloud-tripleo" ]]; then
+    ENVFILE=$BASEPATH/scripts/rdocloud.env
+fi
 
 
 TENUM=0

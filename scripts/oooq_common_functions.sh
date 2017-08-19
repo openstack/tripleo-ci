@@ -29,5 +29,5 @@ function previous_release_from {
 function is_featureset_mixed_upgrade {
     local FEATURESET_FILE="$1"
 
-    [ $(shyaml get-value mixed_upgrade < $FEATURESET_FILE) = "True" ]
+    [ $(shyaml get-value mixed_upgrade "False"< $FEATURESET_FILE) = "True" ]
 }
