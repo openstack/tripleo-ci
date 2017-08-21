@@ -2,8 +2,8 @@
 # These settings will override the ovb default settings
 
 bmc_flavor: ci.m1.small
-baremetal_flavor: ci.m1.large
-undercloud_flavor: ci.m1.large
+baremetal_flavor: ci.m1.xlarge
+undercloud_flavor: ci.m1.xlarge
 
 custom_nameserver:
     - 38.145.33.91
