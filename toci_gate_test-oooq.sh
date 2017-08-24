@@ -178,7 +178,7 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
         ;;
         periodic)
             PERIODIC=1
-            if [[ -z $DELOREAN_LINK ]]; then
+            if [[ -z ${DELOREAN_LINK:-''} ]]; then
                 QUICKSTART_RELEASE="consistent-${QUICKSTART_RELEASE}"
             else
                 QUICKSTART_RELEASE="promotion-testing-hash-${QUICKSTART_RELEASE}"
