@@ -12,8 +12,15 @@ export HASH_PATH=$(grep -o -E '[a-f0-9]{2}/[a-f0-9]{2}/[0-9a-f]{40}_[0-9a-f]{8}'
 export COMMIT_HASH=$(awk -F_ '{print $1}' <<<$FULL_HASH)
 delorean_commit_url="https://trunk.rdoproject.org/centos7-$RELEASE/$HASH_PATH/commit.yaml"
 export DISTRO_HASH=$(curl $delorean_commit_url | awk -F": " '/distro_hash/ {print $2}')
+export DLRNAPI_URL="https://trunk.rdoproject.org/api-centos-$RELEASE"
+if [ "$RELEASE" = "master" ]; then
+    # for master we have two DLRN builders, use the "upper constraint" one that
+    # places restrictions on the maximum version of all dependencies
+    export DLRNAPI_URL="${DLRNAPI_URL}-uc"
+fi
 
 cat > /tmp/hash_info.sh << EOF
+export DLRNAPI_URL=$DLRNAPI_URL
 export RELEASE=$RELEASE
 export HASH_PATH=$HASH_PATH
 export FULL_HASH=$FULL_HASH
@@ -38,7 +45,7 @@ cat > /tmp/hash_label.yml << EOF
   tasks:
     - dlrn_api:
         action: repo-promote
-        host: "https://trunk.rdoproject.org/api-centos-{{ lookup('env', 'RELEASE') }}-uc"
+        host: "{{ lookup('env', 'DLRNAPI_URL') }}"
         user: "review_rdoproject_org"
         password: "{{ lookup('env', 'DLRNAPI_PASSWD') }}"
         commit_hash: "{{ lookup('env', 'COMMIT_HASH') }}"
