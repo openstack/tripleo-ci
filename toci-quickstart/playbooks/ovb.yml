@@ -51,9 +51,9 @@
   roles:
     - { role: fetch-images, when: not to_build|bool }
     - { role: repo-setup, repo_inject_image_path: "$HOME/overcloud-full.qcow2", repo_run_live: false, when: not to_build|bool }
-    # TODO:(sshnaidm) Support update of initramfs image https://bugs.launchpad.net/tripleo/+bug/1677275
-    # - { role: repo-setup, repo_inject_image_path: "$HOME/ironic-python-agent.initramfs", repo_run_live: false }
-    - { role: install-built-repo, when: compressed_gating_repo is defined and not to_build|bool }
+    - { role: repo-setup, repo_inject_image_path: "$HOME/ironic-python-agent.initramfs", repo_run_live: false, initramfs_image: true }
+    - { role: install-built-repo, ib_repo_image_path: "$HOME/overcloud-full.qcow2", when: compressed_gating_repo is defined and not to_build|bool }
+    - { role: install-built-repo, ib_repo_image_path: "$HOME/ironic-python-agent.initramfs", initramfs_image: true, when: compressed_gating_repo is defined and not to_build|bool }
 
 # Deploy the undercloud
 - name:  Install undercloud
