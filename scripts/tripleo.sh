@@ -109,7 +109,7 @@ if [ -f "$TRIPLEO_ROOT/tripleo-ci/deploy.env" ]; then
 fi
 
 ALL=${ALL:-""}
-CONTAINER_ARGS=${CONTAINER_ARGS:-"-e /usr/share/openstack-tripleo-heat-templates/environments/docker.yaml -e /usr/share/openstack-tripleo-heat-templates/environments/docker-network.yaml --libvirt-type=qemu"}
+CONTAINER_ARGS=${CONTAINER_ARGS:-"-e /usr/share/openstack-tripleo-heat-templates/environments/docker.yaml --libvirt-type=qemu"}
 STABLE_RELEASE=${STABLE_RELEASE:-}
 REVIEW_RELEASE=${REVIEW_RELEASE:-}
 UPGRADE_RELEASE=${UPGRADE_RELEASE:-""}
