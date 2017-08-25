@@ -121,7 +121,7 @@ if [[ "$PERIODIC" == 1 && -e /tmp/hash_info.sh ]] ; then
   tasks:
     - dlrn_api:
         action: report-result
-        host: "https://trunk.rdoproject.org/api-centos-{{ lookup('env', 'RELEASE') }}-uc"
+        host: "{{ lookup('env', 'DLRNAPI_URL') }}"
         user: "review_rdoproject_org"
         password: "{{ lookup('env', 'DLRNAPI_PASSWD') }}"
         commit_hash: "{{ lookup('env', 'COMMIT_HASH') }}"
