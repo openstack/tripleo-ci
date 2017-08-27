@@ -35,23 +35,14 @@ cp /tmp/hash_info.sh $WORKSPACE/logs
 virtualenv --system-site-packages /tmp/delorean
 source /tmp/delorean/bin/activate
 pip install ansible==2.3.0.0 dlrnapi_client
-export ANSIBLE_LIBRARY=/usr/lib/python2.7/site-packages/dlrnapi_client/ansible:$VIRTUAL_ENV/lib/python2.7/site-packages/dlrnapi_client/ansible
 
-# dlrn API cannot be used from CLI until https://github.com/javierpena/dlrnapi_client/pull/2 merges
-# (otherwise the password will be shown)
-cat > /tmp/hash_label.yml << EOF
-- name: Assign label to latest hash using the DLRN API
-  hosts: localhost
-  tasks:
-    - dlrn_api:
-        action: repo-promote
-        host: "{{ lookup('env', 'DLRNAPI_URL') }}"
-        user: "review_rdoproject_org"
-        password: "{{ lookup('env', 'DLRNAPI_PASSWD') }}"
-        commit_hash: "{{ lookup('env', 'COMMIT_HASH') }}"
-        distro_hash: "{{ lookup('env', 'DISTRO_HASH') }}"
-        promote_name: "{{ lookup('env', 'PROMOTE_NAME') }}"
-EOF
-ansible-playbook -i localhost -vv /tmp/hash_label.yml
+# Assign label to latest hash using the DLRN API
+dlrnapi --url $DLRNAPI_URL \
+    --username review_rdoproject_org \
+    repo-promote \
+    --commit-hash $COMMIT_HASH \
+    --distro-hash $DISTRO_HASH \
+    --promote-name $PROMOTE_NAME
+
 deactivate
 echo ======== PREPARE HASH PROMOTION COMPLETED
