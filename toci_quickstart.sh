@@ -111,29 +111,16 @@ if [[ "$PERIODIC" == 1 && -e /tmp/hash_info.sh ]] ; then
     echo "REPORTING SUCCESS TO DLRN API"
     source /tmp/hash_info.sh
     sudo pip install dlrnapi-client
-    export ANSIBLE_LIBRARY=/usr/lib/python2.7/site-packages/dlrnapi_client/ansible
-
-    # dlrn API cannot be used from CLI until https://github.com/javierpena/dlrnapi_client/pull/2 merges
-    # (otherwise the password will be shown)
-    cat > /tmp/report-status.yml << EOF
-- name: Assign label to latest hash using the DLRN API
-  hosts: localhost
-  tasks:
-    - dlrn_api:
-        action: report-result
-        host: "{{ lookup('env', 'DLRNAPI_URL') }}"
-        user: "review_rdoproject_org"
-        password: "{{ lookup('env', 'DLRNAPI_PASSWD') }}"
-        commit_hash: "{{ lookup('env', 'COMMIT_HASH') }}"
-        distro_hash: "{{ lookup('env', 'DISTRO_HASH') }}"
-        job_id: "{{ lookup('env', 'TOCI_JOBTYPE') }}"
-        info_url: "https://logs.rdoproject.org/{{ lookup('env', 'LOG_PATH') }}"
-        timestamp: "{{ ansible_date_time.epoch }}"
-        success: true
-EOF
-    ansible-playbook -i localhost -vv /tmp/report-status.yml
+    dlrnapi --url $DLRNAPI_URL \
+        --username review_rdoproject_org \
+        report-result \
+        --commit-hash $COMMIT_HASH \
+        --distro-hash $DISTRO_HASH \
+        --job-id $TOCI_JOBTYPE \
+        --info-url "https://logs.rdoproject.org/${LOG_PATH}" \
+        --timestamp $(date +%s) \
+        --success "true"
 fi
-
 
 echo 'Quickstart completed.'
 exit $exit_value
