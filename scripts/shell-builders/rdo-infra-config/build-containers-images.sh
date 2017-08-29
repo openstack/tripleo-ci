@@ -23,9 +23,11 @@ cat << EOF > $WORKSPACE/playbook.yml
   become: yes
   become_user: root
   vars:
+    kolla_namespace: "$RELEASE"
     kolla_push: true
     kolla_tag: "$TESTING_TAG"
-    trunk_repository: "https://trunk.rdoproject.org/centos7-master/tripleo-ci-testing/delorean.repo"
+    openstack_release: "$RELEASE"
+    trunk_repository: "https://trunk.rdoproject.org/centos7-$RELEASE/$TESTING_TAG/delorean.repo"
   tasks:
     - include_role:
         name: "rdo-kolla-build"
