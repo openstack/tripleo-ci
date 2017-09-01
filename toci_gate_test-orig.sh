@@ -120,12 +120,14 @@ if [[ $TOCI_JOBTYPE =~ upgrades ]]; then
     # We deploy a master Undercloud and an Overcloud with the
     # previous release. The pingtest is disable because it won't
     # work with the few services deployed.
-    if [ "$STABLE_RELEASE" = "pike" ]; then
+    if [ "$STABLE_RELEASE" = "queens" ]; then
+        UPGRADE_RELEASE=pike
+    elif [ "$STABLE_RELEASE" = "pike" ]; then
         UPGRADE_RELEASE=ocata
     elif [ "$STABLE_RELEASE" = "ocata" ]; then
         UPGRADE_RELEASE=newton
     elif [ -z $STABLE_RELEASE ]; then
-        UPGRADE_RELEASE=ocata
+        UPGRADE_RELEASE=pike
     fi
 fi
 
