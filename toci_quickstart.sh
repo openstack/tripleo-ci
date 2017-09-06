@@ -107,9 +107,9 @@ popd
 # -L, --dereference     dereference all symbolic links
 du -L -ch $LOGS_DIR/* | sort -rh | head -n 200 &> $LOGS_DIR/log-size.txt || true
 
-if [[ "$PERIODIC" == 1 && -e /tmp/hash_info.sh ]] ; then
+if [[ "$PERIODIC" == 1 && -e $WORKSPACE/hash_info.sh ]] ; then
     echo "REPORTING SUCCESS TO DLRN API"
-    source /tmp/hash_info.sh
+    source $WORKSPACE/hash_info.sh
     sudo pip install dlrnapi-client
     dlrnapi --url $DLRNAPI_URL \
         --username review_rdoproject_org \
