@@ -69,6 +69,17 @@
   roles:
     - undercloud-deploy
 
+- name: Configure tripleo-validations
+  hosts: undercloud
+  gather_facts: no
+  tags:
+    - tripleo-validations
+  vars:
+    run_tripleo_validations_setup: True
+  roles:
+    - { role: tripleo-validations,
+        when: run_tripleo_validations|bool or run_tripleo_validations_negative_tests|bool}
+
 - name: Validate the undercloud
   hosts: undercloud
   roles:
@@ -90,6 +101,17 @@
   roles:
     - { role: overcloud-prep-images, step_overcloud_image: false, step_glance_upload: true, step_register: false }
 
+- name: Run tripleo-validations pre-introspection tests
+  hosts: undercloud
+  gather_facts: no
+  tags:
+    - tripleo-validations
+  vars:
+    validations_group: ['pre-introspection']
+  roles:
+    - { role: tripleo-validations,
+        when: run_tripleo_validations|bool or run_tripleo_validations_negative_tests|bool}
+
 - name: Prepare for containerized deployment
   hosts: undercloud
   gather_facts: no
@@ -98,6 +120,17 @@
   roles:
     - role: overcloud-prep-containers
       when: containerized_overcloud|bool or containerized_overcloud_upgrade|bool
+
+- name: Run tripleo-validations pre-deployment tests
+  hosts: undercloud
+  gather_facts: no
+  tags:
+    - tripleo-validations
+  vars:
+    validations_group: ['pre-deployment']
+  roles:
+    - { role: tripleo-validations,
+        when: run_tripleo_validations|bool or run_tripleo_validations_negative_tests|bool}
 
 - name: Deploy the overcloud
   hosts: undercloud
@@ -119,6 +152,17 @@
     - name: did the deployment pass or fail?
       debug: var=overcloud_deploy_result
       failed_when: overcloud_deploy_result == "failed"
+
+- name: Run tripleo-validations post-deployment tests
+  hosts: undercloud
+  gather_facts: no
+  tags:
+    - tripleo-validations
+  vars:
+    validations_group: ['post-deployment']
+  roles:
+    - { role: tripleo-validations,
+        when: run_tripleo_validations|bool or run_tripleo_validations_negative_tests|bool}
 
 - name: Set up repos on subnodes for upgrading
   hosts: overcloud
