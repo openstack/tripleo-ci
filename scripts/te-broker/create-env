@@ -106,12 +106,14 @@ while ! heat stack-show baremetal_${ENVNUM} | grep CREATE_COMPLETE ; do
     fi
 done
 
+undercloud_networks="$PROVISIONNET"
 nova interface-attach --net-id $(neutron net-show -F id -f value $PROVISIONNET) $UCINSTANCE
 if [ $NETISO != 'none' ]; then
     nova interface-attach --net-id $(neutron net-show -F id -f value $PUBLICNET) $UCINSTANCE
+    undercloud_networks="$undercloud_networks $PUBLICNET"
 fi
 
-for PORT_SECURITY_NET in $PROVISIONNET $PUBLICNET; do
+for PORT_SECURITY_NET in $undercloud_networks; do
     neutron port-update $(openstack port list --network $PORT_SECURITY_NET --server $UCINSTANCE -f value -c ID) \
     --no-security-groups --port-security-enabled=False
 done
