@@ -266,7 +266,7 @@ else
     if [ "$DO_BOOTSTRAP_SUBNODES" = "1" ]; then
         $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh \
             --bootstrap-subnodes \
-            2>&1 | sudo dd of=/var/log/bootstrap-subnodes.log \
+            2>&1 | awk '{ print strftime("%Y-%m-%d %H:%M:%S |"), $0; fflush(); }' | sudo tee /var/log/bootstrap-subnodes.log \
             || (tail -n 50 /var/log/bootstrap-subnodes.log && false)
     fi
 
