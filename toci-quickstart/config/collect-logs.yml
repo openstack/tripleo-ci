@@ -92,6 +92,7 @@ artcl_collect_list:
   - /etc/modprobe.d/
   - /etc/mongo*
   - /etc/my.cnf*
+  - /etc/my.cnf.d/
   - /etc/networks*
   - /etc/neutron/
   - /etc/nodepool/
