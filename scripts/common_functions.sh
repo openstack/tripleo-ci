@@ -110,16 +110,6 @@ function update_image(){
     sudo rm -f $MOUNTDIR/etc/yum.repos.d/epel*
     sudo chroot $MOUNTDIR /bin/yum clean all
     sudo chroot $MOUNTDIR /bin/yum update -y
-    # FIXME(jaosorior): cloud-init that's currently in CentOS has a bug that
-    # doesn't run scripts as needed in the novajoin case. The newest cloud-init
-    # has a bug that doesn't allow it to run alongside os-collect-config. So we
-    # need a specific version. We need to remove this once the base version has
-    # the fix we need. https://bugzilla.redhat.com/show_bug.cgi?id=1420946
-    if [ "$CA_SERVER" == "1" ] ; then
-        http_proxy= wget -P /tmp -T 60 --tries=3 --progress=dot:mega http://66.187.229.139/test/cloud-init-0.7.6-9.el7.x86_64.rpm
-        sudo cp /tmp/cloud-init-0.7.6-9.el7.x86_64.rpm $MOUNTDIR/root
-        sudo chroot $MOUNTDIR /bin/yum install -y /root/cloud-init-0.7.6-9.el7.x86_64.rpm
-    fi
     sudo rm -f $MOUNTDIR/etc/yum.repos.d/delorean*
     sudo mv -f $MOUNTDIR/etc/resolv.conf{_,}
 
