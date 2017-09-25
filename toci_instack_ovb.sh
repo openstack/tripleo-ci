@@ -116,21 +116,4 @@ REMAINING_TIME=${REMAINING_TIME:-180}
 TIME_FOR_DEPLOY=$(( REMAINING_TIME - ($(date +%s) - START_JOB_TIME)/60 - 10 ))
 /usr/bin/timeout --preserve-status ${TIME_FOR_DEPLOY}m $TRIPLEO_ROOT/tripleo-ci/scripts/deploy.sh
 
-if [[ $CACHEUPLOAD == 1 && can_promote ]] ; then
-    # Get the IPA and overcloud images for caching
-    tar -C ~ -cf - ironic-python-agent.initramfs ironic-python-agent.vmlinuz ironic-python-agent.kernel > ipa_images.tar
-    tar -C ~ -cf - overcloud-full.qcow2 overcloud-full.initrd overcloud-full.vmlinuz > overcloud-full.tar
-
-    md5sum overcloud-full.tar > overcloud-full.tar.md5
-    md5sum ipa_images.tar > ipa_images.tar.md5
-
-    UPLOAD_FOLDER=builds${STABLE_RELEASE:+-$STABLE_RELEASE}
-    curl http://$MIRRORSERVER/cgi-bin/upload.cgi  -F "repohash=$TRUNKREPOUSED" -F "folder=$UPLOAD_FOLDER" -F "upload=@ipa_images.tar;filename=ipa_images.tar"
-    curl http://$MIRRORSERVER/cgi-bin/upload.cgi  -F "repohash=$TRUNKREPOUSED" -F "folder=$UPLOAD_FOLDER" -F "upload=@overcloud-full.tar;filename=overcloud-full.tar"
-    # TODO(pabelanger): Remove qcow2 format, since centos-7 cannot mount nbd with the default kernel.
-    curl http://$MIRRORSERVER/cgi-bin/upload.cgi  -F "repohash=$TRUNKREPOUSED" -F "folder=$UPLOAD_FOLDER" -F "upload=@ipa_images.tar.md5;filename=ipa_images.tar.md5"
-    curl http://$MIRRORSERVER/cgi-bin/upload.cgi  -F "repohash=$TRUNKREPOUSED" -F "folder=$UPLOAD_FOLDER" -F "upload=@overcloud-full.tar.md5;filename=overcloud-full.tar.md5"
-    curl http://$MIRRORSERVER/cgi-bin/upload.cgi  -F "repohash=$TRUNKREPOUSED" -F "folder=$UPLOAD_FOLDER" -F "$JOB_NAME=SUCCESS"
-fi
-
 echo 'Run completed.'
