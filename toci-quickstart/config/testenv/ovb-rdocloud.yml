@@ -13,3 +13,7 @@ undercloud_undercloud_nameservers: "{{ custom_nameserver }}"
 external_net: '38.145.32.0/22'
 overcloud_dns_servers: "{{ custom_nameserver }}"
 ntp_server: 'pool.ntp.org'
+workers_args: >-
+    -e {{ overcloud_templates_path }}/environments/low-memory-usage.yaml
+    -e {{ tripleo_root }}/tripleo-ci/test-environments/worker-config.yaml
+    -e {{ overcloud_templates_path }}/environments/debug.yaml
