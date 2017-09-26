@@ -4,6 +4,10 @@ ssh_user: "{{ undercloud_user }}"
 enable_vbmc: false
 gating_repo_enabled: true
 
+workers_args: >-
+    -e {{ overcloud_templates_path }}/environments/low-memory-usage.yaml
+    -e {{ tripleo_root }}/tripleo-ci/test-environments/worker-config.yaml
+    -e {{ overcloud_templates_path }}/environments/debug.yaml
 # Undercloud setup
 undercloud_ironic_ipxe_port: 3816
 non_root_user_setup: false
