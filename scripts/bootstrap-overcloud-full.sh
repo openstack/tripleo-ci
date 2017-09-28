@@ -69,7 +69,6 @@ tripleo-build-images \
   | sed 's/"//g')
 fi
 
-
 # delorean-repo is excluded b/c we've already run --repo-setup on this node and
 # we don't want to overwrite that.
 sudo -E instack \
@@ -87,6 +86,11 @@ sudo -E instack \
      00-usr-local-bin-secure-path \
   -x delorean-repo \
   -d
+
+# In the imported elements we have remove-machine-id.  In multinode
+# jobs that could mean we end up without /etc/machine-id.  Make sure
+# we have one.
+[ -e /etc/machine-id ] || sudo -E systemd-machine-id-setup
 
 if [[ "${STABLE_RELEASE}" = "mitaka" ]] ; then
 PACKAGES=$(\
