@@ -133,7 +133,9 @@ function check_cmd {
         exit 0
     elif [[ -n "$FAIL_MATCH_OUTPUT" ]] \
         && [[ $OUTPUT =~ $FAIL_MATCH_OUTPUT ]]; then
-        echo "Command output matched '$FAIL_MATCH_OUTPUT'. Exiting..."
+        echo "Command output matched '$FAIL_MATCH_OUTPUT'. Here is the complete output failure:"
+        echo "${OUTPUT}"
+        echo "Exiting ..."
         exit 1
     elif [[ -z "$SUCCESSFUL_MATCH_OUTPUT" ]] && [[ $STATUS -eq 0 ]]; then
         # The command successfully completed and we aren't testing against
