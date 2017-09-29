@@ -10,26 +10,26 @@ import datetime
 # Do not include the -nv suffix in the job name here.  The code will handle
 # reading both the voting and non-voting forms of the job if they exist.
 DEFAULT_JOB_NAMES = [
-    'gate-tripleo-ci-centos-7-ovb-ha-oooq',
-    'gate-tripleo-ci-centos-7-ovb-1ctlr_1comp_1ceph-featureset024',
-    'gate-tripleo-ci-centos-7-nonha-multinode-oooq',
-    'gate-tripleo-ci-centos-7-scenario001-multinode-oooq',
-    'gate-tripleo-ci-centos-7-scenario002-multinode-oooq',
-    'gate-tripleo-ci-centos-7-scenario003-multinode-oooq',
-    'gate-tripleo-ci-centos-7-scenario004-multinode-oooq',
-    'gate-tripleo-ci-centos-7-scenario001-multinode-upgrades',
-    'gate-tripleo-ci-centos-7-scenario002-multinode-upgrades',
-    'gate-tripleo-ci-centos-7-scenario003-multinode-upgrades',
-    'gate-tripleo-ci-centos-7-scenario004-multinode-upgrades',
-    'gate-tripleo-ci-centos-7-undercloud-oooq',
-    'gate-tripleo-ci-centos-7-3nodes-multinode',
-    'gate-tripleo-ci-centos-7-multinode-upgrades',
-    'gate-tripleo-ci-centos-7-undercloud-upgrades',
-    'gate-tripleo-ci-centos-7-undercloud-containers',
-    'gate-tripleo-ci-centos-7-containers-multinode',
-    'gate-tripleo-ci-centos-7-containers-multinode-upgrades',
-    'gate-tripleo-ci-centos-7-ovb-containers-oooq',
-    'gate-tripleo-ci-centos-7-ovb-fakeha-caserver',
+    'legacy-tripleo-ci-centos-7-ovb-ha-oooq',
+    'legacy-tripleo-ci-centos-7-ovb-1ctlr_1comp_1ceph-featureset024',
+    'legacy-tripleo-ci-centos-7-nonha-multinode-oooq',
+    'legacy-tripleo-ci-centos-7-scenario001-multinode-oooq',
+    'legacy-tripleo-ci-centos-7-scenario002-multinode-oooq',
+    'legacy-tripleo-ci-centos-7-scenario003-multinode-oooq',
+    'legacy-tripleo-ci-centos-7-scenario004-multinode-oooq',
+    'legacy-tripleo-ci-centos-7-scenario001-multinode-upgrades',
+    'legacy-tripleo-ci-centos-7-scenario002-multinode-upgrades',
+    'legacy-tripleo-ci-centos-7-scenario003-multinode-upgrades',
+    'legacy-tripleo-ci-centos-7-scenario004-multinode-upgrades',
+    'legacy-tripleo-ci-centos-7-undercloud-oooq',
+    'legacy-tripleo-ci-centos-7-3nodes-multinode',
+    'legacy-tripleo-ci-centos-7-multinode-upgrades',
+    'legacy-tripleo-ci-centos-7-undercloud-upgrades',
+    'legacy-tripleo-ci-centos-7-undercloud-containers',
+    'legacy-tripleo-ci-centos-7-containers-multinode',
+    'legacy-tripleo-ci-centos-7-containers-multinode-upgrades',
+    'legacy-tripleo-ci-centos-7-ovb-containers-oooq',
+    'legacy-tripleo-ci-centos-7-ovb-fakeha-caserver',
 ]
 
 DEFAULT_PROJECTS = [
@@ -78,15 +78,12 @@ def get_jenkins_comment_message(review):
     jenkins_messages = {}
     for comment in review['comments']:
         if 'name' in comment['reviewer']:
-            if comment['reviewer']['name'] == 'Jenkins':
+            if comment['reviewer']['name'] == 'Zuul':
                 if "NOT_REGISTERED" in comment['message']:
                     continue
                 # NOTE(bnemec): For some reason the experimental-tripleo
                 # message does not include "pipeline".
-                if ("check-tripleo pipeline" not in comment['message'] and
-                        "check pipeline" not in comment['message'] and
-                        "experimental-tripleo" not in comment['message'] and
-                        "gate pipeline" not in comment['message']):
+                if ('tripleo-ci' not in comment['message']):
                     continue
                 jenkins_messages[comment['timestamp']] = comment['message']
     return jenkins_messages
@@ -117,7 +114,7 @@ def gen_html(data, html_file, table_file, stats_hours, job_names, options):
     fp.write("<tr class='headers'><td>&nbsp;</td>")
     for job_name in job_names:
         fp.write("<td class='headers'><b>%s</b></td>" %
-                 job_name.replace("gate-tripleo-ci-centos-7-", ""))
+                 job_name.replace("legacy-tripleo-ci-centos-7-", ""))
     fp.write("</tr>")
     count = 0
 
