@@ -468,8 +468,8 @@ if [ "$OVERCLOUD_MAJOR_UPGRADE" == 1 ] ; then
     # Re-enable the delorean-ci repo, as ZUUL_REFS,
     # and thus the contents of delorean-ci may contain packages
     # we want to test for the current branch on upgrade
-    if [ -s /etc/nodepool/sub_nodes ]; then
-      for ip in $(cat /etc/nodepool/sub_nodes); do
+    if [ -s /etc/nodepool/sub_nodes_private ]; then
+      for ip in $(cat /etc/nodepool/sub_nodes_private); do
         ssh $SSH_OPTIONS -tt -i /etc/nodepool/id_rsa $ip \
           sudo sed -i -e \"s/enabled=0/enabled=1/\" /etc/yum.repos.d/delorean-ci.repo
       done

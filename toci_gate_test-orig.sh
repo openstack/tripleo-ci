@@ -290,12 +290,12 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
                 NODECOUNT=2
                 PACEMAKER=1
                 OVERCLOUD_ROLES="ControllerApi Controller"
-                export ControllerApi_hosts=$(sed -n 1,1p /etc/nodepool/sub_nodes)
-                export Controller_hosts=$(sed -n 2,2p /etc/nodepool/sub_nodes)
+                export ControllerApi_hosts=$(sed -n 1,1p /etc/nodepool/sub_nodes_private)
+                export Controller_hosts=$(sed -n 2,2p /etc/nodepool/sub_nodes_private)
                 OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS -e /usr/share/openstack-tripleo-heat-templates/environments/puppet-pacemaker.yaml -e /usr/share/openstack-tripleo-heat-templates/environments/deployed-server-environment.yaml -e $TRIPLEO_ROOT/tripleo-ci/test-environments/multinode-3nodes.yaml --compute-scale 0 --overcloud-ssh-user $OVERCLOUD_SSH_USER --validation-errors-nonfatal -r /usr/share/openstack-tripleo-heat-templates/ci/environments/multinode-3nodes.yaml"
             else
                 NODECOUNT=1
-                CONTROLLER_HOSTS=$(sed -n 1,1p /etc/nodepool/sub_nodes)
+                CONTROLLER_HOSTS=$(sed -n 1,1p /etc/nodepool/sub_nodes_private)
                 OVERCLOUD_DEPLOY_ARGS="$OVERCLOUD_DEPLOY_ARGS -e /usr/share/openstack-tripleo-heat-templates/environments/deployed-server-environment.yaml -e $MULTINODE_ENV_PATH --compute-scale 0 --overcloud-ssh-user $OVERCLOUD_SSH_USER --validation-errors-nonfatal"
             fi
 

@@ -79,8 +79,8 @@ source $TRIPLEO_ROOT/tripleo-ci/deploy.env
 # TODO: remove later, this is for live debugging
 sudo cat /etc/nodepool/*
 
-if [ -s /etc/nodepool/sub_nodes ]; then
-    for ip in $(cat /etc/nodepool/sub_nodes); do
+if [ -s /etc/nodepool/sub_nodes_private ]; then
+    for ip in $(cat /etc/nodepool/sub_nodes_private); do
         sanitized_address=$(sanitize_ip_address $ip)
         ssh $SSH_OPTIONS -tt -i /etc/nodepool/id_rsa $ip \
             sudo yum remove -y facter puppet hiera puppetlabs-release rdo-release centos-release-[a-z]*
@@ -123,8 +123,8 @@ if [ -s /etc/nodepool/sub_nodes ]; then
         # Disable the delorean-ci repo for the initial overcloud deploy, as
         # ZUUL_REFS, and thus the contents of delorean-ci can only reference
         # patches for the current branch, not UPGRADE_RELEASE
-        if [ -s /etc/nodepool/sub_nodes ]; then
-          for ip in $(cat /etc/nodepool/sub_nodes); do
+        if [ -s /etc/nodepool/sub_nodes_private ]; then
+          for ip in $(cat /etc/nodepool/sub_nodes_private); do
             ssh $SSH_OPTIONS -tt -i /etc/nodepool/id_rsa $ip \
               sudo sed -i -e \"s/enabled=1/enabled=0/\" /etc/yum.repos.d/delorean-ci.repo
           done
@@ -144,7 +144,7 @@ if [ -s /etc/nodepool/sub_nodes ]; then
 127.0.0.1 localhost localhost.localdomain localhost4 localhost4.localdomain4
 ::1        localhost localhost.localdomain localhost6 localhost6.localdomain6
 EOF
-    for ip in $(cat /etc/nodepool/sub_nodes); do
+    for ip in $(cat /etc/nodepool/sub_nodes_private); do
         sanitized_address=$(sanitize_ip_address $ip)
         scp $SSH_OPTIONS -i /etc/nodepool/id_rsa $hosts ${sanitized_address}:hosts
         ssh $SSH_OPTIONS -tt -i /etc/nodepool/id_rsa $ip \

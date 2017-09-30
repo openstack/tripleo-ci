@@ -35,12 +35,12 @@ if [ -f /etc/nodepool/provider ] ; then
 
     # host setup
     export RHCLOUD=''
-    if [ $NODEPOOL_CLOUD == 'tripleo-test-cloud-rh1' ]; then
+    if [ ${NODEPOOL_CLOUD:-''} == 'tripleo-test-cloud-rh1' ]; then
         RHCLOUD='rh1'
-    elif [ $NODEPOOL_PROVIDER == 'rdo-cloud-tripleo' ]; then
+    elif [ ${NODEPOOL_PROVIDER:-''} == 'rdo-cloud-tripleo' ]; then
         RHCLOUD='rdocloud'
     fi
-    if [ $RHCLOUD != '' ]; then
+    if [[ "$RHCLOUD" != '' ]]; then
         source $(dirname $0)/scripts/$RHCLOUD.env
 
         # In order to save space remove the cached git repositories, at this point in
@@ -158,8 +158,8 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
             fi
             UNDERCLOUD="127.0.0.2"
             TAGS="build,undercloud-setup,undercloud-scripts,undercloud-install,undercloud-post-install,tripleo-validations,overcloud-scripts,overcloud-prep-config,overcloud-prep-containers,overcloud-deploy,overcloud-upgrade,overcloud-validate"
-            CONTROLLER_HOSTS=$(sed -n 1,1p /etc/nodepool/sub_nodes)
-            OVERCLOUD_HOSTS=$(cat /etc/nodepool/sub_nodes)
+            CONTROLLER_HOSTS=$(sed -n 1,1p /etc/nodepool/sub_nodes_private)
+            OVERCLOUD_HOSTS=$(cat /etc/nodepool/sub_nodes_private)
         ;;
         singlenode)
             ENVIRONMENT="osinfra"

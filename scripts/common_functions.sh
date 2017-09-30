@@ -310,7 +310,7 @@ function delorean_build_and_serve {
     for PROJFULLREF in $ZUUL_CHANGES ; do
         PROJ=$(filterref $PROJFULLREF)
         # If ci is being run for a change to ci its ok not to have a ci produced repository
-        excluded_proj="tripleo-ci tripleo-quickstart tripleo-quickstart-extras puppet-openstack-integration grenade"
+        excluded_proj="tripleo-ci tripleo-quickstart tripleo-quickstart-extras puppet-openstack-integration grenade zuul-jobs"
         if [[ " $excluded_proj " =~ " $PROJ " ]]; then
             mkdir -p $TRIPLEO_ROOT/delorean/data/repos/current
             touch $TRIPLEO_ROOT/delorean/data/repos/current/delorean-ci.repo
@@ -420,7 +420,7 @@ function prepare_images_oooq {
 }
 
 function subnodes_scp_deploy_env {
-    for ip in $(cat /etc/nodepool/sub_nodes); do
+    for ip in $(cat /etc/nodepool/sub_nodes_private); do
         sanitized_address=$(sanitize_ip_address $ip)
         ssh $SSH_OPTIONS -tt -i /etc/nodepool/id_rsa $ip \
             sudo mkdir -p $TRIPLEO_ROOT/tripleo-ci
