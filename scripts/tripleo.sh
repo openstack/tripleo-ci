@@ -328,6 +328,7 @@ EOF"
         sudo sed -i -e 's%priority=.*%priority=30%' $REPO_PREFIX/delorean-deps.repo
         sudo sed -i -e "s~http://mirror.centos.org/centos~$NODEPOOL_CENTOS_MIRROR~" $REPO_PREFIX/delorean-deps.repo
         sudo sed -i -e "s~https://buildlogs.centos.org~$NODEPOOL_BUILDLOGS_CENTOS_PROXY~" $REPO_PREFIX/delorean-deps.repo
+        sudo sed -i -e "s~https://trunk.rdoproject.org~$NODEPOOL_RDO_PROXY~" $REPO_PREFIX/delorean-deps.repo
         cat $REPO_PREFIX/delorean-deps.repo
 
         # Enable last known good RDO Trunk Delorean repository
