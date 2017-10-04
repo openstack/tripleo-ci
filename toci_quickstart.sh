@@ -70,7 +70,8 @@ REMAINING_TIME=${REMAINING_TIME:-180}
 TIME_FOR_DEPLOY=$(( REMAINING_TIME - ($(date +%s) - START_JOB_TIME)/60 - 10 ))
 /usr/bin/timeout --preserve-status ${TIME_FOR_DEPLOY}m  $QUICKSTART_INSTALL_CMD \
     2>&1 | tee $LOGS_DIR/quickstart_install.log && exit_value=0 || exit_value=$?
-
+# Print status of playbook run
+[[ "$exit_value" == 0 ]] && echo "Playbook run passed successfully" || echo "Playbook run failed"
 ## LOGS COLLECTION
 
 # workaround to stop collecting same host twice
