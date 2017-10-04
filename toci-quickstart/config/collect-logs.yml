@@ -138,6 +138,7 @@ artcl_collect_list:
   - /etc/sensu/
   - /etc/sestatus.conf
   - /etc/shadow*
+  - /etc/snmp/
   - /etc/skydive/
   - /etc/sos.conf
   - /etc/ssl/
