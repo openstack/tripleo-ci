@@ -87,6 +87,7 @@ artcl_collect_list:
   - /etc/libvirt/
   - /etc/lsb-release.d/
   - /etc/lvm/
+  - /etc/machine-id
   - /etc/manila/
   - /etc/mistral/
   - /etc/modprobe.d/
