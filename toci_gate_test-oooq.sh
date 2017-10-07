@@ -275,26 +275,4 @@ else
     ./toci_quickstart.sh
 fi
 
-export http_proxy=
-# TODO(gcerami) expand this list
-JOBS_ALLOW_PROMOTE=(periodic-ovb-3ctlr_1comp-featureset002 periodic-ovb-1ctlr_1comp_1ceph-featureset024)
-# TODO(gcerami) move the remaining condition in can_promote function ?
-if item_in_array $TOCI_JOBTYPE ${JOBS_ALLOW_PROMOTE[@]} && can_promote; then
-    UPLOAD_FOLDER=builds${STABLE_RELEASE:+-$STABLE_RELEASE}
-    TRUNKREPOUSED=$(grep -Eom 1 "[0-9a-z]{2}/[0-9a-z]{2}/[0-9a-z]{40}_[0-9a-z]+" /etc/yum.repos.d/delorean.repo)
-    # only allow the first item on the list to upload an image
-    if [[ $TOCI_JOBTYPE == ${JOBS_ALLOW_PROMOTE[0]} ]]; then
-        # There's no easy way to extract the information on where the images are built, so this value
-        # must be manually set as the same value as images_working_dir in toci-quickstart/config/testenv/ovb.yml
-        pushd ~
-        curl http://$MIRRORIP/cgi-bin/upload.cgi  -F "repohash=$TRUNKREPOUSED" -F "folder=$UPLOAD_FOLDER" -F "upload=@ironic-python-agent.tar;filename=ipa_images.tar"
-        curl http://$MIRRORIP/cgi-bin/upload.cgi  -F "repohash=$TRUNKREPOUSED" -F "folder=$UPLOAD_FOLDER" -F "upload=@overcloud-full.tar;filename=overcloud-full.tar"
-        curl http://$MIRRORIP/cgi-bin/upload.cgi  -F "repohash=$TRUNKREPOUSED" -F "folder=$UPLOAD_FOLDER" -F "upload=@ironic-python-agent.tar.md5;filename=ipa_images.tar.md5"
-        curl http://$MIRRORIP/cgi-bin/upload.cgi  -F "repohash=$TRUNKREPOUSED" -F "folder=$UPLOAD_FOLDER" -F "upload=@overcloud-full.tar.md5;filename=overcloud-full.tar.md5"
-        popd
-    fi
-    # if everything is ok, mark job as success
-    curl http://$MIRRORIP/cgi-bin/upload.cgi  -F "repohash=$TRUNKREPOUSED" -F "folder=$UPLOAD_FOLDER" -F "$JOB_NAME=SUCCESS"
-fi
-
 echo "Run completed"
