@@ -150,7 +150,7 @@ function canusecache(){
             ${UNDERCLOUD_VM_NAME}.qcow2)
                 [[ "$PROJ" =~ instack-undercloud|diskimage-builder|tripleo-image-elements|tripleo-puppet-elements ]] && return 1
                 ;;
-            ipa_images.tar)
+            ironic-python-agent.tar)
                 [[ "$PROJ" =~ diskimage-builder|python-tripleoclient|tripleo-common|tripleo-image-elements ]] && return 1
                 ;;
             overcloud-full.tar)
@@ -397,26 +397,6 @@ function sanitize_ip_address {
     else
         echo $ip
     fi
-}
-
-function get_image {
-    local img="$1"
-    http_proxy= wget -T 60 --tries=3 --progress=dot:mega http://$MIRRORSERVER/builds/current-tripleo/$img -O $img || {
-        wget -T 60 --tries=3 --progress=dot:mega http://66.187.229.139/builds/current-tripleo/$img -O $img
-    }
-}
-
-
-function prepare_images_oooq {
-    get_image ipa_images.tar
-    get_image overcloud-full.tar
-    tar -xvf overcloud-full.tar
-    tar -xvf ipa_images.tar
-    update_image $PWD/ironic-python-agent.initramfs
-    update_image $PWD/overcloud-full.qcow2
-    cp ironic-python-agent.* ~/
-    cp overcloud-full.qcow2 overcloud-full.initrd overcloud-full.vmlinuz ~/
-    rm -f overcloud-full.tar ipa_images.tar
 }
 
 function subnodes_scp_deploy_env {

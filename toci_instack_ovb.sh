@@ -87,13 +87,13 @@ sudo update-ca-trust extract
 
 # Don't get a file from cache if CACHEUPLOAD=1 (periodic job)
 # If this 404's it wont error just continue without a file created
-if canusecache ipa_images.tar ; then
-    wget --progress=dot:mega http://$MIRRORSERVER/builds-${STABLE_RELEASE:-master}/current-tripleo${STABLE_RELEASE:+-$STABLE_RELEASE}/ipa_images.tar || true
-    if [ -f ipa_images.tar ] ; then
-        tar -xf ipa_images.tar
+if canusecache ironic-python-agent.tar ; then
+    wget --progress=dot:mega http://$MIRRORSERVER/builds-${STABLE_RELEASE:-master}/current-tripleo${STABLE_RELEASE:+-$STABLE_RELEASE}/ironic-python-agent.tar || true
+    if [ -f ironic-python-agent.tar ] ; then
+        tar -xf ironic-python-agent.tar
         update_image $PWD/ironic-python-agent.initramfs
+        rm ironic-python-agent.tar
         mv ironic-python-agent.* ~
-        rm ipa_images.tar
     fi
 fi
 
