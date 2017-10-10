@@ -29,6 +29,8 @@ artcl_collect_list:
   - /home/{{ undercloud_user }}/tempest/etc/*.conf
   - /home/{{ undercloud_user }}/tempest/.testrepository/*
   - /home/{{ undercloud_user }}/local_tht/
+  - /home/{{ undercloud_user }}/inventory
+  - /home/{{ undercloud_user }}/tripleo-config-download/
   - /tmp/*.yml
   - /tmp/*.yaml
   - /etc/ansible/
