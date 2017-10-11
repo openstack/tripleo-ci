@@ -12,7 +12,7 @@ nova flavor-show bmc || nova flavor-create bmc auto 512 20 1
 nova flavor-show baremetal || nova flavor-create baremetal auto 8192 41 4
 nova flavor-show undercloud || nova flavor-create undercloud auto 8192 41 4
 
-# Remove the flavors that provide most disk space, the disks on rh2 are small we've over commited
+# Remove the flavors that provide most disk space, the disks on rh2 are small we've over committed
 # disk space, so this will help protect against an single instance filling the disk on a compute node
 nova flavor-delete m1.large || true
 nova flavor-delete m1.xlarge || true

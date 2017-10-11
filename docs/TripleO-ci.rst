@@ -152,7 +152,7 @@ References
 ----------
 .. [1] https://docs.openstack.org/tripleo-incubator/latest/devtest.html
 .. [2] https://review.openstack.org/#/c/95026/
-.. [3] http://docs.openstack.org/infra/system-config/index.html
+.. [3] https://docs.openstack.org/infra/system-config/index.html
 .. [4] http://git.openstack.org/cgit/openstack-infra/project-config/tree/jenkins/jobs/tripleo.yaml
 .. [5] http://git.openstack.org/cgit/openstack-infra/project-config/tree/zuul/layout.yaml
 .. [6] http://git.openstack.org/cgit/openstack-infra/devstack-gate/tree/devstack-vm-gate-wrap.sh
