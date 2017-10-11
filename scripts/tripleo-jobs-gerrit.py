@@ -85,7 +85,8 @@ def get_jenkins_comment_message(review):
                 # message does not include "pipeline".
                 if ("check-tripleo pipeline" not in comment['message'] and
                         "check pipeline" not in comment['message'] and
-                        "experimental-tripleo" not in comment['message']):
+                        "experimental-tripleo" not in comment['message'] and
+                        "gate pipeline" not in comment['message']):
                     continue
                 jenkins_messages[comment['timestamp']] = comment['message']
     return jenkins_messages
