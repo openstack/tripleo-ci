@@ -165,7 +165,6 @@ artcl_collect_list:
   - /etc/yum.conf
   - /etc/yum.repos.d/
   - /etc/zaqar/
-  - /tmp/ansible*/
 artcl_exclude_list:
   - /etc/puppet/modules/
   - /var/log/journal/*
