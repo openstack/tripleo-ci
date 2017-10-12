@@ -6,7 +6,6 @@ artcl_txt_rename: true
 artcl_publish: true
 artcl_rsync_logs: false
 artcl_collect_list:
-  - /var/log/
   - /home/{{ undercloud_user }}/.instack/install-undercloud.log
   - /home/{{ undercloud_user }}/stackrc
   - /home/{{ undercloud_user }}/overcloudrc
@@ -135,7 +134,7 @@ artcl_collect_list:
   - /etc/sahara/
   - /etc/sasl2/
   - /etc/security/
-  - /etc/selinux/
+  - /etc/selinux/config
   - /etc/sensu/
   - /etc/sestatus.conf
   - /etc/shadow*
@@ -151,7 +150,7 @@ artcl_collect_list:
   - /etc/sysconfig/
   - /etc/sysctl.*
   - /etc/sysctl.d/
-  - /etc/systemd/
+  - /etc/systemd/*.conf
   - /etc/tacker/
   - /etc/target/
   - /etc/tempest/
@@ -163,6 +162,61 @@ artcl_collect_list:
   - /etc/yum.conf
   - /etc/yum.repos.d/
   - /etc/zaqar/
+  - /var/log/dmesg.txt
+  - /var/log/host_info.txt
+  - /var/log/journal.txt
+  - /var/log/postci.txt
+  - /var/log/unbound.log
+  - /var/log/yum.log
+  - /var/log/aodh/
+  - /var/log/audit/
+  - /var/log/barbican/
+  - /var/log/ceilometer/
+  - /var/log/ceph/
+  - /var/log/cinder/
+  - /var/log/cloudkitty/
+  - /var/log/config-data/
+  - /var/log/congress/
+  - /var/log/containers/
+  - /var/log/designate/
+  - /var/log/dmesg/
+  - /var/log/extra/
+  - /var/log/ec2api/
+  - /var/log/glance/
+  - /var/log/gnocchi/
+  - /var/log/heat/
+  - /var/log/horizon/
+  - /var/log/httpd/
+  - /var/log/ironic/
+  - /var/log/ironic-inspector/
+  - /var/log/libvirt/
+  - /var/log/keystone/
+  - /var/log/manila/
+  - /var/log/mariadb/
+  - /var/log/mistral/
+  - /var/log/monasca/
+  - /var/log/murano/
+  - /var/log/neutron/
+  - /var/log/nova/
+  - /var/log/octavia/
+  - /var/log/openvswitch/
+  - /var/log/ovn/
+  - /var/log/panko/
+  - /var/log/qdr/
+  - /var/log/rabbitmq/
+  - /var/log/redis/
+  - /var/log/sahara/
+  - /var/log/sensu/
+  - /var/log/swift/
+  - /var/log/tacker/
+  - /var/log/tempest/
+  - /var/log/trove/
+  - /var/log/vitrage/
+  - /var/log/watcher/
+  - /var/log/zaqar/
+
+# the above list was created from
+# https://raw.githubusercontent.com/openstack/puppet-openstack-integration/master/openstack_modules.txt
 artcl_exclude_list:
   - /etc/puppet/modules/
   - /var/log/journal/*
