@@ -60,3 +60,5 @@ floating_ip_cidr: >-
 # Commented because it has different paths on zuul v2 and v3
 # Using for now the role default value - http://download.cirros-cloud.net/0.3.5/cirros-0.3.5-x86_64-disk.img
 #tempest_test_image_path: /opt/stack/cache/files/cirros-0.3.5-x86_64-disk.img
+overcloud_image_url: http://192.168.103.253/builds-{{ release }}/current-tripleo/overcloud-full.tar
+ipa_image_url: http://192.168.103.253/builds-{{ release }}/current-tripleo/ipa_images.tar
