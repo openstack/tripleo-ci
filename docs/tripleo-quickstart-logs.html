@@ -22,7 +22,7 @@ directory in the logs to find the file.</p>
 <p>Example output:<br/>
 <br/><code>
 fatal: [<b>undercloud</b>]: FAILED! => {"changed": true, "cmd": "set -o pipefail &&
-/home/jenkins/<b>overcloud-prep-images.sh</b> 2>&1 | awk '{ print
+/home/zuul/<b>overcloud-prep-images.sh</b> 2>&1 | awk '{ print
 strftime(\"%Y-%m-%d %H:%M:%S |\"), $0; fflush(); }' >
 /home/stack/<b>overcloud_prep_images.log</b>", "failed": true, "rc": 1}<br/>
 <br/>
@@ -30,7 +30,7 @@ PLAY RECAP *********************************************************************
 </code></p>
 
 <p>In this case the <code>overcloud-prep-images.sh</code> script failed, which
-is redirected to <code>/home/jenkins/overcloud_prep_images.log
+is redirected to <code>/home/zuul/overcloud_prep_images.log
 </code> on the undercloud.</p>
 
 <p>If this is a different Ansible error, that could mean either an infra
@@ -42,7 +42,7 @@ Quickstart itself.</p>
 
 <h1>Links to common log files</h1>
 <ul>
-<li><a href='undercloud/home/jenkins/'>undercloud/home/jenkins/</a>
+<li><a href='undercloud/home/zuul/'>undercloud/home/zuul/</a>
 - the source and log output of all templated shell scripts</li>
 <li><a href='undercloud/var/log/extra/'>undercloud/var/log/extra/</a> -
 extra system details like package list, and cpu info gathered from the
