@@ -173,6 +173,9 @@ def main(args=sys.argv[1:]):
                              '"public-bond" requests one like "multi-nic" '
                              'but with two public nics for use with bonded '
                              'nic-configs.')
+    parser.add_argument('--extra-nodes', default='0',
+                        help='Number of extra undercloud-like nodes to '
+                             'request')
     parser.add_argument('--debug', '-d',  action='store_true',
                         help='Set to debug mode.')
     opts = parser.parse_args(args)
