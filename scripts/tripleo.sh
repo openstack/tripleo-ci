@@ -581,7 +581,7 @@ function undercloud_containers {
       python-tripleoclient \
       docker \
       openvswitch \
-      openstack-puppet-modules \
+      puppet-tripleo \
       openstack-kolla
     cd
 
