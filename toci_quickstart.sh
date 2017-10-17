@@ -109,25 +109,7 @@ popd
 du -L -ch $LOGS_DIR/* | sort -rh | head -n 200 &> $LOGS_DIR/log-size.txt || true
 
 if [[ "$PERIODIC" == 1 && -e $WORKSPACE/hash_info.sh ]] ; then
-    if [[ "$exit_value" == 0 ]]; then
-        echo "REPORTING SUCCESS TO DLRN API"
-        SUCCESS="true"
-    else
-        echo "REPORTING FAILURE TO DLRN API"
-        SUCCESS="false"
-    fi
-
-    source $WORKSPACE/hash_info.sh
-    sudo pip install dlrnapi-client
-    dlrnapi --url $DLRNAPI_URL \
-        --username review_rdoproject_org \
-        report-result \
-        --commit-hash $COMMIT_HASH \
-        --distro-hash $DISTRO_HASH \
-        --job-id $TOCI_JOBTYPE \
-        --info-url "https://logs.rdoproject.org/${LOG_PATH}" \
-        --timestamp $(date +%s) \
-        --success $SUCCESS
+    echo export JOB_EXIT_VALUE=$exit_value >> $WORKSPACE/hash_info.sh
 fi
 
 echo 'Quickstart completed.'
