@@ -30,3 +30,6 @@ image_cache_dir_cleanup: true
 # if it's changed, nothing will work
 build_image_isolated: false
 build_undercloud: false
+
+# We don't need to cleanup TripleO CI
+tempest_track_resources: false

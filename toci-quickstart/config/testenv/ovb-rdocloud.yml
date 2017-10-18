@@ -19,3 +19,6 @@ workers_args: >-
     -e {{ overcloud_templates_path }}/environments/debug.yaml
 overcloud_image_url: http://images.rdoproject.org/{{ release }}/rdo_trunk/current-tripleo/overcloud-full.tar
 ipa_image_url: http://images.rdoproject.org/{{ release }}/rdo_trunk/current-tripleo/ironic-python-agent.tar
+
+# We don't need to cleanup TripleO CI
+tempest_track_resources: false
