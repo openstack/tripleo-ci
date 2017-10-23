@@ -393,7 +393,9 @@ set -m
 if [ "$DEPLOY_OVB_EXTRA_NODE" = '1' ]; then
     # This is usually done in the undercloud install, but we need it at this
     # point since we want access to the extra node
-    ssh-keygen -t rsa -N '' -f ~/.ssh/id_rsa
+    if [ ! -f ~/.ssh/id_rsa ]; then
+        ssh-keygen -t rsa -N '' -f ~/.ssh/id_rsa
+    fi
     SSH_KEY="$(cat ~/.ssh/id_rsa.pub)"
     TEST_ENV_EXTRA_ARGS=("--create-undercloud" "--ssh-key" "$SSH_KEY")
 else
