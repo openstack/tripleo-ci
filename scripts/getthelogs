@@ -41,7 +41,7 @@ WORKERS=6
 BASEURL=${1%/}
 SC=$(dirname $BASEURL | grep -o \/ | wc -w)
 if [[ ! $(basename $BASEURL) == 'logs' && SC -le 7 ]]; then
-  console=$BASEURL/console.html
+  console="$BASEURL/job-output.txt.gz"
   BASEURL=${BASEURL}/logs
 else
   console=''
@@ -61,7 +61,7 @@ done
 rm -f wget-jobs.txt
 for d in $list_to_get; do
   args="\"-nv -nc --no-use-server-timestamps \
-  --accept-regex='\.txt\.gz$|console\.htm[l]?$|messages$' \
+  --accept-regex='\.txt\.gz$|messages$' \
   --reject='index.html*' \
   --recursive -l 10 --domains logs.openstack.org --no-parent \
   -erobots=off --wait 0.25 ${d}\""
