@@ -1,0 +1,19 @@
+- name: Configure /etc/nodepool/provider for backwards compatibility
+  hosts: all
+  gather_facts: no
+  tasks:
+    - name: Warn that /etc/nodepool/provider is deprecated
+      debug:
+        msg: |
+          The /etc/nodepool/provider file no longer exists and is being created
+          for backwards compatibility purposes. The variables provided by this
+          file are now available through Ansible under hostvars[$HOST]['nodepool'].
+
+    - name: Create /etc/nodepool/provider file
+      copy:
+        content: |
+          NODEPOOL_PROVIDER={{ nodepool.provider }}
+          NODEPOOL_CLOUD={{ nodepool.cloud }}
+          NODEPOOL_REGION={{ nodepool.region }}
+          NODEPOOL_AZ={{ nodepool.az }}
+        dest: /etc/nodepool/provider

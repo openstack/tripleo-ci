@@ -1,0 +1,89 @@
+---
+
+- project-template:
+    name: tripleo-buildimage-jobs
+    check:
+      jobs:
+        - tripleo-buildimage-overcloud-full-centos-7
+    gate:
+      queue: tripleo
+      jobs:
+        - tripleo-buildimage-overcloud-full-centos-7
+    experimental:
+      jobs:
+        - tripleo-buildimage-ironic-python-agent-centos-7
+        - tripleo-buildimage-overcloud-hardened-full-centos-7
+
+- job:
+    name: tripleo-buildimage-ironic-python-agent-centos-7
+    parent: base
+    run: playbooks/tripleo-buildimage/run.yaml
+    post-run: playbooks/tripleo-buildimage/post.yaml
+    timeout: 4200
+    nodeset: legacy-centos-7
+    required-projects:
+      - openstack/diskimage-builder
+      - openstack/heat-agents
+      - openstack/heat-templates
+      - openstack/instack-undercloud
+      - openstack/ironic
+      - openstack/ironic-python-agent
+      - openstack/python-tripleoclient
+      - openstack/tripleo-common
+      - openstack/tripleo-image-elements
+      - openstack/tripleo-puppet-elements
+      - openstack/requirements
+    vars:
+      tripleo_image_type: ironic-python-agent
+    voting: false
+    irrelevant-files:
+      - ^.*\.rst$
+      - ^releasenotes/.*$
+
+- job:
+    name: tripleo-buildimage-overcloud-full-centos-7
+    parent: base
+    run: playbooks/tripleo-buildimage/run.yaml
+    post-run: playbooks/tripleo-buildimage/post.yaml
+    timeout: 4200
+    nodeset: legacy-centos-7
+    required-projects:
+      - openstack/diskimage-builder
+      - openstack/heat-agents
+      - openstack/heat-templates
+      - openstack/instack-undercloud
+      - openstack/python-tripleoclient
+      - openstack/requirements
+      - openstack/tripleo-common
+      - openstack/tripleo-image-elements
+      - openstack/tripleo-puppet-elements
+    vars:
+      tripleo_image_type: overcloud-full
+    irrelevant-files:
+      - ^.*\.rst$
+      - ^releasenotes/.*$
+    voting: false
+
+- job:
+    name: tripleo-buildimage-overcloud-hardened-full-centos-7
+    parent: base
+    run: playbooks/tripleo-buildimage/run.yaml
+    post-run: playbooks/tripleo-build/post.yaml
+    timeout: 4200
+    nodeset: legacy-centos-7
+    required-projects:
+      - openstack/diskimage-builder
+      - openstack/heat-agents
+      - openstack/heat-templates
+      - openstack/instack-undercloud
+      - openstack/python-tripleoclient
+      - openstack/tripleo-common
+      - openstack/tripleo-image-elements
+      - openstack/tripleo-puppet-elements
+      - openstack/requirements
+    vars:
+      tripleo_image_type: overcloud-hardened-full
+    voting: false
+    irrelevant-files:
+      - ^.*\.rst$
+      - ^releasenotes/.*$

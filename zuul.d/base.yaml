@@ -1,0 +1,106 @@
+---
+
+- job:
+    name: tripleo-ci-dsvm
+    description: |
+      Base job template for TripleO jobs that leverage devstack-gate/dsvm
+    parent: legacy-dsvm-base
+    pre-run: playbooks/nodepool-provider/pre.yaml
+    required-projects:
+      - openstack/aodh
+      - openstack/barbican
+      - openstack/ceilometer
+      - openstack/ceilometermiddleware
+      - openstack/cinder
+      - openstack-dev/devstack
+      - openstack/dib-utils
+      - openstack/diskimage-builder
+      - openstack/django_openstack_auth
+      - openstack/glance
+      - openstack/glance_store
+      - openstack/heat
+      - openstack/heat-cfntools
+      - openstack/heat-templates
+      - openstack/horizon
+      - openstack-infra/devstack-gate
+      - openstack-infra/tripleo-ci
+      - openstack/instack
+      - openstack/instack-undercloud
+      - openstack/keystone
+      - openstack/keystoneauth
+      - openstack/keystonemiddleware
+      - openstack/manila
+      - openstack/manila-ui
+      - openstack/mistral
+      - openstack/neutron
+      - openstack/neutron-fwaas
+      - openstack/neutron-lbaas
+      - openstack/neutron-vpnaas
+      - openstack/nova
+      - openstack/octavia
+      - openstack/os-apply-config
+      - openstack/os-brick
+      - openstack/osc-lib
+      - openstack/os-client-config
+      - openstack/os-collect-config
+      - openstack/os-net-config
+      - openstack/os-refresh-config
+      - openstack/panko
+      - openstack/puppet-aodh
+      - openstack/puppet-barbican
+      - openstack/puppet-ceilometer
+      - openstack/puppet-ceph
+      - openstack/puppet-cinder
+      - openstack/puppet-ganesha
+      - openstack/puppet-glance
+      - openstack/puppet-gnocchi
+      - openstack/puppet-heat
+      - openstack/puppet-horizon
+      - openstack/puppet-ironic
+      - openstack/puppet-keystone
+      - openstack/puppet-mistral
+      - openstack/puppet-neutron
+      - openstack/puppet-nova
+      - openstack/puppet-openstack_extras
+      - openstack/puppet-openstacklib
+      - openstack/puppet-oslo
+      - openstack/puppet-pacemaker
+      - openstack/puppet-sahara
+      - openstack/puppet-swift
+      - openstack/puppet-tripleo
+      - openstack/puppet-vswitch
+      - openstack/puppet-zaqar
+      - openstack/python-ironic-inspector-client
+      - openstack/python-tripleoclient
+      - openstack/requirements
+      - openstack/swift
+      - openstack/tempest
+      - openstack/tempest-lib
+      - openstack/tripleo-common
+      - openstack/tripleo-heat-templates
+      - openstack/tripleo-image-elements
+      - openstack/tripleo-incubator
+      - openstack/tripleo-puppet-elements
+      - openstack/tripleo-quickstart
+      - openstack/tripleo-quickstart-extras
+      - openstack/tripleo-ui
+      - openstack/zaqar
+
+- job:
+    name: tripleo-ci-dsvm-multinode
+    description: |
+      Base legacy job for multinode tripleo jobs.
+
+      Ensures the firewall allows all traffic between test nodes.
+    parent: tripleo-ci-dsvm
+    roles:
+      - zuul: openstack-infra/zuul-jobs
+    pre-run: playbooks/multinode-networking/pre.yaml
+    irrelevant-files:
+      - ^.*\.md$
+      - ^.*\.rst$
+      - ^doc/.*$
+      - ^etc/.*$
+      - ^metadata.json$
+      - ^releasenotes/.*$
+      - ^test-requirements.txt$

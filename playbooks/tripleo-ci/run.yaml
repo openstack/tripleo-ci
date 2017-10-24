@@ -1,0 +1,100 @@
+- hosts:
+    - primary
+    - tripleo-centos-7
+    - centos-7
+  name: Autoconverted job from tripleo legacy jobs
+  tasks:
+
+    - name: Ensure legacy workspace directory
+      file:
+        path: '{{ ansible_user_dir }}/workspace'
+        state: directory
+
+    - shell:
+        cmd: |
+          set -e
+          set -x
+          cat > clonemap.yaml << EOF
+          clonemap:
+            - name: openstack-infra/devstack-gate
+              dest: devstack-gate
+          EOF
+          /usr/zuul-env/bin/zuul-cloner -m clonemap.yaml --cache-dir /opt/git \
+              git://git.openstack.org \
+              openstack-infra/devstack-gate
+        executable: /bin/bash
+        chdir: '{{ ansible_user_dir }}/workspace'
+      environment: '{{ zuul | zuul_legacy_vars }}'
+
+    - shell:
+        cmd: |
+          set -e
+          set -x
+          export TOCI_JOBTYPE={{ toci_jobtype }}
+
+          # ZUUL does not set these for periodic jobs
+          export ZUUL_BRANCH=${ZUUL_BRANCH:-master}
+          export ZUUL_REF=${ZUUL_REF:-None}
+
+          export BRANCH_OVERRIDE="{{ branch_override | default('default') }}"
+          if [ "$BRANCH_OVERRIDE" != "default" ] ; then
+              export OVERRIDE_ZUUL_BRANCH=$BRANCH_OVERRIDE
+          fi
+
+          export PYTHONUNBUFFERED=true
+          export DEVSTACK_GATE_TEMPEST=0
+          export DEVSTACK_GATE_EXERCISES=0
+          export DEVSTACK_GATE_HORIZON=1
+
+          export PROJECTS="openstack/diskimage-builder $PROJECTS"
+          export PROJECTS="openstack/dib-utils $PROJECTS"
+          export PROJECTS="openstack/instack $PROJECTS"
+          export PROJECTS="openstack/instack-undercloud $PROJECTS"
+          export PROJECTS="openstack/puppet-aodh $PROJECTS"
+          export PROJECTS="openstack/puppet-barbican $PROJECTS"
+          export PROJECTS="openstack/puppet-ceilometer $PROJECTS"
+          export PROJECTS="openstack/puppet-ceph $PROJECTS"
+          export PROJECTS="openstack/puppet-cinder $PROJECTS"
+          export PROJECTS="openstack/puppet-ganesha $PROJECTS"
+          export PROJECTS="openstack/puppet-glance $PROJECTS"
+          export PROJECTS="openstack/puppet-gnocchi $PROJECTS"
+          export PROJECTS="openstack/puppet-heat $PROJECTS"
+          export PROJECTS="openstack/puppet-horizon $PROJECTS"
+          export PROJECTS="openstack/puppet-ironic $PROJECTS"
+          export PROJECTS="openstack/puppet-keystone $PROJECTS"
+          export PROJECTS="openstack/puppet-mistral $PROJECTS"
+          export PROJECTS="openstack/puppet-neutron $PROJECTS"
+          export PROJECTS="openstack/puppet-nova $PROJECTS"
+          export PROJECTS="openstack/puppet-openstack_extras $PROJECTS"
+          export PROJECTS="openstack/puppet-openstacklib $PROJECTS"
+          export PROJECTS="openstack/puppet-oslo $PROJECTS"
+          export PROJECTS="openstack/puppet-pacemaker $PROJECTS"
+          export PROJECTS="openstack/puppet-sahara $PROJECTS"
+          export PROJECTS="openstack/puppet-swift $PROJECTS"
+          export PROJECTS="openstack/puppet-tripleo $PROJECTS"
+          export PROJECTS="openstack/puppet-vswitch $PROJECTS"
+          export PROJECTS="openstack/puppet-zaqar $PROJECTS"
+          export PROJECTS="openstack/python-ironic-inspector-client $PROJECTS"
+          export PROJECTS="openstack/python-tripleoclient $PROJECTS"
+          export PROJECTS="openstack/tripleo-common $PROJECTS"
+          export PROJECTS="openstack/tripleo-puppet-elements $PROJECTS"
+          export PROJECTS="openstack/tripleo-quickstart $PROJECTS"
+          export PROJECTS="openstack/tripleo-quickstart-extras $PROJECTS"
+          export PROJECTS="openstack/tripleo-ui $PROJECTS"
+
+          # some projects are not in devstack-gate, we need them to grab logs:
+          export PROJECTS="openstack/aodh $PROJECTS"
+          export PROJECTS="openstack/barbican $PROJECTS"
+          export PROJECTS="openstack/panko $PROJECTS"
+          export PROJECTS="openstack/mistral $PROJECTS"
+
+          sudo chown -hR $(whoami) /opt/git
+          function gate_hook {
+              bash -xe /opt/stack/new/tripleo-ci/toci_gate_test.sh
+          }
+          export -f gate_hook
+          cp devstack-gate/devstack-vm-gate-wrap.sh ./safe-devstack-vm-gate-wrap.sh
+          ./safe-devstack-vm-gate-wrap.sh
+        executable: /bin/bash
+        chdir: '{{ ansible_user_dir }}/workspace'
+      environment: '{{ zuul | zuul_legacy_vars }}'

@@ -1,0 +1,16 @@
+---
+
+- project:
+    name: openstack-infra/tripleo-ci
+    templates:
+      - tripleo-multinode-baremetal-minimal
+      - tripleo-multinode-container-minimal
+      - tripleo-multinode-experimental
+      - tripleo-ovb-check
+      - tripleo-ovb-experimental
+      - tripleo-undercloud-jobs
+    check-tripleo:
+      jobs:
+        - tripleo-ci-centos-7-ovb-ha-oooq-newton
+        - tripleo-ci-centos-7-ovb-ha-oooq-ocata
+        - tripleo-ci-centos-7-ovb-ha-oooq-pike
