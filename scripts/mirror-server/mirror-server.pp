@@ -50,33 +50,27 @@ file {"/var/www/html/builds-mitaka":
     ensure => "directory",
     owner  => "apache",
 }
-
 cron {"refresh-server":
     command => "timeout 20m puppet apply /opt/stack/tripleo-ci/scripts/mirror-server/mirror-server.pp",
     minute  => "*/30"
 }
-
-cron {"parse-periodic-multinode":
-    command => "timeout 10m /opt/stack/tripleo-ci/scripts/mirror-server/multinode_status.py &>/var/log/last_multinode_jobs_status.log",
-    minute  => "30"
+cron {"mirror-images-master":
+    command => "timeout 60m /opt/stack/tripleo-ci/scripts/mirror-server/mirror-images.sh master | tee /var/log/images_update-master.log",
+    hour  => "2",
+    minute  => "0"
 }
-
-cron {"promote-master":
-    command => "timeout 10m /opt/stack/tripleo-ci/scripts/mirror-server/promote.sh master current-tripleo tripleo-dlrn-promote periodic-tripleo-ci-centos-7-ovb-ha-oooq periodic-tripleo-ci-centos-7-ovb-1ctlr_1comp_1ceph-featureset024 periodic-tripleo-ci-centos-7-scenario001-multinode-oooq periodic-tripleo-ci-centos-7-scenario002-multinode-oooq periodic-tripleo-ci-centos-7-scenario003-multinode-oooq periodic-tripleo-ci-centos-7-scenario004-multinode-oooq &>/var/log/last_master_promotion.log",
-    minute  => "40"
+cron {"mirror-images-pike":
+    command => "timeout 60m /opt/stack/tripleo-ci/scripts/mirror-server/mirror-images.sh pike | tee /var/log/images_update-pike.log",
+    hour  => "2",
+    minute  => "0"
 }
-
-cron {"promote-pike":
-    command => "timeout 10m /opt/stack/tripleo-ci/scripts/mirror-server/promote.sh pike current-tripleo-pike tripleo-dlrn-promote-pike periodic-tripleo-ci-centos-7-ovb-ha-pike-oooq &>/var/log/last_pike_promotion.log",
-    minute  => "40"
+cron {"mirror-images-ocata":
+    command => "timeout 60m /opt/stack/tripleo-ci/scripts/mirror-server/mirror-images.sh ocata | tee /var/log/images_update-ocata.log",
+    hour  => "2",
+    minute  => "0"
 }
-
-cron {"promote-ocata":
-    command => "timeout 10m /opt/stack/tripleo-ci/scripts/mirror-server/promote.sh ocata current-tripleo-ocata tripleo-dlrn-promote-ocata periodic-tripleo-ci-centos-7-ovb-ha-ocata-oooq &>/var/log/last_ocata_promotion.log",
-    minute  => "40"
-}
-
-cron {"promote-newton":
-    command => "timeout 10m /opt/stack/tripleo-ci/scripts/mirror-server/promote.sh newton current-tripleo-newton tripleo-dlrn-promote-newton periodic-tripleo-ci-centos-7-ovb-ha-newton-oooq &>/var/log/last_newton_promotion.log",
-    minute  => "40"
+cron {"mirror-images-newton":
+    command => "timeout 60m /opt/stack/tripleo-ci/scripts/mirror-server/mirror-images.sh newton | tee /var/log/images_update-newton.log",
+    hour  => "2",
+    minute  => "0"
 }
