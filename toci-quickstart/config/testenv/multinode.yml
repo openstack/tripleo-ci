@@ -21,9 +21,7 @@ undercloud_conf_extras: "net_config_override = /opt/stack/new/tripleo-ci/undercl
 generate_pingtest_subunit: true
 undercloud_undercloud_nameservers:
   - 127.0.0.1
-# Commented because it has different paths on zuul v2 and v3
-# Using for now the role default value - http://download.cirros-cloud.net/0.3.5/cirros-0.3.5-x86_64-disk.img
-#tempest_test_image_path: /opt/stack/cache/files/cirros-0.3.5-x86_64-disk.img
+tempest_test_image_path: /opt/cache/files/cirros-0.3.5-x86_64-disk.img
 
 # We don't need to cleanup TripleO CI
 tempest_track_resources: false
