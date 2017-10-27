@@ -324,7 +324,7 @@ EOF"
     log "Stable release: $STABLE_RELEASE"
     if [ -z "$STABLE_RELEASE" ]; then
         # Enable the Delorean Deps repository
-        sudo curl -Lvo $REPO_PREFIX/delorean-deps.repo https://trunk.rdoproject.org/centos7/delorean-deps.repo
+        sudo curl -fLvo $REPO_PREFIX/delorean-deps.repo https://trunk.rdoproject.org/centos7/delorean-deps.repo
         sudo sed -i -e 's%priority=.*%priority=30%' $REPO_PREFIX/delorean-deps.repo
         sudo sed -i -e "s~http://mirror.centos.org/centos~$NODEPOOL_CENTOS_MIRROR~" $REPO_PREFIX/delorean-deps.repo
         sudo sed -i -e "s~https://buildlogs.centos.org~$NODEPOOL_BUILDLOGS_CENTOS_PROXY~" $REPO_PREFIX/delorean-deps.repo
@@ -332,14 +332,14 @@ EOF"
         cat $REPO_PREFIX/delorean-deps.repo
 
         # Enable last known good RDO Trunk Delorean repository
-        sudo curl -Lvo $REPO_PREFIX/delorean.repo $DELOREAN_REPO_URL/$DELOREAN_REPO_FILE
+        sudo curl -fLvo $REPO_PREFIX/delorean.repo $DELOREAN_REPO_URL/$DELOREAN_REPO_FILE
         sudo sed -i -e 's%priority=.*%priority=20%' $REPO_PREFIX/delorean.repo
         sudo sed -i -e "s~https://trunk.rdoproject.org~$NODEPOOL_RDO_PROXY~" $REPO_PREFIX/delorean.repo
         cat $REPO_PREFIX/delorean.repo
 
         # Enable latest RDO Trunk Delorean repository if not promotion job
         if [[ $CACHEUPLOAD != 1 ]]; then
-            sudo curl -Lvo $REPO_PREFIX/delorean-current.repo https://trunk.rdoproject.org/centos7/current/delorean.repo
+            sudo curl -fLvo $REPO_PREFIX/delorean-current.repo https://trunk.rdoproject.org/centos7/current/delorean.repo
             sudo sed -i -e 's%priority=.*%priority=10%' $REPO_PREFIX/delorean-current.repo
             sudo sed -i 's/\[delorean\]/\[delorean-current\]/' $REPO_PREFIX/delorean-current.repo
             sudo sed -i -e "s~https://trunk.rdoproject.org~$NODEPOOL_RDO_PROXY~" $REPO_PREFIX/delorean-current.repo
@@ -354,14 +354,14 @@ EOF"
         cat $REPO_PREFIX/delorean-current.repo
     else
         # Enable the Delorean Deps repository
-        sudo curl -Lvo $REPO_PREFIX/delorean-deps.repo https://trunk.rdoproject.org/centos7-$STABLE_RELEASE/delorean-deps.repo
+        sudo curl -fLvo $REPO_PREFIX/delorean-deps.repo https://trunk.rdoproject.org/centos7-$STABLE_RELEASE/delorean-deps.repo
         sudo sed -i -e 's%priority=.*%priority=30%' $REPO_PREFIX/delorean-deps.repo
         sudo sed -i -e "s~http://mirror.centos.org/centos~$NODEPOOL_CENTOS_MIRROR~" $REPO_PREFIX/delorean-deps.repo
         sudo sed -i -e "s~https://buildlogs.centos.org~$NODEPOOL_BUILDLOGS_CENTOS_PROXY~" $REPO_PREFIX/delorean-deps.repo
         cat $REPO_PREFIX/delorean-deps.repo
 
         # Enable delorean current for the stable version
-        sudo curl -Lvo $REPO_PREFIX/delorean.repo $DELOREAN_STABLE_REPO_URL/$DELOREAN_REPO_FILE
+        sudo curl -fLvo $REPO_PREFIX/delorean.repo $DELOREAN_STABLE_REPO_URL/$DELOREAN_REPO_FILE
         sudo sed -i -e 's%priority=.*%priority=20%' $REPO_PREFIX/delorean.repo
         sudo sed -i -e "s~https://trunk.rdoproject.org~$NODEPOOL_RDO_PROXY~" $REPO_PREFIX/delorean.repo
         cat $REPO_PREFIX/delorean.repo
@@ -1135,9 +1135,9 @@ function overcloud_pingtest {
     KERNEL_PATH=$OVERCLOUD_IMAGES_PATH/cirros.kernel
     if [ ! -e $IMAGE_PATH -o ! -e $INITRAMFS_PATH -o ! -e $KERNEL_PATH ]; then
         log "Overcloud pingtest, trying to download Cirros image"
-        curl -L -o $IMAGE_PATH http://download.cirros-cloud.net/0.3.4/cirros-0.3.4-x86_64-disk.img
-        curl -L -o $INITRAMFS_PATH http://download.cirros-cloud.net/0.3.4/cirros-0.3.4-x86_64-initramfs
-        curl -L -o $KERNEL_PATH http://download.cirros-cloud.net/0.3.4/cirros-0.3.4-x86_64-kernel
+        curl -fLo $IMAGE_PATH http://download.cirros-cloud.net/0.3.4/cirros-0.3.4-x86_64-disk.img
+        curl -fLo $INITRAMFS_PATH http://download.cirros-cloud.net/0.3.4/cirros-0.3.4-x86_64-initramfs
+        curl -fLo $KERNEL_PATH http://download.cirros-cloud.net/0.3.4/cirros-0.3.4-x86_64-kernel
     fi
     log "Overcloud pingtest, uploading demo tenant image to glance"
     ramdisk_id=$(openstack image create pingtest_initramfs --public --container-format ari --disk-format ari --file $INITRAMFS_PATH | grep ' id ' | awk '{print $4}')
