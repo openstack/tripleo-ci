@@ -235,8 +235,8 @@ else
     chmod 0600 $HOME/.ssh/id_rsa*
     # pre-ansible requirement
     sudo mkdir -p /root/.ssh/
-    cat $HOME/.ssh/id_rsa.pub >> ${HOME}/.ssh/authorized_keys
-    sudo cp ${HOME}/.ssh/authorized_keys /root/.ssh/
+    cat $HOME/.ssh/id_rsa.pub >> $HOME/.ssh/authorized_keys
+    cat $HOME/.ssh/authorized_keys | sudo tee -a /root/.ssh/authorized_keys
     sudo chmod 0600 /root/.ssh/authorized_keys
     sudo chown root:root /root/.ssh/authorized_keys
     # everything below here *MUST* be translated to a role ASAP
