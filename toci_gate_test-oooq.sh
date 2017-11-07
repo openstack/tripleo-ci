@@ -137,6 +137,8 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
             if is_featureset_mixed_upgrade "$TRIPLEO_ROOT/tripleo-quickstart/config/general_config/$JOB_TYPE_PART.yml"; then
                 export UPGRADE_RELEASE=$(previous_release_from "$STABLE_RELEASE")
                 QUICKSTART_RELEASE="$QUICKSTART_RELEASE-undercloud-$UPGRADE_RELEASE-overcloud"
+                # Run overcloud-upgrade tag only in upgrades jobs
+                TAGS="$TAGS,overcloud-upgrade"
             fi
         ;;
         ovb)
@@ -161,7 +163,7 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
                 ENV_VARS="$ENV_VARS --extra-vars @$TRIPLEO_ROOT/tripleo-ci/toci-quickstart/config/testenv/multinode.yml"
             fi
             UNDERCLOUD="127.0.0.2"
-            TAGS="build,undercloud-setup,undercloud-scripts,undercloud-install,undercloud-post-install,tripleo-validations,overcloud-scripts,overcloud-prep-config,overcloud-prep-containers,overcloud-deploy,overcloud-upgrade,overcloud-validate"
+            TAGS="build,undercloud-setup,undercloud-scripts,undercloud-install,undercloud-post-install,tripleo-validations,overcloud-scripts,overcloud-prep-config,overcloud-prep-containers,overcloud-deploy,overcloud-validate"
             CONTROLLER_HOSTS=$(sed -n 1,1p /etc/nodepool/sub_nodes_private)
             OVERCLOUD_HOSTS=$(cat /etc/nodepool/sub_nodes_private)
         ;;
