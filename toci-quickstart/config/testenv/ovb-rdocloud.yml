@@ -17,8 +17,10 @@ workers_args: >-
     -e {{ overcloud_templates_path }}/environments/low-memory-usage.yaml
     -e {{ tripleo_root }}/tripleo-ci/test-environments/worker-config.yaml
     -e {{ overcloud_templates_path }}/environments/debug.yaml
-overcloud_image_url: http://images.rdoproject.org/{{ release }}/rdo_trunk/current-tripleo/overcloud-full.tar
-ipa_image_url: http://images.rdoproject.org/{{ release }}/rdo_trunk/current-tripleo/ironic-python-agent.tar
+overcloud_image_url: http://images.rdoproject.org/{{ release }}/rdo_trunk/{{ dlrn_hash|default(dlrn_hash_tag) }}/overcloud-full.tar
+ipa_image_url: http://images.rdoproject.org/{{ release }}/rdo_trunk/{{ dlrn_hash|default(dlrn_hash_tag) }}/ironic-python-agent.tar
+docker_registry_host: trunk.registry.rdoproject.org
+docker_registry_namespace: "{{ release }}"
 
 # We don't need to cleanup TripleO CI
 tempest_track_resources: false

@@ -33,3 +33,8 @@ build_undercloud: false
 
 # We don't need to cleanup TripleO CI
 tempest_track_resources: false
+
+# Container settings
+docker_registry_host: trunk.registry.rdoproject.org
+docker_registry_namespace: "{{ release }}"
+
