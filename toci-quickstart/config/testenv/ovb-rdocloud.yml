@@ -24,3 +24,6 @@ docker_registry_namespace: "{{ release }}"
 
 # We don't need to cleanup TripleO CI
 tempest_track_resources: false
+
+# Tempestmail settings
+tempestmail_log_server: http://logs.rdoproject.org
