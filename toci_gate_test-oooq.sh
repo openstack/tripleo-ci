@@ -224,6 +224,10 @@ if [ -z "${TE_DATAFILE:-}" -a "$ENVIRONMENT" = "ovb" ] ; then
     ./testenv-client -b $GEARDSERVER:4730 -t $TIMEOUT_SECS \
         --envsize $NODECOUNT --ucinstance $UCINSTANCEID \
         --net-iso $NETISO_ENV -- ./toci_quickstart.sh
+elif [ "$ENVIRONMENT" = "ovb" ] ; then
+    # We only support multi-nic at the moment
+    NETISO_ENV="multi-nic"
+    ./toci_quickstart.sh
 else
     # multinode preparation
     # Clear out any puppet modules on the node placed their by infra configuration
