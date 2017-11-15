@@ -20,7 +20,9 @@
         sudo rm -rf /etc/puppet /etc/hiera.yaml;
         sudo cp {{tripleo_root}}/tripleo-ci/test-environments/overcloud-cacert.pem /etc/pki/ca-trust/source/anchors/;
         sudo update-ca-trust extract;
-        cp -f {{ lookup('env', 'TE_DATAFILE') }} ~/instackenv.json;
+        if [[ ! -e ~/instackenv.json ]]; then
+          cp -f {{ lookup('env', 'TE_DATAFILE') }} ~/instackenv.json;
+        fi
 
     - name: Create eth2.conf file
       blockinfile:
