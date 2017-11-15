@@ -6,6 +6,7 @@ artcl_txt_rename: true
 artcl_publish: true
 artcl_rsync_logs: false
 artcl_collect_list:
+  - /var/lib/unbound/unbound.log
   - /var/lib/mistral/
   - /home/{{ undercloud_user }}/.instack/install-undercloud.log
   - /home/{{ undercloud_user }}/stackrc
@@ -158,6 +159,9 @@ artcl_collect_list:
   - /etc/trove/
   - /etc/trusted-*
   - /etc/tuna/
+  - /etc/unbound/unbound.conf
+  - /etc/unbound/forwarding.conf
+  - /etc/unbound/conf.d/unbound-logging.conf
   - /etc/vconsole.conf
   - /etc/yum/
   - /etc/yum.conf
