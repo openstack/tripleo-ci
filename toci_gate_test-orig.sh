@@ -428,3 +428,7 @@ if [ -z "${TE_DATAFILE:-}" -a "$OSINFRA" = "0" ] ; then
 else
     $TOCIRUNNER
 fi
+
+sudo unbound-control dump_cache > /tmp/dns_cache.txt
+sudo chown ${USER}: /tmp/dns_cache.txt
+cat /tmp/dns_cache.txt | gzip - > $WORKSPACE/logs/dns_cache.txt.gz

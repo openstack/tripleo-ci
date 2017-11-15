@@ -7,6 +7,9 @@ set -eux
 export START_JOB_TIME=$(date +%s)
 export PS4='+(${BASH_SOURCE}:${LINENO}): ${FUNCNAME[0]:+${FUNCNAME[0]}(): }'
 
+sudo sed -i "s/verbosity: .*$/verbosity: 5/g" /etc/unbound/conf.d/unbound-logging.conf
+sudo systemctl restart unbound
+
 # Maintain compatibility with the old jobtypes
 if [[ ! $TOCI_JOBTYPE =~ "featureset" ]]; then
     echo "WARNING: USING OLD DEPLOYMENT METHOD. THE OLD DEPLOYMENT METHOD THAT USES tripleo.sh WILL BE DEPRECATED IN THE QUEENS CYCLE"
