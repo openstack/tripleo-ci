@@ -1,0 +1,153 @@
+---
+
+- project-template:
+    name: tripleo-ovb-check
+    check-tripleo:
+      jobs:
+        - tripleo-ci-centos-7-ovb-ha-oooq
+        - tripleo-ci-centos-7-ovb-containers-oooq
+        - tripleo-ci-centos-7-ovb-1ctlr_1comp_1ceph-featureset024
+
+- project-template:
+    name: tripleo-ovb-experimental
+    experimental-tripleo:
+      jobs:
+        - tripleo-ci-centos-7-ovb-fakeha-caserver
+        - tripleo-ci-centos-7-ovb-ha-tempest-oooq
+
+- job:
+    name: tripleo-ci-centos-7-ovb-1ctlr_1comp_1ceph-featureset024
+    parent: tripleo-ci-dsvm
+    run: playbooks/tripleo-ci/run.yaml
+    post-run: playbooks/tripleo-ci/post.yaml
+    timeout: 10800
+    nodeset: legacy-tripleo-centos-7
+    vars:
+      toci_jobtype: ovb-1ctlr_1comp_1ceph-featureset024
+
+- job:
+    name: tripleo-ci-centos-7-ovb-1ctlr_1comp_1ceph-featureset024-puppet-newton
+    parent: tripleo-ci-dsvm
+    run: playbooks/tripleo-ci/run.yaml
+    post-run: playbooks/tripleo-ci/post.yaml
+    timeout: 10800
+    nodeset: legacy-tripleo-centos-7
+    vars:
+      toci_jobtype: ovb-3ctlr_1comp-featureset001
+      branch_override: stable/newton
+
+- job:
+    name: tripleo-ci-centos-7-ovb-1ctlr_1comp_1ceph-featureset024-puppet-ocata
+    parent: tripleo-ci-dsvm
+    run: playbooks/tripleo-ci/run.yaml
+    post-run: playbooks/tripleo-ci/post.yaml
+    timeout: 10800
+    nodeset: legacy-tripleo-centos-7
+    vars:
+      toci_jobtype: ovb-3ctlr_1comp-featureset001
+      branch_override: stable/ocata
+
+- job:
+    name: tripleo-ci-centos-7-ovb-1ctlr_1comp_1ceph-featureset024-puppet-pike
+    parent: tripleo-ci-dsvm
+    run: playbooks/tripleo-ci/run.yaml
+    post-run: playbooks/tripleo-ci/post.yaml
+    timeout: 10800
+    nodeset: legacy-tripleo-centos-7
+    vars:
+      toci_jobtype: ovb-3ctlr_1comp-featureset001
+      branch_override: stable/pike
+
+- job:
+    name: tripleo-ci-centos-7-ovb-containers-oooq
+    parent: tripleo-ci-dsvm
+    run: playbooks/tripleo-ci/run.yaml
+    post-run: playbooks/tripleo-ci/post.yaml
+    timeout: 10800
+    nodeset: legacy-tripleo-centos-7
+    vars:
+      toci_jobtype: ovb-1ctlr_1comp-featureset022
+
+- job:
+    name: tripleo-ci-centos-7-ovb-convergence-oooq
+    parent: tripleo-ci-dsvm
+    run: playbooks/tripleo-ci/run.yaml
+    post-run: playbooks/tripleo-ci/post.yaml
+    timeout: 10800
+    nodeset: legacy-tripleo-centos-7
+    vars:
+      toci_jobtype: ovb-3ctlr_1comp-featureset025
+
+- job:
+    name: tripleo-ci-centos-7-ovb-fakeha-caserver
+    parent: tripleo-ci-dsvm
+    run: playbooks/tripleo-ci/run.yaml
+    post-run: playbooks/tripleo-ci/post.yaml
+    timeout: 10800
+    nodeset: legacy-tripleo-centos-7
+    irrelevant-files:
+      - ^.*\.md$
+      - ^.*\.rst$
+      - ^doc/.*$
+      - ^etc/.*$
+      - ^metadata.json$
+      - ^releasenotes/.*$
+      - ^test-requirements.txt$
+      - ^scripts/quickstart/.*$
+      - ^toci_instack_oooq.sh$
+      - ^toci_instack_oooq_multinode.sh$
+    vars:
+      toci_jobtype: ovb-fakeha-caserver
+
+- job:
+    name: tripleo-ci-centos-7-ovb-ha-oooq
+    parent: tripleo-ci-dsvm
+    run: playbooks/tripleo-ci/run.yaml
+    post-run: playbooks/tripleo-ci/post.yaml
+    timeout: 10800
+    nodeset: legacy-tripleo-centos-7
+    vars:
+      toci_jobtype: ovb-3ctlr_1comp-featureset001
+
+- job:
+    name: tripleo-ci-centos-7-ovb-ha-oooq-newton
+    parent: tripleo-ci-dsvm
+    run: playbooks/tripleo-ci/run.yaml
+    post-run: playbooks/tripleo-ci/post.yaml
+    timeout: 10800
+    nodeset: legacy-tripleo-centos-7
+    vars:
+      toci_jobtype: ovb-3ctlr_1comp-featureset001
+      branch_override: stable/newton
+
+- job:
+    name: tripleo-ci-centos-7-ovb-ha-oooq-ocata
+    parent: tripleo-ci-dsvm
+    run: playbooks/tripleo-ci/run.yaml
+    post-run: playbooks/tripleo-ci/post.yaml
+    timeout: 10800
+    nodeset: legacy-tripleo-centos-7
+    vars:
+      toci_jobtype: ovb-3ctlr_1comp-featureset001
+      branch_override: stable/ocata
+
+- job:
+    name: tripleo-ci-centos-7-ovb-ha-oooq-pike
+    parent: tripleo-ci-dsvm
+    run: playbooks/tripleo-ci/run.yaml
+    post-run: playbooks/tripleo-ci/post.yaml
+    timeout: 10800
+    nodeset: legacy-tripleo-centos-7
+    vars:
+      toci_jobtype: ovb-3ctlr_1comp-featureset001
+      branch_override: stable/pike
+
+- job:
+    name: tripleo-ci-centos-7-ovb-ha-tempest-oooq
+    parent: tripleo-ci-dsvm
+    run: playbooks/tripleo-ci/run.yaml
+    post-run: playbooks/tripleo-ci/post.yaml
+    timeout: 10800
+    nodeset: legacy-tripleo-centos-7
+    vars:
+      toci_jobtype: ovb-3ctlr_1comp-featureset021

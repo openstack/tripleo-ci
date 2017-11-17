@@ -1,0 +1,270 @@
+---
+
+- project-template:
+    name: tripleo-multinode-baremetal-minimal
+    check:
+      jobs:
+        - tripleo-ci-centos-7-3nodes-multinode
+        - tripleo-ci-centos-7-nonha-multinode-oooq
+    gate:
+      queue: tripleo
+      jobs:
+        - tripleo-ci-centos-7-nonha-multinode-oooq
+
+- project-template:
+    name: tripleo-multinode-container-minimal
+    check:
+      jobs:
+        - tripleo-ci-centos-7-containers-multinode
+        - tripleo-ci-centos-7-undercloud-containers
+    gate:
+      queue: tripleo
+      jobs:
+        - tripleo-ci-centos-7-containers-multinode
+
+- project-template:
+    name: tripleo-multinode-container-full
+    check:
+      jobs:
+        - tripleo-ci-centos-7-containers-multinode
+        - tripleo-ci-centos-7-undercloud-containers
+        - tripleo-ci-centos-7-scenario001-multinode-oooq-container
+        - tripleo-ci-centos-7-scenario002-multinode-oooq-container
+        - tripleo-ci-centos-7-scenario003-multinode-oooq-container
+        - tripleo-ci-centos-7-scenario004-multinode-oooq-container
+        - tripleo-ci-centos-7-scenario007-multinode-oooq
+    gate:
+      queue: tripleo
+      jobs:
+        - tripleo-ci-centos-7-containers-multinode
+        - tripleo-ci-centos-7-scenario002-multinode-oooq-container
+        - tripleo-ci-centos-7-scenario003-multinode-oooq-container
+        - tripleo-ci-centos-7-scenario004-multinode-oooq-container
+        - tripleo-ci-centos-7-scenario007-multinode-oooq
+
+- project-template:
+    name: tripleo-multinode-baremetal-full
+    check:
+      jobs:
+        - tripleo-ci-centos-7-3nodes-multinode
+        - tripleo-ci-centos-7-nonha-multinode-oooq
+        - tripleo-ci-centos-7-scenario001-multinode-oooq
+        - tripleo-ci-centos-7-scenario002-multinode-oooq
+        - tripleo-ci-centos-7-scenario003-multinode-oooq
+        - tripleo-ci-centos-7-scenario004-multinode-oooq
+        - tripleo-ci-centos-7-scenario007-multinode-oooq
+    gate:
+      queue: tripleo
+      jobs:
+        - tripleo-ci-centos-7-nonha-multinode-oooq
+        - tripleo-ci-centos-7-scenario002-multinode-oooq
+        - tripleo-ci-centos-7-scenario003-multinode-oooq
+        - tripleo-ci-centos-7-scenario004-multinode-oooq
+        - tripleo-ci-centos-7-scenario007-multinode-oooq
+
+- project-template:
+    name: tripleo-multinode-experimental
+    experimental:
+      jobs:
+        - tripleo-ci-centos-7-scenario005-multinode-oooq
+        - tripleo-ci-centos-7-scenario006-multinode-oooq
+        - tripleo-ci-centos-7-scenario008-multinode-oooq
+        - tripleo-ci-centos-7-scenario007-multinode-oooq-container
+        - tripleo-ci-centos-7-scenario009-multinode-oooq
+
+- job:
+    name: tripleo-ci-centos-7-3nodes-multinode
+    parent: tripleo-ci-dsvm-multinode
+    run: playbooks/tripleo-ci/run.yaml
+    post-run: playbooks/tripleo-ci/post.yaml
+    timeout: 10800
+    nodeset: legacy-centos-7-3-node
+    voting: false
+    branches: ^(?!stable/newton).*$
+    vars:
+      toci_jobtype: multinode-2ctlr-featureset032
+
+- job:
+    name: tripleo-ci-centos-7-containers-multinode
+    parent: tripleo-ci-dsvm-multinode
+    run: playbooks/tripleo-ci/run.yaml
+    post-run: playbooks/tripleo-ci/post.yaml
+    timeout: 10800
+    nodeset: legacy-centos-7-2-node
+    branches: ^(?!stable/(newton|ocata)).*$
+    vars:
+      toci_jobtype: multinode-1ctlr-featureset010
+
+- job:
+    name: tripleo-ci-centos-7-nonha-multinode-oooq
+    parent: tripleo-ci-dsvm-multinode
+    run: playbooks/tripleo-ci/run.yaml
+    post-run: playbooks/tripleo-ci/post.yaml
+    timeout: 10800
+    nodeset: legacy-centos-7-2-node
+    branches: ^stable/(newton|ocata).*$
+    vars:
+      toci_jobtype: multinode-1ctlr-featureset004
+
+- job:
+    name: tripleo-ci-centos-7-scenario001-multinode-oooq
+    parent: tripleo-ci-dsvm-multinode
+    run: playbooks/tripleo-ci/run.yaml
+    post-run: playbooks/tripleo-ci/post.yaml
+    timeout: 10800
+    nodeset: legacy-centos-7-2-node
+    branches: ^stable/(newton|ocata).*$
+    vars:
+      toci_jobtype: multinode-1ctlr-featureset005
+    # https://bugs.launchpad.net/tripleo/+bug/1731063
+    voting: false
+
+- job:
+    name: tripleo-ci-centos-7-scenario001-multinode-oooq-container
+    parent: tripleo-ci-dsvm-multinode
+    run: playbooks/tripleo-ci/run.yaml
+    post-run: playbooks/tripleo-ci/post.yaml
+    timeout: 10800
+    nodeset: legacy-centos-7-2-node
+    branches: ^(?!stable/(newton|ocata)).*$
+    vars:
+      toci_jobtype: multinode-1ctlr-featureset016
+    # https://bugs.launchpad.net/tripleo/+bug/1731063
+    voting: false
+
+- job:
+    name: tripleo-ci-centos-7-scenario002-multinode-oooq
+    parent: tripleo-ci-dsvm-multinode
+    run: playbooks/tripleo-ci/run.yaml
+    post-run: playbooks/tripleo-ci/post.yaml
+    timeout: 10800
+    nodeset: legacy-centos-7-2-node
+    branches: ^stable/(newton|ocata).*$
+    vars:
+      toci_jobtype: multinode-1ctlr-featureset006
+
+- job:
+    name: tripleo-ci-centos-7-scenario002-multinode-oooq-container
+    parent: tripleo-ci-dsvm-multinode
+    run: playbooks/tripleo-ci/run.yaml
+    post-run: playbooks/tripleo-ci/post.yaml
+    timeout: 10800
+    nodeset: legacy-centos-7-2-node
+    branches: ^(?!stable/(newton|ocata)).*$
+    vars:
+      toci_jobtype: multinode-1ctlr-featureset017
+
+- job:
+    name: tripleo-ci-centos-7-scenario003-multinode-oooq
+    parent: tripleo-ci-dsvm-multinode
+    run: playbooks/tripleo-ci/run.yaml
+    post-run: playbooks/tripleo-ci/post.yaml
+    timeout: 10800
+    nodeset: legacy-centos-7-2-node
+    branches: ^stable/ocata.*$
+    vars:
+      toci_jobtype: multinode-1ctlr-featureset007
+
+- job:
+    name: tripleo-ci-centos-7-scenario003-multinode-oooq-container
+    parent: tripleo-ci-dsvm-multinode
+    run: playbooks/tripleo-ci/run.yaml
+    post-run: playbooks/tripleo-ci/post.yaml
+    timeout: 10800
+    nodeset: legacy-centos-7-2-node
+    branches: ^(?!stable/(newton|ocata)).*$
+    vars:
+      toci_jobtype: multinode-1ctlr-featureset018
+
+- job:
+    name: tripleo-ci-centos-7-scenario004-multinode-oooq
+    parent: tripleo-ci-dsvm-multinode
+    run: playbooks/tripleo-ci/run.yaml
+    post-run: playbooks/tripleo-ci/post.yaml
+    timeout: 10800
+    nodeset: legacy-centos-7-2-node
+    branches: ^stable/ocata.*$
+    vars:
+      toci_jobtype: multinode-1ctlr-featureset008
+
+- job:
+    name: tripleo-ci-centos-7-scenario004-multinode-oooq-container
+    parent: tripleo-ci-dsvm-multinode
+    run: playbooks/tripleo-ci/run.yaml
+    post-run: playbooks/tripleo-ci/post.yaml
+    timeout: 10800
+    nodeset: legacy-centos-7-2-node
+    branches: ^(?!stable/(newton|ocata)).*$
+    vars:
+      toci_jobtype: multinode-1ctlr-featureset019
+
+- job:
+    name: tripleo-ci-centos-7-scenario005-multinode-oooq
+    parent: tripleo-ci-dsvm-multinode
+    run: playbooks/tripleo-ci/run.yaml
+    post-run: playbooks/tripleo-ci/post.yaml
+    timeout: 10800
+    nodeset: legacy-centos-7-4-node
+    voting: false
+    branches: ^(?!stable/newton).*$
+    vars:
+      toci_jobtype: multinode-1ctlr-featureset009
+
+- job:
+    name: tripleo-ci-centos-7-scenario006-multinode-oooq
+    parent: tripleo-ci-dsvm-multinode
+    run: playbooks/tripleo-ci/run.yaml
+    post-run: playbooks/tripleo-ci/post.yaml
+    timeout: 10800
+    nodeset: legacy-centos-7-2-node
+    voting: false
+    branches: ^(?!stable/(newton|ocata)).*$
+    vars:
+      toci_jobtype: multinode-1ctlr-featureset026
+
+- job:
+    name: tripleo-ci-centos-7-scenario007-multinode-oooq
+    parent: tripleo-ci-dsvm-multinode
+    run: playbooks/tripleo-ci/run.yaml
+    post-run: playbooks/tripleo-ci/post.yaml
+    timeout: 10800
+    nodeset: legacy-centos-7-2-node
+    branches: ^(?!stable/(newton|ocata)).*$
+    vars:
+      toci_jobtype: multinode-1ctlr-featureset028
+
+- job:
+    name: tripleo-ci-centos-7-scenario007-multinode-oooq-container
+    parent: tripleo-ci-dsvm-multinode
+    run: playbooks/tripleo-ci/run.yaml
+    post-run: playbooks/tripleo-ci/post.yaml
+    timeout: 10800
+    nodeset: legacy-centos-7-2-node
+    voting: false
+    branches: ^(?!stable/(newton|ocata)).*$
+    vars:
+      toci_jobtype: multinode-1ctlr-featureset030
+
+- job:
+    name: tripleo-ci-centos-7-scenario008-multinode-oooq
+    parent: tripleo-ci-dsvm-multinode
+    run: playbooks/tripleo-ci/run.yaml
+    post-run: playbooks/tripleo-ci/post.yaml
+    timeout: 10800
+    nodeset: legacy-centos-7-2-node
+    voting: false
+    branches: ^(?!stable/(newton|ocata)).*$
+    vars:
+      toci_jobtype: multinode-1ctlr-featureset031
+
+- job:
+    name: tripleo-ci-centos-7-scenario009-multinode-oooq
+    parent: tripleo-ci-dsvm-multinode
+    run: playbooks/tripleo-ci/run.yaml
+    post-run: playbooks/tripleo-ci/post.yaml
+    timeout: 10800
+    nodeset: legacy-centos-7-2-node
+    voting: false
+    branches: ^(?!stable/(newton|ocata)).*$
+    vars:
+      toci_jobtype: multinode-1ctlr-featureset033
