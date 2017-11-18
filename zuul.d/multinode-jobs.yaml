@@ -32,14 +32,14 @@
         - tripleo-ci-centos-7-scenario002-multinode-oooq-container
         - tripleo-ci-centos-7-scenario003-multinode-oooq-container
         - tripleo-ci-centos-7-scenario004-multinode-oooq-container
-        - tripleo-ci-centos-7-scenario007-multinode-oooq
+        - tripleo-ci-centos-7-scenario007-multinode-oooq-container
     gate:
       queue: tripleo
       jobs:
         - tripleo-ci-centos-7-containers-multinode
         - tripleo-ci-centos-7-scenario002-multinode-oooq-container
         - tripleo-ci-centos-7-scenario004-multinode-oooq-container
-        - tripleo-ci-centos-7-scenario007-multinode-oooq
+        - tripleo-ci-centos-7-scenario007-multinode-oooq-container
 
 - project-template:
     name: tripleo-multinode-baremetal-full
@@ -67,7 +67,6 @@
         - tripleo-ci-centos-7-scenario005-multinode-oooq
         - tripleo-ci-centos-7-scenario006-multinode-oooq
         - tripleo-ci-centos-7-scenario008-multinode-oooq
-        - tripleo-ci-centos-7-scenario007-multinode-oooq-container
         - tripleo-ci-centos-7-scenario009-multinode-oooq
 
 - job:
@@ -231,7 +230,7 @@
     post-run: playbooks/tripleo-ci/post.yaml
     timeout: 10800
     nodeset: legacy-centos-7-2-node
-    branches: ^(?!stable/(newton|ocata)).*$
+    branches: ^stable/pike.*$
     vars:
       toci_jobtype: multinode-1ctlr-featureset028
 
@@ -243,7 +242,7 @@
     timeout: 10800
     nodeset: legacy-centos-7-2-node
     voting: false
-    branches: ^(?!stable/(newton|ocata)).*$
+    branches: ^(?!stable/(newton|ocata|pike)).*$
     vars:
       toci_jobtype: multinode-1ctlr-featureset030
 
