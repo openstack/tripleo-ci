@@ -11,6 +11,9 @@ if [ -f "$TRIPLEO_ROOT/tripleo-ci/deploy.env" ]; then
     source $TRIPLEO_ROOT/tripleo-ci/deploy.env
 fi
 
+sudo sed -i "s/verbosity: .*$/verbosity: 5/g" /etc/unbound/conf.d/unbound-logging.conf
+sudo systemctl restart unbound
+
 # Ensure epel-release is not installed
 sudo yum erase -y epel-release || :
 

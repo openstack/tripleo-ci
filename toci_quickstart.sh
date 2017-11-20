@@ -106,6 +106,11 @@ $LOCAL_WORKING_DIR/bin/ara generate html $LOGS_DIR/ara_oooq || true
 gzip --best --recursive $LOGS_DIR/ara_oooq || true
 popd
 
+sudo unbound-control dump_cache > /tmp/dns_cache.txt
+sudo chown ${USER}: /tmp/dns_cache.txt
+cat /tmp/dns_cache.txt | gzip - > $LOGS_DIR/dns_cache.txt.gz
+
+
 # record the size of the logs directory
 # -L, --dereference     dereference all symbolic links
 du -L -ch $LOGS_DIR/* | sort -rh | head -n 200 &> $LOGS_DIR/log-size.txt || true
