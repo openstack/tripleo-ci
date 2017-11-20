@@ -47,6 +47,8 @@ if [ -f /etc/nodepool/provider ] ; then
         # CI the ones we are interested in have been cloned to /opt/stack/new. We
         # can also remove some distro images cached on the images.
         sudo rm -rf /opt/git /opt/stack/cache/files/mysql.qcow2 /opt/stack/cache/files/ubuntu-12.04-x86_64.tar.gz
+        mkdir -p $HOME/.ssh/
+        cat $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo-cd-admins >> $HOME/.ssh/authorized_keys
     fi
 fi
 
