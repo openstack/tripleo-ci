@@ -65,6 +65,7 @@
     post-run: playbooks/tripleo-ci/post.yaml
     timeout: 10800
     nodeset: legacy-tripleo-centos-7
+    branches: ^(?!stable/(newton|ocata)).*$
     vars:
       toci_jobtype: ovb-1ctlr_1comp-featureset022
 
