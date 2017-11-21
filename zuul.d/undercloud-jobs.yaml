@@ -8,6 +8,7 @@
         - tripleo-ci-centos-7-undercloud-upgrades
         - tripleo-ci-centos-7-undercloud-containers
     gate:
+      queue: tripleo
       jobs:
         - tripleo-ci-centos-7-undercloud-oooq
 
