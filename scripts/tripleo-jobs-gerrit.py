@@ -10,26 +10,26 @@ import datetime
 # Do not include the -nv suffix in the job name here.  The code will handle
 # reading both the voting and non-voting forms of the job if they exist.
 DEFAULT_JOB_NAMES = [
-    'legacy-tripleo-ci-centos-7-ovb-ha-oooq',
-    'legacy-tripleo-ci-centos-7-ovb-1ctlr_1comp_1ceph-featureset024',
-    'legacy-tripleo-ci-centos-7-nonha-multinode-oooq',
-    'legacy-tripleo-ci-centos-7-scenario001-multinode-oooq',
-    'legacy-tripleo-ci-centos-7-scenario002-multinode-oooq',
-    'legacy-tripleo-ci-centos-7-scenario003-multinode-oooq',
-    'legacy-tripleo-ci-centos-7-scenario004-multinode-oooq',
-    'legacy-tripleo-ci-centos-7-scenario001-multinode-upgrades',
-    'legacy-tripleo-ci-centos-7-scenario002-multinode-upgrades',
-    'legacy-tripleo-ci-centos-7-scenario003-multinode-upgrades',
-    'legacy-tripleo-ci-centos-7-scenario004-multinode-upgrades',
-    'legacy-tripleo-ci-centos-7-undercloud-oooq',
-    'legacy-tripleo-ci-centos-7-3nodes-multinode',
-    'legacy-tripleo-ci-centos-7-multinode-upgrades',
-    'legacy-tripleo-ci-centos-7-undercloud-upgrades',
-    'legacy-tripleo-ci-centos-7-undercloud-containers',
-    'legacy-tripleo-ci-centos-7-containers-multinode',
-    'legacy-tripleo-ci-centos-7-containers-multinode-upgrades',
-    'legacy-tripleo-ci-centos-7-ovb-containers-oooq',
-    'legacy-tripleo-ci-centos-7-ovb-fakeha-caserver',
+    'tripleo-ci-centos-7-ovb-ha-oooq',
+    'tripleo-ci-centos-7-ovb-1ctlr_1comp_1ceph-featureset024',
+    'tripleo-ci-centos-7-nonha-multinode-oooq',
+    'tripleo-ci-centos-7-scenario001-multinode-oooq',
+    'tripleo-ci-centos-7-scenario002-multinode-oooq',
+    'tripleo-ci-centos-7-scenario003-multinode-oooq',
+    'tripleo-ci-centos-7-scenario004-multinode-oooq',
+    'tripleo-ci-centos-7-scenario001-multinode-upgrades',
+    'tripleo-ci-centos-7-scenario002-multinode-upgrades',
+    'tripleo-ci-centos-7-scenario003-multinode-upgrades',
+    'tripleo-ci-centos-7-scenario004-multinode-upgrades',
+    'tripleo-ci-centos-7-undercloud-oooq',
+    'tripleo-ci-centos-7-3nodes-multinode',
+    'tripleo-ci-centos-7-multinode-upgrades',
+    'tripleo-ci-centos-7-undercloud-upgrades',
+    'tripleo-ci-centos-7-undercloud-containers',
+    'tripleo-ci-centos-7-containers-multinode',
+    'tripleo-ci-centos-7-containers-multinode-upgrades',
+    'tripleo-ci-centos-7-ovb-containers-oooq',
+    'tripleo-ci-centos-7-ovb-fakeha-caserver',
 ]
 
 DEFAULT_PROJECTS = [
@@ -114,7 +114,7 @@ def gen_html(data, html_file, table_file, stats_hours, job_names, options):
     fp.write("<tr class='headers'><td>&nbsp;</td>")
     for job_name in job_names:
         fp.write("<td class='headers'><b>%s</b></td>" %
-                 job_name.replace("legacy-tripleo-ci-centos-7-", ""))
+                 job_name.replace("tripleo-ci-centos-7-", ""))
     fp.write("</tr>")
     count = 0
 
