@@ -85,6 +85,15 @@
       - openstack/tripleo-quickstart-extras
       - openstack/tripleo-ui
       - openstack/zaqar
+    irrelevant-files:
+      - ^.*\.md$
+      - ^.*\.rst$
+      - ^doc/.*$
+      - ^etc/.*$
+      - ^metadata.json$
+      - ^releasenotes/.*$
+      - ^test-requirements.txt$
+      - ^spec/.*$
 
 - job:
     name: tripleo-ci-dsvm-multinode
@@ -96,11 +105,3 @@
     roles:
       - zuul: openstack-infra/zuul-jobs
     pre-run: playbooks/multinode-networking/pre.yaml
-    irrelevant-files:
-      - ^.*\.md$
-      - ^.*\.rst$
-      - ^doc/.*$
-      - ^etc/.*$
-      - ^metadata.json$
-      - ^releasenotes/.*$
-      - ^test-requirements.txt$
