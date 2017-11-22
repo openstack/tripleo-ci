@@ -16,8 +16,132 @@
         - tripleo-ci-centos-7-ovb-ha-tempest-oooq
 
 - job:
-    name: tripleo-ci-centos-7-ovb-1ctlr_1comp_1ceph-featureset024
+    name: tripleo-ci-ovb
+    description: |
+      Base job template for TripleO jobs that deploy OVB
     parent: tripleo-ci-dsvm
+    irrelevant-files:
+      - ^coe/kubernetes.*$
+      - ^coe/openshift.*$
+      - ^docker/services/.*ovn.*$
+      - ^docker/services/aodh.*$
+      - ^docker/services/barbican.*$
+      - ^docker/services/ceilometer.*$
+      - ^docker/services/ceph.*$
+      - ^docker/services/cinder.*$
+      - ^docker/services/congress.*$
+      - ^docker/services/ec2-api.*$
+      - ^docker/services/gnocchi.*$
+      - ^docker/services/logging.*$
+      - ^docker/services/manila.*$
+      - ^docker/services/metrics.*$
+      - ^docker/services/monitoring.*$
+      - ^docker/services/panko.*$
+      - ^docker/services/sahara.*$
+      - ^docker/services/tacker.*$
+      - ^environments/.*opendaylight.*$
+      - ^environments/kubernetes.*$
+      - ^environments/openshift.*$
+      - ^manifests/profile/base/aodh.*$
+      - ^manifests/profile/base/barbican.*$
+      - ^manifests/profile/base/ceilometer.*$
+      - ^manifests/profile/base/ceph.*$
+      - ^manifests/profile/base/cinder.*$
+      - ^manifests/profile/base/congress.*$
+      - ^manifests/profile/base/glance.*$
+      - ^manifests/profile/base/gnocchi.*$
+      - ^manifests/profile/base/logging.*$
+      - ^manifests/profile/base/manila.*$
+      - ^manifests/profile/base/metrics.*$
+      - ^manifests/profile/base/monitoring.*$
+      - ^manifests/profile/base/neutron/agents/ovn.*$
+      - ^manifests/profile/base/neutron/opendaylight/.*$
+      - ^manifests/profile/base/neutron/ovn.*$
+      - ^manifests/profile/base/neutron/plugins/ml2/ovn.*$
+      - ^manifests/profile/base/nova/ec2.*$
+      - ^manifests/profile/base/panko.*$
+      - ^manifests/profile/base/sahara.*$
+      - ^manifests/profile/base/tacker.*$
+      - ^manifests/profile/pacemaker/manila.*$
+      - ^manifests/profile/pacemaker/ovn.*$
+      - ^puppet/services/.*opendaylight.*$
+      - ^puppet/services/.*ovn.*$
+      - ^puppet/services/aodh.*$
+      - ^puppet/services/barbican.*$
+      - ^puppet/services/ceilometer.*$
+      - ^puppet/services/ceph.*$
+      - ^puppet/services/cinder.*$
+      - ^puppet/services/congress.*$
+      - ^puppet/services/ec2-api.*$
+      - ^puppet/services/glance.*$
+      - ^puppet/services/gnocchi.*$
+      - ^puppet/services/logging.*$
+      - ^puppet/services/manila.*$
+      - ^puppet/services/metrics.*$
+      - ^puppet/services/monitoring.*$
+      - ^puppet/services/panko.*$
+      - ^puppet/services/sahara.*$
+      - ^puppet/services/tacker.*$
+      - ci/environments/scenario001-multinode-containers.yaml
+      - ci/environments/scenario001-multinode.yaml
+      - ci/environments/scenario002-multinode-containers.yaml
+      - ci/environments/scenario002-multinode.yaml
+      - ci/environments/scenario003-multinode-containers.yaml
+      - ci/environments/scenario003-multinode.yaml
+      - ci/environments/scenario004-multinode-containers.yaml
+      - ci/environments/scenario004-multinode.yaml
+      - ci/environments/scenario005-multinode.yaml
+      - ci/environments/scenario006-multinode.yaml
+      - ci/environments/scenario007-multinode-containers.yaml
+      - ci/environments/scenario007-multinode.yaml
+      - ci/environments/scenario008-multinode.yaml
+      - ci/environments/scenario009-multinode.yaml
+      - ci/pingtests/scenario001.*$
+      - ci/pingtests/scenario002.*$
+      - ci/pingtests/scenario003.*$
+      - ci/pingtests/scenario004.*$
+      - ci/pingtests/scenario005-multinode.yaml
+      - ci/pingtests/scenario006-multinode.yaml
+      - ci/pingtests/scenario007-multinode.yaml
+      - ci/pingtests/scenario008-multinode.yaml
+      - ci/pingtests/scenario009-multinode.yaml
+      - config/general_config/featureset005.yml
+      - config/general_config/featureset006.yml
+      - config/general_config/featureset007.yml
+      - config/general_config/featureset008.yml
+      - config/general_config/featureset009.yml
+      - config/general_config/featureset016.yml
+      - config/general_config/featureset017.yml
+      - config/general_config/featureset018.yml
+      - config/general_config/featureset019.yml
+      - config/general_config/featureset026.yml
+      - config/general_config/featureset028.yml
+      - config/general_config/featureset028.yml
+      - config/general_config/featureset030.yml
+      - config/general_config/featureset031.yml
+      - config/general_config/featureset032.yml
+      - config/general_config/featureset033.yml
+      - manifests/profile/base/neutron/opendaylight.pp
+      - manifests/profile/base/neutron/plugins/ml2/opendaylight.pp
+      - manifests/profile/base/neutron/plugins/ovs/opendaylight.pp
+      # This list is duplicated from the parent job.
+      # Without this list, if we wanted to patch one of the files
+      # and also one of the above files, OVB jobs would run anyway
+      # because one file matches the child list. So we have to
+      # duplicate the small list of files that are common with
+      # other jobs.
+      - ^.*\.md$
+      - ^.*\.rst$
+      - ^doc/.*$
+      - ^etc/.*$
+      - ^metadata.json$
+      - ^releasenotes/.*$
+      - ^test-requirements.txt$
+      - ^spec/.*$
+
+- job:
+    name: tripleo-ci-centos-7-ovb-1ctlr_1comp_1ceph-featureset024
+    parent: tripleo-ci-ovb
     run: playbooks/tripleo-ci/run.yaml
     post-run: playbooks/tripleo-ci/post.yaml
     timeout: 10800
@@ -27,7 +151,7 @@
 
 - job:
     name: tripleo-ci-centos-7-ovb-1ctlr_1comp_1ceph-featureset024-puppet-newton
-    parent: tripleo-ci-dsvm
+    parent: tripleo-ci-ovb
     run: playbooks/tripleo-ci/run.yaml
     post-run: playbooks/tripleo-ci/post.yaml
     timeout: 10800
@@ -38,7 +162,7 @@
 
 - job:
     name: tripleo-ci-centos-7-ovb-1ctlr_1comp_1ceph-featureset024-puppet-ocata
-    parent: tripleo-ci-dsvm
+    parent: tripleo-ci-ovb
     run: playbooks/tripleo-ci/run.yaml
     post-run: playbooks/tripleo-ci/post.yaml
     timeout: 10800
@@ -49,7 +173,7 @@
 
 - job:
     name: tripleo-ci-centos-7-ovb-1ctlr_1comp_1ceph-featureset024-puppet-pike
-    parent: tripleo-ci-dsvm
+    parent: tripleo-ci-ovb
     run: playbooks/tripleo-ci/run.yaml
     post-run: playbooks/tripleo-ci/post.yaml
     timeout: 10800
@@ -60,7 +184,7 @@
 
 - job:
     name: tripleo-ci-centos-7-ovb-containers-oooq
-    parent: tripleo-ci-dsvm
+    parent: tripleo-ci-ovb
     run: playbooks/tripleo-ci/run.yaml
     post-run: playbooks/tripleo-ci/post.yaml
     timeout: 10800
@@ -71,7 +195,7 @@
 
 - job:
     name: tripleo-ci-centos-7-ovb-convergence-oooq
-    parent: tripleo-ci-dsvm
+    parent: tripleo-ci-ovb
     run: playbooks/tripleo-ci/run.yaml
     post-run: playbooks/tripleo-ci/post.yaml
     timeout: 10800
@@ -81,7 +205,7 @@
 
 - job:
     name: tripleo-ci-centos-7-ovb-fakeha-caserver
-    parent: tripleo-ci-dsvm
+    parent: tripleo-ci-ovb
     run: playbooks/tripleo-ci/run.yaml
     post-run: playbooks/tripleo-ci/post.yaml
     timeout: 10800
@@ -102,7 +226,7 @@
 
 - job:
     name: tripleo-ci-centos-7-ovb-ha-oooq
-    parent: tripleo-ci-dsvm
+    parent: tripleo-ci-ovb
     run: playbooks/tripleo-ci/run.yaml
     post-run: playbooks/tripleo-ci/post.yaml
     timeout: 10800
@@ -112,7 +236,7 @@
 
 - job:
     name: tripleo-ci-centos-7-ovb-ha-oooq-newton
-    parent: tripleo-ci-dsvm
+    parent: tripleo-ci-ovb
     run: playbooks/tripleo-ci/run.yaml
     post-run: playbooks/tripleo-ci/post.yaml
     timeout: 10800
@@ -123,7 +247,7 @@
 
 - job:
     name: tripleo-ci-centos-7-ovb-ha-oooq-ocata
-    parent: tripleo-ci-dsvm
+    parent: tripleo-ci-ovb
     run: playbooks/tripleo-ci/run.yaml
     post-run: playbooks/tripleo-ci/post.yaml
     timeout: 10800
@@ -134,7 +258,7 @@
 
 - job:
     name: tripleo-ci-centos-7-ovb-ha-oooq-pike
-    parent: tripleo-ci-dsvm
+    parent: tripleo-ci-ovb
     run: playbooks/tripleo-ci/run.yaml
     post-run: playbooks/tripleo-ci/post.yaml
     timeout: 10800
@@ -145,7 +269,7 @@
 
 - job:
     name: tripleo-ci-centos-7-ovb-ha-tempest-oooq
-    parent: tripleo-ci-dsvm
+    parent: tripleo-ci-ovb
     run: playbooks/tripleo-ci/run.yaml
     post-run: playbooks/tripleo-ci/post.yaml
     timeout: 10800
