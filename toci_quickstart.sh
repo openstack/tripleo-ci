@@ -74,9 +74,6 @@ TIME_FOR_DEPLOY=$(( REMAINING_TIME - ($(date +%s) - START_JOB_TIME)/60 - 10 ))
 [[ "$exit_value" == 0 ]] && echo "Playbook run passed successfully" || echo "Playbook run failed"
 ## LOGS COLLECTION
 
-# workaround to stop collecting same host twice
-sed -i 's/hosts: all:!localhost/hosts: all:!localhost:!127.0.0.2/' $LOCAL_WORKING_DIR/playbooks/collect-logs.yml || true
-
 $QUICKSTART_COLLECTLOGS_CMD \
     > $LOGS_DIR/quickstart_collect_logs.log || \
     echo "WARNING: quickstart collect-logs failed, check quickstart_collectlogs.log for details"
