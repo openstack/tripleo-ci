@@ -1,3 +1,13 @@
+- name: Collect logs
+  hosts: primary
+  tasks:
+
+    - name: Run ansible playbook to collect logs
+      shell: |
+        if [[ -e {{ ansible_user_dir }}/workspace/logs/collect_logs.sh ]]; then
+          bash {{ ansible_user_dir }}/workspace/logs/collect_logs.sh
+        fi
+
 - hosts:
     - primary
     - tripleo-centos-7

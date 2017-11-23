@@ -154,10 +154,7 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
             SUBNODES_SSH_KEY=/etc/nodepool/id_rsa
             ENVIRONMENT="osinfra"
             PLAYBOOK="multinode.yml"
-            FEATURESET_CONF="
-                --extra-vars @$LWD/config/general_config/featureset-multinode-common.yml
-                $FEATURESET_CONF
-            "
+            FEATURESET_CONF=" --extra-vars @$LWD/config/general_config/featureset-multinode-common.yml $FEATURESET_CONF"
             if [[ $NODEPOOL_PROVIDER == "rdo-cloud-tripleo" ]]; then
                 ENV_VARS="$ENV_VARS --extra-vars @$TRIPLEO_ROOT/tripleo-ci/toci-quickstart/config/testenv/multinode-rdocloud.yml"
             else
@@ -172,10 +169,7 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
             ENVIRONMENT="osinfra"
             UNDERCLOUD="127.0.0.2"
             PLAYBOOK="multinode.yml"
-            FEATURESET_CONF="
-                --extra-vars @$LWD/config/general_config/featureset-multinode-common.yml
-                $FEATURESET_CONF
-            "
+            FEATURESET_CONF=" --extra-vars @$LWD/config/general_config/featureset-multinode-common.yml $FEATURESET_CONF"
             if [[ $NODEPOOL_PROVIDER == "rdo-cloud-tripleo" ]]; then
                 ENV_VARS="$ENV_VARS --extra-vars @$TRIPLEO_ROOT/tripleo-ci/toci-quickstart/config/testenv/multinode-rdocloud.yml"
             else
