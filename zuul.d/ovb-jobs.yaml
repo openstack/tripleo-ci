@@ -5,6 +5,7 @@
     check-tripleo:
       jobs:
         - tripleo-ci-centos-7-ovb-ha-oooq
+        - tripleo-ci-centos-7-ovb-ha-oooq-ipv6
         - tripleo-ci-centos-7-ovb-containers-oooq
         - tripleo-ci-centos-7-ovb-1ctlr_1comp_1ceph-featureset024
 
@@ -150,6 +151,7 @@
     post-run: playbooks/tripleo-ci/post.yaml
     timeout: 10800
     nodeset: legacy-tripleo-centos-7
+    branches: ^(stable/(newton|ocata|pike)).*$
     vars:
       toci_jobtype: ovb-1ctlr_1comp_1ceph-featureset024
 
@@ -237,6 +239,17 @@
     nodeset: legacy-tripleo-centos-7
     vars:
       toci_jobtype: ovb-3ctlr_1comp-featureset001
+
+- job:
+    name: tripleo-ci-centos-7-ovb-ha-oooq-ipv6
+    parent: tripleo-ci-ovb
+    run: playbooks/tripleo-ci/run.yaml
+    post-run: playbooks/tripleo-ci/post.yaml
+    timeout: 10800
+    nodeset: legacy-tripleo-centos-7
+    branches: ^(?!stable/(newton|ocata|pike)).*$
+    vars:
+      toci_jobtype: ovb-3ctlr_1comp-featureset035
 
 - job:
     name: tripleo-ci-centos-7-ovb-ha-oooq-newton
