@@ -94,6 +94,7 @@
       - ^releasenotes/.*$
       - ^test-requirements.txt$
       - ^spec/.*$
+      - ^Puppetfile.*$
 
 - job:
     name: tripleo-ci-dsvm-multinode
