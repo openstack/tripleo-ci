@@ -5,10 +5,6 @@
     check:
       jobs:
         - tripleo-buildimage-overcloud-full-centos-7
-    gate:
-      queue: tripleo
-      jobs:
-        - tripleo-buildimage-overcloud-full-centos-7
     experimental:
       jobs:
         - tripleo-buildimage-ironic-python-agent-centos-7
