@@ -1596,11 +1596,13 @@ function setup_nodepool_files {
     echo -n > /etc/nodepool/sub_nodes
     echo -n > /etc/nodepool/sub_nodes_private
     for sub_node_ip in $SUB_NODE_IPS; do
-        echo $sub_node_ip > /etc/nodepool/node
-        echo $sub_node_ip > /etc/nodepool/node_private
         echo $sub_node_ip >> /etc/nodepool/sub_nodes
         echo $sub_node_ip >> /etc/nodepool/sub_nodes_private
+    done
 
+    for sub_node_ip in $SUB_NODE_IPS; do
+        echo $sub_node_ip > /etc/nodepool/node
+        echo $sub_node_ip > /etc/nodepool/node_private
         ssh $SSH_OPTIONS -tt $sub_node_ip sudo mkdir -p $TRIPLEO_ROOT
         ssh $SSH_OPTIONS -tt $sub_node_ip sudo chown -R $(whoami): $TRIPLEO_ROOT
         rsync -e "ssh $SSH_OPTIONS" -avhP $TRIPLEO_ROOT $sub_node_ip:$TRIPLEO_ROOT/..
