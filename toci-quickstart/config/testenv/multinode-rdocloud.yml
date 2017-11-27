@@ -19,6 +19,8 @@ toci_vxlan_networking_multinode: true
 vxlan_mtu: 1350
 hostname_correction: true # workaround restriction on toci images
 
+ceph_use_fqdn: true
+
 # environment settings, not TRIPLEO-CI specific
 undercloud_local_interface: "br-ex" # related to osinfra network configuration
 flavor_args: ""
