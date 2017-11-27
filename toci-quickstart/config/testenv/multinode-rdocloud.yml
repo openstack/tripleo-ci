@@ -38,3 +38,5 @@ tempest_track_resources: false
 docker_registry_host: trunk.registry.rdoproject.org
 docker_registry_namespace: "{{ release }}"
 
+# Tempestmail settings
+tempestmail_log_server: http://logs.rdoproject.org
