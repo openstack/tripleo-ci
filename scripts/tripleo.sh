@@ -109,7 +109,8 @@ if [ -f "$TRIPLEO_ROOT/tripleo-ci/deploy.env" ]; then
 fi
 
 ALL=${ALL:-""}
-CONTAINER_ARGS=${CONTAINER_ARGS:-"-e /usr/share/openstack-tripleo-heat-templates/environments/docker.yaml --libvirt-type=qemu"}
+TRIPLEO_HEAT_TEMPLATES_ROOT=${TRIPLEO_HEAT_TEMPLATES_ROOT:-"/usr/share/openstack-tripleo-heat-templates"}
+CONTAINER_ARGS=${CONTAINER_ARGS:-"-e ${TRIPLEO_HEAT_TEMPLATES_ROOT}/environments/docker.yaml --libvirt-type=qemu"}
 STABLE_RELEASE=${STABLE_RELEASE:-}
 REVIEW_RELEASE=${REVIEW_RELEASE:-}
 UPGRADE_RELEASE=${UPGRADE_RELEASE:-""}
@@ -1155,15 +1156,13 @@ function overcloud_pingtest {
     TENANT_STACK_DEPLOY_ARGS=${TENANT_STACK_DEPLOY_ARGS:-""}
     neutron subnet-create --name ext-subnet --allocation-pool start=$FLOATING_IP_START,end=$FLOATING_IP_END --disable-dhcp --gateway $EXTERNAL_NETWORK_GATEWAY nova $FLOATING_IP_CIDR
     # pingtest environment for scenarios jobs is in TripleO Heat Templates.
-    if [ -e /usr/share/openstack-tripleo-heat-templates/ci/pingtests/$MULTINODE_ENV_NAME.yaml ]; then
-        TENANT_PINGTEST_TEMPLATE=/usr/share/openstack-tripleo-heat-templates/ci/pingtests/$MULTINODE_ENV_NAME.yaml
+    if [ -e "${TRIPLEO_HEAT_TEMPLATES_ROOT}/ci/pingtests/${MULTINODE_ENV_NAME}.yaml" ]; then
+        TENANT_PINGTEST_TEMPLATE="${TRIPLEO_HEAT_TEMPLATES_ROOT}/ci/pingtests/${MULTINODE_ENV_NAME}.yaml"
+    elif [ -e "${TRIPLEO_HEAT_TEMPLATES_ROOT}/ci/pingtests/tenantvm_floatingip.yaml" ]; then
+        TENANT_PINGTEST_TEMPLATE="${TRIPLEO_HEAT_TEMPLATES_ROOT}/ci/pingtests/tenantvm_floatingip.yaml"
     else
-        if [ -e /usr/share/openstack-tripleo-heat-templates/ci/pingtests/tenantvm_floatingip.yaml ]; then
-            TENANT_PINGTEST_TEMPLATE=/usr/share/openstack-tripleo-heat-templates/ci/pingtests/tenantvm_floatingip.yaml
-        else
-            # If the template is not found, we will get the template from the tripleo-ci location for backwards compatibility.
-            TENANT_PINGTEST_TEMPLATE=$TRIPLEO_ROOT/tripleo-ci/templates/tenantvm_floatingip.yaml
-        fi
+        # If the template is not found, we will get the template from the tripleo-ci location for backwards compatibility.
+        TENANT_PINGTEST_TEMPLATE="${TRIPLEO_ROOT}/tripleo-ci/templates/tenantvm_floatingip.yaml"
     fi
     log "Overcloud pingtest, creating tenant-stack heat stack:"
     openstack stack create -f yaml -t $TENANT_PINGTEST_TEMPLATE $TENANT_STACK_DEPLOY_ARGS tenant-stack || exitval=1
