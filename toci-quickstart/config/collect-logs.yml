@@ -203,6 +203,7 @@ artcl_collect_list:
   - /var/log/murano/
   - /var/log/neutron/
   - /var/log/nova/
+  - /var/log/novajoin/
   - /var/log/octavia/
   - /var/log/openvswitch/
   - /var/log/ovn/
