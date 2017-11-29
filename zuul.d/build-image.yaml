@@ -5,6 +5,9 @@
     check:
       jobs:
         - tripleo-buildimage-overcloud-full-centos-7
+    gate:
+      jobs:
+        - tripleo-buildimage-overcloud-full-centos-7
     experimental:
       jobs:
         - tripleo-buildimage-ironic-python-agent-centos-7
@@ -58,7 +61,6 @@
     irrelevant-files:
       - ^.*\.rst$
       - ^releasenotes/.*$
-    voting: false
 
 - job:
     name: tripleo-buildimage-overcloud-hardened-full-centos-7
