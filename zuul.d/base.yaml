@@ -92,6 +92,7 @@
       - ^etc/.*$
       - ^metadata.json$
       - ^releasenotes/.*$
+      - ^requirements.txt$
       - ^test-requirements.txt$
       - ^spec/.*$
       - ^Puppetfile.*$
