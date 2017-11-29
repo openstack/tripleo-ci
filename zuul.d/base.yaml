@@ -6,6 +6,10 @@
       Base job template for TripleO jobs that leverage devstack-gate/dsvm
     parent: legacy-dsvm-base
     pre-run: playbooks/nodepool-provider/pre.yaml
+    vars:
+      # Note (dmsimard): This enforces a minimum TTL for DNS records, see
+      # https://review.openstack.org/#/c/523178/ for context
+      unbound_cache_min_ttl: 900
     required-projects:
       - openstack/aodh
       - openstack/barbican
