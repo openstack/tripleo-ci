@@ -8,6 +8,7 @@ artcl_rsync_logs: false
 artcl_collect_list:
   - /var/lib/unbound/unbound.log
   - /var/lib/mistral/
+  - /var/lib/heat-config/
   - /home/{{ undercloud_user }}/.instack/install-undercloud.log
   - /home/{{ undercloud_user }}/stackrc
   - /home/{{ undercloud_user }}/overcloudrc
