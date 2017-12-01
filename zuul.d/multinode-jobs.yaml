@@ -37,7 +37,9 @@
       queue: tripleo
       jobs:
         - tripleo-ci-centos-7-containers-multinode
+        - tripleo-ci-centos-7-scenario001-multinode-oooq-container
         - tripleo-ci-centos-7-scenario002-multinode-oooq-container
+        - tripleo-ci-centos-7-scenario003-multinode-oooq-container
         - tripleo-ci-centos-7-scenario004-multinode-oooq-container
         - tripleo-ci-centos-7-scenario007-multinode-oooq-container
 
@@ -56,7 +58,9 @@
       queue: tripleo
       jobs:
         - tripleo-ci-centos-7-nonha-multinode-oooq
+        - tripleo-ci-centos-7-scenario001-multinode-oooq
         - tripleo-ci-centos-7-scenario002-multinode-oooq
+        - tripleo-ci-centos-7-scenario003-multinode-oooq
         - tripleo-ci-centos-7-scenario004-multinode-oooq
         - tripleo-ci-centos-7-scenario007-multinode-oooq
 
@@ -113,8 +117,6 @@
     branches: ^stable/(newton|ocata).*$
     vars:
       toci_jobtype: multinode-1ctlr-featureset005
-    # https://bugs.launchpad.net/tripleo/+bug/1731063
-    voting: false
 
 - job:
     name: tripleo-ci-centos-7-scenario001-multinode-oooq-container
@@ -126,8 +128,6 @@
     branches: ^(?!stable/(newton|ocata)).*$
     vars:
       toci_jobtype: multinode-1ctlr-featureset016
-    # https://bugs.launchpad.net/tripleo/+bug/1731063
-    voting: false
 
 - job:
     name: tripleo-ci-centos-7-scenario002-multinode-oooq
@@ -161,8 +161,6 @@
     branches: ^stable/ocata.*$
     vars:
       toci_jobtype: multinode-1ctlr-featureset007
-    # https://bugs.launchpad.net/tripleo/+bug/1731063
-    voting: false
 
 - job:
     name: tripleo-ci-centos-7-scenario003-multinode-oooq-container
@@ -174,8 +172,6 @@
     branches: ^(?!stable/(newton|ocata)).*$
     vars:
       toci_jobtype: multinode-1ctlr-featureset018
-    # https://bugs.launchpad.net/tripleo/+bug/1731063
-    voting: false
 
 - job:
     name: tripleo-ci-centos-7-scenario004-multinode-oooq
