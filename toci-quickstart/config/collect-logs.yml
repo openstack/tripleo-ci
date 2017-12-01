@@ -85,6 +85,7 @@ artcl_collect_list:
   - /etc/kolla/
   - /etc/krb5.conf*
   - /etc/krb5.conf*/
+  - /etc/kubernetes/
   - /etc/libvirt/
   - /etc/lsb-release.d/
   - /etc/lvm/
