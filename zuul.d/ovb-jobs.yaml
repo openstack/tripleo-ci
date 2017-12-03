@@ -140,6 +140,8 @@
       - ^test-requirements.txt$
       - ^spec/.*$
       - ^Puppetfile.*$
+      - tox.ini
+      - ^setup.*$
 
 - job:
     name: tripleo-ci-centos-7-ovb-1ctlr_1comp_1ceph-featureset024
