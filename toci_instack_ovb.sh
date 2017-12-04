@@ -28,9 +28,6 @@ echo "127.0.0.1 $(hostname) $(hostname).openstacklocal" | sudo tee -a /etc/hosts
 # TODO: xfsprogs should be a dep of DIB?
 sudo yum install -y xfsprogs
 
-# Will be used by the undercloud and needed for the TLS everywhere job
-sudo yum install -yq jq
-
 # Remove the anything on the infra image template that might interfere with CI
 # Note for tripleo-quickstart: this task is already managed in tripleo-ci-setup-playbook.yml
 sudo yum remove -y facter puppet hiera puppetlabs-release rdo-release centos-release-[a-z]*
@@ -49,6 +46,9 @@ dummy_ci_repo
 
 # Install all of the repositories we need
 $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --repo-setup
+
+# Will be used by the undercloud and needed for the TLS everywhere job
+sudo yum install -y jq
 
 # We can't use squid to cache https urls, so don't use them
 for i in /etc/yum.repos.d/delorean*
