@@ -11,7 +11,7 @@ import datetime
 # reading both the voting and non-voting forms of the job if they exist.
 DEFAULT_JOB_NAMES = [
     'tripleo-ci-centos-7-ovb-ha-oooq',
-    'tripleo-ci-centos-7-ovb-1ctlr_1comp_1ceph-featureset024',
+    'tripleo-ci-centos-7-ovb-ha-oooq-ipv6',
     'tripleo-ci-centos-7-containers-multinode',
     'tripleo-ci-centos-7-scenario001-multinode-oooq-container',
     'tripleo-ci-centos-7-scenario002-multinode-oooq-container',
@@ -23,7 +23,6 @@ DEFAULT_JOB_NAMES = [
     'tripleo-ci-centos-7-multinode-upgrades',
     'tripleo-ci-centos-7-undercloud-upgrades',
     'tripleo-ci-centos-7-ovb-containers-oooq',
-    'tripleo-ci-centos-7-ovb-fakeha-caserver',
 ]
 
 DEFAULT_PROJECTS = [
