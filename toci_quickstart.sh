@@ -41,7 +41,6 @@ QUICKSTART_VENV_CMD="
 
 QUICKSTART_INSTALL_CMD="
     $LOCAL_WORKING_DIR/bin/ansible-playbook
-    $LOCAL_WORKING_DIR/playbooks/$PLAYBOOK
     --extra-vars @$LOCAL_WORKING_DIR/config/release/tripleo-ci/$QUICKSTART_RELEASE.yml
     $NODES_ARGS
     $FEATURESET_CONF
@@ -92,8 +91,18 @@ source $OOOQ_DIR/ansible_ssh_env.sh
 run_with_timeout $START_JOB_TIME $QUICKSTART_INSTALL_CMD --extra-vars ci_job_end_time=$(( START_JOB_TIME + REMAINING_TIME*60 )) \
     2>&1 | tee $LOGS_DIR/quickstart_install.log && exit_value=0 || exit_value=$?
 
-# Print status of playbook run
+for playbook in $PLAYBOOKS; do
+    run_with_timeout $START_JOB_TIME $QUICKSTART_INSTALL_CMD \
+        $LOCAL_WORKING_DIR/playbooks/$playbook \
+        2>&1 | tee $LOGS_DIR/quickstart_install.log && exit_value=0 || exit_value=$?
+
+    # Print status of playbook run
+    [[ "$exit_value" == 0 ]] && echo "Playbook run of $playbook passed successfully"
+    [[ "$exit_value" != 0 ]] && echo "Playbook run of $playbook failed" && break
+done
+
 [[ "$exit_value" == 0 ]] && echo "Playbook run passed successfully" || echo "Playbook run failed"
+
 ## LOGS COLLECTION
 
 cat <<EOF > $LOGS_DIR/collect_logs.sh

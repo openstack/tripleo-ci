@@ -99,8 +99,8 @@ export FEATURESET_FILE=""
 export FEATURESET_CONF=""
 # Define file with nodes topology
 export NODES_FILE=""
-# Indentifies which playbook to run
-export PLAYBOOK=""
+# Indentifies which playbooks to run
+export PLAYBOOKS=""
 # Set the number of overcloud nodes
 export NODECOUNT=0
 # Sets the undercloud hostname
@@ -143,7 +143,7 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
             OVB=1
             ENVIRONMENT="ovb"
             UCINSTANCEID=$(http_proxy= curl http://169.254.169.254/openstack/2015-10-15/meta_data.json | python -c 'import json, sys; print json.load(sys.stdin)["uuid"]')
-            PLAYBOOK="baremetal-full-deploy.yml"
+            PLAYBOOKS="ovb-setup.yml baremetal-full-undercloud.yml baremetal-full-overcloud-prep.yml baremetal-full-overcloud.yml baremetal-full-overcloud-validate.yml"
             ENV_VARS="$ENV_VARS --extra-vars @$TRIPLEO_ROOT/tripleo-ci/toci-quickstart/config/testenv/ovb.yml"
             if [[ -f  "$TRIPLEO_ROOT/tripleo-ci/toci-quickstart/config/testenv/ovb-$RHCLOUD.yml" ]]; then
                 ENV_VARS="$ENV_VARS --extra-vars @$TRIPLEO_ROOT/tripleo-ci/toci-quickstart/config/testenv/ovb-$RHCLOUD.yml"
@@ -153,7 +153,7 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
         multinode)
             SUBNODES_SSH_KEY=/etc/nodepool/id_rsa
             ENVIRONMENT="osinfra"
-            PLAYBOOK="multinode.yml"
+            PLAYBOOKS="quickstart.yml multinode-undercloud.yml multinode-overcloud-prep.yml multinode-overcloud.yml multinode-overcloud-upgrade.yml multinode-validate.yml"
             FEATURESET_CONF=" --extra-vars @$LWD/config/general_config/featureset-multinode-common.yml $FEATURESET_CONF"
             if [[ $NODEPOOL_PROVIDER == "rdo-cloud-tripleo" ]]; then
                 ENV_VARS="$ENV_VARS --extra-vars @$TRIPLEO_ROOT/tripleo-ci/toci-quickstart/config/testenv/multinode-rdocloud.yml"
@@ -168,7 +168,7 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
         singlenode)
             ENVIRONMENT="osinfra"
             UNDERCLOUD="127.0.0.2"
-            PLAYBOOK="multinode.yml"
+            PLAYBOOKS="quickstart.yml multinode-undercloud.yml multinode-overcloud-prep.yml multinode-overcloud.yml multinode-overcloud-upgrade.yml multinode-validate.yml"
             FEATURESET_CONF=" --extra-vars @$LWD/config/general_config/featureset-multinode-common.yml $FEATURESET_CONF"
             if [[ $NODEPOOL_PROVIDER == "rdo-cloud-tripleo" ]]; then
                 ENV_VARS="$ENV_VARS --extra-vars @$TRIPLEO_ROOT/tripleo-ci/toci-quickstart/config/testenv/multinode-rdocloud.yml"
