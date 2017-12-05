@@ -7,6 +7,7 @@ LOCAL_WORKING_DIR="$WORKSPACE/.quickstart"
 WORKING_DIR="$HOME"
 LOGS_DIR=$WORKSPACE/logs
 
+source $TRIPLEO_ROOT/tripleo-ci/scripts/oooq_common_functions.sh
 
 ## Signal to toci_gate_test.sh we've started by
 touch /tmp/toci.started
@@ -63,13 +64,9 @@ cp $TRIPLEO_ROOT/tripleo-ci/toci-quickstart/playbooks/* $TRIPLEO_ROOT/tripleo-qu
 pushd $TRIPLEO_ROOT/tripleo-quickstart/
 
 $QUICKSTART_PREPARE_CMD
-
-# Use $REMAINING_TIME of infra to calculate maximum time for remaning part of job
-# Leave 15 minutes for quickstart logs collection
-REMAINING_TIME=${REMAINING_TIME:-180}
-TIME_FOR_DEPLOY=$(( REMAINING_TIME - ($(date +%s) - START_JOB_TIME)/60 - 10 ))
-/usr/bin/timeout --preserve-status ${TIME_FOR_DEPLOY}m  $QUICKSTART_INSTALL_CMD \
+run_with_timeout $START_JOB_TIME $QUICKSTART_INSTALL_CMD \
     2>&1 | tee $LOGS_DIR/quickstart_install.log && exit_value=0 || exit_value=$?
+
 # Print status of playbook run
 [[ "$exit_value" == 0 ]] && echo "Playbook run passed successfully" || echo "Playbook run failed"
 ## LOGS COLLECTION
