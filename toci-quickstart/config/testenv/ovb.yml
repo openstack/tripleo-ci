@@ -63,3 +63,7 @@ ipa_image_url: http://192.168.103.253/builds-{{ release }}/current-tripleo/ipa_i
 
 # We don't need to cleanup TripleO CI
 tempest_track_resources: false
+
+# Deployment metrics
+ara_graphite_prefix: "test.tripleo.{{ lookup('env', 'STABLE_RELEASE')|default('master', true) }}.{{ lookup('env', 'TOCI_JOBTYPE') }}."
+ara_graphite_server: 66.187.229.172
