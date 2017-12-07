@@ -41,7 +41,6 @@
   hosts: undercloud
   vars:
     artg_compressed_gating_repo: "${HOME}/gating_repo.tar.gz"
-    artg_repos_dir: "{{ tripleo_root }}"
   roles:
     - build-test-packages
     - { role: install-built-repo, when: compressed_gating_repo is defined }

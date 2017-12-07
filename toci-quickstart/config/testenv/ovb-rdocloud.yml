@@ -27,3 +27,6 @@ tempest_track_resources: false
 
 # Tempestmail settings
 tempestmail_log_server: http://logs.rdoproject.org
+
+#build-test packages
+artg_repos_dir: "{{ tripleo_root }}"

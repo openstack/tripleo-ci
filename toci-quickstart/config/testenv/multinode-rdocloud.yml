@@ -45,3 +45,6 @@ tempestmail_log_server: http://logs.rdoproject.org
 # Deployment metrics
 ara_graphite_prefix: "test.tripleo.{{ lookup('env', 'STABLE_RELEASE')|default('master', true) }}.{{ lookup('env', 'TOCI_JOBTYPE') }}."
 ara_graphite_server: 66.187.229.172
+
+#build-test packages
+artg_repos_dir: "{{ tripleo_root }}"
