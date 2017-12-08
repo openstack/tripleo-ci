@@ -1,7 +1,4 @@
 projects:
-  - name: dib-utils
-    launchpad_project: diskimage-builder
-  - name: diskimage-builder
   - name: instack
     launchpad_project: tripleo
   - name: instack-undercloud
@@ -28,3 +25,18 @@ projects:
     launchpad_project: tripleo
   - name: tripleo-validations
     launchpad_project: tripleo
+  - name: openstack-infra/tripleo-ci
+  - name: ansible-role-k8s-cookiecutter
+  - name: ansible-role-k8s-keystone
+  - name: ansible-role-k8s-mariadb
+  - name: ansible-role-k8s-tripleo
+  - name: ansible-role-k8s-glance
+  - name: paunch
+  - name: puppet-tripleo
+  - name: tempest-tripleo-ui
+  - name: tripleo-common-tempest-plugin
+  - name: tripleo-ipsec
+  - name: tripleo-quickstart
+  - name: tripleo-quickstart-extras
+  - name: tripleo-ui
+  - name: tripleo-upgrade
