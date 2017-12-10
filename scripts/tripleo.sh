@@ -624,6 +624,7 @@ EOF_CAT
         --local-ip=$LOCAL_IP \
         --heat-native \
         -e $HOME/tripleo-heat-templates/environments/services-docker/ironic.yaml \
+        -e $HOME/tripleo-heat-templates/environments/services-docker/ironic-inspector.yaml \
         -e $HOME/tripleo-heat-templates/environments/services-docker/mistral.yaml \
         -e $HOME/tripleo-heat-templates/environments/services-docker/zaqar.yaml \
         -e $HOME/tripleo-heat-templates/environments/docker.yaml \
