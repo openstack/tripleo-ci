@@ -163,6 +163,7 @@ artcl_collect_list:
   - /etc/tuna/
   - /etc/unbound/unbound.conf
   - /etc/unbound/forwarding.conf
+  - /etc/unbound/conf.d/ttl.conf
   - /etc/unbound/conf.d/unbound-logging.conf
   - /etc/vconsole.conf
   - /etc/yum/
