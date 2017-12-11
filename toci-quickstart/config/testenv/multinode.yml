@@ -14,6 +14,11 @@ dlrn_use_local_mirrors: true
 vxlan_networking: true
 hostname_correction: true # workaround restriction on toci images
 
+vxlan_mtu: 1350
+mtu: "{{ vxlan_mtu }}"
+undercloud_local_mtu: "{{ mtu }}"
+overcloud_neutron_global_physnet_mtu: "{{ mtu }}"
+
 # environment settings, not TRIPLEO-CI specific
 undercloud_local_interface: "br-ex" # related to osinfra network configuration
 flavor_args: ""

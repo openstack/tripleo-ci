@@ -57,8 +57,8 @@ host_network_interfaces:
   - eth1
   - "{% if network_isolation|default(true)|bool %}eth2{% endif %}"
 mtu_interface: "{{ host_network_interfaces|select()|list }}"
-undercloud_local_mtu: 1350
-overcloud_neutron_global_physnet_mtu: 1350
+undercloud_local_mtu: "{{ mtu }}"
+overcloud_neutron_global_physnet_mtu: "{{ mtu }}"
 floating_ip_cidr: >-
   {%- if network_isolation|default(true)|bool %}10.0.0.0/24
   {%- else %}192.168.24.0/24
