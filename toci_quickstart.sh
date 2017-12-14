@@ -107,7 +107,8 @@ cat /tmp/dns_cache.txt | gzip - > $LOGS_DIR/dns_cache.txt.gz
 
 # record the size of the logs directory
 # -L, --dereference     dereference all symbolic links
-du -L -ch $LOGS_DIR/* | sort -rh | head -n 200 &> $LOGS_DIR/log-size.txt || true
+# Note: tail -n +1 is to prevent the error "Broken Pipe" e.g. "sort: write failed: standard output: Broken pipe"
+du -L -ch $LOGS_DIR/* | tail -n +1 | sort -rh | head -n 200 &> $LOGS_DIR/log-size.txt || true
 
 if [[ "$PERIODIC" == 1 && -e $WORKSPACE/hash_info.sh ]] ; then
     echo export JOB_EXIT_VALUE=$exit_value >> $WORKSPACE/hash_info.sh
