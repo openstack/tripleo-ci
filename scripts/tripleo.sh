@@ -1326,8 +1326,11 @@ function clone {
 #   http://www.yet.org/2014/09/openvswitch-troubleshooting/
 #
 function ovs_vxlan_bridge {
-    if is_suse || is_fedora; then
+    if is_suse; then
         local ovs_package='openvswitch'
+        local ovs_service='openvswitch'
+    elif is_fedora; then
+        local ovs_package='openvswitch openstack-selinux'
         local ovs_service='openvswitch'
     elif uses_debs; then
         local ovs_package='openvswitch-switch'
