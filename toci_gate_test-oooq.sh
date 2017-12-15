@@ -125,21 +125,22 @@ export EXTRA_VARS=${EXTRA_VARS:-""}
 export EXTRA_VARS="$EXTRA_VARS --extra-vars deploy_timeout=$OVERCLOUD_DEPLOY_TIMEOUT"
 export NODES_ARGS=""
 export COLLECT_CONF="$TRIPLEO_ROOT/tripleo-ci/toci-quickstart/config/collect-logs.yml"
-
+LOCAL_WORKING_DIR="$WORKSPACE/.quickstart"
+LWD=$LOCAL_WORKING_DIR
 
 # Assemble quickstart configuration based on job type keywords
 for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
     case $JOB_TYPE_PART in
         featureset*)
-            FEATURESET_FILE="config/general_config/$JOB_TYPE_PART.yml"
-            FEATURESET_CONF="$FEATURESET_CONF --config $FEATURESET_FILE"
+            FEATURESET_FILE="$LWD/config/general_config/$JOB_TYPE_PART.yml"
+            FEATURESET_CONF="$FEATURESET_CONF --extra-vars @$FEATURESET_FILE"
         ;;
         ovb)
             OVB=1
             ENVIRONMENT="ovb"
             UCINSTANCEID=$(http_proxy= curl http://169.254.169.254/openstack/2015-10-15/meta_data.json | python -c 'import json, sys; print json.load(sys.stdin)["uuid"]')
             PLAYBOOK="baremetal-full-deploy.yml"
-            ENV_VARS="$ENV_VARS --environment $TRIPLEO_ROOT/tripleo-ci/toci-quickstart/config/testenv/ovb.yml"
+            ENV_VARS="$ENV_VARS --extra-vars @$TRIPLEO_ROOT/tripleo-ci/toci-quickstart/config/testenv/ovb.yml"
             if [[ -f  "$TRIPLEO_ROOT/tripleo-ci/toci-quickstart/config/testenv/ovb-$RHCLOUD.yml" ]]; then
                 ENV_VARS="$ENV_VARS --extra-vars @$TRIPLEO_ROOT/tripleo-ci/toci-quickstart/config/testenv/ovb-$RHCLOUD.yml"
             fi
@@ -150,13 +151,13 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
             ENVIRONMENT="osinfra"
             PLAYBOOK="multinode.yml"
             FEATURESET_CONF="
-                --extra-vars @config/general_config/featureset-multinode-common.yml
+                --extra-vars @$LWD/config/general_config/featureset-multinode-common.yml
                 $FEATURESET_CONF
             "
             if [[ $NODEPOOL_PROVIDER == "rdo-cloud-tripleo" ]]; then
-                ENV_VARS="$ENV_VARS --environment $TRIPLEO_ROOT/tripleo-ci/toci-quickstart/config/testenv/multinode-rdocloud.yml"
+                ENV_VARS="$ENV_VARS --extra-vars @$TRIPLEO_ROOT/tripleo-ci/toci-quickstart/config/testenv/multinode-rdocloud.yml"
             else
-                ENV_VARS="$ENV_VARS --environment $TRIPLEO_ROOT/tripleo-ci/toci-quickstart/config/testenv/multinode.yml"
+                ENV_VARS="$ENV_VARS --extra-vars @$TRIPLEO_ROOT/tripleo-ci/toci-quickstart/config/testenv/multinode.yml"
             fi
             UNDERCLOUD="127.0.0.2"
             TAGS="build,undercloud-setup,undercloud-scripts,undercloud-install,undercloud-post-install,tripleo-validations,overcloud-scripts,overcloud-prep-config,overcloud-prep-containers,overcloud-deploy,overcloud-upgrade,overcloud-validate"
@@ -168,13 +169,13 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
             UNDERCLOUD="127.0.0.2"
             PLAYBOOK="multinode.yml"
             FEATURESET_CONF="
-                --extra-vars @config/general_config/featureset-multinode-common.yml
+                --extra-vars @$LWD/config/general_config/featureset-multinode-common.yml
                 $FEATURESET_CONF
             "
             if [[ $NODEPOOL_PROVIDER == "rdo-cloud-tripleo" ]]; then
-                ENV_VARS="$ENV_VARS --environment $TRIPLEO_ROOT/tripleo-ci/toci-quickstart/config/testenv/multinode-rdocloud.yml"
+                ENV_VARS="$ENV_VARS --extra-vars @$TRIPLEO_ROOT/tripleo-ci/toci-quickstart/config/testenv/multinode-rdocloud.yml"
             else
-                ENV_VARS="$ENV_VARS --environment $TRIPLEO_ROOT/tripleo-ci/toci-quickstart/config/testenv/multinode.yml"
+                ENV_VARS="$ENV_VARS --extra-vars @$TRIPLEO_ROOT/tripleo-ci/toci-quickstart/config/testenv/multinode.yml"
             fi
             TAGS="build,undercloud-setup,undercloud-scripts,undercloud-install,undercloud-validate,images"
         ;;
@@ -186,7 +187,7 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
         ;;
         *)
         # the rest should be node configuration
-            NODES_FILE="config/nodes/$JOB_TYPE_PART.yml"
+            NODES_FILE="$TRIPLEO_ROOT/tripleo-quickstart/config/nodes/$JOB_TYPE_PART.yml"
         ;;
     esac
 done
@@ -201,7 +202,7 @@ if [[ ! -z $NODES_FILE ]]; then
     pushd $TRIPLEO_ROOT/tripleo-quickstart
     NODECOUNT=$(shyaml get-value node_count < $NODES_FILE)
     popd
-    NODES_ARGS="--nodes $NODES_FILE"
+    NODES_ARGS="--extra-vars @$NODES_FILE"
 fi
 
 

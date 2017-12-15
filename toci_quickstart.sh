@@ -13,14 +13,12 @@ source $TRIPLEO_ROOT/tripleo-ci/scripts/oooq_common_functions.sh
 touch /tmp/toci.started
 
 export DEFAULT_ARGS="
-    --no-clone
-    --working-dir $LOCAL_WORKING_DIR
-    --retain-inventory
-    --teardown none
+    --extra-vars local_working_dir=$LOCAL_WORKING_DIR
+    --extra-vars virthost=$UNDERCLOUD
+    --inventory $LOCAL_WORKING_DIR/hosts
     --extra-vars tripleo_root=$TRIPLEO_ROOT
     --extra-vars working_dir=$WORKING_DIR
     --extra-vars validation_args='--validation-errors-nonfatal'
-    --release tripleo-ci/$QUICKSTART_RELEASE
 "
 
 # --install-deps arguments installs deps and then quits, no other arguments are
@@ -30,32 +28,44 @@ QUICKSTART_PREPARE_CMD="
     --install-deps
 "
 
-QUICKSTART_INSTALL_CMD="
+QUICKSTART_VENV_CMD="
     ./quickstart.sh
     --bootstrap
-    --tags $TAGS
-    $DEFAULT_ARGS
-    $NODES_ARGS
-    $ENV_VARS
-    $FEATURESET_CONF
-    $EXTRA_VARS
-    --playbook $PLAYBOOK
+    --no-clone
+    --working-dir $LOCAL_WORKING_DIR
+    --playbook noop.yml
+    --retain-inventory
     $UNDERCLOUD
 "
 
+QUICKSTART_INSTALL_CMD="
+    $LOCAL_WORKING_DIR/bin/ansible-playbook
+    $LOCAL_WORKING_DIR/playbooks/$PLAYBOOK
+    --extra-vars @$LOCAL_WORKING_DIR/config/release/tripleo-ci/$QUICKSTART_RELEASE.yml
+    $NODES_ARGS
+    $FEATURESET_CONF
+    $ENV_VARS
+    $EXTRA_VARS
+    $DEFAULT_ARGS
+    --tags $TAGS
+    --skip-tags teardown-all
+"
+
 QUICKSTART_COLLECTLOGS_CMD="
-    ./quickstart.sh
+    $LOCAL_WORKING_DIR/bin/ansible-playbook
+    $LOCAL_WORKING_DIR/playbooks/collect-logs.yml
+    --extra-vars @$LOCAL_WORKING_DIR/config/release/tripleo-ci/$QUICKSTART_RELEASE.yml
+    $NODES_ARGS
+    $FEATURESET_CONF
+    $ENV_VARS
+    $EXTRA_VARS
     $DEFAULT_ARGS
     --extra-vars @$COLLECT_CONF
-    --tags all
-    $NODES_ARGS
-    $ENV_VARS
-    $FEATURESET_CONF
-    $EXTRA_VARS
-    --playbook collect-logs.yml
     --extra-vars artcl_collect_dir=$LOGS_DIR
-    $UNDERCLOUD
+    --tags all
+    --skip-tags teardown-all
 "
+
 mkdir -p $LOCAL_WORKING_DIR
 # TODO(gcerami) parametrize hosts
 cp $TRIPLEO_ROOT/tripleo-ci/toci-quickstart/config/testenv/${ENVIRONMENT}_hosts $LOCAL_WORKING_DIR/hosts
@@ -64,6 +74,18 @@ cp $TRIPLEO_ROOT/tripleo-ci/toci-quickstart/playbooks/* $TRIPLEO_ROOT/tripleo-qu
 pushd $TRIPLEO_ROOT/tripleo-quickstart/
 
 $QUICKSTART_PREPARE_CMD
+$QUICKSTART_VENV_CMD
+
+# Only ansible-playbook command will be used from this point forward, so we
+# need some variables from quickstart.sh
+OOOQ_DIR=$TRIPLEO_ROOT/tripleo-quickstart/
+export OPT_WORKDIR=$LOCAL_WORKING_DIR
+export ANSIBLE_CONFIG=$OOOQ_DIR/ansible.cfg
+export ARA_DATABASE="sqlite:///${LOCAL_WORKING_DIR}/ara.sqlite"
+export VIRTUAL_ENV_DISABLE_PROMPT=1
+source $LOCAL_WORKING_DIR/bin/activate
+source $OOOQ_DIR/ansible_ssh_env.sh
+
 run_with_timeout $START_JOB_TIME $QUICKSTART_INSTALL_CMD \
     2>&1 | tee $LOGS_DIR/quickstart_install.log && exit_value=0 || exit_value=$?
 
