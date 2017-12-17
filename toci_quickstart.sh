@@ -86,7 +86,7 @@ export VIRTUAL_ENV_DISABLE_PROMPT=1
 source $LOCAL_WORKING_DIR/bin/activate
 source $OOOQ_DIR/ansible_ssh_env.sh
 
-run_with_timeout $START_JOB_TIME $QUICKSTART_INSTALL_CMD \
+run_with_timeout $START_JOB_TIME $QUICKSTART_INSTALL_CMD --extra-vars ci_job_end_time=$(( START_JOB_TIME + REMAINING_TIME*60 )) \
     2>&1 | tee $LOGS_DIR/quickstart_install.log && exit_value=0 || exit_value=$?
 
 # Print status of playbook run
