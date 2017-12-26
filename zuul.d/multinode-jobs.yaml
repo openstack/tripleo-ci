@@ -37,6 +37,8 @@
       queue: tripleo
       jobs:
         - tripleo-ci-centos-7-containers-multinode
+        - tripleo-ci-centos-7-scenario001-multinode-oooq-container
+        - tripleo-ci-centos-7-scenario003-multinode-oooq-container
         - tripleo-ci-centos-7-scenario004-multinode-oooq-container
         - tripleo-ci-centos-7-scenario007-multinode-oooq-container
 
@@ -124,7 +126,6 @@
     timeout: 10800
     nodeset: legacy-centos-7-2-node
     branches: ^(?!stable/(newton|ocata)).*$
-    voting: false
     vars:
       toci_jobtype: multinode-1ctlr-featureset016
 
@@ -170,7 +171,6 @@
     timeout: 10800
     nodeset: legacy-centos-7-2-node
     branches: ^(?!stable/(newton|ocata)).*$
-    voting: false
     vars:
       toci_jobtype: multinode-1ctlr-featureset018
 
