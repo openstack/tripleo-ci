@@ -28,9 +28,6 @@ overcloud_templates_path: /usr/share/openstack-tripleo-heat-templates
 # Network
 # Deploy args
 flavor_args: ""
-
-deploy_timeout: 110
-
 # Images settings
 image_cache_dir: "{{ working_dir }}/images-cache"
 image_cache_dir_cleanup: true
