@@ -83,7 +83,10 @@ export OPT_WORKDIR=$LOCAL_WORKING_DIR
 export ANSIBLE_CONFIG=$OOOQ_DIR/ansible.cfg
 export ARA_DATABASE="sqlite:///${LOCAL_WORKING_DIR}/ara.sqlite"
 export VIRTUAL_ENV_DISABLE_PROMPT=1
+# Workaround for virtualenv issue https://github.com/pypa/virtualenv/issues/1029
+set +u
 source $LOCAL_WORKING_DIR/bin/activate
+set -u
 source $OOOQ_DIR/ansible_ssh_env.sh
 
 run_with_timeout $START_JOB_TIME $QUICKSTART_INSTALL_CMD \
