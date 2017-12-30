@@ -506,7 +506,7 @@ if [ "$OVERCLOUD_MAJOR_UPGRADE" == 1 ] ; then
 fi
 
 if [ $CA_SERVER == 1 ] ; then
-    source ~/overcloudrc.v3
+    source ~/overcloudrc
 
     # Verify that the domain exists
     openstack domain show $LDAP_DOMAIN_NAME
