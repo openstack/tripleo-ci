@@ -183,6 +183,7 @@ artcl_collect_list:
   - /var/log/ceph/
   - /var/log/cinder/
   - /var/log/cloudkitty/
+  - /var/log/cluster/
   - /var/log/config-data/
   - /var/log/congress/
   - /var/log/containers/
@@ -210,6 +211,7 @@ artcl_collect_list:
   - /var/log/octavia/
   - /var/log/openvswitch/
   - /var/log/ovn/
+  - /var/log/pacemaker/
   - /var/log/panko/
   - /var/log/qdr/
   - /var/log/rabbitmq/
