@@ -132,6 +132,12 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
         featureset*)
             FEATURESET_FILE="$LWD/config/general_config/$JOB_TYPE_PART.yml"
             FEATURESET_CONF="$FEATURESET_CONF --extra-vars @$FEATURESET_FILE"
+
+            # Set UPGRADE_RELEASE if applicable
+            if is_featureset_mixed_upgrade "$TRIPLEO_ROOT/tripleo-quickstart/config/general_config/$JOB_TYPE_PART.yml"; then
+                export UPGRADE_RELEASE=$(previous_release_from "$STABLE_RELEASE")
+                QUICKSTART_RELEASE="$QUICKSTART_RELEASE-undercloud-$UPGRADE_RELEASE-overcloud"
+            fi
         ;;
         ovb)
             OVB=1
@@ -190,11 +196,6 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
     esac
 done
 
-# Set UPGRADE_RELEASE if applicable
-if is_featureset_mixed_upgrade "$TRIPLEO_ROOT/tripleo-quickstart/$FEATURESET_FILE"; then
-    export UPGRADE_RELEASE=$(previous_release_from "$STABLE_RELEASE")
-    QUICKSTART_RELEASE="$QUICKSTART_RELEASE-undercloud-$UPGRADE_RELEASE-overcloud"
-fi
 
 if [[ ! -z $NODES_FILE ]]; then
     pushd $TRIPLEO_ROOT/tripleo-quickstart
