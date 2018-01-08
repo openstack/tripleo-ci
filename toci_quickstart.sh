@@ -12,13 +12,12 @@ source $TRIPLEO_ROOT/tripleo-ci/scripts/oooq_common_functions.sh
 ## Signal to toci_gate_test.sh we've started by
 touch /tmp/toci.started
 
-export DEFAULT_ARGS="
-    --extra-vars local_working_dir=$LOCAL_WORKING_DIR
-    --extra-vars virthost=$UNDERCLOUD
-    --inventory $LOCAL_WORKING_DIR/hosts
-    --extra-vars tripleo_root=$TRIPLEO_ROOT
-    --extra-vars working_dir=$WORKING_DIR
-    --extra-vars validation_args='--validation-errors-nonfatal'
+export DEFAULT_ARGS="--extra-vars local_working_dir=$LOCAL_WORKING_DIR \
+    --extra-vars virthost=$UNDERCLOUD \
+    --inventory $LOCAL_WORKING_DIR/hosts \
+    --extra-vars tripleo_root=$TRIPLEO_ROOT \
+    --extra-vars working_dir=$WORKING_DIR \
+    --extra-vars validation_args='--validation-errors-nonfatal' \
 "
 
 # --install-deps arguments installs deps and then quits, no other arguments are
@@ -51,19 +50,18 @@ QUICKSTART_INSTALL_CMD="
     --skip-tags teardown-all
 "
 
-QUICKSTART_COLLECTLOGS_CMD="
-    $LOCAL_WORKING_DIR/bin/ansible-playbook
-    $LOCAL_WORKING_DIR/playbooks/collect-logs.yml
-    --extra-vars @$LOCAL_WORKING_DIR/config/release/tripleo-ci/$QUICKSTART_RELEASE.yml
-    $NODES_ARGS
-    $FEATURESET_CONF
-    $ENV_VARS
-    $EXTRA_VARS
-    $DEFAULT_ARGS
-    --extra-vars @$COLLECT_CONF
-    --extra-vars artcl_collect_dir=$LOGS_DIR
-    --tags all
-    --skip-tags teardown-all
+QUICKSTART_COLLECTLOGS_CMD="$LOCAL_WORKING_DIR/bin/ansible-playbook \
+    $LOCAL_WORKING_DIR/playbooks/collect-logs.yml \
+    -vv \
+    --extra-vars @$LOCAL_WORKING_DIR/config/release/tripleo-ci/$QUICKSTART_RELEASE.yml \
+    $FEATURESET_CONF \
+    $ENV_VARS \
+    $EXTRA_VARS \
+    $DEFAULT_ARGS \
+    --extra-vars @$COLLECT_CONF \
+    --extra-vars artcl_collect_dir=$LOGS_DIR \
+    --tags all \
+    --skip-tags teardown-all \
 "
 
 mkdir -p $LOCAL_WORKING_DIR
@@ -96,11 +94,25 @@ run_with_timeout $START_JOB_TIME $QUICKSTART_INSTALL_CMD --extra-vars ci_job_end
 [[ "$exit_value" == 0 ]] && echo "Playbook run passed successfully" || echo "Playbook run failed"
 ## LOGS COLLECTION
 
-$QUICKSTART_COLLECTLOGS_CMD \
-    > $LOGS_DIR/quickstart_collect_logs.log || \
+cat <<EOF > $LOGS_DIR/collect_logs.sh
+#!/bin/bash
+set -x
+
+export LOCAL_WORKING_DIR="$WORKSPACE/.quickstart"
+export OPT_WORKDIR=$LOCAL_WORKING_DIR
+export WORKING_DIR="$HOME"
+export LOGS_DIR=$WORKSPACE/logs
+export VIRTUAL_ENV_DISABLE_PROMPT=1
+export ANSIBLE_CONFIG=$OOOQ_DIR/ansible.cfg
+export ARA_DATABASE=sqlite:///${LOCAL_WORKING_DIR}/ara.sqlite
+set +u
+source $LOCAL_WORKING_DIR/bin/activate
+set -u
+source $OOOQ_DIR/ansible_ssh_env.sh
+
+$QUICKSTART_COLLECTLOGS_CMD  > $LOGS_DIR/quickstart_collect_logs.log || \
     echo "WARNING: quickstart collect-logs failed, check quickstart_collectlogs.log for details"
 
-# Temporary workaround to make postci log visible as it was before
 cp $LOGS_DIR/undercloud/var/log/postci.txt.gz $LOGS_DIR/ || true
 
 if [[ -e $LOGS_DIR/undercloud/home/$USER/tempest/testrepository.subunit.gz ]]; then
@@ -120,6 +132,19 @@ sudo mkdir -p /opt/stack/new
 sudo cp -Rf $LOGS_DIR/undercloud/home/$USER/tempest /opt/stack/new || true
 sudo gzip -d -r /opt/stack/new/tempest/.testrepository || true
 
+# record the size of the logs directory
+# -L, --dereference     dereference all symbolic links
+# Note: tail -n +1 is to prevent the error 'Broken Pipe' e.g. 'sort: write failed: standard output: Broken pipe'
+
+du -L -ch $LOGS_DIR/* | tail -n +1 | sort -rh | head -n 200 &> $LOGS_DIR/log-size.txt || true
+EOF
+
+if [ ${NODEPOOL_PROVIDER:-''} == 'rdo-cloud-tripleo' ] || [ ${NODEPOOL_PROVIDER:-''} =='tripleo-test-cloud-rh1' ]; then
+    bash $LOGS_DIR/collect_logs.sh
+    # rename script to not to run it in multinode jobs
+    mv $LOGS_DIR/collect_logs.sh $LOGS_DIR/ovb_collect_logs.sh
+fi
+
 export ARA_DATABASE="sqlite:///$LOCAL_WORKING_DIR/ara.sqlite"
 $LOCAL_WORKING_DIR/bin/ara generate html $LOGS_DIR/ara_oooq || true
 gzip --best --recursive $LOGS_DIR/ara_oooq || true
@@ -128,12 +153,6 @@ popd
 sudo unbound-control dump_cache > /tmp/dns_cache.txt
 sudo chown ${USER}: /tmp/dns_cache.txt
 cat /tmp/dns_cache.txt | gzip - > $LOGS_DIR/dns_cache.txt.gz
-
-
-# record the size of the logs directory
-# -L, --dereference     dereference all symbolic links
-# Note: tail -n +1 is to prevent the error "Broken Pipe" e.g. "sort: write failed: standard output: Broken pipe"
-du -L -ch $LOGS_DIR/* | tail -n +1 | sort -rh | head -n 200 &> $LOGS_DIR/log-size.txt || true
 
 if [[ "$PERIODIC" == 1 && -e $WORKSPACE/hash_info.sh ]] ; then
     echo export JOB_EXIT_VALUE=$exit_value >> $WORKSPACE/hash_info.sh
