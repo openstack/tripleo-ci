@@ -38,8 +38,12 @@ function run_with_timeout {
     JOB_TIME=$1
     shift
     COMMAND=$@
-    # Leave 10 minutes for quickstart logs collection
-    RESERVED_LOG_TIME=10
+    # Leave 10 minutes for quickstart logs collection for ovb only
+    if [[ "$TOCI_JOBTYPE" =~ "ovb" ]]; then
+        RESERVED_LOG_TIME=10
+    else
+        RESERVED_LOG_TIME=0
+    fi
     # Use $REMAINING_TIME of infra to calculate maximum time for remaining part of job
     REMAINING_TIME=${REMAINING_TIME:-180}
     TIME_FOR_COMMAND=$(( REMAINING_TIME - ($(date +%s) - JOB_TIME)/60 - $RESERVED_LOG_TIME))
