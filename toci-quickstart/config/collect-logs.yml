@@ -187,6 +187,8 @@ artcl_collect_list:
   - /var/log/config-data/
   - /var/log/congress/
   - /var/log/containers/
+  - /var/log/deployed-server-enable-ssh-admin.log
+  - /var/log/deployed-server-os-collect-config.log
   - /var/log/designate/
   - /var/log/dmesg/
   - /var/log/extra/
