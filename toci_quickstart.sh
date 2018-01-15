@@ -2,6 +2,8 @@
 set -eux
 set -o pipefail
 export ANSIBLE_NOCOLOR=1
+[[ -n ${STATS_TESTENV:-''} ]] && export STATS_TESTENV=$(( $(date +%s) - STATS_TESTENV ))
+export STATS_OOOQ=$(date +%s)
 
 LOCAL_WORKING_DIR="$WORKSPACE/.quickstart"
 WORKING_DIR="$HOME"
@@ -86,6 +88,8 @@ set +u
 source $LOCAL_WORKING_DIR/bin/activate
 set -u
 source $OOOQ_DIR/ansible_ssh_env.sh
+[[ -n ${STATS_OOOQ:-''} ]] && export STATS_OOOQ=$(( $(date +%s) - STATS_OOOQ ))
+
 
 run_with_timeout $START_JOB_TIME $QUICKSTART_INSTALL_CMD --extra-vars ci_job_end_time=$(( START_JOB_TIME + REMAINING_TIME*60 )) \
     2>&1 | tee $LOGS_DIR/quickstart_install.log && exit_value=0 || exit_value=$?
@@ -98,6 +102,13 @@ cat <<EOF > $LOGS_DIR/collect_logs.sh
 #!/bin/bash
 set -x
 
+export NODEPOOL_PROVIDER=${NODEPOOL_PROVIDER:-''}
+export STATS_TESTENV=${STATS_TESTENV:-''}
+export STATS_OOOQ=${STATS_OOOQ:-''}
+export START_JOB_TIME=${START_JOB_TIME:-''}
+export ZUUL_PIPELINE=${ZUUL_PIPELINE:-''}
+export DEVSTACK_GATE_TIMEOUT=${DEVSTACK_GATE_TIMEOUT:-''}
+export REMAINING_TIME=${REMAINING_TIME:-''}
 export LOCAL_WORKING_DIR="$WORKSPACE/.quickstart"
 export OPT_WORKDIR=$LOCAL_WORKING_DIR
 export WORKING_DIR="$HOME"
