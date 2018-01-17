@@ -162,9 +162,6 @@ if [[ "${NODEPOOL_PROVIDER:-''}" == "rdo-cloud-tripleo" ]] || [[ "${NODEPOOL_PRO
     mv $LOGS_DIR/collect_logs.sh $LOGS_DIR/ovb_collect_logs.sh
 fi
 
-export ARA_DATABASE="sqlite:///$LOCAL_WORKING_DIR/ara.sqlite"
-$LOCAL_WORKING_DIR/bin/ara generate html $LOGS_DIR/ara_oooq || true
-gzip --best --recursive $LOGS_DIR/ara_oooq || true
 popd
 
 sudo unbound-control dump_cache > /tmp/dns_cache.txt
