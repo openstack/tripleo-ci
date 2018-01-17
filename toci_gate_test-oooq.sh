@@ -198,7 +198,8 @@ if [[ ! -z $NODES_FILE ]]; then
     NODES_ARGS="--extra-vars @$NODES_FILE"
 fi
 
-
+# Start time tracking
+export STATS_TESTENV=$(date +%s)
 pushd $TRIPLEO_ROOT/tripleo-ci
 if [ -z "${TE_DATAFILE:-}" -a "$ENVIRONMENT" = "ovb" ] ; then
 
