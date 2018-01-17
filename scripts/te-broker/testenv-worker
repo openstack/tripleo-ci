@@ -140,6 +140,7 @@ class TEWorkerThread(threading.Thread):
                                              arguments.get("ssh_key", ""),
                                              arguments.get("net_iso", "multi-nic"),
                                              arguments.get("compute_envsize","0"),
+                                             arguments.get("extra_nodes", "0"),
                                              ],
                                             stderr=subprocess.STDOUT))
                 clientdata = fp.read()

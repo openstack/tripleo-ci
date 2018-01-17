@@ -6,10 +6,12 @@ PROVISIONNET=provision-${ENVNUM}
 PUBLICNET=public-${ENVNUM}
 ENVFILE=env-${ENVNUM}-base.yaml
 COMPUTE_ENVFILE=env-${ENVNUM}-compute.yaml
+EXTRA_ENVFILE=env-${ENVNUM}-extra.yaml
 
 rm -f /opt/stack/openstack-virtual-baremetal/$ENVFILE
 rm -f /opt/stack/openstack-virtual-baremetal/env-${ENVNUM}.yaml
 rm -f /opt/stack/openstack-virtual-baremetal/$COMPUTE_ENVFILE
+rm -f /opt/stack/openstack-virtual-baremetal/$EXTRA_ENVFILE
 rm -f /opt/stack/openstack-virtual-baremetal/temp-key-$ENVNUM.pub
 
 source /etc/nodepoolrc
@@ -63,5 +65,6 @@ function delete_stack() {
 }
 
 # Extra role stacks must be deleted first
+delete_stack baremetal_${ENVNUM}-extra
 delete_stack baremetal_${ENVNUM}-compute
 delete_stack baremetal_${ENVNUM}

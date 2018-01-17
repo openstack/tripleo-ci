@@ -9,10 +9,12 @@ SSH_KEY=${5:-""}
 # We recognize 3 values for NETISO: none, multi-nic, public-bond
 NETISO=${6:-'multi-nic'}
 COMPUTE_NODECOUNT=${7:-0}
+EXTRA_NODECOUNT=${8:-0}
 PROVISIONNET=provision-${ENVNUM}
 PUBLICNET=public-${ENVNUM}
 ENVFILE=env-${ENVNUM}-base.yaml
 COMPUTE_ENVFILE=env-${ENVNUM}-compute.yaml
+EXTRA_ENVFILE=env-${ENVNUM}-extra.yaml
 ROLE_ARGS=
 
 source /etc/nodepoolrc
@@ -77,6 +79,18 @@ if [ $COMPUTE_NODECOUNT -gt 0 ]; then
     # This is already the default in the template, but just to be safe.
     sed -i -e "s/role:.*/role: compute/" $COMPUTE_ENVFILE
     ROLE_ARGS="--role $COMPUTE_ENVFILE"
+fi
+
+if [ $EXTRA_NODECOUNT -gt 0 ]; then
+    /bin/cp --remove-destination environments/base-extra-node.yaml $EXTRA_ENVFILE
+    sed -i -e "s/baremetal_flavor:.*/baremetal_flavor: m1.small/" $EXTRA_ENVFILE
+    sed -i -e "s/key_name:.*/key_name: ${KEY_NAME}/" $EXTRA_ENVFILE
+    sed -i -e "s/node_count:.*/node_count: ${EXTRA_NODECOUNT}/" $EXTRA_ENVFILE
+    # We changed the path of the environment, so we need to fix the relative
+    # path in the resource registry too.
+    sed -i -e "s|../templates/baremetal-ports-extra-node-port-security.yaml|templates/baremetal-ports-extra-node-port-security.yaml|" $EXTRA_ENVFILE
+    ROLE_ARGS="--role $EXTRA_ENVFILE"
+    BUILD_NODES_JSON_EXTRA_ARGS="$BUILD_NODES_JSON_EXTRA_ARGS --network_details"
 fi
 
 /opt/stack/openstack-virtual-baremetal/bin/deploy.py --name baremetal_${ENVNUM} --quintupleo --id ${ENVNUM} $ENVIRONMENT_ARGS $ROLE_ARGS
