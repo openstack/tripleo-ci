@@ -42,7 +42,7 @@ function run_with_timeout {
     if [[ "$TOCI_JOBTYPE" =~ "ovb" ]]; then
         RESERVED_LOG_TIME=10
     else
-        RESERVED_LOG_TIME=0
+        RESERVED_LOG_TIME=3
     fi
     # Use $REMAINING_TIME of infra to calculate maximum time for remaining part of job
     REMAINING_TIME=${REMAINING_TIME:-180}
