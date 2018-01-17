@@ -34,7 +34,7 @@ fi
 
 BUILD_NODES_JSON_EXTRA_ARGS=""
 
-/bin/cp --remove-destination templates/env.yaml.example $ENVFILE
+/bin/cp --remove-destination environments/base.yaml $ENVFILE
 sed -i -e "s/bmc_image:.*/bmc_image: bmc-template/" $ENVFILE
 sed -i -e "s/key_name:.*/key_name: ${KEY_NAME}/" $ENVFILE
 sed -i -e "s/node_count:.*/node_count: ${NODECOUNT}/" $ENVFILE
@@ -51,50 +51,35 @@ if [ -n "$CREATE_UNDERCLOUD" ]; then
     sed -i -e "s/undercloud_flavor:.*/undercloud_flavor: m1.small/" $ENVFILE
     BUILD_NODES_JSON_EXTRA_ARGS="--add_undercloud"
 fi
-echo 'parameter_defaults:' >> $ENVFILE
-echo '  bmc_use_cache: True' >> $ENVFILE
+ENVIRONMENT_ARGS="-e $ENVFILE -e environments/bmc-use-cache.yaml -e environments/undercloud-floating-none.yaml"
 
 if [ $COMPUTE_NODECOUNT -gt 0 ]; then
-    echo 'parameter_defaults:' >> $ENVFILE
-    echo '  role: control' >> $ENVFILE
+    sed -i -e "s/role:.*/role: control/" $ENVFILE
 fi
-
-echo -e 'resource_registry:\n'  >> $ENVFILE
-echo '  OS::OVB::UndercloudPorts: templates/undercloud-ports-port-security.yaml' >> $ENVFILE
-echo '  OS::OVB::BMCPort: templates/bmc-port-port-security.yaml' >> $ENVFILE
 
 if [ -z "$CREATE_UNDERCLOUD" ]; then
-    echo '  OS::OVB::UndercloudEnvironment: OS::Heat::None' >> $ENVFILE
+    ENVIRONMENT_ARGS="$ENVIRONMENT_ARGS -e environments/quintupleo-no-undercloud.yaml"
 fi
-echo '  OS::OVB::UndercloudFloating: templates/undercloud-floating-none.yaml' >> $ENVFILE
 
-function add_net_iso_overrides() {
-    local outfile=$1
-    if [ $NETISO == 'multi-nic' ]; then
-        echo '  OS::OVB::BaremetalNetworks: templates/baremetal-networks-all.yaml' >> $outfile
-        echo '  OS::OVB::BaremetalPorts: templates/baremetal-ports-all-port-security.yaml' >> $outfile
-    elif [ $NETISO == 'public-bond' ]; then
-        echo '  OS::OVB::BaremetalNetworks: templates/baremetal-networks-all.yaml' >> $outfile
-        echo '  OS::OVB::BaremetalPorts: templates/baremetal-ports-public-bond-port-security.yaml' >> $outfile
-    else
-        echo '  OS::OVB::BaremetalPorts: templates/baremetal-ports-default-port-security.yaml' >> $outfile
-    fi
-}
-add_net_iso_overrides $ENVFILE
+if [ $NETISO == 'multi-nic' ]; then
+    ENVIRONMENT_ARGS="$ENVIRONMENT_ARGS -e environments/all-networks-port-security.yaml"
+elif [ $NETISO == 'public-bond' ]; then
+    ENVIRONMENT_ARGS="$ENVIRONMENT_ARGS -e environments/all-networks-public-bond-port-security.yaml"
+else
+    ENVIRONMENT_ARGS="$ENVIRONMENT_ARGS -e environments/port-security.yaml"
+fi
 
 if [ $COMPUTE_NODECOUNT -gt 0 ]; then
-    /bin/cp --remove-destination templates/env-role.yaml.example $COMPUTE_ENVFILE
+    /bin/cp --remove-destination environments/base-role.yaml $COMPUTE_ENVFILE
     sed -i -e "s/baremetal_flavor:.*/baremetal_flavor: baremetal-compute/" $COMPUTE_ENVFILE
     sed -i -e "s/key_name:.*/key_name: ${KEY_NAME}/" $COMPUTE_ENVFILE
     sed -i -e "s/node_count:.*/node_count: ${COMPUTE_NODECOUNT}/" $COMPUTE_ENVFILE
     # This is already the default in the template, but just to be safe.
     sed -i -e "s/role:.*/role: compute/" $COMPUTE_ENVFILE
-    echo 'resource_registry:' >> $COMPUTE_ENVFILE
-    add_net_iso_overrides $COMPUTE_ENVFILE
     ROLE_ARGS="--role $COMPUTE_ENVFILE"
 fi
 
-/opt/stack/openstack-virtual-baremetal/bin/deploy.py --env $ENVFILE --name baremetal_${ENVNUM} --quintupleo --id ${ENVNUM} $ROLE_ARGS
+/opt/stack/openstack-virtual-baremetal/bin/deploy.py --name baremetal_${ENVNUM} --quintupleo --id ${ENVNUM} $ENVIRONMENT_ARGS $ROLE_ARGS
 
 while ! heat stack-show baremetal_${ENVNUM} | grep CREATE_COMPLETE ; do
     sleep 10
