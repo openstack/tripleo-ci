@@ -40,13 +40,17 @@ trap finish EXIT SIGINT SIGTERM
 WORKERS=6
 BASEURL=${1%/}
 SC=$(dirname $BASEURL | grep -o \/ | wc -w)
-if [[ ! $(basename $BASEURL) == 'logs' && SC -le 7 ]]; then
+if [[ $BASEURL =~ 'logs.rdoproject' && SC -le 9 ]] ||\
+   [[ $BASEURL =~ 'logs.rdoproject.org/openstack-periodic' && SC -le 5 ]]; then
+  console="$BASEURL/console.txt.gz"
+elif [[ ! $(basename $BASEURL) == 'logs' && SC -le 7 ]]; then
   console="$BASEURL/job-output.txt.gz"
   BASEURL=${BASEURL}/logs
 else
   console=''
 fi
 TDIR=${BASEURL##*http://}
+TDIR=${TDIR##*https://}
 TDIR=/tmp/${TDIR}
 mkdir -p $TDIR
 cd /tmp
@@ -63,7 +67,8 @@ for d in $list_to_get; do
   args="\"-nv -nc --no-use-server-timestamps \
   --accept-regex='\.txt\.gz$|messages$' \
   --reject='index.html*' \
-  --recursive -l 10 --domains logs.openstack.org --no-parent \
+  --recursive -l 10 --domains logs.openstack.org,logs.rdoproject.org \
+  --no-parent \
   -erobots=off --wait 0.25 ${d}\""
   echo "${args}" >> wget-jobs.txt
 done
