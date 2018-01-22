@@ -9,6 +9,7 @@ artcl_collect_list:
   - /var/lib/unbound/unbound.log
   - /var/lib/mistral/
   - /var/lib/heat-config/
+  - /var/lib/tripleo-config/
   - /home/{{ undercloud_user }}/.instack/install-undercloud.log
   - /home/{{ undercloud_user }}/stackrc
   - /home/{{ undercloud_user }}/overcloudrc
