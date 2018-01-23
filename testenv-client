@@ -201,6 +201,7 @@ def main(args=sys.argv[1:]):
         "create_undercloud": "true" if opts.create_undercloud else "",
         "ssh_key":opts.ssh_key,
         "net_iso":opts.net_iso,
+        "extra_nodes":opts.extra_nodes,
         "job_identifier":job_identifier,
     }
     job = gear.Job('lockenv', json.dumps(job_params))
