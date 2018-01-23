@@ -122,6 +122,7 @@ export SUBNODES_SSH_KEY=
 TIMEOUT_SECS=$((DEVSTACK_GATE_TIMEOUT*60))
 export EXTRA_VARS=${EXTRA_VARS:-""}
 export NODES_ARGS=""
+export EXTRANODE=""
 export COLLECT_CONF="$TRIPLEO_ROOT/tripleo-ci/toci-quickstart/config/collect-logs.yml"
 LOCAL_WORKING_DIR="$WORKSPACE/.quickstart"
 LWD=$LOCAL_WORKING_DIR
@@ -198,6 +199,11 @@ if [[ ! -z $NODES_FILE ]]; then
     NODECOUNT=$(shyaml get-value node_count < $NODES_FILE)
     popd
     NODES_ARGS="--extra-vars @$NODES_FILE"
+    for PART in $(sed 's/_/ /g' <<< "$NODES_FILE") ; do
+        if [[ "$PART" == *"supp"* ]]; then
+            EXTRANODE=" --extra-nodes ${PART//[!0-9]/} "
+        fi;
+    done
 fi
 
 # Start time tracking
@@ -218,7 +224,7 @@ if [ -z "${TE_DATAFILE:-}" -a "$ENVIRONMENT" = "ovb" ] ; then
     # provision env in rh cloud, then start quickstart
     ./testenv-client -b $GEARDSERVER:4730 -t $TIMEOUT_SECS \
         --envsize $NODECOUNT --ucinstance $UCINSTANCEID \
-        --net-iso $NETISO_ENV -- ./toci_quickstart.sh
+        --net-iso $NETISO_ENV $EXTRANODE -- ./toci_quickstart.sh
 elif [ "$ENVIRONMENT" = "ovb" ] ; then
     # We only support multi-nic at the moment
     NETISO_ENV="multi-nic"
