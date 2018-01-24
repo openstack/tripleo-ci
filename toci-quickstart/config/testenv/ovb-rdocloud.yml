@@ -30,3 +30,14 @@ tempestmail_log_server: http://logs.rdoproject.org
 
 #build-test packages
 artg_repos_dir: "{{ tripleo_root }}"
+
+# InfluxDB module settings
+influxdb_only_successful_tasks: true
+influxdb_measurement: job
+influxdb_url: https://influxdb.review.rdoproject.org
+influxdb_port: 8086
+influxdb_user: tripleo_ci
+influxdb_password:
+influxdb_dbname: tripleo_ci
+influxdb_data_file_path: "{{ artcl_collect_dir }}/influxdb_data"
+influxdb_create_data_file: true
