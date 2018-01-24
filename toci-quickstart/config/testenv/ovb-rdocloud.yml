@@ -22,6 +22,9 @@ ipa_image_url: http://images.rdoproject.org/{{ release }}/rdo_trunk/{{ dlrn_hash
 docker_registry_host: trunk.registry.rdoproject.org
 docker_registry_namespace: "{{ release }}"
 
+# Container update settings
+update_containers: "{% if containerized_overcloud|bool %}true{% endif %}"
+
 # We don't need to cleanup TripleO CI
 tempest_track_resources: false
 
