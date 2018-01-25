@@ -1,7 +1,5 @@
----
 
 - project:
-    name: openstack-infra/tripleo-ci
     templates:
       - tripleo-multinode-baremetal-minimal
       - tripleo-multinode-container-minimal
