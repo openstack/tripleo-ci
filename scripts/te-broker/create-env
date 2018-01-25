@@ -119,5 +119,5 @@ for PORT_SECURITY_NET in $undercloud_networks; do
 done
 
 # This writes out the env file as env-ID.yaml while overwrites the one we have created
-/opt/stack/openstack-virtual-baremetal/bin/build-nodes-json --env env-${ENVNUM}.yaml \
+/opt/stack/openstack-virtual-baremetal/bin/build-nodes-json --env env-${ENVNUM}.yaml --network_details \
     --nodes_json ${TE_DATAFILE:-~/instackenv.json} $BUILD_NODES_JSON_EXTRA_ARGS
