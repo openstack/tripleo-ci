@@ -1,0 +1,18 @@
+- name: Set up repos on subnodes for upgrading
+  hosts: overcloud
+  vars:
+    ib_repo_host: undercloud
+  roles:
+    - role: repo-setup
+      when: mixed_upgrade|default(false)|bool
+    - role: install-built-repo
+      when: hostvars['undercloud']['compressed_gating_repo'] is defined and mixed_upgrade|default(false)|bool
+
+- name:  Upgrade Tripleo
+  hosts: undercloud
+  tags:
+    - overcloud-upgrade
+  gather_facts: no
+  roles:
+    - role: overcloud-upgrade
+      when: containerized_overcloud_upgrade|bool

@@ -1,0 +1,81 @@
+---
+- name: Add the overcloud nodes to the generated inventory
+  hosts: undercloud
+  gather_facts: yes
+  tags:
+    - overcloud-deploy
+  vars:
+    inventory: multinode
+  roles:
+    - tripleo-inventory
+
+- name: Create configs on subnodes
+  hosts: overcloud
+  roles:
+    # When doing mixed upgrade, we need different repos on undercloud
+    # vs. overcloud. Rely on $UPGRADE_RELEASE together with
+    # bootstrap-overcloud-full-minimal.sh to setup overcloud.
+    - role: repo-setup
+      when: not mixed_upgrade|default(false)|bool
+  tasks:
+    - name: Create a clean hosts file on subnodes
+      copy:
+        dest: /etc/hosts
+        content: |
+          127.0.0.1 localhost localhost.localdomain localhost4 localhost4.localdomain4
+          ::1        localhost localhost.localdomain localhost6 localhost6.localdomain6
+      become: true
+  tags:
+    - undercloud-setup
+
+- name: Prepare the undercloud for installation
+  hosts: undercloud
+  roles:
+    - undercloud-setup
+  tags:
+    - undercloud-setup
+
+- name: Run DLRN gate role and install repo
+  hosts: undercloud
+  vars:
+    artg_compressed_gating_repo: "${HOME}/gating_repo.tar.gz"
+  roles:
+    - build-test-packages
+    - { role: install-built-repo, when: compressed_gating_repo is defined }
+  tags:
+    - build
+
+- name: Install built packages on subnodes
+  hosts: overcloud
+  vars:
+    ib_repo_host: undercloud
+  roles:
+    - role: repo-setup
+      when: not mixed_upgrade|default(false)|bool
+    - role: install-built-repo
+      when: hostvars['undercloud']['compressed_gating_repo'] is defined and not mixed_upgrade|default(false)|bool
+
+  tags:
+    - build
+
+- name: Install the undercloud
+  hosts: undercloud
+  roles:
+    - undercloud-deploy
+
+- name: Configure tripleo-validations
+  hosts: undercloud
+  gather_facts: no
+  tags:
+    - tripleo-validations
+  vars:
+    run_tripleo_validations_setup: True
+  roles:
+    - { role: tripleo-validations,
+        when: run_tripleo_validations|bool or run_tripleo_validations_negative_tests|bool}
+
+- name: Validate the undercloud
+  hosts: undercloud
+  roles:
+    - validate-undercloud
+
