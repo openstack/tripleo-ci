@@ -1,4 +1,0 @@
-# OVB playbook that runs in CI now is baremetal-full-deploy.yml playbook which
-# is located in tripleo-quickstart-extras repository:
-# https://github.com/openstack/tripleo-quickstart-extras/blob/master/playbooks/baremetal-full-deploy.yml
-# All changes to OVB playbook should be done there.

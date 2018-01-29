@@ -69,8 +69,6 @@ QUICKSTART_COLLECTLOGS_CMD="$LOCAL_WORKING_DIR/bin/ansible-playbook \
 mkdir -p $LOCAL_WORKING_DIR
 # TODO(gcerami) parametrize hosts
 cp $TRIPLEO_ROOT/tripleo-ci/toci-quickstart/config/testenv/${ENVIRONMENT}_hosts $LOCAL_WORKING_DIR/hosts
-cp $TRIPLEO_ROOT/tripleo-ci/toci-quickstart/playbooks/* $TRIPLEO_ROOT/tripleo-quickstart/playbooks/
-
 pushd $TRIPLEO_ROOT/tripleo-quickstart/
 
 $QUICKSTART_PREPARE_CMD
