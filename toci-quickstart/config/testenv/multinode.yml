@@ -33,4 +33,13 @@ tempest_track_resources: false
 
 #build-test packages
 artg_repos_dir: /home/zuul/src/git.openstack.org/openstack
-
+# InfluxDB module settings
+influxdb_only_successful_tasks: true
+influxdb_measurement: job
+influxdb_url:
+influxdb_port: 8086
+influxdb_user: tripleo_ci
+influxdb_password:
+influxdb_dbname: tripleo_ci
+influxdb_data_file_path: "{{ artcl_collect_dir }}/influxdb_data"
+influxdb_create_data_file: true
