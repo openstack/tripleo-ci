@@ -10,8 +10,6 @@ import datetime
 # Do not include the -nv suffix in the job name here.  The code will handle
 # reading both the voting and non-voting forms of the job if they exist.
 DEFAULT_JOB_NAMES = [
-    'tripleo-ci-centos-7-ovb-ha-oooq',
-    'tripleo-ci-centos-7-ovb-ha-oooq-ipv6',
     'tripleo-ci-centos-7-containers-multinode',
     'tripleo-ci-centos-7-scenario001-multinode-oooq-container',
     'tripleo-ci-centos-7-scenario002-multinode-oooq-container',
@@ -35,6 +33,7 @@ DEFAULT_PROJECTS = [
     'openstack/os-collect-config',
     'openstack/os-net-config',
     'openstack/os-refresh-config',
+    'openstack/paunch',
     'openstack/python-tripleoclient',
     'openstack-infra/tripleo-ci',
     'openstack/tripleo-common',
