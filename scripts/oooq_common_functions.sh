@@ -1,8 +1,23 @@
 function previous_release_from {
-    # works even when $1 is empty string or not provided at all
-    local RELEASE="$1"
+    local release="${1:-master}"
+    local type="${2:-mixed_upgrade}"
+    local previous_version=""
+    case "${type}" in
+        'mixed_upgrade')
+            previous_version=$(previous_release_mixed_upgrade_case "${release}");;
+        'ffu_upgrade')
+            previous_version=$(previous_release_ffu_upgrade_case "${release}");;
+        *)
+            echo "UNKNOWN_TYPE"
+            return 1
+            ;;
+    esac
+    echo "${previous_version}"
+}
 
-    case "$RELEASE" in
+function previous_release_mixed_upgrade_case {
+    local release="${1:-master}"
+    case "${release}" in
         ''|master)
             # NOTE: we need to update this when we cut a stable branch
             echo "queens"
@@ -26,16 +41,29 @@ function previous_release_from {
     esac
 }
 
-function is_featureset_mixed_upgrade {
-    local FEATURESET_FILE="$1"
+function previous_release_ffu_upgrade_case {
+    local release="${1:-master}"
 
-    [ $(shyaml get-value mixed_upgrade "False"< $FEATURESET_FILE) = "True" ]
+    case "${release}" in
+        ''|master)
+            # NOTE: we need to update this when we cut a stable branch
+            echo "newton"
+            ;;
+        queens)
+            echo "newton"
+            ;;
+        *)
+            echo "INVALID_RELEASE_FOR_FFU"
+            return 1
+            ;;
+    esac
 }
 
-function is_featureset_overcloud_update {
-    local FEATURESET_FILE="$1"
+function is_featureset {
+    local type="${1}"
+    local featureset_file="${2}"
 
-    [ $(shyaml get-value overcloud_update "False"< $FEATURESET_FILE) = "True" ]
+    [ $(shyaml get-value "${type}" "False"< "${featureset_file}") = "True" ]
 }
 
 function run_with_timeout {

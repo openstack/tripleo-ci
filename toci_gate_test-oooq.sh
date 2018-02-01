@@ -127,16 +127,21 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
         featureset*)
             FEATURESET_FILE="$LWD/config/general_config/$JOB_TYPE_PART.yml"
             FEATURESET_CONF="$FEATURESET_CONF --extra-vars @$FEATURESET_FILE"
-
+            MIXED_UPGRADE_TYPE=''
+            # Order matters.  ffu featureset has both mixed version and ffu_overcloud_upgrade.
+            if is_featureset ffu_overcloud_upgrade "$TRIPLEO_ROOT/tripleo-quickstart/config/general_config/$JOB_TYPE_PART.yml"; then
+                MIXED_UPGRADE_TYPE='ffu_upgrade'
+            elif  is_featureset mixed_upgrade  "$TRIPLEO_ROOT/tripleo-quickstart/config/general_config/$JOB_TYPE_PART.yml"; then
+                MIXED_UPGRADE_TYPE='mixed_upgrade'
+            elif is_featureset overcloud_update "$TRIPLEO_ROOT/tripleo-quickstart/config/general_config/$JOB_TYPE_PART.yml"; then
+                TAGS="$TAGS,overcloud-update"
+            fi
             # Set UPGRADE_RELEASE if applicable
-            if is_featureset_mixed_upgrade "$TRIPLEO_ROOT/tripleo-quickstart/config/general_config/$JOB_TYPE_PART.yml"; then
-                export UPGRADE_RELEASE=$(previous_release_from "$STABLE_RELEASE")
+            if [ -n "${MIXED_UPGRADE_TYPE}" ]; then
+                export UPGRADE_RELEASE=$(previous_release_from "${STABLE_RELEASE}" "${MIXED_UPGRADE_TYPE}")
                 QUICKSTART_RELEASE="$QUICKSTART_RELEASE-undercloud-$UPGRADE_RELEASE-overcloud"
                 # Run overcloud-upgrade tag only in upgrades jobs
                 TAGS="$TAGS,overcloud-upgrade"
-            fi
-            if is_featureset_overcloud_update "$TRIPLEO_ROOT/tripleo-quickstart/config/general_config/$JOB_TYPE_PART.yml"; then
-                TAGS="$TAGS,overcloud-update"
             fi
         ;;
         ovb)
