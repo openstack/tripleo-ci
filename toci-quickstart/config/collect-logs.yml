@@ -6,10 +6,11 @@ artcl_txt_rename: true
 artcl_publish: true
 artcl_rsync_logs: false
 artcl_collect_list:
-  - /var/lib/unbound/unbound.log
-  - /var/lib/mistral/
   - /var/lib/heat-config/
+  - /var/lib/kolla/config_files
+  - /var/lib/mistral/
   - /var/lib/tripleo-config/
+  - /var/lib/unbound/unbound.log
   - /home/{{ undercloud_user }}/.instack/install-undercloud.log
   - /home/{{ undercloud_user }}/stackrc
   - /home/{{ undercloud_user }}/overcloudrc
