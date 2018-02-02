@@ -88,6 +88,7 @@
         - tripleo-ci-centos-7-scenario008-multinode-oooq
         - tripleo-ci-centos-7-scenario009-multinode-oooq
         - tripleo-ci-centos-7-scenario010-multinode-oooq-container
+        - tripleo-ci-centos-7-scenario011-multinode-oooq-container
 
 - job:
     name: tripleo-ci-centos-7-3nodes-multinode
@@ -328,3 +329,14 @@
       - ^Puppetfile.*$
       - tox.ini
       - ^setup.*$
+- job:
+    name: tripleo-ci-centos-7-scenario011-multinode-oooq-container
+    parent: tripleo-ci-dsvm-multinode
+    run: playbooks/tripleo-ci/run.yaml
+    post-run: playbooks/tripleo-ci/post.yaml
+    timeout: 10800
+    nodeset: legacy-centos-7-2-node
+    voting: false
+    branches: ^(?!stable/(newton|ocata)).*$
+    vars:
+      toci_jobtype: multinode-1ctlr-featureset044
