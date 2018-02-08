@@ -11,7 +11,7 @@ source $TRIPLEO_ROOT/tripleo-ci/scripts/common_functions.sh
 # Prevent python from buffering stdout, so timestamps are set at appropriate times
 export PYTHONUNBUFFERED=true
 
-export DIB_DISTRIBUTION_MIRROR=$CENTOS_MIRROR
+export DIB_DISTRIBUTION_MIRROR=$NODEPOOL_CENTOS_MIRROR
 export STABLE_RELEASE=${STABLE_RELEASE:-""}
 
 # the TLS everywhere job requires the undercloud to have a domain set so it can
