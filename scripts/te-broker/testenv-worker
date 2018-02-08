@@ -216,8 +216,8 @@ def _get_nova_client():
     nclient = novaclient.Client(2,
                                 auth_values['user'],
                                 auth_values['password'],
-                                auth_values['tenant'],
-                                auth_values['auth_url']
+                                project_name=auth_values['tenant'],
+                                auth_url=auth_values['auth_url']
                                 )
     return nclient
 
