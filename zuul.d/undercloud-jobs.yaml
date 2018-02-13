@@ -19,8 +19,7 @@
     post-run: playbooks/tripleo-ci/post.yaml
     timeout: 10800
     nodeset: legacy-centos-7
-    branches: ^(?!stable/(newton|ocata|pike)).*$
-    voting: false
+    branches: ^(?!stable/(newton|ocata|pike|queens)).*$
     vars:
       toci_jobtype: singlenode-featureset027
 
