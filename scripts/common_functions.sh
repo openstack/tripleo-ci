@@ -362,7 +362,9 @@ function echo_vars_to_deploy_env {
     CALLER=$(caller)
     echo "# Written via echo_vars_to_deploy_env from $CALLER" >> $TRIPLEO_ROOT/tripleo-ci/deploy.env
     for VAR in NODEPOOL_CENTOS_MIRROR http_proxy INTROSPECT MY_IP no_proxy NODECOUNT OVERCLOUD_DEPLOY_ARGS OVERCLOUD_UPDATE_ARGS PACEMAKER SSH_OPTIONS STABLE_RELEASE TRIPLEO_ROOT TRIPLEO_SH_ARGS NETISO_V4 NETISO_V6 TOCI_JOBTYPE UNDERCLOUD_SSL UNDERCLOUD_HEAT_CONVERGENCE RUN_TEMPEST_TESTS RUN_PING_TEST JOB_NAME OVB UNDERCLOUD_IDEMPOTENT MULTINODE CONTROLLER_HOSTS COMPUTE_HOSTS SUBNODES_SSH_KEY TEST_OVERCLOUD_DELETE OVERCLOUD OSINFRA UNDERCLOUD_SANITY_CHECK OVERCLOUD_PINGTEST_ARGS FEATURE_BRANCH OVERCLOUD_ROLES UPGRADE_RELEASE OVERCLOUD_MAJOR_UPGRADE MAJOR_UPGRADE UNDERCLOUD_MAJOR_UPGRADE CA_SERVER UNDERCLOUD_TELEMETRY UNDERCLOUD_UI UNDERCLOUD_VALIDATIONS PREDICTABLE_PLACEMENT OPSTOOLS_REPO_ENABLED UPGRADE_ENV UNDERCLOUD_CONTAINERS BOOTSTRAP_SUBNODES_MINIMAL MULTINODE_ENV_PATH; do
-        echo "export $VAR=\"${!VAR}\"" >> $TRIPLEO_ROOT/tripleo-ci/deploy.env
+        if [ -n "${!VAR:+x}" ]; then
+            echo "export $VAR=\"${!VAR}\"" >> $TRIPLEO_ROOT/tripleo-ci/deploy.env
+        fi
     done
     for role in $OVERCLOUD_ROLES; do
         eval hosts=\${${role}_hosts}
@@ -375,7 +377,9 @@ function echo_vars_to_deploy_env_oooq {
     CALLER=$(caller)
     echo "# Written via echo_vars_to_deploy_env from $CALLER" >> $TRIPLEO_ROOT/tripleo-ci/deploy.env
     for VAR in NODEPOOL_CENTOS_MIRROR http_proxy MY_IP no_proxy NODECOUNT SSH_OPTIONS STABLE_RELEASE TRIPLEO_ROOT TOCI_JOBTYPE JOB_NAME SUBNODES_SSH_KEY FEATURE_BRANCH BOOTSTRAP_SUBNODES_MINIMAL; do
-        echo "export $VAR=\"${!VAR}\"" >> $TRIPLEO_ROOT/tripleo-ci/deploy.env
+        if [ -n "${!VAR:+x}" ]; then
+            echo "export $VAR=\"${!VAR}\"" >> $TRIPLEO_ROOT/tripleo-ci/deploy.env
+        fi
     done
     # TODO(gcerami) uncomment this code if 3nodes jobs are implemented before the bootstrap role
     # in quickstart. If the bootstrap role is implemented first, this function can be completely
