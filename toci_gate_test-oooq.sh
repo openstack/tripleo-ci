@@ -27,12 +27,6 @@ if [ -f /etc/nodepool/provider ] ; then
     # source variables common across all the scripts.
     source /etc/ci/mirror_info.sh
 
-    # set up distribution mirrors in openstack
-    NODEPOOL_MIRROR_HOST=${NODEPOOL_MIRROR_HOST:-mirror.$NODEPOOL_REGION.$NODEPOOL_CLOUD.openstack.org}
-    NODEPOOL_MIRROR_HOST=$(echo $NODEPOOL_MIRROR_HOST|tr '[:upper:]' '[:lower:]')
-    export CENTOS_MIRROR=http://$NODEPOOL_MIRROR_HOST/centos
-    export EPEL_MIRROR=http://$NODEPOOL_MIRROR_HOST/epel
-
     # host setup
     export RHCLOUD=''
     if [ ${NODEPOOL_CLOUD:-''} == 'tripleo-test-cloud-rh1' ]; then
