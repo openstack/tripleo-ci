@@ -41,8 +41,8 @@ build_undercloud: false
 tempest_track_resources: false
 
 # Container settings
-docker_registry_host: docker.io
-docker_registry_namespace: "tripleo{{ release }}"
+docker_registry_host: trunk.registry.rdoproject.org
+docker_registry_namespace: "{{ release }}"
 
 # Container update settings
 update_containers: "{% if containerized_overcloud|bool %}true{% endif %}"
