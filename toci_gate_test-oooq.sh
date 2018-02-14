@@ -264,10 +264,12 @@ else
 
     # multinode bootstrap script
     export DO_BOOTSTRAP_SUBNODES=${DO_BOOTSTRAP_SUBNODES:-1}
-    export BOOTSTRAP_SUBNODES_MINIMAL=0
-    if [[ -z $STABLE_RELEASE || "$STABLE_RELEASE" != "newton" ]]; then
-        BOOTSTRAP_SUBNODES_MINIMAL=1
+    export BOOTSTRAP_SUBNODES_MINIMAL=1
+    overcloud_release=${UPGRADE_RELEASE:-$STABLE_RELEASE}
+    if [ "${overcloud_release}" = "newton" ]; then
+        BOOTSTRAP_SUBNODES_MINIMAL=0
     fi
+
     echo_vars_to_deploy_env_oooq
     subnodes_scp_deploy_env
     if [ "$DO_BOOTSTRAP_SUBNODES" = "1" ]; then
