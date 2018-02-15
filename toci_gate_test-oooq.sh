@@ -135,6 +135,9 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
                 # Run overcloud-upgrade tag only in upgrades jobs
                 TAGS="$TAGS,overcloud-upgrade"
             fi
+            if is_featureset_overcloud_update "$TRIPLEO_ROOT/tripleo-quickstart/config/general_config/$JOB_TYPE_PART.yml"; then
+                TAGS="$TAGS,overcloud-update"
+            fi
         ;;
         ovb)
             OVB=1

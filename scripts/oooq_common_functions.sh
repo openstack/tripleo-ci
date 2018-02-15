@@ -32,6 +32,12 @@ function is_featureset_mixed_upgrade {
     [ $(shyaml get-value mixed_upgrade "False"< $FEATURESET_FILE) = "True" ]
 }
 
+function is_featureset_overcloud_update {
+    local FEATURESET_FILE="$1"
+
+    [ $(shyaml get-value overcloud_update "False"< $FEATURESET_FILE) = "True" ]
+}
+
 function run_with_timeout {
     # First parameter is the START_JOB_TIME
     # Second is the command to be executed
