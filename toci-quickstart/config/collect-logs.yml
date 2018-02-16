@@ -6,6 +6,7 @@ artcl_txt_rename: true
 artcl_publish: true
 artcl_rsync_logs: false
 artcl_collect_list:
+  - /var/lib/docker-puppet/
   - /var/lib/heat-config/
   - /var/lib/kolla/config_files
   - /var/lib/mistral/
