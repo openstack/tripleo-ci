@@ -153,13 +153,6 @@ sudo gzip -d -r /opt/stack/new/tempest/.testrepository || true
 
 du -L -ch $LOGS_DIR/* | tail -n +1 | sort -rh | head -n 200 &> $LOGS_DIR/log-size.txt || true
 EOF
-
-if [[ "${NODEPOOL_PROVIDER:-''}" == "rdo-cloud-tripleo" ]] || [[ "${NODEPOOL_PROVIDER:-''}" == "tripleo-test-cloud-rh1" ]]; then
-    bash $LOGS_DIR/collect_logs.sh
-    # rename script to not to run it in multinode jobs
-    mv $LOGS_DIR/collect_logs.sh $LOGS_DIR/ovb_collect_logs.sh
-fi
-
 popd
 
 sudo unbound-control dump_cache > /tmp/dns_cache.txt
