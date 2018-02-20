@@ -59,6 +59,11 @@ cron {"mirror-images-master":
     hour  => "2",
     minute  => "0"
 }
+cron {"mirror-images-queens":
+    command => "timeout 60m /opt/stack/tripleo-ci/scripts/mirror-server/mirror-images.sh queens | tee /var/log/images_update-queens.log",
+    hour  => "2",
+    minute  => "0"
+}
 cron {"mirror-images-pike":
     command => "timeout 60m /opt/stack/tripleo-ci/scripts/mirror-server/mirror-images.sh pike | tee /var/log/images_update-pike.log",
     hour  => "2",

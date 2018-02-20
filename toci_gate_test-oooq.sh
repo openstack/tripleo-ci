@@ -260,7 +260,7 @@ else
     # multinode bootstrap script
     export DO_BOOTSTRAP_SUBNODES=${DO_BOOTSTRAP_SUBNODES:-1}
     export BOOTSTRAP_SUBNODES_MINIMAL=0
-    if [[ -z $STABLE_RELEASE || "$STABLE_RELEASE" = "ocata" || "$STABLE_RELEASE" = "pike" ]]; then
+    if [[ -z $STABLE_RELEASE || "$STABLE_RELEASE" != "newton" ]]; then
         BOOTSTRAP_SUBNODES_MINIMAL=1
     fi
     echo_vars_to_deploy_env_oooq

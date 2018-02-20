@@ -577,9 +577,11 @@ fi
 if [ "$UNDERCLOUD_MAJOR_UPGRADE" == 1 ] ; then
     # Reset or unset STABLE_RELEASE so that we upgrade to the next major
     # version
-    if [ "$STABLE_RELEASE" = "pike" ]; then
-        # TODO: switch STABLE_RELEASE to queens when released
+    if [ "$STABLE_RELEASE" = "queens" ]; then
+        # TODO: switch STABLE_RELEASE to rocky when released
         export STABLE_RELEASE=""
+    elif [ "$STABLE_RELEASE" = "pike" ]; then
+        export STABLE_RELEASE="queens"
     elif [ "$STABLE_RELEASE" = "ocata" ]; then
         export STABLE_RELEASE="pike"
     elif [ "$STABLE_RELEASE" = "mitaka" ]; then

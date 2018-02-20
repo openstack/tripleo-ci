@@ -5,7 +5,7 @@ function previous_release_from {
     case "$RELEASE" in
         ''|master)
             # NOTE: we need to update this when we cut a stable branch
-            echo "pike"
+            echo "queens"
             ;;
         queens)
             echo "pike"
