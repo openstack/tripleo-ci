@@ -197,7 +197,9 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
             if [ $TOCI_JOBTYPE == 'undercloud-upgrades' ] ; then
                 # We want to start by installing an Undercloud
                 # from the previous stable release.
-                if [ "$STABLE_RELEASE" = "pike" ]; then
+                if [ "$STABLE_RELEASE" = "queens" ]; then
+                    STABLE_RELEASE=pike
+                elif [ "$STABLE_RELEASE" = "pike" ]; then
                     STABLE_RELEASE=ocata
                 elif [ "$STABLE_RELEASE" = "ocata" ]; then
                     STABLE_RELEASE=newton
