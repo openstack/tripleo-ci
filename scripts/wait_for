@@ -44,8 +44,8 @@ function show_options {
     echo "    wait_for -w 300 --delay 10 -- ping -c 1 192.0.2.2"
     echo "    wait_for -w 10 --delay 1 -- ls file_we_are_waiting_for"
     echo "    wait_for -w 30 --delay 3 -- date \| grep 8"
-    echo "    wait_for -w 300 --delay 10 --fail-match CREATE_FAILED -- heat stack-show undercloud"
-    echo "    wait_for -w 300 --delay 10 --success-match CREATE_COMPLETE -- heat stack-show undercloud"
+    echo "    wait_for -w 300 --delay 10 --fail-match CREATE_FAILED -- openstack stack show undercloud"
+    echo "    wait_for -w 300 --delay 10 --success-match CREATE_COMPLETE -- openstack stack show undercloud"
     exit $EXITVAL
 }
 
