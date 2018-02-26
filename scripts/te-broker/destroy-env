@@ -14,7 +14,9 @@ rm -f /opt/stack/openstack-virtual-baremetal/$COMPUTE_ENVFILE
 rm -f /opt/stack/openstack-virtual-baremetal/$EXTRA_ENVFILE
 rm -f /opt/stack/openstack-virtual-baremetal/temp-key-$ENVNUM.pub
 
+set +x
 source /etc/nodepoolrc
+set -x
 
 # NOTE(bnemec): This function starts the port deletions in the background.
 # To ensure they complete before you proceed, you must call "wait" after

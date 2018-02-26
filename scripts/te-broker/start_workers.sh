@@ -1,4 +1,5 @@
 #!/bin/bash
+set +x
 source /etc/nodepoolrc
 
 # Keep X number of testenv workers running, each testenv worker exists after processing a single job
