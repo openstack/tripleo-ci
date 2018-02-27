@@ -17,7 +17,9 @@ COMPUTE_ENVFILE=env-${ENVNUM}-compute.yaml
 EXTRA_ENVFILE=env-${ENVNUM}-extra.yaml
 ROLE_ARGS=
 
+set +x
 source /etc/nodepoolrc
+set -x
 
 if [ ! -e /opt/stack/openstack-virtual-baremetal ] ; then
     sudo git clone https://github.com/cybertron/openstack-virtual-baremetal.git /opt/stack/openstack-virtual-baremetal
