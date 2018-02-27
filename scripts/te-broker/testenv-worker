@@ -37,7 +37,7 @@ from novaclient import exceptions
 # 100Mb log files
 maxBytes=1024*1024*100
 
-logging.basicConfig(filename="/var/log/testenv-worker.log", format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+logging.basicConfig(filename="/var/www/html/tebroker/testenv-worker.log", format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
 
 class CallbackClient(gear.Client):
@@ -271,7 +271,7 @@ def main(args=sys.argv[1:]):
 
     global logger
     logger = logging.getLogger('testenv-worker-' + opts.tenum)
-    logger.addHandler(logging.handlers.RotatingFileHandler("/var/log/testenv-worker.log", maxBytes=maxBytes, backupCount=5))
+    logger.addHandler(logging.handlers.RotatingFileHandler("/var/www/html/tebroker/testenv-worker.log", maxBytes=maxBytes, backupCount=5))
     logger.setLevel(logging.INFO)
     logger.removeHandler(logger.handlers[0])
 
