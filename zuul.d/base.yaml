@@ -15,6 +15,7 @@
       - openstack-infra/tripleo-ci
       - openstack/tripleo-quickstart
       - openstack/tripleo-quickstart-extras
+      - openstack/tripleo-upgrade
     irrelevant-files:
       - ^.*\.md$
       - ^.*\.rst$
