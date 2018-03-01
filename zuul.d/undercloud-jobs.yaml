@@ -44,4 +44,4 @@
     voting: false
     branches: ^(?!stable/newton).*$
     vars:
-      toci_jobtype: undercloud-upgrades
+      toci_jobtype: singlenode-featureset047

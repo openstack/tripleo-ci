@@ -136,6 +136,9 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
                 MIXED_UPGRADE_TYPE='mixed_upgrade'
             elif is_featureset overcloud_update "$TRIPLEO_ROOT/tripleo-quickstart/config/general_config/$JOB_TYPE_PART.yml"; then
                 TAGS="$TAGS,overcloud-update"
+            elif is_featureset undercloud_upgrade "$TRIPLEO_ROOT/tripleo-quickstart/config/general_config/$JOB_TYPE_PART.yml"; then
+                TAGS="$TAGS,undercloud-upgrade"
+                export UPGRADE_RELEASE=$(next_release_from "${QUICKSTART_RELEASE}")
             fi
             # Set UPGRADE_RELEASE if applicable
             if [ -n "${MIXED_UPGRADE_TYPE}" ]; then
@@ -185,7 +188,7 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
             if [[ " $QUICKSTART_SH_JOBS " =~ " $TOCI_JOBTYPE " ]]; then
                 export PLAYBOOKS=${PLAYBOOKS:-"multinode.yml"}
             else
-                export PLAYBOOKS=${PLAYBOOKS:-"quickstart.yml multinode-undercloud.yml multinode-overcloud-prep.yml multinode-overcloud.yml multinode-overcloud-upgrade.yml multinode-validate.yml"}
+                export PLAYBOOKS=${PLAYBOOKS:-"quickstart.yml multinode-undercloud.yml multinode-undercloud-upgrade.yml multinode-overcloud-prep.yml multinode-overcloud.yml multinode-overcloud-upgrade.yml multinode-validate.yml"}
             fi
             FEATURESET_CONF=" --extra-vars @$LWD/config/general_config/featureset-multinode-common.yml $FEATURESET_CONF"
             if [[ $NODEPOOL_PROVIDER == "rdo-cloud-tripleo" ]]; then
@@ -227,7 +230,7 @@ if [[ -d $TRIPLEO_ROOT/tripleo-upgrade ]]; then
 else
     # Otherwise, if not importing it, oooq will fail when loading
     # tripleo-upgrade role in the playbook.
-    echo "git+https://git.openstack.org/tripleo-upgrade.git@${STABLE_RELEASE}#egg=tripleo-upgrade" >> ${TRIPLEO_ROOT}/tripleo-quickstart/quickstart-extras-requirements.txt
+    echo "git+https://git.openstack.org/openstack/tripleo-upgrade.git@${STABLE_RELEASE}#egg=tripleo-upgrade" >> ${TRIPLEO_ROOT}/tripleo-quickstart/quickstart-extras-requirements.txt
 fi
 
 # Start time tracking

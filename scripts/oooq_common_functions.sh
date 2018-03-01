@@ -87,3 +87,29 @@ function run_with_timeout {
     fi
     /usr/bin/timeout --preserve-status ${TIME_FOR_COMMAND}m ${COMMAND}
 }
+
+function next_release_from {
+    local release="${1:-master}"
+    case "${release}" in
+            # NOTE: we need to add a new release when we cut a stable branch
+        ''|master)
+            echo "master"
+            ;;
+        queens)
+            echo "master"
+            ;;
+        pike)
+            echo "queens"
+            ;;
+        ocata)
+            echo "pike"
+            ;;
+        newton)
+            echo "ocata"
+            ;;
+        *)
+            echo "UNKNOWN_RELEASE"
+            return 1
+            ;;
+    esac
+}
