@@ -10,7 +10,6 @@
 
 - hosts:
     - primary
-    - tripleo-centos-7
     - centos-7
   tasks:
 
