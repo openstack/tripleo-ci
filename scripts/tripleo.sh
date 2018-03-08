@@ -57,7 +57,6 @@ function show_options {
     echo "      --bootstrap-subnodes    -- Perform bootstrap setup on subnodes."
     echo "      --setup-nodepool-files  -- Setup nodepool files on subnodes."
     echo "      --undercloud            -- Install the undercloud."
-    echo "      --undercloud-containers -- Install the undercloud with containers."
     echo "      --overcloud-images      -- Build and load overcloud images."
     echo "      --register-nodes        -- Register and configure nodes."
     echo "      --introspect-nodes      -- Introspect nodes."
@@ -88,7 +87,7 @@ if [ ${#@} = 0 ]; then
 fi
 
 TEMP=$(getopt -o ,h \
-        -l,help,repo-setup,delorean-setup,delorean-build,multinode-setup,bootstrap-subnodes,undercloud,undercloud-containers,overcloud-images,register-nodes,introspect-nodes,overcloud-deploy,overcloud-update,overcloud-upgrade,overcloud-upgrade-converge,overcloud-delete,use-containers,overcloud-pingtest,undercloud-upgrade,skip-pingtest-cleanup,all,enable-check,run-tempest,setup-nodepool-files,overcloud-sanitytest,skip-sanitytest-create,skip-sanitytest-cleanup \
+        -l,help,repo-setup,delorean-setup,delorean-build,multinode-setup,bootstrap-subnodes,undercloud,overcloud-images,register-nodes,introspect-nodes,overcloud-deploy,overcloud-update,overcloud-upgrade,overcloud-upgrade-converge,overcloud-delete,use-containers,overcloud-pingtest,undercloud-upgrade,skip-pingtest-cleanup,all,enable-check,run-tempest,setup-nodepool-files,overcloud-sanitytest,skip-sanitytest-create,skip-sanitytest-cleanup \
         -o,x,h,a \
         -n $SCRIPT_NAME -- "$@")
 
@@ -149,7 +148,6 @@ OVERCLOUD_UPGRADE_THT_PATH=${OVERCLOUD_UPGRADE_THT_PATH:-"/usr/share/openstack-t
 OVERCLOUD_UPGRADE_ARGS=${OVERCLOUD_UPGRADE_ARGS:-"-e $OVERCLOUD_UPGRADE_THT_PATH/overcloud-resource-registry-puppet.yaml $OVERCLOUD_DEPLOY_ARGS -e $OVERCLOUD_UPGRADE_THT_PATH/environments/major-upgrade-composable-steps.yaml -e $HOME/init-repo.yaml --templates $OVERCLOUD_UPGRADE_THT_PATH"}
 OVERCLOUD_UPGRADE_CONVERGE_ARGS=${OVERCLOUD_UPGRADE_CONVERGE_ARGS:-"-e $OVERCLOUD_UPGRADE_THT_PATH/overcloud-resource-registry-puppet.yaml $OVERCLOUD_DEPLOY_ARGS -e $OVERCLOUD_UPGRADE_THT_PATH/environments/major-upgrade-converge.yaml --templates $OVERCLOUD_UPGRADE_THT_PATH"}
 UNDERCLOUD_UPGRADE=${UNDERCLOUD_UPGRADE:-""}
-UNDERCLOUD_CONTAINERS=${UNDERCLOUD_CONTAINERS:-""}
 OVERCLOUD_SANITYTEST_SKIP_CREATE=${OVERCLOUD_SANITYTEST_SKIP_CREATE:-""}
 OVERCLOUD_SANITYTEST_SKIP_CLEANUP=${OVERCLOUD_SANITYTEST_SKIP_CLEANUP:-""}
 OVERCLOUD_SANITYTEST=${OVERCLOUD_SANITYTEST:-""}
@@ -245,7 +243,6 @@ while true ; do
         --delorean-setup) DELOREAN_SETUP="1"; shift 1;;
         --delorean-build) DELOREAN_BUILD="1"; shift 1;;
         --undercloud) UNDERCLOUD="1"; shift 1;;
-        --undercloud-containers) UNDERCLOUD_CONTAINERS="1"; shift 1;;
         --undercloud-upgrade) UNDERCLOUD_UPGRADE="1"; shift 1;;
         --multinode-setup) MULTINODE_SETUP="1"; shift 1;;
         --bootstrap-subnodes) BOOTSTRAP_SUBNODES="1"; shift 1;;
@@ -558,87 +555,6 @@ function undercloud {
     fi
 
     log "Undercloud install - DONE."
-
-}
-
-function undercloud_containers {
-
-    log "Undercloud install containers"
-    # FIXME: eventually we will wire this into 'openstack undercloud install'
-    # but for now we manually do these things to mimic that functionality today
-    sudo setenforce permissive
-    sudo sed -i 's/SELINUX=.*/SELINUX=permissive/' /etc/selinux/config
-    sudo yum install -y \
-      openstack-heat-api \
-      openstack-heat-engine \
-      openstack-heat-monolith \
-      python-heat-agent \
-      python-heat-agent-ansible \
-      python-heat-agent-apply-config \
-      python-heat-agent-hiera \
-      python-heat-agent-puppet \
-      python-heat-agent-docker-cmd \
-      python-heat-agent-json-file \
-      python-ipaddr \
-      python-tripleoclient \
-      docker \
-      openvswitch \
-      puppet-tripleo \
-      openstack-kolla
-    cd
-
-    sudo systemctl start openvswitch
-    if [ -n "${LOCAL_REGISTRY:-}" ]; then
-      echo "INSECURE_REGISTRY='--insecure-registry ${LOCAL_REGISTRY:-}'" | sudo tee /etc/sysconfig/docker
-    fi
-    sudo systemctl start docker
-    sudo systemctl enable docker
-
-    sudo mkdir -p /etc/puppet/modules/
-    sudo ln -f -s /usr/share/openstack-puppet/modules/* /etc/puppet/modules/
-
-    # Hostname check, add to /etc/hosts if needed
-    if ! grep -E "^::1\s*$(hostname -f)" /etc/hosts; then
-        sudo sed -i "s/::1\s*\(.*\)/::1\t$(hostname -f) $(hostname -s) \1/" /etc/hosts
-    fi
-
-    # Custom settings can go here
-    cat > $HOME/custom.yaml <<-EOF_CAT
-resource_registry:
-  OS::TripleO::Undercloud::Net::SoftwareConfig: $TRIPLEO_ROOT/tripleo-ci/undercloud-configs/net-config-multinode.yaml
-
-parameter_defaults:
-  UndercloudNameserver: 8.8.8.8
-  NeutronServicePlugins: ""
-  ControlPlaneSubnetCidr: 24
-EOF_CAT
-
-    # generate container-images.yaml for tripleoupstream
-    openstack overcloud container image prepare --env-file $HOME/container-images.yaml
-
-    LOCAL_IP=${LOCAL_IP:-192.168.24.1}
-
-    cp -a /usr/share/openstack-tripleo-heat-templates ~/tripleo-heat-templates
-
-    sudo openstack undercloud deploy --templates=$HOME/tripleo-heat-templates \
-        --local-ip=$LOCAL_IP \
-        --heat-native \
-        -e $HOME/tripleo-heat-templates/environments/services-docker/ironic.yaml \
-        -e $HOME/tripleo-heat-templates/environments/services-docker/ironic-inspector.yaml \
-        -e $HOME/tripleo-heat-templates/environments/services-docker/mistral.yaml \
-        -e $HOME/tripleo-heat-templates/environments/services-docker/zaqar.yaml \
-        -e $HOME/tripleo-heat-templates/environments/docker.yaml \
-        -e $HOME/tripleo-heat-templates/environments/mongodb-nojournal.yaml \
-        -e $HOME/container-images.yaml \
-        -e $HOME/custom.yaml
-
-    # the new installer requires root privs to avoid sudo'ing everything,
-    # so we copy out the key manually to /home/stack for backwards compat
-    # if it exists
-    sudo cp /root/stackrc $HOME/stackrc
-    sudo chown $UID $HOME/stackrc
-
-    log "Undercloud install containers - DONE."
 
 }
 
@@ -1534,10 +1450,7 @@ function undercloud_sanity_check {
       ironic node-list
     fi
     openstack stack list
-    # FIXME undercloud with containers does not yet have the UI
-    if [ "$UNDERCLOUD_CONTAINERS" != 1 ]; then
-      ui_sanity_check
-    fi
+    ui_sanity_check
     set +x
 }
 
@@ -1670,11 +1583,7 @@ if [ "$DELOREAN_BUILD" = 1 ]; then
 fi
 
 if [ "$UNDERCLOUD" = 1 ]; then
-    if [ "$UNDERCLOUD_CONTAINERS" = 1 ]; then
-        undercloud_containers
-    else
-        undercloud
-    fi
+    undercloud
     if [ "$UNDERCLOUD_SANITY_CHECK" = 1 ]; then
         undercloud_sanity_check
     fi
