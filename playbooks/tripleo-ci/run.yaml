@@ -1,6 +1,5 @@
 - hosts:
     - primary
-    - tripleo-centos-7
     - centos-7
   name: Autoconverted job from tripleo legacy jobs
   tasks:
