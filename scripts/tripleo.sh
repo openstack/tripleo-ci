@@ -850,7 +850,7 @@ function overcloud_update {
 
 function overcloud_upgrade {
     stackrc_check
-    if heat stack-show "$OVERCLOUD_NAME" 2>&1 > /dev/null ; then
+    if openstack stack show "$OVERCLOUD_NAME" 2>&1 > /dev/null ; then
         log "Create overcloud repo template file"
         /bin/bash -c "cat <<EOF>$HOME/init-repo.yaml
 
@@ -887,7 +887,7 @@ EOF"
         openstack overcloud deploy $OVERCLOUD_UPGRADE_ARGS
         log "Major upgrade - DONE."
 
-        if heat stack-show "$OVERCLOUD_NAME" | grep "stack_status " | egrep "UPDATE_COMPLETE"; then
+        if openstack stack show "$OVERCLOUD_NAME" | grep "stack_status " | egrep "UPDATE_COMPLETE"; then
             log "Major Upgrade - DONE."
         else
             log "Major Upgrade FAILED."
@@ -901,14 +901,14 @@ EOF"
 
 function overcloud_upgrade_converge {
     stackrc_check
-    if heat stack-show "$OVERCLOUD_NAME" 2>&1 > /dev/null; then
+    if openstack stack show "$OVERCLOUD_NAME" 2>&1 > /dev/null; then
         log "Overcloud upgrade converge started."
         log "Upgrade command arguments: $OVERCLOUD_UPGRADE_CONVERGE_ARGS"
         log "Execute major upgrade converge."
         openstack overcloud deploy $OVERCLOUD_UPGRADE_CONVERGE_ARGS
         log "Major upgrade converge - DONE."
 
-        if heat stack-show "$OVERCLOUD_NAME" | grep "stack_status " | egrep "UPDATE_COMPLETE"; then
+        if openstack stack show "$OVERCLOUD_NAME" | grep "stack_status " | egrep "UPDATE_COMPLETE"; then
             log "Major Upgrade converge - DONE."
         else
             log "Major Upgrade converge FAILED."
@@ -1064,7 +1064,7 @@ function overcloud_sanitytest {
     exitval=0
     stackrc_check
 
-    if heat stack-show "$OVERCLOUD_NAME" | grep "stack_status " | egrep -q "(CREATE|UPDATE)_COMPLETE"; then
+    if openstack stack show "$OVERCLOUD_NAME" | grep "stack_status " | egrep -q "(CREATE|UPDATE)_COMPLETE"; then
 
         ENABLED_SERVICES=$(openstack stack output show overcloud EnabledServices -f json | \
                            jq -r ".output_value" | jq '.Controller | .[]' | tr "\n" " " | sed "s/\"//g")
