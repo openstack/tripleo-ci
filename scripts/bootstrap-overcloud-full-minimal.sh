@@ -36,7 +36,7 @@ sudo yum -y update
 
 # git is needed since oooq multinode jobs does a git clone
 # See https://bugs.launchpad.net/tripleo-quickstart/+bug/1667043
-sudo yum -y install git python-heat-agent*
+sudo yum -y install git python-heat-agent* openstack-heat-agents
 
 # create a loop device for ceph-ansible
 # device name is static so we know what to point to from ceph-ansible
