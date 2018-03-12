@@ -18,9 +18,7 @@ DEFAULT_JOB_NAMES = [
     'tripleo-ci-centos-7-scenario007-multinode-oooq-container',
     'tripleo-ci-centos-7-undercloud-containers,'
     'tripleo-ci-centos-7-3nodes-multinode',
-    'tripleo-ci-centos-7-multinode-upgrades',
     'tripleo-ci-centos-7-undercloud-upgrades',
-    'tripleo-ci-centos-7-ovb-containers-oooq',
 ]
 
 DEFAULT_PROJECTS = [
