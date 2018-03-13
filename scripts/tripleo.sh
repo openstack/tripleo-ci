@@ -495,7 +495,7 @@ function delorean_build {
 
         # Work around inconsistency where map-project-name expects oslo-*
         MAPPED_NAME=$(echo $PROJ | sed "s/oslo./oslo-/")
-        MAPPED_PROJ=$(./venv/bin/python scripts/map-project-name $MAPPED_NAME || true)
+        MAPPED_PROJ=$(rdopkg findpkg $MAPPED_NAME | grep ^name | awk '{print $2}' || true)
         [ -e data/$MAPPED_PROJ ] && continue
         cp -r $TRIPLEO_ROOT/$PROJ data/$MAPPED_PROJ
         pushd data/$MAPPED_PROJ
@@ -510,7 +510,7 @@ function delorean_build {
 
         set +e
         while true; do
-            DELOREANCMD="./venv/bin/dlrn --config-file projects.ini --head-only --package-name $MAPPED_PROJ --local --use-public --build-env http_proxy=${http_proxy:-} --info-repo rdoinfo"
+            DELOREANCMD="./venv/bin/dlrn --config-file projects.ini --head-only --package-name $MAPPED_PROJ --local --use-public --build-env http_proxy=${http_proxy:-}"
             # Using sudo to su a command as ourselves to run the command with a new login
             # to ensure the addition to the mock group has taken effect.
             sudo su $(id -nu) -c "$DELOREANCMD"
