@@ -6,6 +6,7 @@
       jobs:
         - tripleo-ci-centos-7-undercloud-oooq
         - tripleo-ci-centos-7-undercloud-upgrades
+        - tripleo-ci-centos-7-containerized-undercloud-upgrades
         - tripleo-ci-centos-7-undercloud-containers
     gate:
       queue: tripleo
@@ -45,3 +46,14 @@
     branches: ^(?!stable/newton).*$
     vars:
       toci_jobtype: singlenode-featureset047
+- job:
+    name: tripleo-ci-centos-7-containerized-undercloud-upgrades
+    parent: tripleo-ci-dsvm
+    run: playbooks/tripleo-ci/run.yaml
+    post-run: playbooks/tripleo-ci/post.yaml
+    timeout: 10800
+    nodeset: legacy-centos-7
+    voting: false
+    branches: ^(?!stable/(newton|ocata|pike|queens)).*$
+    vars:
+      toci_jobtype: singlenode-featureset050
