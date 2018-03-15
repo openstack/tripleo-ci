@@ -19,7 +19,6 @@ export DEFAULT_ARGS="--extra-vars local_working_dir=$LOCAL_WORKING_DIR \
     --inventory $LOCAL_WORKING_DIR/hosts \
     --extra-vars tripleo_root=$TRIPLEO_ROOT \
     --extra-vars working_dir=$WORKING_DIR \
-    --extra-vars validation_args='--validation-errors-nonfatal' \
 "
 
 # --install-deps arguments installs deps and then quits, no other arguments are
@@ -65,6 +64,12 @@ QUICKSTART_COLLECTLOGS_CMD="$LOCAL_WORKING_DIR/bin/ansible-playbook \
     --skip-tags teardown-all \
 "
 
+declare -A PLAYBOOKS_ARGS=(
+    ["baremetal-full-overcloud.yml"]=" --extra-vars validation_args='--validation-errors-nonfatal' "
+    ["multinode-overcloud.yml"]=" --extra-vars validation_args='--validation-errors-nonfatal' "
+    ["multinode.yml"]=" --extra-vars validation_args='--validation-errors-nonfatal' "
+)
+
 mkdir -p $LOCAL_WORKING_DIR
 # TODO(gcerami) parametrize hosts
 cp $TRIPLEO_ROOT/tripleo-ci/toci-quickstart/config/testenv/${ENVIRONMENT}_hosts $LOCAL_WORKING_DIR/hosts
@@ -91,7 +96,7 @@ source $OOOQ_DIR/ansible_ssh_env.sh
 for playbook in $PLAYBOOKS; do
     run_with_timeout $START_JOB_TIME $QUICKSTART_INSTALL_CMD \
         --extra-vars ci_job_end_time=$(( START_JOB_TIME + REMAINING_TIME*60 )) \
-        $LOCAL_WORKING_DIR/playbooks/$playbook \
+        $LOCAL_WORKING_DIR/playbooks/$playbook "${PLAYBOOKS_ARGS[$playbook]:-}" \
         2>&1 | tee $LOGS_DIR/quickstart_install.log && exit_value=0 || exit_value=$?
 
     # Print status of playbook run
