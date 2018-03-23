@@ -85,9 +85,9 @@
           export DIB_YUM_REPO_CONF="/etc/yum.repos.d/delorean*"
 
           # if we are on master, install from source
-          # otherwise, install from requirements
+          # otherwise, install dib & tripleo-common from requirements
           if [ "$ZUUL_BRANCH" == "master" ]; then
-              tox -evenv -- pip install $WORKSPACE/diskimage-builder
+              tox -evenv -- pip install $WORKSPACE/diskimage-builder $WORKSPACE/tripleo-common
           else
               export UPPER_CONSTRAINTS_FILE=$WORKSPACE/requirements/upper-constraints.txt
               tox -evenv -- pip install diskimage-builder -c $UPPER_CONSTRAINTS_FILE
