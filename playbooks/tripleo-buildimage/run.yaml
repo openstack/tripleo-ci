@@ -72,6 +72,10 @@
                   DELOREAN_REPO_URL="https://trunk.rdoproject.org/centos7-pike/current"
                   DELOREAN_DEPS_URL="https://trunk.rdoproject.org/centos7-pike"
                   ;;
+              "stable/queens")
+                  DELOREAN_REPO_URL="https://trunk.rdoproject.org/centos7-queens/current"
+                  DELOREAN_DEPS_URL="https://trunk.rdoproject.org/centos7-queens"
+                  ;;
               *)
                   DELOREAN_REPO_URL="https://trunk.rdoproject.org/centos7-master/current-tripleo"
                   DELOREAN_DEPS_URL="https://trunk.rdoproject.org/centos7"
@@ -84,14 +88,8 @@
           sudo curl -L ${DELOREAN_REPO_URL}/delorean.repo -o /etc/yum.repos.d/delorean.repo
           export DIB_YUM_REPO_CONF="/etc/yum.repos.d/delorean*"
 
-          # if we are on master, install from source
-          # otherwise, install dib & tripleo-common from requirements
-          if [ "$ZUUL_BRANCH" == "master" ]; then
-              tox -evenv -- pip install $WORKSPACE/diskimage-builder $WORKSPACE/tripleo-common
-          else
-              export UPPER_CONSTRAINTS_FILE=$WORKSPACE/requirements/upper-constraints.txt
-              tox -evenv -- pip install diskimage-builder -c $UPPER_CONSTRAINTS_FILE
-          fi
+          # install dib & tripleo-common source
+          tox -evenv -- pip install $WORKSPACE/diskimage-builder $WORKSPACE/tripleo-common
 
           TRIPLEO_COMMON_PATH=$WORKSPACE/tripleo-common
           export ELEMENTS_PATH=$ELEMENTS
