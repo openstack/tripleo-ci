@@ -72,9 +72,9 @@ function run_with_timeout {
     JOB_TIME=$1
     shift
     COMMAND=$@
-    # Leave 10 minutes for quickstart logs collection for ovb only
+    # Leave 20 minutes for quickstart logs collection for ovb only
     if [[ "$TOCI_JOBTYPE" =~ "ovb" ]]; then
-        RESERVED_LOG_TIME=10
+        RESERVED_LOG_TIME=20
     else
         RESERVED_LOG_TIME=3
     fi
