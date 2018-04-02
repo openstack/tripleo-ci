@@ -27,20 +27,22 @@ if [ -f /etc/nodepool/provider ] ; then
     # source variables common across all the scripts.
     source /etc/ci/mirror_info.sh
 
-    # host setup
-    export RHCLOUD=''
-    if [ ${NODEPOOL_CLOUD:-''} == 'tripleo-test-cloud-rh1' ]; then
-        RHCLOUD='rh1'
-    elif [ ${NODEPOOL_PROVIDER:-''} == 'rdo-cloud-tripleo' ]; then
-        RHCLOUD='rdocloud'
-    fi
-    if [[ "$RHCLOUD" != '' ]]; then
-        source $(dirname $0)/scripts/$RHCLOUD.env
+    if [[ -z "${RHCLOUD-}" ]]; then
+        # host setup
+        export RHCLOUD=''
+        if [ ${NODEPOOL_CLOUD:-''} == 'tripleo-test-cloud-rh1' ]; then
+            RHCLOUD='rh1'
+        elif [ ${NODEPOOL_PROVIDER:-''} == 'rdo-cloud-tripleo' ]; then
+            RHCLOUD='rdocloud'
+        fi
+        if [[ "$RHCLOUD" != '' ]]; then
+            source $(dirname $0)/scripts/$RHCLOUD.env
 
-        # In order to save space remove the cached git repositories, at this point in
-        # CI the ones we are interested in have been cloned to /opt/stack/new. We
-        # can also remove some distro images cached on the images.
-        sudo rm -rf /opt/git /opt/stack/cache/files/mysql.qcow2 /opt/stack/cache/files/ubuntu-12.04-x86_64.tar.gz
+            # In order to save space remove the cached git repositories, at this point in
+            # CI the ones we are interested in have been cloned to /opt/stack/new. We
+            # can also remove some distro images cached on the images.
+            sudo rm -rf /opt/git /opt/stack/cache/files/mysql.qcow2 /opt/stack/cache/files/ubuntu-12.04-x86_64.tar.gz
+        fi
     fi
 fi
 
