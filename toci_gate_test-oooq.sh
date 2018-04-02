@@ -221,6 +221,15 @@ if [[ ! -z $NODES_FILE ]]; then
     done
 fi
 
+# Import gated tripleo-upgrade in oooq for upgrades/updates jobs
+if [[ -d $TRIPLEO_ROOT/tripleo-upgrade ]]; then
+    echo "file://${TRIPLEO_ROOT}/tripleo-upgrade/#egg=tripleo-upgrade" >> ${TRIPLEO_ROOT}/tripleo-quickstart/quickstart-extras-requirements.txt
+else
+    # Otherwise, if not importing it, oooq will fail when loading
+    # tripleo-upgrade role in the playbook.
+    echo "git+https://git.openstack.org/tripleo-upgrade.git@${STABLE_RELEASE}#egg=tripleo-upgrade" >> ${TRIPLEO_ROOT}/tripleo-quickstart/quickstart-extras-requirements.txt
+fi
+
 # Start time tracking
 export STATS_TESTENV=$(date +%s)
 pushd $TRIPLEO_ROOT/tripleo-ci
