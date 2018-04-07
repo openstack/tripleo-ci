@@ -21,8 +21,8 @@ overcloud_image_url: http://images.rdoproject.org/{{ release }}/rdo_trunk/{{ dlr
 ipa_image_url: http://images.rdoproject.org/{{ release }}/rdo_trunk/{{ dlrn_hash|default(dlrn_hash_tag) }}/ironic-python-agent.tar
 # Container settings
 # Use trunk.registry.rdoproject.org for periodic jobs only
-docker_registry_host: "{% if lookup('env', 'PERIODIC') != 1 %}docker.io{% else %}trunk.registry.rdoproject.org{% endif %}"
-docker_registry_namespace: "{% if lookup('env', 'PERIODIC') != 1 %}tripleo{% endif %}{{ release }}"
+docker_registry_host: "{% if lookup('env', 'PERIODIC')|default('0')|int != 1 %}docker.io{% else %}trunk.registry.rdoproject.org{% endif %}"
+docker_registry_namespace: "{% if lookup('env', 'PERIODIC')|default('0')|int != 1 %}tripleo{% endif %}{{ release }}"
 
 # Container update settings
 update_containers: "{% if containerized_overcloud|bool %}true{% endif %}"
