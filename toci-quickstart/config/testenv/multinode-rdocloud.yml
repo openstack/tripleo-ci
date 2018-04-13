@@ -32,6 +32,9 @@ build_undercloud: false
 # We don't need to cleanup TripleO CI
 tempest_track_resources: false
 
+# Use cirros cached image
+tempest_test_image_path: /opt/cache/files/cirros-0.3.5-x86_64-disk.img
+
 # Container settings
 # Use trunk.registry.rdoproject.org for periodic jobs only
 docker_registry_host: "{% if lookup('env', 'PERIODIC')|default('0')|int != 1 %}docker.io{% else %}trunk.registry.rdoproject.org{% endif %}"
