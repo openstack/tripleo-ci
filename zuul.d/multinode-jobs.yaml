@@ -9,6 +9,7 @@
     gate:
       queue: tripleo
       jobs:
+        - tripleo-ci-centos-7-3nodes-multinode
         - tripleo-ci-centos-7-nonha-multinode-oooq
 
 - project-template:
@@ -80,7 +81,6 @@
     run: playbooks/tripleo-ci/run.yaml
     post-run: playbooks/tripleo-ci/post.yaml
     timeout: 10800
-    voting: false
     nodeset: legacy-centos-7-3-node
     branches: ^(?!stable/(newton|ocata|pike)).*$
     vars:
