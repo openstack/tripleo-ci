@@ -1,9 +1,11 @@
 # This file contains settings that are specific to RDO Cloud.
 # These settings will override the ovb default settings
 
-bmc_flavor: ci.m1.small
-baremetal_flavor: ci.m1.xlarge
-undercloud_flavor: ci.m1.xlarge
+# These values are defined now in the te-broker config
+# https://github.com/openstack-infra/tripleo-ci/blob/master/scripts/te-broker/create-env#L47
+#bmc_flavor: ci.m1.small
+#baremetal_flavor: ci.m1.xlarge
+#undercloud_flavor: ci.m1.xlarge
 
 custom_nameserver:
     - 38.145.33.91
