@@ -228,9 +228,14 @@ fi
 if [[ -d $TRIPLEO_ROOT/tripleo-upgrade ]]; then
     echo "file://${TRIPLEO_ROOT}/tripleo-upgrade/#egg=tripleo-upgrade" >> ${TRIPLEO_ROOT}/tripleo-quickstart/quickstart-extras-requirements.txt
 else
+    if [[ -n "$STABLE_RELEASE" ]]; then
+        TRIPLEO_UPGRADE_BRANCH="stable/${STABLE_RELEASE}"
+    else
+        TRIPLEO_UPGRADE_BRANCH="master"
+    fi
     # Otherwise, if not importing it, oooq will fail when loading
     # tripleo-upgrade role in the playbook.
-    echo "git+https://git.openstack.org/openstack/tripleo-upgrade.git@${STABLE_RELEASE}#egg=tripleo-upgrade" >> ${TRIPLEO_ROOT}/tripleo-quickstart/quickstart-extras-requirements.txt
+    echo "git+https://git.openstack.org/openstack/tripleo-upgrade.git@${TRIPLEO_UPGRADE_BRANCH}#egg=tripleo-upgrade" >> ${TRIPLEO_ROOT}/tripleo-quickstart/quickstart-extras-requirements.txt
 fi
 
 # Start time tracking
