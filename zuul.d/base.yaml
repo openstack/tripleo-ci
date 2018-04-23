@@ -40,3 +40,39 @@
     roles:
       - zuul: openstack-infra/zuul-jobs
     pre-run: playbooks/multinode-networking/pre.yaml
+
+- job:
+    name: tripleo-ci-centos-7-scenario000-multinode-oooq-container-updates
+    description: |
+      Basic tripleo update job, this is not an upgrade job.
+    parent: tripleo-ci-dsvm-multinode
+    pre-run: playbooks/nodepool-provider/pre.yaml
+    run: playbooks/tripleo-ci/run.yaml
+    post-run: playbooks/tripleo-ci/post.yaml
+    timeout: 10800
+    voting: true
+    nodeset: legacy-centos-7-2-node
+    branches: ^(?!stable/(newton|ocata|pike|queens)).*$
+    vars:
+      toci_jobtype: multinode-1ctlr-featureset037
+      # Note (dmsimard): This enforces a minimum TTL for DNS records, see
+      # https://review.openstack.org/#/c/523178/ for context
+      unbound_cache_min_ttl: 900
+    required-projects:
+      - openstack-infra/tripleo-ci
+      - openstack/tripleo-quickstart
+      - openstack/tripleo-quickstart-extras
+      - openstack/tripleo-upgrade
+    irrelevant-files:
+      - ^.*\.md$
+      - ^.*\.rst$
+      - ^doc/.*$
+      - ^etc/.*$
+      - ^metadata.json$
+      - ^releasenotes/.*$
+      - ^requirements.txt$
+      - ^test-requirements.txt$
+      - ^spec/.*$
+      - ^Puppetfile.*$
+      - tox.ini
+      - ^setup.*$
