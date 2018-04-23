@@ -30,6 +30,7 @@ tempest_test_image_path: /opt/cache/files/cirros-0.3.5-x86_64-disk.img
 
 # We don't need to cleanup TripleO CI
 tempest_track_resources: false
+undercloud_undercloud_cleanup: false
 
 # Container update settings
 update_containers: "{% if containerized_overcloud|bool %}true{% endif %}"

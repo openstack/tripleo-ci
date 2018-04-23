@@ -66,6 +66,7 @@ ipa_image_url: http://192.168.103.253/builds-{{ release }}/current-tripleo/ipa_i
 
 # We don't need to cleanup TripleO CI
 tempest_track_resources: false
+undercloud_undercloud_cleanup: false
 
 # Deployment metrics
 ara_graphite_prefix: "tripleo.{{ lookup('env', 'STABLE_RELEASE')|default('master', true) }}.{{ lookup('env', 'TOCI_JOBTYPE') }}."
