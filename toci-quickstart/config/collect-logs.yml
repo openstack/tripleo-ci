@@ -38,6 +38,9 @@ artcl_collect_list:
   - /home/{{ undercloud_user }}/tripleo-config-download/
   - /home/{{ undercloud_user }}/tripleo-*-config/
   - /home/{{ undercloud_user }}/tripleo-config/
+  - /home/{{ undercloud_user }}/undercloud-ansible-*/
+  - /home/{{ undercloud_user }}/undercloud-templates-*/
+  - /home/{{ undercloud_user }}/undercloud-install-*
   - /etc/ansible/
   - /etc/aodh/
   - /etc/autofs*
