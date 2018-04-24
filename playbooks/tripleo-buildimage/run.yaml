@@ -1,5 +1,9 @@
 - hosts: all
   name: Autoconverted job legacy-tripleo-buildimage
+  roles:
+    - role: bindep
+      bindep_dir: "{{ ansible_user_dir }}/{{ zuul.projects['git.openstack.org/openstack/python-tripleoclient'].src_dir }}"
+
   tasks:
 
     - name: Ensure legacy workspace directory
@@ -33,16 +37,6 @@
             openstack/tripleo-image-elements \
             openstack/tripleo-puppet-elements \
             openstack/requirements
-        executable: /bin/bash
-        chdir: '{{ ansible_user_dir }}/workspace'
-      environment: '{{ zuul | zuul_legacy_vars }}'
-
-    - shell:
-        cmd: |
-          set -e
-          set -x
-          cd python-tripleoclient
-          /usr/local/jenkins/slave_scripts/install-distro-packages.sh
         executable: /bin/bash
         chdir: '{{ ansible_user_dir }}/workspace'
       environment: '{{ zuul | zuul_legacy_vars }}'
