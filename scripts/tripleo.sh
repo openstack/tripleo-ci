@@ -405,7 +405,7 @@ function delorean_setup {
     sudo usermod -G mock -a $(id -nu)
 
     mkdir -p $TRIPLEO_ROOT
-    [ -d $TRIPLEO_ROOT/delorean ] || git clone https://github.com/openstack-packages/delorean.git $TRIPLEO_ROOT/delorean
+    [ -d $TRIPLEO_ROOT/delorean ] || git clone https://github.com/softwarefactory-project/DLRN.git $TRIPLEO_ROOT/delorean
 
     pushd $TRIPLEO_ROOT/delorean
 
@@ -416,8 +416,13 @@ function delorean_setup {
     sed -i -e "s%target=.*%target=centos%" projects.ini
 
     # Remove the rpm install test to speed up delorean (our ci test will to this)
-    # TODO: add an option for this in delorean
-    sed -i -e 's%--postinstall%%' scripts/build_rpm.sh
+    if [ -f scripts/build_rpm.sh ]; then
+        # DLRN < 0.8.0
+        sed -i -e 's%--postinstall%%' scripts/build_rpm.sh
+    else
+        # This is an option in DLRN since 0.8.0 for the mock build driver
+        sed -i -e 's/^#install_after_build=1.*/install_after_build=0/' projects.ini
+    fi
 
     virtualenv venv
     # NOTE(pabelanger): We need to update setuptools to the latest version for
