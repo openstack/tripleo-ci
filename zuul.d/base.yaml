@@ -50,7 +50,7 @@
     run: playbooks/tripleo-ci/run.yaml
     post-run: playbooks/tripleo-ci/post.yaml
     timeout: 10800
-    voting: false
+    voting: true
     nodeset: legacy-centos-7-2-node
     branches: ^(?!stable/(newton|ocata|pike|queens)).*$
     vars:
