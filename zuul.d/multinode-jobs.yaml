@@ -15,16 +15,6 @@
         - tripleo-ci-centos-7-nonha-multinode-oooq
 
 - project-template:
-    name: tripleo-multinode-ci-only-minimal
-    check:
-      jobs:
-        - tripleo-ci-centos-7-scenario000-multinode-oooq-container-updates
-    gate:
-      queue: tripleo
-      jobs:
-        - tripleo-ci-centos-7-scenario000-multinode-oooq-container-updates
-
-- project-template:
     name: tripleo-multinode-container-minimal
     check:
       jobs:
@@ -36,6 +26,7 @@
       queue: tripleo
       jobs:
         - tripleo-ci-centos-7-containers-multinode
+        - tripleo-ci-centos-7-scenario000-multinode-oooq-container-updates
 
 - project-template:
     name: tripleo-multinode-container-full
