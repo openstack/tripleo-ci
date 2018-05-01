@@ -138,7 +138,8 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
                 TAGS="$TAGS,overcloud-update"
             elif is_featureset undercloud_upgrade "$TRIPLEO_ROOT/tripleo-quickstart/config/general_config/$JOB_TYPE_PART.yml"; then
                 TAGS="$TAGS,undercloud-upgrade"
-                export UPGRADE_RELEASE=$(next_release_from "${QUICKSTART_RELEASE}")
+                export UPGRADE_RELEASE=$QUICKSTART_RELEASE
+                export QUICKSTART_RELEASE=$(previous_release_mixed_upgrade_case "${UPGRADE_RELEASE}")
             fi
             # Set UPGRADE_RELEASE if applicable
             if [ -n "${MIXED_UPGRADE_TYPE}" ]; then
