@@ -1,4 +1,6 @@
 ---
+# zuul.d/build-image.yaml
+# Zuul layout for TripleO Build Image jobs.
 
 - project-template:
     name: tripleo-buildimage-jobs

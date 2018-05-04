@@ -1,4 +1,7 @@
 ---
+# zuul.d/undercloud-jobs.yaml
+# Zuul layout for TripleO undercloud jobs.
+# It contains all the jobs related to undercloud testing.
 
 - project-template:
     name: tripleo-undercloud-jobs

@@ -1,4 +1,7 @@
 ---
+# zuul.d/base.yaml
+# This file contains parent layouts for all TripleO jobs.
+# Do not add children specific layout here.
 
 - job:
     name: tripleo-ci-dsvm
@@ -34,7 +37,6 @@
     name: tripleo-ci-dsvm-multinode
     description: |
       Base legacy job for multinode tripleo jobs.
-
       Ensures the firewall allows all traffic between test nodes.
     parent: tripleo-ci-dsvm
     roles:
