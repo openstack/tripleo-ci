@@ -1,3 +1,8 @@
+---
+# zuul.d/layout.yaml
+# This file is the Zuul layout of openstack-infra/tripleo-ci project
+# It describes the jobs that will run when submitting a change in this
+# repository.
 
 - project:
     templates:

@@ -1,4 +1,7 @@
 ---
+# zuul.d/multinode-jobs.yaml
+# Zuul layout for TripleO multinode jobs.
+# It contains all the jobs using deployed-servers in nodepool.
 
 - project-template:
     name: tripleo-multinode-baremetal-minimal
