@@ -19,7 +19,7 @@
     irrelevant-files:
       - ^.*\.md$
       - ^.*\.rst$
-      # - ^doc/.*$
+      - ^doc/.*$
       - ^etc/.*$
       - ^metadata.json$
       - ^releasenotes/.*$
