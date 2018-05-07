@@ -40,12 +40,6 @@ QUICKSTART_VENV_CMD="
 
 QUICKSTART_INSTALL_CMD="
     $LOCAL_WORKING_DIR/bin/ansible-playbook
-    --extra-vars @$LOCAL_WORKING_DIR/config/release/tripleo-ci/$QUICKSTART_RELEASE.yml
-    $NODES_ARGS
-    $FEATURESET_CONF
-    $ENV_VARS
-    $EXTRA_VARS
-    $DEFAULT_ARGS
     --tags $TAGS
     --skip-tags teardown-all
 "
@@ -63,6 +57,35 @@ QUICKSTART_COLLECTLOGS_CMD="$LOCAL_WORKING_DIR/bin/ansible-playbook \
     --tags all \
     --skip-tags teardown-all \
 "
+
+export QUICKSTART_DEFAULT_RELEASE_ARG="--extra-vars @$LOCAL_WORKING_DIR/config/release/tripleo-ci/$QUICKSTART_RELEASE.yml"
+
+declare -A RELEASE_ARGS=()
+
+if [[ -f "$RELEASES_FILE_OUTPUT" ]]; then
+
+    source $RELEASES_FILE_OUTPUT
+
+    declare -A RELEASE_ARGS=(
+        ["multinode-undercloud.yml"]="--extra-vars
+        @$LOCAL_WORKING_DIR/config/release/tripleo-ci/$UNDERCLOUD_INSTALL_RELEASE.yml"
+        ["multinode-undercloud-upgrade.yml"]="--extra-vars
+        @$LOCAL_WORKING_DIR/config/release/tripleo-ci/$UNDERCLOUD_TARGET_RELEASE.yml"
+        ["multinode-overcloud-prep.yml"]="--extra-vars
+        @$LOCAL_WORKING_DIR/config/release/tripleo-ci/$OVERCLOUD_DEPLOY_RELEASE.yml"
+        ["multinode-overcloud.yml"]="--extra-vars
+        @$LOCAL_WORKING_DIR/config/release/tripleo-ci/$OVERCLOUD_DEPLOY_RELEASE.yml"
+        ["multinode-overcloud-update.yml"]="--extra-vars
+        @$LOCAL_WORKING_DIR/config/release/tripleo-ci/$OVERCLOUD_DEPLOY_RELEASE.yml"
+        ["multinode-overcloud-upgrade.yml"]="--extra-vars
+        @$LOCAL_WORKING_DIR/config/release/tripleo-ci/$OVERCLOUD_TARGET_RELEASE.yml"
+        ["multinode-validate.yml"]="--extra-vars
+        @$LOCAL_WORKING_DIR/config/release/tripleo-ci/$OVERCLOUD_TARGET_RELEASE.yml"
+    )
+
+fi
+
+
 
 declare -A PLAYBOOKS_ARGS=(
     ["baremetal-full-overcloud.yml"]=" --extra-vars validation_args='--validation-errors-nonfatal' "
@@ -94,9 +117,17 @@ source $OOOQ_DIR/ansible_ssh_env.sh
 [[ -n ${STATS_OOOQ:-''} ]] && export STATS_OOOQ=$(( $(date +%s) - STATS_OOOQ ))
 
 
+
 for playbook in $PLAYBOOKS; do
+    echo "${RELEASE_ARGS[$playbook]:=$QUICKSTART_DEFAULT_RELEASE_ARG}"
     run_with_timeout $START_JOB_TIME $QUICKSTART_INSTALL_CMD \
-        --extra-vars ci_job_end_time=$(( START_JOB_TIME + REMAINING_TIME*60 )) \
+       "${RELEASE_ARGS[$playbook]:=$QUICKSTART_DEFAULT_RELEASE_ARG}" \
+       $NODES_ARGS \
+       $FEATURESET_CONF \
+       $ENV_VARS \
+       $EXTRA_VARS \
+       $DEFAULT_ARGS \
+       --extra-vars ci_job_end_time=$(( START_JOB_TIME + REMAINING_TIME*60 )) \
         $LOCAL_WORKING_DIR/playbooks/$playbook "${PLAYBOOKS_ARGS[$playbook]:-}" \
         2>&1 | tee -a $LOGS_DIR/quickstart_install.log && exit_value=0 || exit_value=$?
 
