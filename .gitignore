@@ -10,3 +10,13 @@ scripts/website/tripleo-docs/
 scripts/website/tripleosphinx/
 scripts/website/planet-2.0/
 scripts/website/planet.html.tmplc
+
+.tox/
+.coverage
+.pytest_cache/
+__pycache__/
+scripts/emit_releases_file/assets/
+*.pyc
+scripts/emit_releases_file/htmlcov/
+scripts/emit_releases_file/pytest-report.html
+tripleo_ci.egg-info/

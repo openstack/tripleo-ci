@@ -1,1 +1,7 @@
 flake8
+pytest
+pytest-html
+pytest-cov
+mock
+requests
+pprint
