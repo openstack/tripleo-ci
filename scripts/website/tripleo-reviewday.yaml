@@ -17,8 +17,6 @@ projects:
     launchpad_project: tripleo
   - name: tripleo-image-elements
     launchpad_project: tripleo
-  - name: tripleo-incubator
-    launchpad_project: tripleo
   - name: tripleo-puppet-elements
     launchpad_project: tripleo
   - name: tripleo-specs
