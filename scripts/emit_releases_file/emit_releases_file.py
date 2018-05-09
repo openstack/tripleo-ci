@@ -1,4 +1,6 @@
 import logging
+import re
+import requests
 
 RELEASES = ['newton', 'ocata', 'pike', 'queens', 'master']
 LONG_TERM_SUPPORT_RELEASES = ['queens']
@@ -8,6 +10,32 @@ def get_relative_release(release, relative_idx):
     current_idx = RELEASES.index(release)
     absolute_idx = current_idx + relative_idx
     return RELEASES[absolute_idx]
+
+
+def get_dlrn_hash(release, hash_name, retries=10):
+    full_hash_pattern = re.compile('[a-z,0-9]{40}_[a-z,0-9]{8}')
+    repo_url = ('https://trunk.rdoproject.org/centos7-%s/%s/delorean.repo'
+                % (release, hash_name))
+    for retry_num in range(retries):
+        repo_file = None
+        # Timeout if initial connection is longer than default
+        # TCP packet retransmission window (3 secs), or if the
+        # sending of the data takes more than 27 seconds.
+        try:
+            repo_file = requests.get(repo_url, timeout=(3.05, 27))
+        except Exception as e:
+            # TODO(trown): Handle exceptions
+            pass
+        else:
+            if repo_file is not None and repo_file.ok:
+                break
+
+    if repo_file is None or not repo_file.ok:
+        raise RuntimeError("Failed to retrieve repo file from {} after "
+                           "{} retries".format(repo_url, retries))
+
+    full_hash = full_hash_pattern.findall(repo_file.content)
+    return full_hash[0]
 
 
 def compose_releases_dictionary(stable_release, featureset):
