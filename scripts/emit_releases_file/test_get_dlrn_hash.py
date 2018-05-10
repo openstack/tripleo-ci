@@ -30,5 +30,5 @@ def test_null_response_raises_runtimeerror(mock_get):
     mock_get.return_value = None
     with pytest.raises(RuntimeError):
         get_dlrn_hash(release, hash_name)
-    mock_get.assert_called(repo_url, timeout=(3.05, 27))
+    mock_get.assert_called_with(repo_url, timeout=(3.05, 27))
     assert (10 == mock_get.call_count)

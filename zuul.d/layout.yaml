@@ -10,3 +10,20 @@
       - tripleo-multinode-container-minimal
       - tripleo-multinode-experimental
       - tripleo-undercloud-jobs
+    check:
+      jobs:
+        - openstack-tox-py27:
+            files:
+              - ^scripts/emit_releases_file/.*$
+        - openstack-tox-py35:
+            files:
+              - ^scripts/emit_releases_file/.*$
+    gate:
+      queue: tripleo
+      jobs:
+        - openstack-tox-py27:
+            files:
+              - ^scripts/emit_releases_file/.*$
+        - openstack-tox-py35:
+            files:
+              - ^scripts/emit_releases_file/.*$

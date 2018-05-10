@@ -2,6 +2,7 @@ import logging
 import re
 import requests
 
+# Define releases
 RELEASES = ['newton', 'ocata', 'pike', 'queens', 'master']
 LONG_TERM_SUPPORT_RELEASES = ['queens']
 
