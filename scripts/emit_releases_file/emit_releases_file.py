@@ -1,6 +1,10 @@
+import argparse
 import logging
+import logging.handlers
+import os
 import re
 import requests
+import yaml
 
 # Define releases
 RELEASES = ['newton', 'ocata', 'pike', 'queens', 'master']
@@ -13,7 +17,30 @@ def get_relative_release(release, relative_idx):
     return RELEASES[absolute_idx]
 
 
+def setup_logging(log_file):
+    '''Setup logging for the script'''
+    logger = logging.getLogger('emit-releases')
+    logger.setLevel(logging.DEBUG)
+    log_handler = logging.handlers.WatchedFileHandler(
+        os.path.expanduser(log_file))
+    logger.addHandler(log_handler)
+
+
+def load_featureset_file(featureset_file):
+    logger = logging.getLogger('emit-releases')
+    try:
+        with open(featureset_file, 'r') as stream:
+            featureset = yaml.safe_load(stream)
+    except Exception as e:
+        logger.error("The featureset file: {} can not be "
+                     "opened.".format(featureset_file))
+        logger.exception(e)
+        raise e
+    return featureset
+
+
 def get_dlrn_hash(release, hash_name, retries=10):
+    logger = logging.getLogger('emit-releases')
     full_hash_pattern = re.compile('[a-z,0-9]{40}_[a-z,0-9]{8}')
     repo_url = ('https://trunk.rdoproject.org/centos7-%s/%s/delorean.repo'
                 % (release, hash_name))
@@ -25,7 +52,7 @@ def get_dlrn_hash(release, hash_name, retries=10):
         try:
             repo_file = requests.get(repo_url, timeout=(3.05, 27))
         except Exception as e:
-            # TODO(trown): Handle exceptions
+            logger.exception(e)
             pass
         else:
             if repo_file is not None and repo_file.ok:
@@ -40,7 +67,7 @@ def get_dlrn_hash(release, hash_name, retries=10):
 
 
 def compose_releases_dictionary(stable_release, featureset):
-
+    logger = logging.getLogger('emit-releases')
     if stable_release not in RELEASES:
         raise RuntimeError("The {} release is not supported by this tool"
                            "Supported releases: {}".format(
@@ -81,29 +108,29 @@ def compose_releases_dictionary(stable_release, featureset):
 
     if featureset.get('mixed_upgrade'):
         if featureset.get('overcloud_upgrade'):
-            logging.info('Doing an overcloud upgrade')
+            logger.info('Doing an overcloud upgrade')
             deploy_release = get_relative_release(stable_release, -1)
             releases_dictionary['overcloud_deploy_release'] = deploy_release
 
         elif featureset.get('ffu_overcloud_upgrade'):
-            logging.info('Doing an overcloud fast forward upgrade')
+            logger.info('Doing an overcloud fast forward upgrade')
             deploy_release = get_relative_release(stable_release, -3)
             releases_dictionary['overcloud_deploy_release'] = deploy_release
 
     elif featureset.get('undercloud_upgrade'):
-        logging.info('Doing an undercloud upgrade')
+        logger.info('Doing an undercloud upgrade')
         install_release = get_relative_release(stable_release, -1)
         releases_dictionary['undercloud_install_release'] = install_release
 
     elif featureset.get('overcloud_update'):
-        logging.info('Doing an overcloud update')
+        logger.info('Doing an overcloud update')
         releases_dictionary['overcloud_deploy_hash'] = \
             'previous-current-tripleo'
 
-    logging.debug("stable_release: %s, featureset: %s", stable_release,
-                  featureset)
+    logger.debug("stable_release: %s, featureset: %s", stable_release,
+                 featureset)
 
-    logging.info('output releases: %s', releases_dictionary)
+    logger.info('output releases: %s', releases_dictionary)
 
     return releases_dictionary
 
@@ -129,16 +156,40 @@ def shim_convert_old_release_names(releases_names):
 
 if __name__ == '__main__':
 
-    # TODO read the feature set from a file path passed in the arguments
-    featureset = {
-        'mixed_upgrade': True,
-        'overcloud_upgrade': True,
-    }
+    default_log_file = '{}.log'.format(os.path.basename(__file__))
+    default_output_file = '{}.out'.format(os.path.basename(__file__))
 
-    # TODO read this from an argumment
-    stable_release = 'queens'
+    parser = argparse.ArgumentParser(
+             formatter_class=argparse.RawTextHelpFormatter,
+             description='Get a dictionary of releases from a release '
+                         'and a featureset file.')
+    parser.add_argument('--stable-release',
+                        choices=RELEASES,
+                        required=True,
+                        help='Release that the change being tested is from.\n'
+                             'All other releases are calculated from this\n'
+                             'basis.')
+    parser.add_argument('--featureset-file',
+                        required=True,
+                        help='Featureset file which will be introspected to\n'
+                             'infer what type of upgrade is being performed\n'
+                             '(if any).')
+    parser.add_argument('--output-file', default=default_output_file,
+                        help='Output file containing dictionary of releases\n'
+                             'for the provided featureset and release.\n'
+                             '(default: %(default)s)')
+    parser.add_argument('--log-file', default=default_log_file,
+                        help='log file to print debug information from\n'
+                             'running the script.\n'
+                             '(default: %(default)s)')
+    args = parser.parse_args()
 
-    releases_dictionary = compose_releases_dictionary(stable_release,
+    setup_logging(args.log_file)
+    logger = logging.getLogger('emit-releases')
+
+    featureset = load_featureset_file(args.featureset_file)
+
+    releases_dictionary = compose_releases_dictionary(args.stable_release,
                                                       featureset)
 
     releases_dictionary = shim_convert_old_release_names(
