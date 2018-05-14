@@ -43,8 +43,8 @@ def load_featureset_file(featureset_file):
 def get_dlrn_hash(release, hash_name, retries=10):
     logger = logging.getLogger('emit-releases')
     full_hash_pattern = re.compile('[a-z,0-9]{40}_[a-z,0-9]{8}')
-    repo_url = ('https://trunk.rdoproject.org/centos7-%s/%s/delorean.repo'
-                % (release, hash_name))
+    repo_url = ('https://trunk.rdoproject.org/centos7-%s/%s/delorean.repo' %
+                (release, hash_name))
     for retry_num in range(retries):
         repo_file = None
         # Timeout if initial connection is longer than default
@@ -155,6 +155,28 @@ def shim_convert_old_release_names(releases_names):
     return releases_names
 
 
+def write_releases_dictionary_to_bash(releases_dictionary, bash_file_name):
+    logger = logging.getLogger('emit-releases')
+    # Make it deterministic, expected constants in the proper order
+    try:
+        bash_script = '''#!/bin/env bash
+export UNDERCLOUD_INSTALL_RELEASE="{undercloud_install_release}"
+export UNDERCLOUD_INSTALL_HASH="{undercloud_install_hash}"
+export UNDERCLOUD_TARGET_RELEASE="{undercloud_target_release}"
+export UNDERCLOUD_TARGET_HASH="{undercloud_target_hash}"
+export OVERCLOUD_DEPLOY_RELEASE="{overcloud_deploy_release}"
+export OVERCLOUD_DEPLOY_HASH="{overcloud_deploy_hash}"
+export OVERCLOUD_TARGET_RELEASE="{overcloud_target_release}"
+export OVERCLOUD_TARGET_HASH="{overcloud_target_hash}"
+'''.format(**releases_dictionary)
+        with open(bash_file_name, 'w') as bash_file:
+            bash_file.write(bash_script)
+    except Exception:
+        logger.exception("Writting releases dictionary")
+        return False
+    return True
+
+
 if __name__ == '__main__':
 
     default_log_file = '{}.log'.format(os.path.basename(__file__))
@@ -193,5 +215,8 @@ if __name__ == '__main__':
     releases_dictionary = compose_releases_dictionary(args.stable_release,
                                                       featureset)
 
-    releases_dictionary = shim_convert_old_release_names(
-        releases_dictionary)
+    releases_dictionary = shim_convert_old_release_names(releases_dictionary)
+
+    if not write_releases_dictionary_to_bash(
+            releases_dictionary, args.output_file):
+        exit(1)
