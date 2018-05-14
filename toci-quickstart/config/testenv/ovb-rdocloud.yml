@@ -30,8 +30,7 @@ docker_registry_namespace: "tripleo{{ release }}"
 tempest_test_image_path: /opt/cache/files/cirros-0.3.5-x86_64-disk.img
 
 # Container update settings
-#update_containers: "{% if containerized_overcloud|bool %}true{% endif %}"
-update_containers: false
+update_containers: "{% if containerized_overcloud|bool %}true{% endif %}"
 
 # We don't need to cleanup TripleO CI
 tempest_track_resources: false
