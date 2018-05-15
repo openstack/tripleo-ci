@@ -8,6 +8,7 @@ import yaml
 
 # Define releases
 RELEASES = ['newton', 'ocata', 'pike', 'queens', 'master']
+# Define long term releases
 LONG_TERM_SUPPORT_RELEASES = ['queens']
 
 

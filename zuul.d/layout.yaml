@@ -18,6 +18,9 @@
         - openstack-tox-py35:
             files:
               - ^scripts/emit_releases_file/.*$
+        - openstack-tox-pep8:
+            files:
+              - ^scripts/emit_releases_file/.*$
     gate:
       queue: tripleo
       jobs:
@@ -25,5 +28,8 @@
             files:
               - ^scripts/emit_releases_file/.*$
         - openstack-tox-py35:
+            files:
+              - ^scripts/emit_releases_file/.*$
+        - openstack-tox-pep8:
             files:
               - ^scripts/emit_releases_file/.*$

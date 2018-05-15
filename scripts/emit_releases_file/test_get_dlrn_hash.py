@@ -3,6 +3,7 @@ from emit_releases_file import get_dlrn_hash
 import mock
 import pytest
 
+
 @mock.patch('requests.get')
 def test_get_dlrn_hash(mock_get):
     mock_response = mock.Mock()
