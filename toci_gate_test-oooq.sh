@@ -117,6 +117,8 @@ TIMEOUT_SECS=$((DEVSTACK_GATE_TIMEOUT*60))
 export EXTRA_VARS=${EXTRA_VARS:-""}
 export NODES_ARGS=""
 export EXTRANODE=""
+# Set playbook execution status
+export PLAYBOOK_DRY_RUN=${PLAYBOOK_DRY_RUN:=0}
 export COLLECT_CONF="$TRIPLEO_ROOT/tripleo-ci/toci-quickstart/config/collect-logs.yml"
 LOCAL_WORKING_DIR="$WORKSPACE/.quickstart"
 LWD=$LOCAL_WORKING_DIR
@@ -208,6 +210,9 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
             QUICKSTART_RELEASE="promotion-testing-hash-${QUICKSTART_RELEASE}"
         ;;
         gate)
+        ;;
+        dryrun)
+            PLAYBOOK_DRY_RUN=1
         ;;
         *)
         # the rest should be node configuration
