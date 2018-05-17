@@ -79,6 +79,10 @@ def compose_releases_dictionary(stable_release, featureset):
             stable_release == RELEASES[0]:
         raise RuntimeError("Cannot upgrade to {}".format(RELEASES[0]))
 
+    if featureset.get('undercloud_upgrade') and stable_release == 'ocata':
+        raise RuntimeError("Undercloud upgrades are not supported from "
+                           "newton to ocata")
+
     if featureset.get('overcloud_upgrade') and \
        featureset.get('undercloud_upgrade'):
         raise RuntimeError("This tool currently only supports upgrading the "

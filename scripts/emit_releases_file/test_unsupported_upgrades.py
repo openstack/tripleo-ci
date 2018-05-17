@@ -25,6 +25,16 @@ def test_only_mixed_overcloud_upgrades_are_supported():
         compose_releases_dictionary(stable_release, featureset)
 
 
+def test_undercloud_upgrades_from_newton_to_ocata_are_unsupported():
+    featureset = {
+        'undercloud_upgrade': True,
+    }
+
+    stable_release = 'ocata'
+    with pytest.raises(RuntimeError):
+        compose_releases_dictionary(stable_release, featureset)
+
+
 @pytest.mark.parametrize('upgrade_type',
                          ['ffu_overcloud_upgrade', 'overcloud_upgrade'])
 def test_overcloud_upgrades_has_to_be_mixed(upgrade_type):
