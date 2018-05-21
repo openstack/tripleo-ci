@@ -10,6 +10,7 @@
       - tripleo-multinode-container-minimal
       - tripleo-multinode-experimental
       - tripleo-undercloud-jobs
+      - tripleo-multinode-branchful
     check:
       jobs:
         - openstack-tox-py27:

@@ -81,6 +81,13 @@
         - tripleo-ci-centos-7-scenario010-multinode-oooq-container
         - tripleo-ci-centos-7-scenario011-multinode-oooq-container
 
+- project-template:
+    name: tripleo-multinode-branchful
+    check:
+      jobs:
+        - tripleo-ci-centos-7-containers-multinode-queens
+        - tripleo-ci-centos-7-containers-multinode-pike
+
 - job:
     name: tripleo-ci-centos-7-3nodes-multinode
     parent: tripleo-ci-dsvm-multinode
@@ -103,6 +110,30 @@
     branches: ^(?!stable/(newton|ocata)).*$
     vars:
       toci_jobtype: multinode-1ctlr-featureset010
+
+- job:
+    name: tripleo-ci-centos-7-containers-multinode-queens
+    parent: tripleo-ci-dsvm-multinode
+    run: playbooks/tripleo-ci/run.yaml
+    post-run: playbooks/tripleo-ci/post.yaml
+    timeout: 10800
+    nodeset: legacy-centos-7-2-node
+    branches: master
+    vars:
+      toci_jobtype: multinode-1ctlr-featureset010
+      branch_override: 'stable/queens'
+
+- job:
+    name: tripleo-ci-centos-7-containers-multinode-pike
+    parent: tripleo-ci-dsvm-multinode
+    run: playbooks/tripleo-ci/run.yaml
+    post-run: playbooks/tripleo-ci/post.yaml
+    timeout: 10800
+    nodeset: legacy-centos-7-2-node
+    branches: master
+    vars:
+      toci_jobtype: multinode-1ctlr-featureset010
+      branch_override: 'stable/pike'
 
 - job:
     name: tripleo-ci-centos-7-nonha-multinode-oooq
