@@ -13,13 +13,13 @@ def test_converting_from_oc_upgrade_has_double_release():
         'overcloud_target_hash': 'current-tripleo',
     }
     expected_releases_file = {
-        'undercloud_install_release': 'undercloud-master-overcloud-queens',
+        'undercloud_install_release': 'master-undercloud-queens-overcloud',
         'undercloud_install_hash': 'current-tripleo',
-        'undercloud_target_release': 'undercloud-master-overcloud-queens',
+        'undercloud_target_release': 'master-undercloud-queens-overcloud',
         'undercloud_target_hash': 'current-tripleo',
-        'overcloud_deploy_release': 'undercloud-master-overcloud-queens',
+        'overcloud_deploy_release': 'master-undercloud-queens-overcloud',
         'overcloud_deploy_hash': 'current-tripleo',
-        'overcloud_target_release': 'undercloud-master-overcloud-queens',
+        'overcloud_target_release': 'master-undercloud-queens-overcloud',
         'overcloud_target_hash': 'current-tripleo',
     }
     assert (shim_convert_old_release_names(releases_name) ==
