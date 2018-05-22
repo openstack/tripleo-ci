@@ -84,9 +84,10 @@ if [ $COMPUTE_NODECOUNT -gt 0 ]; then
 fi
 
 if [ $EXTRA_NODECOUNT -gt 0 ]; then
+    EXTRA_NODE_KEY_NAME="extra_node_key"
     /bin/cp --remove-destination environments/base-extra-node.yaml $EXTRA_ENVFILE
     sed -i -e "s/baremetal_flavor:.*/baremetal_flavor: ci.m1.small/" $EXTRA_ENVFILE
-    sed -i -e "s/key_name:.*/key_name: ${KEY_NAME}/" $EXTRA_ENVFILE
+    sed -i -e "s/key_name:.*/key_name: ${EXTRA_NODE_KEY_NAME}/" $EXTRA_ENVFILE
     sed -i -e "s/node_count:.*/node_count: ${EXTRA_NODECOUNT}/" $EXTRA_ENVFILE
     sed -i -e "s/baremetal_image:.*/baremetal_image: CentOS-7-x86_64-GenericCloud-1708/" $EXTRA_ENVFILE
     # We changed the path of the environment, so we need to fix the relative
