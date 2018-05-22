@@ -62,30 +62,36 @@ export QUICKSTART_DEFAULT_RELEASE_ARG="--extra-vars @$LOCAL_WORKING_DIR/config/r
 
 declare -A RELEASE_ARGS=()
 
+get_extra_vars_from_release()
+{
+    local release_name=$1
+    local release_hash=$2
+    local release_file=$LOCAL_WORKING_DIR/config/release/tripleo-ci/$release_name.yml
+    echo "--extra-vars @$release_file -e dlrn_hash=$release_hash -e get_build_command=$release_hash"
+}
+
 if [[ -f "$RELEASES_FILE_OUTPUT" ]]; then
 
     source $RELEASES_FILE_OUTPUT
 
     declare -A RELEASE_ARGS=(
-        ["multinode-undercloud.yml"]="--extra-vars
-        @$LOCAL_WORKING_DIR/config/release/tripleo-ci/$UNDERCLOUD_INSTALL_RELEASE.yml"
-        ["multinode-undercloud-upgrade.yml"]="--extra-vars
-        @$LOCAL_WORKING_DIR/config/release/tripleo-ci/$UNDERCLOUD_TARGET_RELEASE.yml"
-        ["multinode-overcloud-prep.yml"]="--extra-vars
-        @$LOCAL_WORKING_DIR/config/release/tripleo-ci/$OVERCLOUD_DEPLOY_RELEASE.yml"
-        ["multinode-overcloud.yml"]="--extra-vars
-        @$LOCAL_WORKING_DIR/config/release/tripleo-ci/$OVERCLOUD_DEPLOY_RELEASE.yml"
-        ["multinode-overcloud-update.yml"]="--extra-vars
-        @$LOCAL_WORKING_DIR/config/release/tripleo-ci/$OVERCLOUD_DEPLOY_RELEASE.yml"
-        ["multinode-overcloud-upgrade.yml"]="--extra-vars
-        @$LOCAL_WORKING_DIR/config/release/tripleo-ci/$OVERCLOUD_TARGET_RELEASE.yml"
-        ["multinode-validate.yml"]="--extra-vars
-        @$LOCAL_WORKING_DIR/config/release/tripleo-ci/$OVERCLOUD_TARGET_RELEASE.yml"
+        ["multinode-undercloud.yml"]=$(get_extra_vars_from_release \
+            $UNDERCLOUD_INSTALL_RELEASE $UNDERCLOUD_INSTALL_HASH)
+        ["multinode-undercloud-upgrade.yml"]=$(get_extra_vars_from_release \
+            $UNDERCLOUD_TARGET_RELEASE $UNDERCLOUD_TARGET_HASH)
+        ["multinode-overcloud-prep.yml"]=$(get_extra_vars_from_release \
+            $OVERCLOUD_DEPLOY_RELEASE $OVERCLOUD_DEPLOY_HASH)
+        ["multinode-overcloud.yml"]=$(get_extra_vars_from_release \
+            $OVERCLOUD_DEPLOY_RELEASE $OVERCLOUD_DEPLOY_HASH)
+        ["multinode-overcloud-update.yml"]=$(get_extra_vars_from_release \
+            $OVERCLOUD_DEPLOY_RELEASE $OVERCLOUD_DEPLOY_HASH)
+        ["multinode-overcloud-upgrade.yml"]=$(get_extra_vars_from_release \
+            $OVERCLOUD_TARGET_RELEASE $OVERCLOUD_TARGET_HASH)
+        ["multinode-validate.yml"]=$(get_extra_vars_from_release \
+            $OVERCLOUD_TARGET_RELEASE $OVERCLOUD_TARGET_HASH)
     )
 
 fi
-
-
 
 declare -A PLAYBOOKS_ARGS=(
     ["baremetal-full-overcloud.yml"]=" --extra-vars validation_args='--validation-errors-nonfatal' "
