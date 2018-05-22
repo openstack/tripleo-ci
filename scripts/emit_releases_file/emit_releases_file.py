@@ -182,7 +182,7 @@ def shim_convert_old_release_names(releases_names):
     uc_install_release = releases_names['undercloud_install_release']
 
     if oc_deploy_release != oc_target_release:
-        release_file = "undercloud-{}-overcloud-{}".format(
+        release_file = "{}-undercloud-{}-overcloud".format(
             uc_install_release, oc_deploy_release)
         releases_names['undercloud_install_release'] = release_file
         releases_names['undercloud_target_release'] = release_file
