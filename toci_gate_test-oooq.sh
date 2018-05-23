@@ -122,6 +122,10 @@ LOCAL_WORKING_DIR="$WORKSPACE/.quickstart"
 LWD=$LOCAL_WORKING_DIR
 QUICKSTART_SH_JOBS="ovb-3ctlr_1comp-featureset001 multinode-1ctlr-featureset010"
 
+export RELEASES_FILE_OUTPUT=$WORKSPACE/logs/releases.sh
+export RELEASES_SCRIPT=$TRIPLEO_ROOT/tripleo-ci/scripts/emit_releases_file/emit_releases_file.py
+export RELEASES_SCRIPT_LOGFILE=$WORKSPACE/logs/emit_releases_file.log
+
 # Assemble quickstart configuration based on job type keywords
 for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
     case $JOB_TYPE_PART in
@@ -211,6 +215,15 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
         ;;
     esac
 done
+
+
+if [[ -f "$RELEASES_SCRIPT" ]] && [[ $FEATURESET_FILE =~ '037' || $FEATURESET_FILE =~ '050' || $FEATURESET_FILE =~ '010' || $FEATURESET_FILE =~ '011' ]]; then
+    python $RELEASES_SCRIPT \
+        --stable-release ${STABLE_RELEASE:-"master"} \
+        --featureset-file $TRIPLEO_ROOT/tripleo-quickstart/config/general_config/$(basename $FEATURESET_FILE) \
+        --output-file $RELEASES_FILE_OUTPUT \
+        --log-file $RELEASES_SCRIPT_LOGFILE
+fi
 
 
 if [[ ! -z $NODES_FILE ]]; then
