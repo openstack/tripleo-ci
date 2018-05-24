@@ -46,7 +46,7 @@
     timeout: 10800
     nodeset: legacy-centos-7
     voting: false
-    branches: ^(?!stable/newton).*$
+    branches: ^(?!stable/(newton|ocata)).*$
     vars:
       toci_jobtype: singlenode-featureset047
 - job:
