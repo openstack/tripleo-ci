@@ -206,6 +206,18 @@
       featureset: '017'
 
 - job:
+    name: tripleo-ci-centos-7-scenario002-multinode-oooq-container-refstack
+    parent: tripleo-ci-base
+    post-run: playbooks/tripleo-ci/post.yaml
+    timeout: 10800
+    branches: ^(?!stable/(newton)).*$
+    vars:
+      toci_jobtype: multinode-1ctlr-featureset055
+      environment_type: multinode
+      nodes: 1ctlr
+      featureset: '055'
+
+- job:
     name: tripleo-ci-centos-7-scenario003-multinode-oooq
     parent: tripleo-ci-base
     post-run: playbooks/tripleo-ci/post.yaml
