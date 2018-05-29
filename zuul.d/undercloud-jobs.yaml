@@ -9,13 +9,14 @@
       jobs:
         - tripleo-ci-centos-7-undercloud-oooq
         - tripleo-ci-centos-7-undercloud-upgrades
-        - tripleo-ci-centos-7-containerized-undercloud-upgrades
         - tripleo-ci-centos-7-undercloud-containers
+        - tripleo-ci-centos-7-containerized-undercloud-upgrades
     gate:
       queue: tripleo
       jobs:
         - tripleo-ci-centos-7-undercloud-oooq
         - tripleo-ci-centos-7-undercloud-containers
+        - tripleo-ci-centos-7-containerized-undercloud-upgrades
 
 - job:
     name: tripleo-ci-centos-7-undercloud-containers
