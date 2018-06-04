@@ -1,0 +1,16 @@
+---
+# zuul.d/standalone-jobs.yaml
+# Zuul layout for TripleO standalone jobs.
+# It contains all the jobs related to standalone installer testing.
+
+- job:
+    name: tripleo-ci-centos-7-standalone
+    parent: tripleo-ci-dsvm
+    run: playbooks/tripleo-ci/run.yaml
+    post-run: playbooks/tripleo-ci/post.yaml
+    timeout: 10800
+    nodeset: legacy-centos-7
+    voting: false
+    branches: ^(?!stable/(newton|ocata|pike|queens)).*$
+    vars:
+      toci_jobtype: standalone-featureset052
