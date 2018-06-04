@@ -21,6 +21,7 @@
         - tripleo-ci-centos-7-containers-multinode
         - tripleo-ci-centos-7-undercloud-containers
         - tripleo-ci-centos-7-scenario000-multinode-oooq-container-updates
+        - tripleo-ci-centos-7-scenario000-multinode-oooq-container-upgrades
 
     gate:
       queue: tripleo
@@ -80,7 +81,6 @@
         - tripleo-ci-centos-7-scenario009-multinode-oooq
         - tripleo-ci-centos-7-scenario010-multinode-oooq-container
         - tripleo-ci-centos-7-scenario011-multinode-oooq-container
-        - tripleo-ci-centos-7-scenario000-multinode-oooq-container-upgrades
 
 - project-template:
     name: tripleo-multinode-branchful
