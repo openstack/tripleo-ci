@@ -42,8 +42,10 @@ def test_overcloud_upgrade_is_n_minus_one_to_n(mock_get_hash,
         'mixed_upgrade': True,
         'overcloud_upgrade': True,
     }
+    upgrade_from = False
     assert (compose_releases_dictionary(stable_release,
-                                        featureset) == expected_releases)
+                                        featureset,
+                                        upgrade_from) == expected_releases)
     mock_get_hash.assert_has_calls(
             [mock.call(stable_release, 'current-tripleo'),
              mock.call(expected_releases['overcloud_deploy_release'],
@@ -71,8 +73,10 @@ def test_ffu_overcloud_upgrade_is_n_minus_three_to_n(mock_get_hash,
         'mixed_upgrade': True,
         'ffu_overcloud_upgrade': True,
     }
+    upgrade_from = False
     assert (compose_releases_dictionary(stable_release,
-                                        featureset) == expected_releases)
+                                        featureset,
+                                        upgrade_from) == expected_releases)
     mock_get_hash.assert_has_calls(
             [mock.call(stable_release, 'current-tripleo'),
              mock.call(expected_releases['overcloud_deploy_release'],
@@ -99,8 +103,10 @@ def test_undercloud_upgrade_is_n_minus_one_to_n(mock_get_hash,
     featureset = {
         'undercloud_upgrade': True,
     }
+    upgrade_from = False
     assert (compose_releases_dictionary(stable_release,
-                                        featureset) == expected_releases)
+                                        featureset,
+                                        upgrade_from) == expected_releases)
     mock_get_hash.assert_has_calls(
             [mock.call(stable_release, 'current-tripleo'),
              mock.call(expected_releases['undercloud_install_release'],
@@ -136,8 +142,10 @@ def test_overcloud_update_target_is_hash(mock_get_hash,
     featureset = {
         'overcloud_update': True,
     }
+    upgrade_from = False
     assert (compose_releases_dictionary(stable_release,
-                                        featureset) == expected_releases)
+                                        featureset,
+                                        upgrade_from) == expected_releases)
     mock_get_hash.assert_has_calls(
             [mock.call(stable_release, 'current-tripleo'),
              mock.call(expected_releases['overcloud_deploy_release'],
@@ -188,6 +196,8 @@ def test_noop_target_is_the_same(mock_get_hash,
                                  expected_releases):
     mock_get_hash.return_value = 'current-tripleo'
     featureset = {}
+    upgrade_from = False
     assert (compose_releases_dictionary(stable_release,
-                                        featureset) == expected_releases)
+                                        featureset,
+                                        upgrade_from) == expected_releases)
     mock_get_hash.assert_called_once_with(stable_release, 'current-tripleo')

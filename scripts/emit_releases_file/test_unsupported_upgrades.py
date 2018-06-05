@@ -10,8 +10,9 @@ import pytest
 }])
 def test_upgrade_to_newton_is_unsupported(featureset):
     stable_release = 'newton'
+    upgrade_from = False
     with pytest.raises(RuntimeError):
-        compose_releases_dictionary(stable_release, featureset)
+        compose_releases_dictionary(stable_release, featureset, upgrade_from)
 
 
 def test_only_mixed_overcloud_upgrades_are_supported():
@@ -21,8 +22,9 @@ def test_only_mixed_overcloud_upgrades_are_supported():
     }
 
     stable_release = 'queens'
+    upgrade_from = False
     with pytest.raises(RuntimeError):
-        compose_releases_dictionary(stable_release, featureset)
+        compose_releases_dictionary(stable_release, featureset, upgrade_from)
 
 
 def test_undercloud_upgrades_from_newton_to_ocata_are_unsupported():
@@ -31,8 +33,9 @@ def test_undercloud_upgrades_from_newton_to_ocata_are_unsupported():
     }
 
     stable_release = 'ocata'
+    upgrade_from = False
     with pytest.raises(RuntimeError):
-        compose_releases_dictionary(stable_release, featureset)
+        compose_releases_dictionary(stable_release, featureset, upgrade_from)
 
 
 @pytest.mark.parametrize('upgrade_type',
@@ -42,8 +45,9 @@ def test_overcloud_upgrades_has_to_be_mixed(upgrade_type):
         upgrade_type: True,
     }
     stable_release = 'queens'
+    upgrade_from = False
     with pytest.raises(RuntimeError):
-        compose_releases_dictionary(stable_release, featureset)
+        compose_releases_dictionary(stable_release, featureset, upgrade_from)
 
 
 @pytest.mark.parametrize('stable_release',
@@ -53,10 +57,11 @@ def test_ffu_overcloud_upgrade_only_supported_from_newton(stable_release):
         'mixed_upgrade': True,
         'ffu_overcloud_upgrade': True,
     }
+    upgrade_from = False
     with pytest.raises(RuntimeError):
-        compose_releases_dictionary(stable_release, featureset)
+        compose_releases_dictionary(stable_release, featureset, upgrade_from)
 
 
 def test_fail_with_wrong_release():
     with pytest.raises(RuntimeError):
-        compose_releases_dictionary('foobar', {})
+        compose_releases_dictionary('foobar', {}, False)
