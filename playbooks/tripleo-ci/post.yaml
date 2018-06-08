@@ -20,6 +20,7 @@
       delegate_to: localhost
 
     - name: Copy files from {{ ansible_user_dir }}/workspace/ on node
+      no_log: true
       synchronize:
         src: '{{ ansible_user_dir }}/workspace/'
         dest: '{{ zuul.executor.work_root }}/artifacts/images/'
@@ -33,6 +34,7 @@
           - --prune-empty-dirs
 
     - name: Copy files from {{ ansible_user_dir }}/workspace/ on node
+      no_log: true
       synchronize:
         src: '{{ ansible_user_dir }}/workspace/'
         dest: '{{ zuul.executor.log_root }}'
