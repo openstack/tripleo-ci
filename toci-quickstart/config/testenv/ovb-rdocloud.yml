@@ -3,9 +3,6 @@
 
 # These values are defined now in the te-broker config
 # https://github.com/openstack-infra/tripleo-ci/blob/master/scripts/te-broker/create-env#L47
-#bmc_flavor: ci.m1.small
-#baremetal_flavor: ci.m1.xlarge
-#undercloud_flavor: ci.m1.xlarge
 
 custom_nameserver:
     - 38.145.33.91
@@ -21,16 +18,17 @@ workers_args: >-
     -e {{ overcloud_templates_path }}/environments/debug.yaml
 overcloud_image_url: http://images.rdoproject.org/{{ release }}/rdo_trunk/{{ dlrn_hash|default(dlrn_hash_tag) }}/overcloud-full.tar
 ipa_image_url: http://images.rdoproject.org/{{ release }}/rdo_trunk/{{ dlrn_hash|default(dlrn_hash_tag) }}/ironic-python-agent.tar
-# Container settings
-# Use trunk.registry.rdoproject.org for periodic jobs only
-docker_registry_host: "{% if lookup('env', 'PERIODIC')|default('0')|int != 1 %}docker.io{% else %}trunk.registry.rdoproject.org{% endif %}"
-docker_registry_namespace: "tripleo{{ release }}"
+
+# Container settings are set in release files
 
 # Use cirros cached image
 tempest_test_image_path: /opt/cache/files/cirros-0.3.5-x86_64-disk.img
 
 # Container update settings
-update_containers: "{% if containerized_overcloud|bool %}true{% endif %}"
+update_containers: >-
+  {% if containerized_overcloud|bool or containerized_undercloud|bool -%}
+  true
+  {%- endif -%}
 
 # We don't need to cleanup TripleO CI
 tempest_track_resources: false

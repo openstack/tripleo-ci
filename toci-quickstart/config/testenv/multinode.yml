@@ -33,7 +33,10 @@ tempest_track_resources: false
 undercloud_undercloud_cleanup: false
 
 # Container update settings
-update_containers: "{% if containerized_overcloud|bool %}true{% endif %}"
+update_containers: >-
+  {% if containerized_overcloud|bool or containerized_undercloud|bool -%}
+  true
+  {%- endif -%}
 
 #build-test packages
 artg_repos_dir: /home/zuul/src/git.openstack.org/openstack
