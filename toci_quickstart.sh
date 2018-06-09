@@ -95,7 +95,6 @@ fi
 
 declare -A PLAYBOOKS_ARGS=(
     ["baremetal-full-overcloud.yml"]=" --extra-vars validation_args='--validation-errors-nonfatal' "
-    ["multinode-undercloud-upgrade.yml"]=" --extra-vars @$LOCAL_WORKING_DIR/config/release/tripleo-ci/${UPGRADE_RELEASE:-$QUICKSTART_RELEASE}.yml"
     ["multinode-overcloud.yml"]=" --extra-vars validation_args='--validation-errors-nonfatal' "
     ["multinode.yml"]=" --extra-vars validation_args='--validation-errors-nonfatal' "
 )
