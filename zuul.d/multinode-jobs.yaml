@@ -340,7 +340,7 @@
     timeout: 10800
     voting: true
     nodeset: legacy-centos-7-2-node
-    branches: ^(?!stable/(newton|ocata|pike|queens)).*$
+    branches: ^(?!stable/(newton|ocata|pike)).*$
     vars:
       toci_jobtype: multinode-1ctlr-featureset037
       # Note (dmsimard): This enforces a minimum TTL for DNS records, see
