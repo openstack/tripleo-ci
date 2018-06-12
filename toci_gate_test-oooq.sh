@@ -203,6 +203,18 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
             fi
             TAGS="build,undercloud-setup,undercloud-scripts,undercloud-install,undercloud-validate,images"
         ;;
+        standalone)
+            ENVIRONMENT="osinfra"
+            UNDERCLOUD="127.0.0.2"
+            export PLAYBOOKS=${PLAYBOOKS:-"quickstart.yml multinode-standalone.yml"}
+            FEATURESET_CONF=" --extra-vars @$LWD/config/general_config/featureset-multinode-common.yml $FEATURESET_CONF"
+            if [[ $NODEPOOL_PROVIDER == "rdo-cloud-tripleo" ]]; then
+                ENV_VARS="$ENV_VARS --extra-vars @$TRIPLEO_ROOT/tripleo-ci/toci-quickstart/config/testenv/multinode-rdocloud.yml"
+            else
+                ENV_VARS="$ENV_VARS --extra-vars @$TRIPLEO_ROOT/tripleo-ci/toci-quickstart/config/testenv/multinode.yml"
+            fi
+            TAGS="build,standalone"
+        ;;
         periodic)
             PERIODIC=1
             QUICKSTART_RELEASE="promotion-testing-hash-${QUICKSTART_RELEASE}"
