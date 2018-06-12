@@ -42,6 +42,8 @@
         - tripleo-ci-centos-7-scenario004-multinode-oooq-container
         - tripleo-ci-centos-7-scenario007-multinode-oooq-container
         - tripleo-ci-centos-7-scenario008-multinode-oooq-container
+        - tripleo-ci-centos-7-scenario000-multinode-oooq-container-updates
+        - tripleo-ci-centos-7-scenario000-multinode-oooq-container-upgrades
     gate:
       queue: tripleo
       jobs:
@@ -51,6 +53,7 @@
         - tripleo-ci-centos-7-scenario003-multinode-oooq-container
         - tripleo-ci-centos-7-scenario004-multinode-oooq-container
         - tripleo-ci-centos-7-scenario007-multinode-oooq-container
+        - tripleo-ci-centos-7-scenario000-multinode-oooq-container-updates
 
 - project-template:
     name: tripleo-multinode-baremetal-full
