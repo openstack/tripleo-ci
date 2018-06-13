@@ -83,7 +83,7 @@ def get_dlrn_hash(release, hash_name, retries=10, timeout=4):
     return full_hash[0]
 
 
-def compose_releases_dictionary(stable_release, featureset):
+def compose_releases_dictionary(stable_release, featureset, upgrade_from):
     logger = logging.getLogger('emit-releases')
     if stable_release not in RELEASES:
         raise RuntimeError("The {} release is not supported by this tool"
@@ -242,6 +242,10 @@ if __name__ == '__main__':
                         help='log file to print debug information from\n'
                              'running the script.\n'
                              '(default: %(default)s)')
+    parser.add_argument('--upgrade-from', action='store_false',
+                        help='Upgrade FROM the change under test instead\n'
+                             'of the default of upgrading TO the change\n'
+                             'under test.')
     args = parser.parse_args()
 
     setup_logging(args.log_file)
@@ -250,7 +254,8 @@ if __name__ == '__main__':
     featureset = load_featureset_file(args.featureset_file)
 
     releases_dictionary = compose_releases_dictionary(args.stable_release,
-                                                      featureset)
+                                                      featureset,
+                                                      args.upgrade_from)
 
     releases_dictionary = shim_convert_old_release_names(releases_dictionary)
 
