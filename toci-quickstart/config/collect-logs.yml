@@ -105,6 +105,7 @@ artcl_collect_list:
   - /etc/mongo*
   - /etc/my.cnf*
   - /etc/my.cnf.d/
+  - /etc/NetworkManager/
   - /etc/networks*
   - /etc/neutron/
   - /etc/nodepool/
@@ -119,6 +120,7 @@ artcl_collect_list:
   - /etc/openldap/
   - /etc/openstack-dashboard
   - /etc/openvswitch/
+  - /etc/origin/
   - /etc/os-*
   - /etc/pacemaker/
   - /etc/panko/
