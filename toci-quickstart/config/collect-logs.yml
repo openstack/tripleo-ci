@@ -122,6 +122,7 @@ artcl_collect_list:
   - /etc/openvswitch/
   - /etc/origin/
   - /etc/os-*
+  - /etc/os-net-config/
   - /etc/pacemaker/
   - /etc/panko/
   - /etc/pip.conf
