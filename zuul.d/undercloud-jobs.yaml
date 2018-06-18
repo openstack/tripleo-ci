@@ -14,7 +14,6 @@
     gate:
       queue: tripleo
       jobs:
-        - tripleo-ci-centos-7-undercloud-oooq
         - tripleo-ci-centos-7-undercloud-containers
         - tripleo-ci-centos-7-containerized-undercloud-upgrades
 
@@ -35,6 +34,7 @@
     run: playbooks/tripleo-ci/run.yaml
     post-run: playbooks/tripleo-ci/post.yaml
     timeout: 10800
+    voting: false
     nodeset: legacy-centos-7
     vars:
       toci_jobtype: singlenode-featureset003
