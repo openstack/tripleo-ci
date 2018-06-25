@@ -156,3 +156,11 @@ EOF
     fi
 
 }
+
+get_extra_vars_from_release()
+{
+    local release_name=$1
+    local release_hash=$2
+    local release_file=$LOCAL_WORKING_DIR/config/release/tripleo-ci/$release_name.yml
+    echo "--extra-vars @$release_file -e dlrn_hash=$release_hash -e get_build_command=$release_hash"
+}
