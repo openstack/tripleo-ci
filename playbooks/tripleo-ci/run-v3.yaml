@@ -1,0 +1,58 @@
+- hosts: all
+  name: Common tasks for nodes preparation
+  tasks:
+    - name: Swap is essential as we are not meeting memory requirements
+      include_role:
+        name: configure-swap
+
+    - name: Ensure legacy workspace directory
+      file:
+        path: '{{ ansible_user_dir }}/workspace'
+        state: directory
+
+    - name: copy repos to legacy path
+      shell:
+        cmd: |
+          set -e
+          set -x
+          # we still need all the repos under the same root directory, but instead of using
+          # zuul-cloner, use the wrapped commands directly
+          cp -dRl /home/zuul/src/git.openstack.org/openstack-infra/tripleo-ci/. /home/zuul/workspace/tripleo-ci
+          cp -dRl /home/zuul/src/git.openstack.org/openstack/tripleo-quickstart/. /home/zuul/workspace/tripleo-quickstart
+          cp -dRl /home/zuul/src/git.openstack.org/openstack/tripleo-upgrade/. /home/zuul/workspace/tripleo-upgrade
+          cp -dRl /home/zuul/src/git.openstack.org/openstack/tripleo-quickstart-extras/. /home/zuul/workspace/tripleo-quickstart-extras
+        executable: /bin/bash
+        chdir: '{{ ansible_user_dir }}/workspace'
+      environment: '{{ zuul | zuul_legacy_vars }}'
+
+- hosts:
+    - primary
+    - centos-7
+  name: tripleo CI jobs runner
+  tasks:
+    - shell:
+        cmd: |
+          set -e
+          set -x
+          export TOCI_JOBTYPE={{ toci_jobtype }}
+
+          # ZUUL does not set these for periodic jobs
+          export ZUUL_BRANCH=${ZUUL_BRANCH:-master}
+          export ZUUL_REF=${ZUUL_REF:-None}
+
+          # Compatibility with zuul v3 variables
+          export JOB_NAME={{ zuul.job }}
+          export LOG_PATH={{ zuul.change[-2:] }}/{{ zuul.change }}/{{ zuul.patchset }}/{{ zuul.pipeline }}/{{ zuul.job }}/{{ zuul.build[:7] }}
+
+          export BRANCH_OVERRIDE="{{ branch_override | default('default') }}"
+          if [ "$BRANCH_OVERRIDE" != "default" ] ; then
+              export OVERRIDE_ZUUL_BRANCH=$BRANCH_OVERRIDE
+          fi
+
+          export PYTHONUNBUFFERED=true
+          export TRIPLEO_ROOT={{ ansible_user_dir  }}/workspace
+
+          bash -xe $TRIPLEO_ROOT/tripleo-ci/toci_gate_test.sh
+        executable: /bin/bash
+        chdir: '{{ ansible_user_dir }}/workspace'
+      environment: '{{ zuul | zuul_legacy_vars }}'
