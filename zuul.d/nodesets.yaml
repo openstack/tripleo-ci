@@ -1,0 +1,23 @@
+- nodeset:
+    name: two-centos-7-nodes
+    nodes:
+      - name: primary
+        label: centos-7
+      - name: secondary
+        label: centos-7
+    groups:
+      - name: switch
+        nodes:
+          - primary
+      - name: peers
+        nodes:
+          - secondary
+      - name: subnodes
+        nodes:
+          - secondary
+
+- nodeset:
+    name: single-centos-7-node
+    nodes:
+      - name: centos-7
+        label: centos-7

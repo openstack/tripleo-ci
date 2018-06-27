@@ -1,0 +1,64 @@
+- hosts: all
+  roles:
+    - role: fetch-zuul-cloner
+      destination: "/usr/zuul-env/bin/zuul-cloner"
+      repo_src_dir: "/home/zuul/src/git.openstack.org"
+    - legacy-copy-jenkins-scripts
+
+  tasks:
+    - name: Create nodepool directory
+      file:
+        path: /etc/nodepool
+        state: directory
+    - name: Create nodepool sub_nodes file
+      copy:
+        dest: /etc/nodepool/sub_nodes
+        content: ""
+    - name: Create nodepool sub_nodes_private file
+      copy:
+        dest: /etc/nodepool/sub_nodes_private
+        content: ""
+    - name: Populate nodepool sub_nodes file
+      lineinfile:
+        path: /etc/nodepool/sub_nodes
+        line: "{{ hostvars[item]['nodepool']['public_ipv4'] }}"
+      with_items: "{{ groups['subnodes'] }}"
+      when: groups['subnodes'] is defined
+    - name: Populate nodepool sub_nodes_private file
+      lineinfile:
+        path: /etc/nodepool/sub_nodes_private
+        line: "{{ hostvars[item]['nodepool']['private_ipv4'] }}"
+      with_items: "{{ groups['subnodes'] }}"
+      when: groups['subnodes'] is defined
+    - name: Create nodepool primary file
+      copy:
+        dest: /etc/nodepool/primary_node_private
+        content: "{{ hostvars['primary']['nodepool']['private_ipv4'] }}"
+      when: hostvars['primary'] is defined
+    - name: Create nodepool node_private for this node
+      copy:
+        dest: /etc/nodepool/node_private
+        content: "{{ nodepool.private_ipv4 }}"
+    - name: Copy ssh keys to nodepool directory
+      command: "cp .ssh/{{ item }} /etc/nodepool/{{ item }}"
+      with_items:
+        - id_rsa
+        - id_rsa.pub
+
+    - name: Add sudoers role for zuul-sudo-grep.sh
+      copy:
+        dest: /etc/sudoers.d/zuul-sudo-grep
+        content: "zuul ALL = NOPASSWD:/usr/local/jenkins/slave_scripts/zuul-sudo-grep.sh\n"
+        mode: 0440
+      become: true
+
+    - name: Validate sudoers config after edits
+      command: "/usr/sbin/visudo -c"
+      become: true
+
+    - name: Show the environment passed in to job shell scripts
+      shell:
+        cmd: |
+          env
+        executable: /bin/bash
+      environment: '{{ zuul | zuul_legacy_vars }}'

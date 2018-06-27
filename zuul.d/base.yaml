@@ -4,6 +4,46 @@
 # Do not add children specific layout here.
 
 - job:
+    name: tripleo-ci-base
+    abstract: true
+    description: |
+        Base abstract job for all TripleO CI zuulv3 jobs
+    parent: multinode
+    vars:
+      unbound_cache_min_ttl: 900
+      ara_generate_html: true
+      bridge_name: br-ex
+      bridge_address_prefix: 192.168.24
+      bridge_address_subnet: 24
+      bridge_address_offset: 2
+    nodeset: two-centos-7-nodes
+    roles:
+      - zuul: openstack-infra/zuul-jobs
+    required-projects:
+      - openstack-infra/tripleo-ci
+      - openstack/tripleo-quickstart
+      - openstack/tripleo-quickstart-extras
+      - openstack/tripleo-upgrade
+    pre-run:
+      - playbooks/nodepool-provider/pre.yaml
+      - playbooks/multinode-networking/pre.yaml
+      - playbooks/openstack-zuul-jobs/legacy/pre.yaml
+    run: playbooks/tripleo-ci/run-v3.yaml
+    irrelevant-files:
+      - ^.*\.md$
+      - ^.*\.rst$
+      - ^doc/.*$
+      - ^etc/.*$
+      - ^metadata.json$
+      - ^releasenotes/.*$
+      - ^requirements.txt$
+      - ^test-requirements.txt$
+      - ^spec/.*$
+      - ^Puppetfile.*$
+      - tox.ini
+      - ^setup.*$
+
+- job:
     name: tripleo-ci-dsvm
     description: |
       Base job template for TripleO jobs that leverage devstack-gate/dsvm
