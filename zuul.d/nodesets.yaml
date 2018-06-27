@@ -19,5 +19,11 @@
 - nodeset:
     name: single-centos-7-node
     nodes:
-      - name: centos-7
+      - name: primary
         label: centos-7
+    groups:
+      - name: switch
+        nodes:
+          - primary
+      - name: peers
+        nodes: []

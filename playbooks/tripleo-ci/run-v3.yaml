@@ -51,6 +51,9 @@
 
           export PYTHONUNBUFFERED=true
           export TRIPLEO_ROOT={{ ansible_user_dir  }}/workspace
+          # NOTE(trown) We can move this into the multinode environment file once we
+          # migrate the 2-node jobs over to zuulv3
+          export VXLAN_VARS="-e toci_vxlan_networking='false' -e vxlan_networking='false'"
 
           bash -xe $TRIPLEO_ROOT/tripleo-ci/toci_gate_test.sh
         executable: /bin/bash

@@ -19,43 +19,40 @@
 
 - job:
     name: tripleo-ci-centos-7-undercloud-containers
-    parent: tripleo-ci-dsvm
-    run: playbooks/tripleo-ci/run.yaml
+    parent: tripleo-ci-base
     post-run: playbooks/tripleo-ci/post.yaml
     timeout: 10800
-    nodeset: legacy-centos-7
+    nodeset: single-centos-7-node
     branches: ^(?!stable/(newton|ocata|pike|queens)).*$
     vars:
       toci_jobtype: singlenode-featureset027
 
 - job:
     name: tripleo-ci-centos-7-undercloud-oooq
-    parent: tripleo-ci-dsvm
-    run: playbooks/tripleo-ci/run.yaml
+    parent: tripleo-ci-base
     post-run: playbooks/tripleo-ci/post.yaml
     timeout: 10800
     voting: false
-    nodeset: legacy-centos-7
+    nodeset: single-centos-7-node
     vars:
       toci_jobtype: singlenode-featureset003
 
 - job:
     name: tripleo-ci-centos-7-undercloud-upgrades
-    parent: tripleo-ci-dsvm
-    run: playbooks/tripleo-ci/run.yaml
+    parent: tripleo-ci-base
     post-run: playbooks/tripleo-ci/post.yaml
     timeout: 10800
-    nodeset: legacy-centos-7
+    nodeset: single-centos-7-node
     branches: ^(?!stable/(newton|ocata)).*$
     vars:
       toci_jobtype: singlenode-featureset047
+
 - job:
     name: tripleo-ci-centos-7-containerized-undercloud-upgrades
-    parent: tripleo-ci-dsvm
-    run: playbooks/tripleo-ci/run.yaml
+    parent: tripleo-ci-base
     post-run: playbooks/tripleo-ci/post.yaml
     timeout: 10800
-    nodeset: legacy-centos-7
+    nodeset: single-centos-7-node
     branches: ^(?!stable/(newton|ocata|pike|queens)).*$
     vars:
       toci_jobtype: singlenode-featureset050

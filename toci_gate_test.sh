@@ -80,6 +80,7 @@ export CONTROLLER_HOSTS=
 export SUBNODES_SSH_KEY=
 TIMEOUT_SECS=$((DEVSTACK_GATE_TIMEOUT*60))
 export EXTRA_VARS=${EXTRA_VARS:-""}
+export VXLAN_VARS=${VXLAN_VARS:-""}
 export NODES_ARGS=""
 export EXTRANODE=""
 # Set playbook execution status

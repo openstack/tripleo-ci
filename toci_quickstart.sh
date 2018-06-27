@@ -128,6 +128,7 @@ for playbook in $PLAYBOOKS; do
         $FEATURESET_CONF \
         $ENV_VARS \
         $EXTRA_VARS \
+        $VXLAN_VARS \
         $DEFAULT_ARGS \
         $LOCAL_WORKING_DIR/playbooks/$playbook ${PLAYBOOKS_ARGS[$playbook]:-}" \
         | sed  's/--/\n--/g' \
@@ -147,6 +148,7 @@ else
            $FEATURESET_CONF \
            $ENV_VARS \
            $EXTRA_VARS \
+           $VXLAN_VARS \
            $DEFAULT_ARGS \
            --extra-vars ci_job_end_time=$(( START_JOB_TIME + REMAINING_TIME*60 )) \
             $LOCAL_WORKING_DIR/playbooks/$playbook "${PLAYBOOKS_ARGS[$playbook]:-}" \
