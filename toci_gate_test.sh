@@ -82,6 +82,7 @@ TIMEOUT_SECS=$((DEVSTACK_GATE_TIMEOUT*60))
 export EXTRA_VARS=${EXTRA_VARS:-""}
 export NODES_ARGS=""
 export EXTRANODE=""
+export EMIT_RELEASES_EXTRA_ARGS=""
 # Set playbook execution status
 export PLAYBOOK_DRY_RUN=${PLAYBOOK_DRY_RUN:=0}
 export COLLECT_CONF="$TRIPLEO_ROOT/tripleo-ci/toci-quickstart/config/collect-logs.yml"
@@ -182,6 +183,7 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
         periodic)
             PERIODIC=1
             QUICKSTART_RELEASE="promotion-testing-hash-${QUICKSTART_RELEASE}"
+            EMIT_RELEASES_EXTRA_ARGS="$EMIT_RELEASES_EXTRA_ARGS --is-periodic"
         ;;
         gate)
         ;;
@@ -197,11 +199,13 @@ done
 
 
 if [[ -f "$RELEASES_SCRIPT" ]] && [[ $FEATURESET_FILE =~ '037' || $FEATURESET_FILE =~ '050' || $FEATURESET_FILE =~ '010' || $FEATURESET_FILE =~ '011' ]]; then
+
     python $RELEASES_SCRIPT \
         --stable-release ${STABLE_RELEASE:-"master"} \
         --featureset-file $TRIPLEO_ROOT/tripleo-quickstart/config/general_config/$(basename $FEATURESET_FILE) \
         --output-file $RELEASES_FILE_OUTPUT \
-        --log-file $RELEASES_SCRIPT_LOGFILE
+        --log-file $RELEASES_SCRIPT_LOGFILE \
+        $EMIT_RELEASES_EXTRA_ARGS
 fi
 
 
