@@ -19,7 +19,7 @@ function finish(){
 }
 
 function get_dirs(){
-  local drop="\b(etc|ara|ara_oooq|docs|build|stackviz|sudoers.d|lib|config-data|extra)\b"
+  local drop="\b(etc|ara|ara_oooq|docs|build|stackviz|sudoers.d|config-data|extra)\b"
   local directories=""
   directories=$(curl -s "$1" 2> /dev/null | grep -E "\[DIR" | grep -vE "${drop}" | sed -e "s,.*href=\"\([^\"]*\)\".*,${1}\1,g")
   if [ -n "$directories" ]; then
