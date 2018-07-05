@@ -173,9 +173,12 @@ def compose_releases_dictionary(stable_release, featureset, upgrade_from):
     return releases_dictionary
 
 
-def shim_convert_old_release_names(releases_names):
+def shim_convert_old_release_names(releases_names, is_periodic):
     # TODO(trown): Remove this shim when we no longer need to use the
     # old style double release files.
+
+    # Remove unspected side-effects
+    modified_releases_name = releases_names.copy()
 
     oc_deploy_release = releases_names['overcloud_deploy_release']
     oc_target_release = releases_names['overcloud_target_release']
@@ -184,12 +187,19 @@ def shim_convert_old_release_names(releases_names):
     if oc_deploy_release != oc_target_release:
         release_file = "{}-undercloud-{}-overcloud".format(
             uc_install_release, oc_deploy_release)
-        releases_names['undercloud_install_release'] = release_file
-        releases_names['undercloud_target_release'] = release_file
-        releases_names['overcloud_deploy_release'] = release_file
-        releases_names['overcloud_target_release'] = release_file
+        modified_releases_name['undercloud_install_release'] = release_file
+        modified_releases_name['undercloud_target_release'] = release_file
+        modified_releases_name['overcloud_deploy_release'] = release_file
+        modified_releases_name['overcloud_target_release'] = release_file
+    elif is_periodic:
+        for key in [
+                'undercloud_install_release', 'undercloud_target_release',
+                'overcloud_deploy_release', 'overcloud_target_release'
+        ]:
+            modified_releases_name[
+                key] = "promotion-testing-hash-" + releases_names[key]
 
-    return releases_names
+    return modified_releases_name
 
 
 def write_releases_dictionary_to_bash(releases_dictionary, bash_file_name):
@@ -246,6 +256,10 @@ if __name__ == '__main__':
                         help='Upgrade FROM the change under test instead\n'
                              'of the default of upgrading TO the change\n'
                              'under test.')
+
+    parser.add_argument('--is-periodic', action='store_true',
+                        help='Specify if the current running job is periodic')
+
     args = parser.parse_args()
 
     setup_logging(args.log_file)
@@ -257,7 +271,8 @@ if __name__ == '__main__':
                                                       featureset,
                                                       args.upgrade_from)
 
-    releases_dictionary = shim_convert_old_release_names(releases_dictionary)
+    releases_dictionary = shim_convert_old_release_names(releases_dictionary,
+                                                         args.is_periodic)
 
     if not write_releases_dictionary_to_bash(
             releases_dictionary, args.output_file):
