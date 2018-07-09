@@ -240,10 +240,8 @@
 
 - job:
     name: tripleo-ci-centos-7-scenario007-multinode-oooq
-    parent: tripleo-ci-dsvm-multinode
-    run: playbooks/tripleo-ci/run.yaml
+    parent: tripleo-ci-base
     post-run: playbooks/tripleo-ci/post.yaml
-    nodeset: legacy-centos-7-2-node
     timeout: 10800
     branches: ^stable/pike.*$
     vars:
@@ -251,19 +249,16 @@
 
 - job:
     name: tripleo-ci-centos-7-scenario007-multinode-oooq-container
-    parent: tripleo-ci-dsvm-multinode
-    run: playbooks/tripleo-ci/run.yaml
+    parent: tripleo-ci-base
     post-run: playbooks/tripleo-ci/post.yaml
     timeout: 10800
-    nodeset: legacy-centos-7-2-node
     branches: ^(?!stable/(newton|ocata|pike)).*$
     vars:
       toci_jobtype: multinode-1ctlr-featureset030
 
 - job:
     name: tripleo-ci-centos-7-scenario008-multinode-oooq-container
-    parent: tripleo-ci-dsvm-multinode
-    run: playbooks/tripleo-ci/run.yaml
+    parent: tripleo-ci-base
     post-run: playbooks/tripleo-ci/post.yaml
     timeout: 10800
     voting: false
@@ -274,12 +269,10 @@
 
 - job:
     name: tripleo-ci-centos-7-scenario008-multinode-oooq
-    parent: tripleo-ci-dsvm-multinode
-    run: playbooks/tripleo-ci/run.yaml
+    parent: tripleo-ci-base
     post-run: playbooks/tripleo-ci/post.yaml
     timeout: 10800
     voting: false
-    nodeset: legacy-centos-7-2-node
     branches: ^(?!stable/(newton|ocata|pike|queens)).*$
     vars:
       toci_jobtype: multinode-1ctlr-featureset031
