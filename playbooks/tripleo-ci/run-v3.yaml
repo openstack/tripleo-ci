@@ -30,6 +30,33 @@
     - centos-7
   name: tripleo CI jobs runner
   tasks:
+
+    - name: render toci_gate_test script
+      template:
+        src: templates/toci_gate_test.sh.j2
+        dest: "{{ ansible_user_dir  }}/workspace/tripleo-ci/toci_gate_test.sh"
+        mode: 0755
+        force: yes
+
+    - name: render toci_quickstart script
+      template:
+        src: templates/toci_quickstart.sh.j2
+        dest: "{{ ansible_user_dir  }}/workspace/tripleo-ci/toci_quickstart.sh"
+        mode: 0755
+        force: yes
+
+    - name: render common_vars script
+      template:
+        src: templates/common_vars.bash.j2
+        dest: "{{ ansible_user_dir  }}/workspace/tripleo-ci/scripts/common_vars.bash"
+        force: yes
+
+    - name: render oooq_common_functions script
+      template:
+        src: templates/oooq_common_functions.sh.j2
+        dest: "{{ ansible_user_dir  }}/workspace/tripleo-ci/scripts/oooq_common_functions.sh"
+        force: yes
+
     - shell:
         cmd: |
           set -e
