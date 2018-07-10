@@ -28,6 +28,7 @@
       lineinfile:
         path: /etc/nodepool/sub_nodes_private
         line: "{{ hostvars[item]['nodepool']['private_ipv4'] }}"
+        insertafter: EOF
       with_items: "{{ groups['subnodes'] }}"
       when: groups['subnodes'] is defined
     - name: Create nodepool primary file
