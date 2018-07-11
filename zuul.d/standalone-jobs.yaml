@@ -5,11 +5,10 @@
 
 - job:
     name: tripleo-ci-centos-7-standalone
-    parent: tripleo-ci-dsvm
-    run: playbooks/tripleo-ci/run.yaml
+    parent: tripleo-ci-base
     post-run: playbooks/tripleo-ci/post.yaml
     timeout: 10800
-    nodeset: legacy-centos-7
+    nodeset: single-centos-7-node
     voting: false
     branches: ^(?!stable/(newton|ocata|pike|queens)).*$
     vars:
