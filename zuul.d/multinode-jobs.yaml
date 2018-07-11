@@ -66,6 +66,7 @@
         - tripleo-ci-centos-7-scenario003-multinode-oooq
         - tripleo-ci-centos-7-scenario004-multinode-oooq
         - tripleo-ci-centos-7-scenario007-multinode-oooq
+        - tripleo-ci-centos-7-scenario009-multinode-oooq
     gate:
       queue: tripleo
       jobs:
@@ -82,7 +83,6 @@
       jobs:
         - tripleo-ci-centos-7-scenario005-multinode-oooq
         - tripleo-ci-centos-7-scenario006-multinode-oooq
-        - tripleo-ci-centos-7-scenario009-multinode-oooq
         - tripleo-ci-centos-7-scenario010-multinode-oooq-container
         - tripleo-ci-centos-7-scenario011-multinode-oooq-container
 
