@@ -268,7 +268,7 @@
     timeout: 10800
     voting: false
     nodeset: legacy-centos-7-2-node
-    branches: ^(?!stable/(newton|ocata|pike|queens)).*$
+    branches: ^(?!stable/(newton|ocata|pike)).*$
     vars:
       toci_jobtype: multinode-1ctlr-featureset031
 
