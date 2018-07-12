@@ -176,30 +176,20 @@ case {{ environment_type | default('standalone') }} in
     ;;
 esac
 
+{% if nodes is defined %}
+NODES_FILE="$TRIPLEO_ROOT/tripleo-quickstart/config/nodes/{{ nodes }}.yml"
+{% endif %}
+
 #TODO(rfolco): Handle these remaining cases without TOCI_JOBTYPE
 for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
     case $JOB_TYPE_PART in
-        featureset*)
-        ;;
-        multinode)
-        ;;
-        singlenode)
-        ;;
-        standalone)
-        ;;
         periodic)
             PERIODIC=1
             QUICKSTART_RELEASE="promotion-testing-hash-${QUICKSTART_RELEASE}"
             EMIT_RELEASES_EXTRA_ARGS="$EMIT_RELEASES_EXTRA_ARGS --is-periodic"
         ;;
-        gate)
-        ;;
         dryrun)
             PLAYBOOK_DRY_RUN=1
-        ;;
-        *)
-        # the rest should be node configuration
-            NODES_FILE="$TRIPLEO_ROOT/tripleo-quickstart/config/nodes/$JOB_TYPE_PART.yml"
         ;;
     esac
 done
@@ -308,4 +298,4 @@ else
 fi
 
 echo "Run completed"
-echo "tripleo.${STABLE_RELEASE:-master}.${TOCI_JOBTYPE}.logs.size_mb" "$(du -sm $WORKSPACE/logs | awk {'print $1'})" "$(date +%s)" | nc 66.187.229.172 2003 || true
+echo "tripleo.${STABLE_RELEASE:-master}.{{ zuul.job }}.logs.size_mb" "$(du -sm $WORKSPACE/logs | awk {'print $1'})" "$(date +%s)" | nc 66.187.229.172 2003 || true
