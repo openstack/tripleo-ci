@@ -15,7 +15,7 @@ source {{ tripleo_root }}/tripleo-ci/scripts/oooq_common_functions.sh
 touch /tmp/toci.started
 
 export DEFAULT_ARGS="--extra-vars local_working_dir=$LOCAL_WORKING_DIR \
-    --extra-vars virthost=$UNDERCLOUD \
+    --extra-vars virthost={{ undercloud }} \
     --inventory $LOCAL_WORKING_DIR/hosts \
     --extra-vars tripleo_root={{ tripleo_root }} \
     --extra-vars working_dir=$WORKING_DIR \
@@ -35,7 +35,7 @@ QUICKSTART_VENV_CMD="
     --working-dir $LOCAL_WORKING_DIR
     --playbook noop.yml
     --retain-inventory
-    $UNDERCLOUD
+    {{ undercloud }}
 "
 
 QUICKSTART_INSTALL_CMD="
@@ -93,7 +93,7 @@ declare -A PLAYBOOKS_ARGS=(
 
 mkdir -p $LOCAL_WORKING_DIR
 # TODO(gcerami) parametrize hosts
-cp {{ tripleo_root }}/tripleo-ci/toci-quickstart/config/testenv/${ENVIRONMENT}_hosts $LOCAL_WORKING_DIR/hosts
+cp {{ tripleo_root }}/tripleo-ci/toci-quickstart/config/testenv/{{ environment_infra }}_hosts $LOCAL_WORKING_DIR/hosts
 pushd {{ tripleo_root }}/tripleo-quickstart/
 
 $QUICKSTART_PREPARE_CMD
@@ -121,29 +121,29 @@ if [[ "$PLAYBOOK_DRY_RUN" == "1" ]]; then
 fi
 
 echo "-- Playbooks Output --------------------------"
-for playbook in $PLAYBOOKS; do
+{% for playbook in playbooks %}
     echo "$QUICKSTART_INSTALL_CMD \
-        ${RELEASE_ARGS[$playbook]:=$QUICKSTART_DEFAULT_RELEASE_ARG} \
+        ${RELEASE_ARGS[{{ playbook }}]:=$QUICKSTART_DEFAULT_RELEASE_ARG} \
         $NODES_ARGS \
         $FEATURESET_CONF \
         $ENV_VARS \
         {{ extra_vars }} \
         {{ vxlan_vars }} \
         $DEFAULT_ARGS \
-        $LOCAL_WORKING_DIR/playbooks/$playbook ${PLAYBOOKS_ARGS[$playbook]:-}" \
+        $LOCAL_WORKING_DIR/playbooks/{{ playbook }} ${PLAYBOOKS_ARGS[{{ playbook }}]:-}" \
         | sed  's/--/\n--/g' \
         | tee -a $LOGS_DIR/playbook_executions.log
     echo "# --------------------------------------- " \
         | tee -a $LOGS_DIR/playbook_executions.log
-done
+{% endfor %}
 
 if [[ "$PLAYBOOK_DRY_RUN" == "1" ]]; then
     exit_value=0
 else
-    for playbook in $PLAYBOOKS; do
-        echo "${RELEASE_ARGS[$playbook]:=$QUICKSTART_DEFAULT_RELEASE_ARG}"
+{% for playbook in playbooks %}
+        echo "${RELEASE_ARGS[{{ playbook }}]:=$QUICKSTART_DEFAULT_RELEASE_ARG}"
         run_with_timeout $START_JOB_TIME $QUICKSTART_INSTALL_CMD \
-           "${RELEASE_ARGS[$playbook]:=$QUICKSTART_DEFAULT_RELEASE_ARG}" \
+           "${RELEASE_ARGS[{{ playbook }}]:=$QUICKSTART_DEFAULT_RELEASE_ARG}" \
            $NODES_ARGS \
            $FEATURESET_CONF \
            $ENV_VARS \
@@ -151,14 +151,13 @@ else
            {{ vxlan_vars }} \
            $DEFAULT_ARGS \
            --extra-vars ci_job_end_time=$(( START_JOB_TIME + REMAINING_TIME*60 )) \
-            $LOCAL_WORKING_DIR/playbooks/$playbook "${PLAYBOOKS_ARGS[$playbook]:-}" \
+            $LOCAL_WORKING_DIR/playbooks/{{ playbook }} "${PLAYBOOKS_ARGS[{{ playbook }}]:-}" \
             2>&1 | tee -a $LOGS_DIR/quickstart_install.log && exit_value=0 || exit_value=$?
 
         # Print status of playbook run
-        [[ "$exit_value" == 0 ]] && echo "Playbook run of $playbook passed successfully"
-        [[ "$exit_value" != 0 ]] && echo "Playbook run of $playbook failed" && break
-    done
-
+        [[ "$exit_value" == 0 ]] && echo "Playbook run of {{ playbook }} passed successfully"
+        [[ "$exit_value" != 0 ]] && echo "Playbook run of {{ playbook }} failed" && break
+{% endfor %}
     [[ "$exit_value" == 0 ]] && echo "Playbook run passed successfully" || echo "Playbook run failed"
 
     ## LOGS COLLECTION

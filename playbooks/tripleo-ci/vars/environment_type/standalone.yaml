@@ -1,0 +1,5 @@
+undercloud: 127.0.0.2
+environment_infra: osinfra
+playbooks:
+  - quickstart.yml
+  - multinode-standalone.yml

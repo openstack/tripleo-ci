@@ -33,6 +33,10 @@
   name: tripleo CI jobs runner
   tasks:
 
+    - name: Include environment_type vars
+      include_vars:
+        file: "environment_type/{{ environment_type }}.yaml"
+
     - name: render toci_gate_test script
       template:
         src: templates/toci_gate_test.sh.j2

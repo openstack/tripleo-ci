@@ -1,0 +1,19 @@
+undercloud: 127.0.0.2
+environment_infra: osinfra
+playbooks: |
+  {% if featureset == '010' %}
+  [
+    "multinode.yml"
+  ]
+  {% else %}
+  [
+    "quickstart.yml",
+    "multinode-undercloud.yml",
+    "multinode-overcloud-prep.yml",
+    "multinode-overcloud.yml",
+    "multinode-overcloud-update.yml",
+    "multinode-overcloud-upgrade.yml",
+    "multinode-validate.yml"
+  ]
+  {% endif %}
+
