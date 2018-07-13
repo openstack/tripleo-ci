@@ -13,3 +13,5 @@
     branches: ^(?!stable/(newton|ocata|pike|queens)).*$
     vars:
       toci_jobtype: standalone-featureset052
+      environment_type: standalone
+      featureset: 052

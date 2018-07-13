@@ -105,6 +105,9 @@
     branches: ^(?!stable/(newton|ocata|pike)).*$
     vars:
       toci_jobtype: multinode-2ctlr-featureset032
+      environment_type: multinode
+      nodes: 2ctlr
+      featureset: 032
 
 - job:
     name: tripleo-ci-centos-7-containers-multinode
@@ -114,6 +117,9 @@
     branches: ^(?!stable/(newton|ocata)).*$
     vars:
       toci_jobtype: multinode-1ctlr-featureset010
+      environment_type: multinode
+      nodes: 1ctlr
+      featureset: 010
 
 - job:
     name: tripleo-ci-centos-7-containers-multinode-queens
@@ -124,6 +130,9 @@
     vars:
       toci_jobtype: multinode-1ctlr-featureset010
       branch_override: 'stable/queens'
+      environment_type: multinode
+      nodes: 1ctlr
+      featureset: 010
 
 - job:
     name: tripleo-ci-centos-7-containers-multinode-pike
@@ -134,6 +143,9 @@
     vars:
       toci_jobtype: multinode-1ctlr-featureset010
       branch_override: 'stable/pike'
+      environment_type: multinode
+      nodes: 1ctlr
+      featureset: 010
 
 - job:
     name: tripleo-ci-centos-7-nonha-multinode-oooq
@@ -143,6 +155,9 @@
     branches: ^stable/(newton|ocata).*$
     vars:
       toci_jobtype: multinode-1ctlr-featureset004
+      environment_type: multinode
+      nodes: 1ctlr
+      featureset: 004
 
 - job:
     name: tripleo-ci-centos-7-scenario001-multinode-oooq
@@ -152,6 +167,9 @@
     branches: ^stable/(newton|ocata).*$
     vars:
       toci_jobtype: multinode-1ctlr-featureset005
+      environment_type: multinode
+      nodes: 1ctlr
+      featureset: 005
 
 - job:
     name: tripleo-ci-centos-7-scenario001-multinode-oooq-container
@@ -161,6 +179,9 @@
     branches: ^(?!stable/(newton|ocata)).*$
     vars:
       toci_jobtype: multinode-1ctlr-featureset016
+      environment_type: multinode
+      nodes: 1ctlr
+      featureset: 016
 
 - job:
     name: tripleo-ci-centos-7-scenario002-multinode-oooq
@@ -170,6 +191,9 @@
     branches: ^stable/(newton|ocata).*$
     vars:
       toci_jobtype: multinode-1ctlr-featureset006
+      environment_type: multinode
+      nodes: 1ctlr
+      featureset: 006
 
 - job:
     name: tripleo-ci-centos-7-scenario002-multinode-oooq-container
@@ -179,6 +203,9 @@
     branches: ^(?!stable/(newton|ocata)).*$
     vars:
       toci_jobtype: multinode-1ctlr-featureset017
+      environment_type: multinode
+      nodes: 1ctlr
+      featureset: 017
 
 - job:
     name: tripleo-ci-centos-7-scenario003-multinode-oooq
@@ -188,6 +215,9 @@
     branches: ^stable/ocata.*$
     vars:
       toci_jobtype: multinode-1ctlr-featureset007
+      environment_type: multinode
+      nodes: 1ctlr
+      featureset: 007
 
 - job:
     name: tripleo-ci-centos-7-scenario003-multinode-oooq-container
@@ -197,6 +227,9 @@
     branches: ^(?!stable/(newton|ocata)).*$
     vars:
       toci_jobtype: multinode-1ctlr-featureset018
+      environment_type: multinode
+      nodes: 1ctlr
+      featureset: 018
 
 - job:
     name: tripleo-ci-centos-7-scenario004-multinode-oooq
@@ -206,6 +239,9 @@
     branches: ^stable/ocata.*$
     vars:
       toci_jobtype: multinode-1ctlr-featureset008
+      environment_type: multinode
+      nodes: 1ctlr
+      featureset: 008
 
 - job:
     name: tripleo-ci-centos-7-scenario004-multinode-oooq-container
@@ -215,6 +251,9 @@
     branches: ^(?!stable/(newton|ocata)).*$
     vars:
       toci_jobtype: multinode-1ctlr-featureset019
+      environment_type: multinode
+      nodes: 1ctlr
+      featureset: 019
 
 - job:
     name: tripleo-ci-centos-7-scenario005-multinode-oooq
@@ -227,6 +266,9 @@
     branches: ^(?!stable/newton).*$
     vars:
       toci_jobtype: multinode-1ctlr-featureset009
+      environment_type: multinode
+      nodes: 1ctlr
+      featureset: 009
 
 - job:
     name: tripleo-ci-centos-7-scenario006-multinode-oooq
@@ -237,6 +279,9 @@
     branches: ^(?!stable/(newton|ocata)).*$
     vars:
       toci_jobtype: multinode-1ctlr-featureset026
+      environment_type: multinode
+      nodes: 1ctlr
+      featureset: 026
 
 - job:
     name: tripleo-ci-centos-7-scenario007-multinode-oooq
@@ -246,6 +291,9 @@
     branches: ^stable/pike.*$
     vars:
       toci_jobtype: multinode-1ctlr-featureset028
+      environment_type: multinode
+      nodes: 1ctlr
+      featureset: 028
 
 - job:
     name: tripleo-ci-centos-7-scenario007-multinode-oooq-container
@@ -255,6 +303,9 @@
     branches: ^(?!stable/(newton|ocata|pike)).*$
     vars:
       toci_jobtype: multinode-1ctlr-featureset030
+      environment_type: multinode
+      nodes: 1ctlr
+      featureset: 030
 
 - job:
     name: tripleo-ci-centos-7-scenario008-multinode-oooq-container
@@ -266,6 +317,9 @@
     branches: ^(?!stable/(newton|ocata|pike)).*$
     vars:
       toci_jobtype: multinode-1ctlr-featureset031
+      environment_type: multinode
+      nodes: 1ctlr
+      featureset: 031
 
 - job:
     name: tripleo-ci-centos-7-scenario008-multinode-oooq
@@ -276,6 +330,9 @@
     branches: ^(?!stable/(newton|ocata|pike|queens)).*$
     vars:
       toci_jobtype: multinode-1ctlr-featureset031
+      environment_type: multinode
+      nodes: 1ctlr
+      featureset: 031
 
 - job:
     name: tripleo-ci-centos-7-scenario009-multinode-oooq
@@ -286,6 +343,9 @@
     branches: ^(?!stable/(newton|ocata)).*$
     vars:
       toci_jobtype: multinode-1ctlr-featureset033
+      environment_type: multinode
+      nodes: 1ctlr
+      featureset: 033
 
 - job:
     name: tripleo-ci-centos-7-scenario010-multinode-oooq-container
@@ -296,6 +356,9 @@
     branches: ^(?!stable/(newton|ocata|pike)).*$
     vars:
       toci_jobtype: multinode-1ctlr-featureset038
+      environment_type: multinode
+      nodes: 1ctlr
+      featureset: 038
 
 - job:
     name: tripleo-ci-centos-7-scenario000-multinode-oooq-container-updates
@@ -309,6 +372,9 @@
     branches: ^(?!stable/(newton|ocata|pike|queens)).*$
     vars:
       toci_jobtype: multinode-1ctlr-featureset037
+      environment_type: multinode
+      nodes: 1ctlr
+      featureset: 037
       # Note (dmsimard): This enforces a minimum TTL for DNS records, see
       # https://review.openstack.org/#/c/523178/ for context
       unbound_cache_min_ttl: 900
@@ -339,6 +405,9 @@
     branches: ^(?!stable/(newton|ocata)).*$
     vars:
       toci_jobtype: multinode-1ctlr-featureset044
+      environment_type: multinode
+      nodes: 1ctlr
+      featureset: 044
 
 - job:
     name: tripleo-ci-centos-7-scenario000-multinode-oooq-container-upgrades
@@ -349,3 +418,6 @@
     branches: ^(?!stable/(newton|ocata)).*$
     vars:
       toci_jobtype: multinode-1ctlr-featureset051
+      environment_type: multinode
+      nodes: 1ctlr
+      featureset: 051
