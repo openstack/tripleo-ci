@@ -105,7 +105,7 @@
       toci_jobtype: multinode-2ctlr-featureset032
       environment_type: multinode
       nodes: 2ctlr
-      featureset: 032
+      featureset: '032'
 
 - job:
     name: tripleo-ci-centos-7-containers-multinode
@@ -117,7 +117,7 @@
       toci_jobtype: multinode-1ctlr-featureset010
       environment_type: multinode
       nodes: 1ctlr
-      featureset: 010
+      featureset: '010'
 
 - job:
     name: tripleo-ci-centos-7-containers-multinode-queens
@@ -130,7 +130,7 @@
       branch_override: 'stable/queens'
       environment_type: multinode
       nodes: 1ctlr
-      featureset: 010
+      featureset: '010'
 
 - job:
     name: tripleo-ci-centos-7-containers-multinode-pike
@@ -143,7 +143,7 @@
       branch_override: 'stable/pike'
       environment_type: multinode
       nodes: 1ctlr
-      featureset: 010
+      featureset: '010'
 
 - job:
     name: tripleo-ci-centos-7-nonha-multinode-oooq
@@ -155,7 +155,7 @@
       toci_jobtype: multinode-1ctlr-featureset004
       environment_type: multinode
       nodes: 1ctlr
-      featureset: 004
+      featureset: '004'
 
 - job:
     name: tripleo-ci-centos-7-scenario001-multinode-oooq
@@ -167,7 +167,7 @@
       toci_jobtype: multinode-1ctlr-featureset005
       environment_type: multinode
       nodes: 1ctlr
-      featureset: 005
+      featureset: '005'
 
 - job:
     name: tripleo-ci-centos-7-scenario001-multinode-oooq-container
@@ -179,7 +179,7 @@
       toci_jobtype: multinode-1ctlr-featureset016
       environment_type: multinode
       nodes: 1ctlr
-      featureset: 016
+      featureset: '016'
 
 - job:
     name: tripleo-ci-centos-7-scenario002-multinode-oooq
@@ -191,7 +191,7 @@
       toci_jobtype: multinode-1ctlr-featureset006
       environment_type: multinode
       nodes: 1ctlr
-      featureset: 006
+      featureset: '006'
 
 - job:
     name: tripleo-ci-centos-7-scenario002-multinode-oooq-container
@@ -203,7 +203,7 @@
       toci_jobtype: multinode-1ctlr-featureset017
       environment_type: multinode
       nodes: 1ctlr
-      featureset: 017
+      featureset: '017'
 
 - job:
     name: tripleo-ci-centos-7-scenario003-multinode-oooq
@@ -215,7 +215,7 @@
       toci_jobtype: multinode-1ctlr-featureset007
       environment_type: multinode
       nodes: 1ctlr
-      featureset: 007
+      featureset: '007'
 
 - job:
     name: tripleo-ci-centos-7-scenario003-multinode-oooq-container
@@ -227,7 +227,7 @@
       toci_jobtype: multinode-1ctlr-featureset018
       environment_type: multinode
       nodes: 1ctlr
-      featureset: 018
+      featureset: '018'
 
 - job:
     name: tripleo-ci-centos-7-scenario004-multinode-oooq
@@ -239,7 +239,7 @@
       toci_jobtype: multinode-1ctlr-featureset008
       environment_type: multinode
       nodes: 1ctlr
-      featureset: 008
+      featureset: '008'
 
 - job:
     name: tripleo-ci-centos-7-scenario004-multinode-oooq-container
@@ -251,7 +251,7 @@
       toci_jobtype: multinode-1ctlr-featureset019
       environment_type: multinode
       nodes: 1ctlr
-      featureset: 019
+      featureset: '019'
 
 - job:
     name: tripleo-ci-centos-7-scenario006-multinode-oooq
@@ -264,7 +264,7 @@
       toci_jobtype: multinode-1ctlr-featureset026
       environment_type: multinode
       nodes: 1ctlr
-      featureset: 026
+      featureset: '026'
 
 - job:
     name: tripleo-ci-centos-7-scenario007-multinode-oooq
@@ -276,7 +276,7 @@
       toci_jobtype: multinode-1ctlr-featureset028
       environment_type: multinode
       nodes: 1ctlr
-      featureset: 028
+      featureset: '028'
 
 - job:
     name: tripleo-ci-centos-7-scenario007-multinode-oooq-container
@@ -288,7 +288,7 @@
       toci_jobtype: multinode-1ctlr-featureset030
       environment_type: multinode
       nodes: 1ctlr
-      featureset: 030
+      featureset: '030'
 
 - job:
     name: tripleo-ci-centos-7-scenario008-multinode-oooq-container
@@ -301,7 +301,7 @@
       toci_jobtype: multinode-1ctlr-featureset031
       environment_type: multinode
       nodes: 1ctlr
-      featureset: 031
+      featureset: '031'
 
 - job:
     name: tripleo-ci-centos-7-scenario008-multinode-oooq
@@ -314,7 +314,7 @@
       toci_jobtype: multinode-1ctlr-featureset031
       environment_type: multinode
       nodes: 1ctlr
-      featureset: 031
+      featureset: '031'
 
 - job:
     name: tripleo-ci-centos-7-scenario009-multinode-oooq
@@ -327,7 +327,7 @@
       toci_jobtype: multinode-1ctlr-featureset033
       environment_type: multinode
       nodes: 1ctlr
-      featureset: 033
+      featureset: '033'
 
 - job:
     name: tripleo-ci-centos-7-scenario010-multinode-oooq-container
@@ -340,7 +340,7 @@
       toci_jobtype: multinode-1ctlr-featureset038
       environment_type: multinode
       nodes: 1ctlr
-      featureset: 038
+      featureset: '038'
 
 - job:
     name: tripleo-ci-centos-7-scenario000-multinode-oooq-container-updates
@@ -356,7 +356,7 @@
       toci_jobtype: multinode-1ctlr-featureset037
       environment_type: multinode
       nodes: 1ctlr
-      featureset: 037
+      featureset: '037'
       # Note (dmsimard): This enforces a minimum TTL for DNS records, see
       # https://review.openstack.org/#/c/523178/ for context
       unbound_cache_min_ttl: 900
@@ -389,7 +389,7 @@
       toci_jobtype: multinode-1ctlr-featureset044
       environment_type: multinode
       nodes: 1ctlr
-      featureset: 044
+      featureset: '044'
 
 - job:
     name: tripleo-ci-centos-7-scenario000-multinode-oooq-container-upgrades
@@ -402,4 +402,4 @@
       toci_jobtype: multinode-1ctlr-featureset051
       environment_type: multinode
       nodes: 1ctlr
-      featureset: 051
+      featureset: '051'

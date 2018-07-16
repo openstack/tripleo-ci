@@ -28,7 +28,7 @@
     vars:
       toci_jobtype: singlenode-featureset027
       environment_type: singlenode
-      featureset: 027
+      featureset: '027'
 
 - job:
     name: tripleo-ci-centos-7-undercloud-oooq
@@ -39,7 +39,7 @@
     vars:
       toci_jobtype: singlenode-featureset003
       environment_type: singlenode
-      featureset: 003
+      featureset: '003'
 
 - job:
     name: tripleo-ci-centos-7-undercloud-upgrades
@@ -51,7 +51,7 @@
     vars:
       toci_jobtype: singlenode-featureset047
       environment_type: singlenode
-      featureset: 047
+      featureset: '047'
 
 - job:
     name: tripleo-ci-centos-7-containerized-undercloud-upgrades
@@ -63,4 +63,4 @@
     vars:
       toci_jobtype: singlenode-featureset050
       environment_type: singlenode
-      featureset: 050
+      featureset: '050'
