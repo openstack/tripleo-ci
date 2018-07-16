@@ -5,11 +5,11 @@ export ANSIBLE_NOCOLOR=1
 [[ -n ${STATS_TESTENV:-''} ]] && export STATS_TESTENV=$(( $(date +%s) - STATS_TESTENV ))
 export STATS_OOOQ=$(date +%s)
 
-LOCAL_WORKING_DIR="$WORKSPACE/.quickstart"
+LOCAL_WORKING_DIR="{{ workspace }}/.quickstart"
 WORKING_DIR="$HOME"
-LOGS_DIR=$WORKSPACE/logs
+LOGS_DIR={{ workspace }}/logs
 
-source $TRIPLEO_ROOT/tripleo-ci/scripts/oooq_common_functions.sh
+source {{ tripleo_root }}/tripleo-ci/scripts/oooq_common_functions.sh
 
 ## Signal to toci_gate_test.sh we've started by
 touch /tmp/toci.started
@@ -17,7 +17,7 @@ touch /tmp/toci.started
 export DEFAULT_ARGS="--extra-vars local_working_dir=$LOCAL_WORKING_DIR \
     --extra-vars virthost=$UNDERCLOUD \
     --inventory $LOCAL_WORKING_DIR/hosts \
-    --extra-vars tripleo_root=$TRIPLEO_ROOT \
+    --extra-vars tripleo_root={{ tripleo_root }} \
     --extra-vars working_dir=$WORKING_DIR \
 "
 
@@ -50,7 +50,7 @@ QUICKSTART_COLLECTLOGS_CMD="$LOCAL_WORKING_DIR/bin/ansible-playbook \
     --extra-vars @$LOCAL_WORKING_DIR/config/release/tripleo-ci/$QUICKSTART_RELEASE.yml \
     $FEATURESET_CONF \
     $ENV_VARS \
-    $EXTRA_VARS \
+    {{ extra_vars }} \
     $DEFAULT_ARGS \
     --extra-vars @$COLLECT_CONF \
     --extra-vars artcl_collect_dir=$LOGS_DIR \
@@ -93,15 +93,15 @@ declare -A PLAYBOOKS_ARGS=(
 
 mkdir -p $LOCAL_WORKING_DIR
 # TODO(gcerami) parametrize hosts
-cp $TRIPLEO_ROOT/tripleo-ci/toci-quickstart/config/testenv/${ENVIRONMENT}_hosts $LOCAL_WORKING_DIR/hosts
-pushd $TRIPLEO_ROOT/tripleo-quickstart/
+cp {{ tripleo_root }}/tripleo-ci/toci-quickstart/config/testenv/${ENVIRONMENT}_hosts $LOCAL_WORKING_DIR/hosts
+pushd {{ tripleo_root }}/tripleo-quickstart/
 
 $QUICKSTART_PREPARE_CMD
 $QUICKSTART_VENV_CMD
 
 # Only ansible-playbook command will be used from this point forward, so we
 # need some variables from quickstart.sh
-OOOQ_DIR=$TRIPLEO_ROOT/tripleo-quickstart/
+OOOQ_DIR={{ tripleo_root }}/tripleo-quickstart/
 export OPT_WORKDIR=$LOCAL_WORKING_DIR
 export ANSIBLE_CONFIG=$OOOQ_DIR/ansible.cfg
 export ARA_DATABASE="sqlite:///${LOCAL_WORKING_DIR}/ara.sqlite"
@@ -127,8 +127,8 @@ for playbook in $PLAYBOOKS; do
         $NODES_ARGS \
         $FEATURESET_CONF \
         $ENV_VARS \
-        $EXTRA_VARS \
-        $VXLAN_VARS \
+        {{ extra_vars }} \
+        {{ vxlan_vars }} \
         $DEFAULT_ARGS \
         $LOCAL_WORKING_DIR/playbooks/$playbook ${PLAYBOOKS_ARGS[$playbook]:-}" \
         | sed  's/--/\n--/g' \
@@ -147,8 +147,8 @@ else
            $NODES_ARGS \
            $FEATURESET_CONF \
            $ENV_VARS \
-           $EXTRA_VARS \
-           $VXLAN_VARS \
+           {{ extra_vars }} \
+           {{ vxlan_vars }} \
            $DEFAULT_ARGS \
            --extra-vars ci_job_end_time=$(( START_JOB_TIME + REMAINING_TIME*60 )) \
             $LOCAL_WORKING_DIR/playbooks/$playbook "${PLAYBOOKS_ARGS[$playbook]:-}" \
@@ -169,12 +169,14 @@ fi
 popd
 
 sudo unbound-control dump_cache > /tmp/dns_cache.txt
-sudo chown ${USER}: /tmp/dns_cache.txt
+sudo chown {{ ansible_user_id }}: /tmp/dns_cache.txt
 cat /tmp/dns_cache.txt | gzip - > $LOGS_DIR/dns_cache.txt.gz
 
-if [[ "$PERIODIC" == 1 && -e $WORKSPACE/hash_info.sh ]] ; then
-    echo export JOB_EXIT_VALUE=$exit_value >> $WORKSPACE/hash_info.sh
+{% if periodic|bool %}
+if [[ -e {{ workspace }}/hash_info.sh ]] ; then
+    echo export JOB_EXIT_VALUE=$exit_value >> {{ workspace }}/hash_info.sh
 fi
+{% endif %}
 
 mkdir -p $LOGS_DIR/quickstart_files
 find $LOCAL_WORKING_DIR -maxdepth 1 -type f -not -name "*sqlite" | while read i; do gzip -cf $i > $LOGS_DIR/quickstart_files/$(basename $i).txt.gz; done

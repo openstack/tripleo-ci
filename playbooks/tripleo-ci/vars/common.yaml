@@ -1,0 +1,10 @@
+workspace: "{{ ansible_user_dir }}/workspace/"
+tripleo_root: "{{ ansible_user_dir }}/src/git.openstack.org/openstack/"
+vxlan_vars: "-e toci_vxlan_networking='false' -e vxlan_networking='false'"
+extra_vars: ""
+periodic: >-
+  {%- if 'periodic' in zuul.pipeline -%}
+  true
+  {%- else -%}
+  false
+  {%- endif -%}
