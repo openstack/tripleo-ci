@@ -46,7 +46,6 @@
 
           export PYTHONUNBUFFERED=true
           export DEVSTACK_GATE_TEMPEST=0
-          export DEVSTACK_GATE_EXERCISES=0
           export DEVSTACK_GATE_HORIZON=1
           export PROJECTS="openstack/tripleo-quickstart $PROJECTS"
           export PROJECTS="openstack/tripleo-quickstart-extras $PROJECTS"
