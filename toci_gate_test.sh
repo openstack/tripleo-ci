@@ -129,7 +129,7 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
             if [[ " $QUICKSTART_SH_JOBS " =~ " $TOCI_JOBTYPE " ]]; then
                 export PLAYBOOKS=${PLAYBOOKS:-"baremetal-full-deploy.yml"}
             else
-                export PLAYBOOKS=${PLAYBOOKS:-"ovb-setup.yml baremetal-full-undercloud.yml baremetal-full-overcloud-prep.yml baremetal-full-overcloud.yml baremetal-full-overcloud-validate.yml"}
+                export PLAYBOOKS=${PLAYBOOKS:-"ovb-setup.yml baremetal-full-undercloud.yml baremetal-full-overcloud-prep.yml baremetal-full-overcloud.yml baremetal-full-overcloud-validate.yml browbeat-minimal.yml"}
             fi
             ENV_VARS="$ENV_VARS --extra-vars @$TRIPLEO_ROOT/tripleo-ci/toci-quickstart/config/testenv/ovb.yml"
             if [[ -f  "$TRIPLEO_ROOT/tripleo-ci/toci-quickstart/config/testenv/ovb-$RHCLOUD.yml" ]]; then
@@ -230,6 +230,13 @@ else
     # tripleo-upgrade role in the playbook.
     echo "git+https://git.openstack.org/openstack/tripleo-upgrade.git@${ZUUL_BRANCH}#egg=tripleo-upgrade" >> ${TRIPLEO_ROOT}/tripleo-quickstart/quickstart-extras-requirements.txt
 fi
+
+# Import gated external repo in oooq
+for EXTERNAL_REPO in 'browbeat'; do
+    if [[ -d $TRIPLEO_ROOT/$EXTERNAL_REPO ]]; then
+        sed -i "s#git+https://git.openstack.org/openstack/$EXTERNAL_REPO#file://${TRIPLEO_ROOT}/$EXTERNAL_REPO#1" ${TRIPLEO_ROOT}/tripleo-quickstart/quickstart-extras-requirements.txt
+    fi
+done
 
 # Start time tracking
 export STATS_TESTENV=$(date +%s)

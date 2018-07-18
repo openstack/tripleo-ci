@@ -49,3 +49,8 @@ influxdb_password:
 influxdb_dbname: tripleo_ci
 influxdb_data_file_path: "{{ artcl_collect_dir }}/influxdb_data"
 influxdb_create_data_file: true
+
+# Browbeat settings
+cloud_name: rdocloud
+elastic_host: browbeat.test.com
+grafana_host: browbeat.test.com
