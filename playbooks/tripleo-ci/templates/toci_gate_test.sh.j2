@@ -67,12 +67,8 @@ export FEATURESET_CONF=""
 export NODES_FILE=""
 # Set the number of overcloud nodes
 export NODECOUNT=0
-# Sets the undercloud hostname
-export UNDERCLOUD=""
 # Select the tags to run
 export TAGS=all
-# Identify in which environment we're deploying
-export ENVIRONMENT=""
 # Set the overcloud hosts for multinode
 export OVERCLOUD_HOSTS=
 export CONTROLLER_HOSTS=
@@ -96,41 +92,24 @@ export RELEASES_SCRIPT_LOGFILE=$WORKSPACE/logs/emit_releases_file.log
 case {{ environment_type | default('standalone') }} in
     ovb)
         OVB=1
-        ENVIRONMENT="ovb"
         UCINSTANCEID=$(http_proxy= curl http://169.254.169.254/openstack/2015-10-15/meta_data.json | python -c 'import json, sys; print json.load(sys.stdin)["uuid"]')
-        {% if featureset == '001' %}
-        export PLAYBOOKS=${PLAYBOOKS:-"baremetal-full-deploy.yml"}
-        {% else %}
-        export PLAYBOOKS=${PLAYBOOKS:-"ovb-setup.yml baremetal-full-undercloud.yml baremetal-full-overcloud-prep.yml baremetal-full-overcloud.yml baremetal-full-overcloud-validate.yml"}
-        {% endif %}
         ENV_VARS="$ENV_VARS --extra-vars @$TRIPLEO_ROOT/tripleo-ci/toci-quickstart/config/testenv/ovb.yml"
         if [[ -f  "$TRIPLEO_ROOT/tripleo-ci/toci-quickstart/config/testenv/ovb-$RHCLOUD.yml" ]]; then
             ENV_VARS="$ENV_VARS --extra-vars @$TRIPLEO_ROOT/tripleo-ci/toci-quickstart/config/testenv/ovb-$RHCLOUD.yml"
         fi
-        UNDERCLOUD="undercloud"
     ;;
     multinode)
         SUBNODES_SSH_KEY=/etc/nodepool/id_rsa
-        ENVIRONMENT="osinfra"
-        {% if featureset == '010' %}
-        export PLAYBOOKS=${PLAYBOOKS:-"multinode.yml"}
-        {% else %}
-        export PLAYBOOKS=${PLAYBOOKS:-"quickstart.yml multinode-undercloud.yml multinode-overcloud-prep.yml multinode-overcloud.yml multinode-overcloud-update.yml multinode-overcloud-upgrade.yml multinode-validate.yml"}
-        {% endif %}
         FEATURESET_CONF=" --extra-vars @$LWD/config/general_config/featureset-multinode-common.yml $FEATURESET_CONF"
         ENV_VARS="$ENV_VARS --extra-vars @$TRIPLEO_ROOT/tripleo-ci/toci-quickstart/config/testenv/multinode.yml"
         if [[ $NODEPOOL_PROVIDER == "rdo-cloud-tripleo" ]]; then
             ENV_VARS="$ENV_VARS --extra-vars @$TRIPLEO_ROOT/tripleo-ci/toci-quickstart/config/testenv/multinode-rdocloud.yml"
         fi
-        UNDERCLOUD="127.0.0.2"
         TAGS="build,undercloud-setup,undercloud-scripts,undercloud-install,undercloud-post-install,tripleo-validations,overcloud-scripts,overcloud-prep-config,overcloud-prep-containers,overcloud-deploy,overcloud-post-deploy,overcloud-validate"
         CONTROLLER_HOSTS=$(sed -n 1,1p /etc/nodepool/sub_nodes_private)
         OVERCLOUD_HOSTS=$(cat /etc/nodepool/sub_nodes_private)
     ;;
     singlenode)
-        ENVIRONMENT="osinfra"
-        UNDERCLOUD="127.0.0.2"
-        export PLAYBOOKS=${PLAYBOOKS:-"quickstart.yml multinode-undercloud.yml multinode-undercloud-upgrade.yml multinode-overcloud-prep.yml multinode-overcloud.yml multinode-overcloud-upgrade.yml multinode-validate.yml"}
         FEATURESET_CONF=" --extra-vars @$LWD/config/general_config/featureset-multinode-common.yml $FEATURESET_CONF"
         ENV_VARS="$ENV_VARS --extra-vars @$TRIPLEO_ROOT/tripleo-ci/toci-quickstart/config/testenv/multinode.yml"
         if [[ $NODEPOOL_PROVIDER == "rdo-cloud-tripleo" ]]; then
@@ -139,9 +118,6 @@ case {{ environment_type | default('standalone') }} in
         TAGS="build,undercloud-setup,undercloud-scripts,undercloud-install,undercloud-validate,images"
     ;;
     standalone)
-        ENVIRONMENT="osinfra"
-        UNDERCLOUD="127.0.0.2"
-        export PLAYBOOKS=${PLAYBOOKS:-"quickstart.yml multinode-standalone.yml"}
         FEATURESET_CONF=" --extra-vars @$LWD/config/general_config/featureset-multinode-common.yml $FEATURESET_CONF"
         ENV_VARS="$ENV_VARS --extra-vars @$TRIPLEO_ROOT/tripleo-ci/toci-quickstart/config/testenv/multinode.yml"
         if [[ $NODEPOOL_PROVIDER == "rdo-cloud-tripleo" ]]; then
@@ -224,7 +200,7 @@ fi
 # Start time tracking
 export STATS_TESTENV=$(date +%s)
 pushd $TRIPLEO_ROOT/tripleo-ci
-if [ -z "${TE_DATAFILE:-}" -a "$ENVIRONMENT" = "ovb" ] ; then
+if [ -z "${TE_DATAFILE:-}" -a "{{ environment_infra }}" = "ovb" ] ; then
 
     export GEARDSERVER=${TEBROKERIP-192.168.1.1}
     # NOTE(pabelanger): We need gear for testenv, but this really should be
@@ -240,7 +216,7 @@ if [ -z "${TE_DATAFILE:-}" -a "$ENVIRONMENT" = "ovb" ] ; then
     ./testenv-client -b $GEARDSERVER:4730 -t $TIMEOUT_SECS \
         --envsize $NODECOUNT --ucinstance $UCINSTANCEID \
         --net-iso $NETISO_ENV $EXTRANODE -- ./toci_quickstart.sh
-elif [ "$ENVIRONMENT" = "ovb" ] ; then
+elif [ "{{ environment_infra }}" = "ovb" ] ; then
     # We only support multi-nic at the moment
     NETISO_ENV="multi-nic"
     ./toci_quickstart.sh
@@ -292,4 +268,3 @@ else
 fi
 
 echo "Run completed"
-echo "tripleo.${STABLE_RELEASE:-master}.{{ zuul.job }}.logs.size_mb" "$(du -sm $WORKSPACE/logs | awk {'print $1'})" "$(date +%s)" | nc 66.187.229.172 2003 || true

@@ -6,8 +6,8 @@
 
 - project:
     templates:
-      - tripleo-multinode-baremetal-minimal
-      - tripleo-multinode-container-minimal
+      - tripleo-multinode-baremetal-full
+      - tripleo-multinode-container-full
       - tripleo-multinode-experimental
       - tripleo-undercloud-jobs
       - tripleo-multinode-branchful
@@ -22,6 +22,45 @@
         - openstack-tox-pep8:
             files:
               - ^scripts/emit_releases_file/.*$
+        - tripleo-ci-centos-7-scenario001-multinode-oooq:
+            files:
+              - ^playbooks/tripleo-ci/.*$
+        - tripleo-ci-centos-7-scenario002-multinode-oooq:
+            files:
+              - ^playbooks/tripleo-ci/.*$
+        - tripleo-ci-centos-7-scenario002-multinode-oooq:
+            files:
+              - ^playbooks/tripleo-ci/.*$
+        - tripleo-ci-centos-7-scenario003-multinode-oooq:
+            files:
+              - ^playbooks/tripleo-ci/.*$
+        - tripleo-ci-centos-7-scenario004-multinode-oooq:
+            files:
+              - ^playbooks/tripleo-ci/.*$
+        - tripleo-ci-centos-7-scenario007-multinode-oooq:
+            files:
+              - ^playbooks/tripleo-ci/.*$
+        - tripleo-ci-centos-7-scenario009-multinode-oooq:
+            files:
+              - ^playbooks/tripleo-ci/.*$
+        - tripleo-ci-centos-7-scenario001-multinode-oooq-container:
+            files:
+              - ^playbooks/tripleo-ci/.*$
+        - tripleo-ci-centos-7-scenario002-multinode-oooq-container:
+            files:
+              - ^playbooks/tripleo-ci/.*$
+        - tripleo-ci-centos-7-scenario003-multinode-oooq-container:
+            files:
+              - ^playbooks/tripleo-ci/.*$
+        - tripleo-ci-centos-7-scenario004-multinode-oooq-container:
+            files:
+              - ^playbooks/tripleo-ci/.*$
+        - tripleo-ci-centos-7-scenario007-multinode-oooq-container:
+            files:
+              - ^playbooks/tripleo-ci/.*$
+        - tripleo-ci-centos-7-scenario008-multinode-oooq-container:
+            files:
+              - ^playbooks/tripleo-ci/.*$
     gate:
       queue: tripleo
       jobs:
@@ -34,3 +73,33 @@
         - openstack-tox-pep8:
             files:
               - ^scripts/emit_releases_file/.*$
+        - tripleo-ci-centos-7-scenario001-multinode-oooq:
+            files:
+              - ^playbooks/tripleo-ci/.*$
+        - tripleo-ci-centos-7-scenario002-multinode-oooq:
+            files:
+              - ^playbooks/tripleo-ci/.*$
+        - tripleo-ci-centos-7-scenario003-multinode-oooq:
+            files:
+              - ^playbooks/tripleo-ci/.*$
+        - tripleo-ci-centos-7-scenario004-multinode-oooq:
+            files:
+              - ^playbooks/tripleo-ci/.*$
+        - tripleo-ci-centos-7-scenario007-multinode-oooq:
+            files:
+              - ^playbooks/tripleo-ci/.*$
+        - tripleo-ci-centos-7-scenario001-multinode-oooq-container:
+            files:
+              - ^playbooks/tripleo-ci/.*$
+        - tripleo-ci-centos-7-scenario002-multinode-oooq-container:
+            files:
+              - ^playbooks/tripleo-ci/.*$
+        - tripleo-ci-centos-7-scenario003-multinode-oooq-container:
+            files:
+              - ^playbooks/tripleo-ci/.*$
+        - tripleo-ci-centos-7-scenario004-multinode-oooq-container:
+            files:
+              - ^playbooks/tripleo-ci/.*$
+        - tripleo-ci-centos-7-scenario007-multinode-oooq-container:
+            files:
+              - ^playbooks/tripleo-ci/.*$
