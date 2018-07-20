@@ -40,7 +40,7 @@ QUICKSTART_VENV_CMD="
 
 QUICKSTART_INSTALL_CMD="
     $LOCAL_WORKING_DIR/bin/ansible-playbook
-    --tags $TAGS
+    --tags {{ ','.join(tags) }}$EXTRA_TAGS
     --skip-tags teardown-all
 "
 

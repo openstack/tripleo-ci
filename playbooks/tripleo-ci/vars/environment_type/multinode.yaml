@@ -16,4 +16,18 @@ playbooks: |
     "multinode-validate.yml"
   ]
   {% endif %}
-
+tags:
+  [
+    "build",
+    "undercloud-setup",
+    "undercloud-scripts",
+    "undercloud-install",
+    "undercloud-post-install",
+    "tripleo-validations",
+    "overcloud-scripts",
+    "overcloud-prep-config",
+    "overcloud-prep-containers",
+    "overcloud-deploy",
+    "overcloud-post-deploy",
+    "overcloud-validate"
+  ]

@@ -67,8 +67,6 @@ export FEATURESET_CONF=""
 export NODES_FILE=""
 # Set the number of overcloud nodes
 export NODECOUNT=0
-# Select the tags to run
-export TAGS=all
 # Set the overcloud hosts for multinode
 export OVERCLOUD_HOSTS=
 export CONTROLLER_HOSTS=
@@ -105,7 +103,6 @@ case {{ environment_type | default('standalone') }} in
         if [[ $NODEPOOL_PROVIDER == "rdo-cloud-tripleo" ]]; then
             ENV_VARS="$ENV_VARS --extra-vars @$TRIPLEO_ROOT/tripleo-ci/toci-quickstart/config/testenv/multinode-rdocloud.yml"
         fi
-        TAGS="build,undercloud-setup,undercloud-scripts,undercloud-install,undercloud-post-install,tripleo-validations,overcloud-scripts,overcloud-prep-config,overcloud-prep-containers,overcloud-deploy,overcloud-post-deploy,overcloud-validate"
         CONTROLLER_HOSTS=$(sed -n 1,1p /etc/nodepool/sub_nodes_private)
         OVERCLOUD_HOSTS=$(cat /etc/nodepool/sub_nodes_private)
     ;;
@@ -115,7 +112,6 @@ case {{ environment_type | default('standalone') }} in
         if [[ $NODEPOOL_PROVIDER == "rdo-cloud-tripleo" ]]; then
             ENV_VARS="$ENV_VARS --extra-vars @$TRIPLEO_ROOT/tripleo-ci/toci-quickstart/config/testenv/multinode-rdocloud.yml"
         fi
-        TAGS="build,undercloud-setup,undercloud-scripts,undercloud-install,undercloud-validate,images"
     ;;
     standalone)
         FEATURESET_CONF=" --extra-vars @$LWD/config/general_config/featureset-multinode-common.yml $FEATURESET_CONF"
@@ -123,22 +119,22 @@ case {{ environment_type | default('standalone') }} in
         if [[ $NODEPOOL_PROVIDER == "rdo-cloud-tripleo" ]]; then
             ENV_VARS="$ENV_VARS --extra-vars @$TRIPLEO_ROOT/tripleo-ci/toci-quickstart/config/testenv/multinode-rdocloud.yml"
         fi
-        TAGS="build,standalone"
     ;;
 esac
 
-FEATURESET_FILE="$LWD/config/general_config/featureset{{ featureset }}.yml"
+EXTRA_TAGS=""
+FEATURESET_FILE="{{ tripleo_root}}/tripleo-quickstart/config/general_config/featureset{{ featureset }}.yml"
 FEATURESET_CONF="$FEATURESET_CONF --extra-vars @$FEATURESET_FILE"
 MIXED_UPGRADE_TYPE=''
 # Order matters.  ffu featureset has both mixed version and ffu_overcloud_upgrade.
-if is_featureset ffu_overcloud_upgrade "$TRIPLEO_ROOT/tripleo-quickstart/config/general_config/featureset{{ featureset }}.yml"; then
+if is_featureset ffu_overcloud_upgrade "$FEATURESET_FILE"; then
     MIXED_UPGRADE_TYPE='ffu_upgrade'
-elif  is_featureset mixed_upgrade "$TRIPLEO_ROOT/tripleo-quickstart/config/general_config/featureset{{ featureset }}.yml"; then
+elif  is_featureset mixed_upgrade "$FEATURESET_FILE"; then
     MIXED_UPGRADE_TYPE='mixed_upgrade'
-elif is_featureset overcloud_update "$TRIPLEO_ROOT/tripleo-quickstart/config/general_config/featureset{{ featureset }}.yml"; then
-    TAGS="$TAGS,overcloud-update"
-elif is_featureset undercloud_upgrade "$TRIPLEO_ROOT/tripleo-quickstart/config/general_config/featureset{{ featureset }}.yml"; then
-    TAGS="$TAGS,undercloud-upgrade"
+elif is_featureset overcloud_update "$FEATURESET_FILE"; then
+    EXTRA_TAGS=",overcloud-update"
+elif is_featureset undercloud_upgrade "$FEATURESET_FILE"; then
+    EXTRA_TAGS=",undercloud-upgrade"
     export UPGRADE_RELEASE=$QUICKSTART_RELEASE
     export QUICKSTART_RELEASE=$(previous_release_mixed_upgrade_case "${UPGRADE_RELEASE}")
 fi
@@ -146,9 +142,10 @@ fi
 if [ -n "${MIXED_UPGRADE_TYPE}" ]; then
     export UPGRADE_RELEASE=$(previous_release_from "${STABLE_RELEASE}" "${MIXED_UPGRADE_TYPE}")
     QUICKSTART_RELEASE="$QUICKSTART_RELEASE-undercloud-$UPGRADE_RELEASE-overcloud"
-    # Run overcloud-upgrade tag only in upgrades jobs
-    TAGS="$TAGS,overcloud-upgrade"
+    EXTRA_TAGS=",overcloud-upgrade"
 fi
+
+export EXTRA_TAGS
 
 {% if nodes is defined %}
 NODES_FILE="$TRIPLEO_ROOT/tripleo-quickstart/config/nodes/{{ nodes }}.yml"
