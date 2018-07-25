@@ -175,33 +175,3 @@ function sanitize_ip_address {
         echo $ip
     fi
 }
-
-function echo_vars_to_deploy_env_oooq {
-    CALLER=$(caller)
-    echo "# Written via echo_vars_to_deploy_env from $CALLER" >> $TRIPLEO_ROOT/tripleo-ci/deploy.env
-    for VAR in NODEPOOL_CENTOS_MIRROR http_proxy MY_IP no_proxy NODECOUNT SSH_OPTIONS STABLE_RELEASE TRIPLEO_ROOT TOCI_JOBTYPE JOB_NAME SUBNODES_SSH_KEY FEATURE_BRANCH BOOTSTRAP_SUBNODES_MINIMAL; do
-        if [ -n "${!VAR:+x}" ]; then
-            echo "export $VAR=\"${!VAR}\"" >> $TRIPLEO_ROOT/tripleo-ci/deploy.env
-        fi
-    done
-    # TODO(gcerami) uncomment this code if 3nodes jobs are implemented before the bootstrap role
-    # in quickstart. If the bootstrap role is implemented first, this function can be completely
-    # removed
-    #for role in $OVERCLOUD_ROLES; do
-    #    eval hosts=\${${role}_hosts}
-    #    echo "export ${role}_hosts=\"${hosts}\"" >> $TRIPLEO_ROOT/tripleo-ci/deploy.env
-    #done
-}
-
-function subnodes_scp_deploy_env {
-    for ip in $(cat /etc/nodepool/sub_nodes_private); do
-        sanitized_address=$(sanitize_ip_address $ip)
-        ssh $SSH_OPTIONS -tt -i /etc/nodepool/id_rsa $ip \
-            sudo mkdir -p $TRIPLEO_ROOT/tripleo-ci
-        scp $SSH_OPTIONS -i /etc/nodepool/id_rsa \
-            $TRIPLEO_ROOT/tripleo-ci/deploy.env ${sanitized_address}:
-        ssh $SSH_OPTIONS -tt -i /etc/nodepool/id_rsa $ip \
-            sudo cp deploy.env $TRIPLEO_ROOT/tripleo-ci/deploy.env
-    done
-}
-
