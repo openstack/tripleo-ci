@@ -180,20 +180,16 @@ esac
 NODES_FILE="$TRIPLEO_ROOT/tripleo-quickstart/config/nodes/{{ nodes }}.yml"
 {% endif %}
 
-#TODO(rfolco): Handle these remaining cases without TOCI_JOBTYPE
-for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
-    case $JOB_TYPE_PART in
-        periodic)
-            PERIODIC=1
-            QUICKSTART_RELEASE="promotion-testing-hash-${QUICKSTART_RELEASE}"
-            EMIT_RELEASES_EXTRA_ARGS="$EMIT_RELEASES_EXTRA_ARGS --is-periodic"
-        ;;
-        dryrun)
-            PLAYBOOK_DRY_RUN=1
-        ;;
-    esac
-done
+{% if periodic|bool %}
+PERIODIC=1
+QUICKSTART_RELEASE="promotion-testing-hash-${QUICKSTART_RELEASE}"
+EMIT_RELEASES_EXTRA_ARGS="$EMIT_RELEASES_EXTRA_ARGS --is-periodic"
+{% endif %}
 
+{% if dryrun|default(false)|bool %}
+#TODO(rfolco): Remove PLAYBOOK_DRY_RUN when bash code is translated to ansible playbooks
+PLAYBOOK_DRY_RUN=1
+{% endif %}
 
 if [[ -f "$RELEASES_SCRIPT" ]] && [[ $FEATURESET_FILE =~ '037' || $FEATURESET_FILE =~ '050' || $FEATURESET_FILE =~ '010' || $FEATURESET_FILE =~ '011' ]]; then
 
