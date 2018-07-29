@@ -1184,16 +1184,15 @@ function tempest_run {
         --create \
         --deployer-input ~/tempest-deployer-input.conf \
         identity.uri $OS_AUTH_URL \
-        compute.allow_tenant_isolation true \
+        auth.use_dynamic_credentials true \
         identity.admin_password $OS_PASSWORD \
         compute.build_timeout 500 \
-        compute.image_ssh_user cirros \
+        validation.image_ssh_user cirros \
         orchestration.stack_owner_role _member_ \
-        compute.ssh_user cirros \
         network.build_timeout 500 \
         volume.build_timeout 500 \
         DEFAULT.log_file "/var/log/tempest/tempest.log" \
-        scenario.ssh_user cirros $TEMPEST_ADD_CONFIG
+        $TEMPEST_ADD_CONFIG
     sudo cp $HOME/tempest/etc/tempest.conf /etc/tempest/tempest.conf
     [[ ! -e $HOME/tempest/.testrepository ]] && $HOME/tempest/tools/with_venv.sh testr init
     $HOME/tempest/tools/with_venv.sh testr run \
