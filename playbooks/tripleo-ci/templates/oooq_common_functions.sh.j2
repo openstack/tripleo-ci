@@ -88,7 +88,7 @@ function run_with_timeout {
     /usr/bin/timeout --preserve-status ${TIME_FOR_COMMAND}m ${COMMAND}
 }
 
-function collect_logs {
+function create_collect_logs_script {
     cat <<-EOF > $LOGS_DIR/collect_logs.sh
     #!/bin/bash
     set -x
@@ -146,14 +146,6 @@ function collect_logs {
 
     du -L -ch $LOGS_DIR/* | tail -n +1 | sort -rh | head -n 200 &> $LOGS_DIR/log-size.txt || true
 EOF
-
-    if [[ "${NODEPOOL_PROVIDER:-''}" == "rdo-cloud-tripleo" ]] || [[ "${NODEPOOL_PROVIDER:-''}" == "tripleo-test-cloud-rh1" ]]; then
-        if [[ "$TOCI_JOBTYPE" =~ "ovb" ]]; then
-            bash $LOGS_DIR/collect_logs.sh
-            # rename script to not to run it in multinode jobs
-            mv $LOGS_DIR/collect_logs.sh $LOGS_DIR/ovb_collect_logs.sh
-        fi
-    fi
 
 }
 

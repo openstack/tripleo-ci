@@ -140,6 +140,8 @@ done
 if [[ "$PLAYBOOK_DRY_RUN" == "1" ]]; then
     exit_value=0
 else
+    ## LOGS COLLECTION PREPARE
+    create_collect_logs_script
 for playbook in $PLAYBOOKS; do
         echo "${RELEASE_ARGS[$playbook]:=$QUICKSTART_DEFAULT_RELEASE_ARG}"
         run_with_timeout $START_JOB_TIME $QUICKSTART_INSTALL_CMD \
@@ -160,8 +162,14 @@ for playbook in $PLAYBOOKS; do
 done
     [[ "$exit_value" == 0 ]] && echo "Playbook run passed successfully" || echo "Playbook run failed"
 
-    ## LOGS COLLECTION
-    collect_logs
+    ## LOGS COLLECTION RUN (if applicable)
+    if [[ "${NODEPOOL_PROVIDER:-''}" == "rdo-cloud-tripleo" ]] || [[ "${NODEPOOL_PROVIDER:-''}" == "tripleo-test-cloud-rh1" ]]; then
+        if [[ "$TOCI_JOBTYPE" =~ "ovb" ]]; then
+            bash $LOGS_DIR/collect_logs.sh
+            # rename script to not to run it in multinode jobs
+            mv $LOGS_DIR/collect_logs.sh $LOGS_DIR/ovb_collect_logs.sh
+        fi
+    fi
 
 fi
 
