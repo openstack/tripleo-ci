@@ -1,10 +1,38 @@
-workspace: "{{ ansible_user_dir }}/workspace/"
-tripleo_root: "{{ ansible_user_dir }}/src/git.openstack.org/openstack/"
+workspace: "{{ ansible_user_dir }}/workspace"
+tripleo_root: "{{ ansible_user_dir }}/src/git.openstack.org/openstack"
+tripleo_ci_dir: "{{ ansible_user_dir }}/{{ zuul.projects['git.openstack.org/openstack-infra/tripleo-ci'].src_dir }}"
+tripleo_quickstart_dir: "{{ ansible_user_dir }}/{{ zuul.projects['git.openstack.org/openstack/tripleo-quickstart'].src_dir }}"
 vxlan_vars: "-e toci_vxlan_networking='false' -e vxlan_networking='false'"
 extra_vars: ""
+job_featureset_file: "{{ tripleo_quickstart_dir }}/config/general_config/featureset{{ featureset }}.yml"
+
+featureset_conf: >-
+  {% if common_featureset is defined -%}
+  --extra-vars @{{ tripleo_quickstart_dir }}/config/general_config/{{ common_featureset }} {% endif -%}
+  --extra-vars @{{ job_featureset_file }}
+
 periodic: >-
-  {%- if 'periodic' in zuul.pipeline -%}
+  {% if 'periodic' in zuul.pipeline -%}
   true
-  {%- else -%}
+  {% else %}
   false
-  {%- endif -%}
+  {%- endif %}
+
+nodepool_provider: "{{ hostvars[inventory_hostname].nodepool.provider }}"
+
+nodes_file: >-
+  {% if nodes is defined -%}
+  {{ tripleo_quickstart_dir }}/config/nodes/{{ nodes }}.yml
+  {%- endif %}
+
+nodes_args: >-
+  {% if nodes is defined -%}
+  --extra-vars @{{ nodes_file }}
+  {%- endif %}
+
+rdo_env_vars: >-
+  {% if nodepool_provider == 'rdo-cloud-tripleo' -%}
+  --extra-vars @{{ tripleo_ci_dir }}/toci-quickstart/config/testenv/{{ environment_type }}-rdocloud.yml
+  {%- endif %}
+
+env_vars: "--extra-vars @{{ tripleo_ci_dir }}/toci-quickstart/config/testenv/{{ environment_type }}.yml {{ rdo_env_vars }}"

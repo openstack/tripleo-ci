@@ -114,7 +114,7 @@ function create_collect_logs_script {
     export ANSIBLE_CONFIG=$OOOQ_DIR/ansible.cfg
     export ARA_DATABASE=sqlite:///${LOCAL_WORKING_DIR}/ara.sqlite
     export ZUUL_CHANGES=${ZUUL_CHANGES:-''}
-    export NODES_FILE=${NODES_FILE:-''}
+    export NODES_FILE={{ nodes_file }}
     export TOCI_JOBTYPE=$TOCI_JOBTYPE
     export STABLE_RELEASE=${STABLE_RELEASE:-''}
     export QUICKSTART_RELEASE=${QUICKSTART_RELEASE:-''}

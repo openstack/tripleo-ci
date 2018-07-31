@@ -2,8 +2,6 @@
 set -eux
 set -o pipefail
 export ANSIBLE_NOCOLOR=1
-[[ -n ${STATS_TESTENV:-''} ]] && export STATS_TESTENV=$(( $(date +%s) - STATS_TESTENV ))
-export STATS_OOOQ=$(date +%s)
 
 LOCAL_WORKING_DIR="{{ workspace }}/.quickstart"
 WORKING_DIR="$HOME"
@@ -49,11 +47,11 @@ QUICKSTART_COLLECTLOGS_CMD="$LOCAL_WORKING_DIR/bin/ansible-playbook \
     $LOCAL_WORKING_DIR/playbooks/collect-logs.yml \
     -vv \
     --extra-vars @$LOCAL_WORKING_DIR/config/release/tripleo-ci/$QUICKSTART_RELEASE.yml \
-    $FEATURESET_CONF \
-    $ENV_VARS \
+    {{ featureset_conf }} \
+    {{ env_vars }} \
     {{ extra_vars }} \
     $DEFAULT_ARGS \
-    --extra-vars @$COLLECT_CONF \
+    --extra-vars @{{ tripleo_root }}/tripleo-ci/toci-quickstart/config/collect-logs.yml \
     --extra-vars artcl_collect_dir=$LOGS_DIR \
     --tags all \
     --skip-tags teardown-all \
@@ -112,22 +110,21 @@ set +u
 source $LOCAL_WORKING_DIR/bin/activate
 set -u
 source $OOOQ_DIR/ansible_ssh_env.sh
-[[ -n ${STATS_OOOQ:-''} ]] && export STATS_OOOQ=$(( $(date +%s) - STATS_OOOQ ))
 
 # Debug step capture env variables
-if [[ "$PLAYBOOK_DRY_RUN" == "1" ]]; then
+{% if dryrun|default(false)|bool %}
     echo "-- Capture Environment Variables Used ---------"
     echo "$(env)" | tee -a $LOGS_DIR/toci_env_args_output.log
     declare -p | tee -a $LOGS_DIR/toci_env_args_output.log
-fi
+{% endif %}
 
 echo "-- Playbooks Output --------------------------"
 for playbook in {{ " ".join(playbooks) }}; do
     echo "$QUICKSTART_INSTALL_CMD \
         ${RELEASE_ARGS[$playbook]:=$QUICKSTART_DEFAULT_RELEASE_ARG} \
-        $NODES_ARGS \
-        $FEATURESET_CONF \
-        $ENV_VARS \
+        {{ nodes_args }} \
+        {{ featureset_conf }} \
+        {{ env_vars }} \
         {{ extra_vars }} \
         {{ vxlan_vars }} \
         $DEFAULT_ARGS \
@@ -138,18 +135,19 @@ for playbook in {{ " ".join(playbooks) }}; do
         | tee -a $LOGS_DIR/playbook_executions.log
 done
 
-if [[ "$PLAYBOOK_DRY_RUN" == "1" ]]; then
+{% if dryrun|default(false)|bool %}
+    # Bypassing execution, dryrun was set
     exit_value=0
-else
+{% else %}
     ## LOGS COLLECTION PREPARE
     create_collect_logs_script
 for playbook in {{ " ".join(playbooks) }}; do
         echo "${RELEASE_ARGS[$playbook]:=$QUICKSTART_DEFAULT_RELEASE_ARG}"
         run_with_timeout $START_JOB_TIME $QUICKSTART_INSTALL_CMD \
            "${RELEASE_ARGS[$playbook]:=$QUICKSTART_DEFAULT_RELEASE_ARG}" \
-           $NODES_ARGS \
-           $FEATURESET_CONF \
-           $ENV_VARS \
+           {{ nodes_args }} \
+           {{ featureset_conf }} \
+           {{ env_vars }} \
            {{ extra_vars }} \
            {{ vxlan_vars }} \
            $DEFAULT_ARGS \
@@ -172,7 +170,7 @@ done
         fi
     fi
 
-fi
+{% endif %}
 
 popd
 
