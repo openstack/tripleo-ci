@@ -19,12 +19,13 @@
       bridge_mtu: 1350
     nodeset: two-centos-7-nodes
     roles:
-      - zuul: openstack-infra/zuul-jobs
+      - zuul: git.openstack.org/openstack-infra/zuul-jobs
     required-projects:
-      - openstack-infra/tripleo-ci
-      - openstack/tripleo-quickstart
-      - openstack/tripleo-quickstart-extras
-      - openstack/tripleo-upgrade
+      - git.openstack.org/openstack-infra/tripleo-ci
+      - git.openstack.org/openstack/tripleo-quickstart
+      - git.openstack.org/openstack/tripleo-quickstart-extras
+      - git.openstack.org/openstack/tripleo-upgrade
+      - git.openstack.org/openstack/browbeat
     pre-run:
       - playbooks/nodepool-provider/pre.yaml
       - playbooks/multinode-networking/pre.yaml
