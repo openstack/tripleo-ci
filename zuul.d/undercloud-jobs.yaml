@@ -21,7 +21,6 @@
 - job:
     name: tripleo-ci-centos-7-undercloud-containers
     parent: tripleo-ci-base
-    post-run: playbooks/tripleo-ci/post.yaml
     timeout: 10800
     nodeset: single-centos-7-node
     branches: ^(?!stable/(newton|ocata|pike|queens)).*$
@@ -33,7 +32,6 @@
 - job:
     name: tripleo-ci-centos-7-undercloud-oooq
     parent: tripleo-ci-base
-    post-run: playbooks/tripleo-ci/post.yaml
     timeout: 10800
     nodeset: single-centos-7-node
     vars:
@@ -44,7 +42,6 @@
 - job:
     name: tripleo-ci-centos-7-undercloud-upgrades
     parent: tripleo-ci-base
-    post-run: playbooks/tripleo-ci/post.yaml
     timeout: 10800
     nodeset: single-centos-7-node
     branches: ^(?!stable/(newton|ocata)).*$
@@ -56,7 +53,6 @@
 - job:
     name: tripleo-ci-centos-7-containerized-undercloud-upgrades
     parent: tripleo-ci-base
-    post-run: playbooks/tripleo-ci/post.yaml
     timeout: 10800
     nodeset: single-centos-7-node
     branches: ^(?!stable/(newton|ocata|pike|queens)).*$

@@ -30,6 +30,7 @@
       - playbooks/multinode-networking/pre.yaml
       - playbooks/openstack-zuul-jobs/legacy/pre.yaml
     run: playbooks/tripleo-ci/run-v3.yaml
+    post-run: playbooks/tripleo-ci/post.yaml
     irrelevant-files:
       - ^.*\.md$
       - ^.*\.rst$
