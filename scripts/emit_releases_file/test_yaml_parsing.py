@@ -2,8 +2,8 @@ from emit_releases_file import load_featureset_file
 
 import mock
 import pytest
-import yaml
 from six import PY2
+import yaml
 
 
 if PY2:

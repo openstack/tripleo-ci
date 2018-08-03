@@ -21,6 +21,7 @@ import json
 import sys
 import time
 
+
 def process_events(all_events, events):
     times = {}
     for event in all_events:
@@ -41,12 +42,13 @@ def process_events(all_events, events):
             elif status == 'CREATE_COMPLETE' or status == 'CREATE_FAILED':
                 times[name]['elapsed'] = etime - times[name]['start']
     for name, data in sorted(times.items(),
-                             key = lambda x: x[1]['elapsed'],
+                             key=lambda x: x[1]['elapsed'],
                              reverse=True):
         elapsed = 'Still in progress'
         if times[name]['elapsed'] is not None:
             elapsed = times[name]['elapsed']
-        print '%s %s' % (name, elapsed)
+        print('%s %s' % (name, elapsed))
+
 
 if __name__ == '__main__':
     stdin = sys.stdin.read()

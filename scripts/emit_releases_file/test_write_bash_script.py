@@ -1,8 +1,8 @@
 from emit_releases_file import write_releases_dictionary_to_bash
 
-import os
 import mock
 from mock import mock_open
+import os
 from six import PY2
 
 import pytest
@@ -64,5 +64,5 @@ def test_output_is_sourceable(mock, releases_dictionary):
     handle = mock()
     args, _ = handle.write.call_args
     written_content = args[0]
-    # TODO: check environment variables
+    # TODO(Llorente): check environment variables
     assert (0 == os.system(written_content))

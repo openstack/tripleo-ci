@@ -1,11 +1,11 @@
 #!/usr/bin/python
 
 import argparse
-import sys
-import subprocess
+import datetime
 import json
 import re
-import datetime
+import subprocess
+import sys
 
 # Do not include the -nv suffix in the job name here.  The code will handle
 # reading both the voting and non-voting forms of the job if they exist.
@@ -52,7 +52,7 @@ def get_gerrit_reviews(project, status="open", branch="master", limit="30"):
     cmd = 'ssh review.openstack.org -p29418 gerrit' \
           ' query "%s project: %s branch: %s" --comments' \
           ' --format JSON limit: %s --patch-sets --current-patch-set'\
-          % (status_query, project, branch,limit)
+          % (status_query, project, branch, limit)
     p = subprocess.Popen([cmd], shell=True, stdin=subprocess.PIPE,
                          stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     stdout = p.stdout
@@ -82,7 +82,7 @@ def process_jenkins_comment_message(message, job_names):
     job_results = {}
     for line in message.split('\n'):
         if line and line[0] == '-':
-            split = line.split(" ",6)
+            split = line.split(" ", 6)
             voting_job_name = split[1]
             if voting_job_name.endswith('-nv'):
                 voting_job_name = voting_job_name[:-3]
@@ -108,7 +108,8 @@ def gen_html(data, html_file, table_file, stats_hours, job_names, options):
     count = 0
 
     reversed_sorted_keys = [(x['id'], x['patchset']) for x in
-        reversed(sorted(data.values(), key=lambda y: y['ts']))]
+                            reversed(sorted(data.values(),
+                                     key=lambda y: y['ts']))]
     passed_jobs = 0
     partial_jobs = 0
     failed_jobs = 0
@@ -219,7 +220,10 @@ def main(args=sys.argv[1:]):
     # project reviews
     proj_reviews = []
     for proj in opts.p.split(","):
-        proj_reviews.extend(get_gerrit_reviews(proj, status=opts.s, branch=opts.b, limit=opts.l))
+        proj_reviews.extend(get_gerrit_reviews(proj,
+                            status=opts.s,
+                            branch=opts.b,
+                            limit=opts.l))
     results = {}
     for review in proj_reviews:
         for ts, message in get_jenkins_comment_message(review).iteritems():
@@ -242,7 +246,8 @@ def main(args=sys.argv[1:]):
             results[key].setdefault(
                                     'ci_results', {}).update(ci_results)
 
-    gen_html(results, opts.o, "%s-table" % opts.o, 24, job_names,opts)
+    gen_html(results, opts.o, "%s-table" % opts.o, 24, job_names, opts)
+
 
 if __name__ == '__main__':
     exit(main())
