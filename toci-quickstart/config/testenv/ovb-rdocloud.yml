@@ -5,9 +5,9 @@
 # https://github.com/openstack-infra/tripleo-ci/blob/master/scripts/te-broker/create-env#L47
 
 custom_nameserver:
+    - 1.1.1.1
+    - 1.0.0.1
     - 38.145.33.91
-    - 38.145.32.66
-    - 38.145.32.79
 undercloud_undercloud_nameservers: "{{ custom_nameserver }}"
 external_net: '38.145.32.0/22'
 overcloud_dns_servers: "{{ custom_nameserver }}"
