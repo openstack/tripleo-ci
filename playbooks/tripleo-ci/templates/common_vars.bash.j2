@@ -36,12 +36,10 @@ fi
 
 export TRIPLEO_ROOT=${TRIPLEO_ROOT:-"/opt/stack/new"}
 export WORKSPACE=${WORKSPACE:-"$TRIPLEO_ROOT/workspace"}
-export DEVSTACK_GATE_TIMEOUT=${DEVSTACK_GATE_TIMEOUT:-"180"}
 export PATH=/sbin:/usr/sbin:$PATH
 
 export UNDERCLOUD_VM_NAME=instack
 
-export REMAINING_TIME=${REMAINING_TIME:-180}
 export NODEPOOL_DOCKER_REGISTRY_PROXY=${NODEPOOL_DOCKER_REGISTRY_PROXY:-""}
 
 # post ci chores to run at the end of ci

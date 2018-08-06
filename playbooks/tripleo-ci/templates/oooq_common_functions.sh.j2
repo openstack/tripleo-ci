@@ -72,86 +72,68 @@ function is_featureset {
     [ $(shyaml get-value "${type}" "False"< "${featureset_file}") = "True" ]
 }
 
-function run_with_timeout {
-    # First parameter is the START_JOB_TIME
-    # Second is the command to be executed
-    JOB_TIME=$1
-    shift
-    COMMAND=$@
-    # Leave 20 minutes for quickstart logs collection for ovb only
-    if [[ "$TOCI_JOBTYPE" =~ "ovb" ]]; then
-        RESERVED_LOG_TIME=20
-    else
-        RESERVED_LOG_TIME=3
-    fi
-    # Use $REMAINING_TIME of infra to calculate maximum time for remaining part of job
-    REMAINING_TIME=${REMAINING_TIME:-180}
-    TIME_FOR_COMMAND=$(( REMAINING_TIME - ($(date +%s) - JOB_TIME)/60 - $RESERVED_LOG_TIME))
-
-    if [[ $TIME_FOR_COMMAND -lt 1 ]]; then
-        return 143
-    fi
-    /usr/bin/timeout --preserve-status ${TIME_FOR_COMMAND}m ${COMMAND}
-}
-
 function create_collect_logs_script {
-    cat <<-EOF > $LOGS_DIR/collect_logs.sh
-    #!/bin/bash
-    set -x
+    cat > $LOGS_DIR/collect_logs.sh <<END
+#!/bin/bash
+set -x
 
-    export NODEPOOL_PROVIDER=${NODEPOOL_PROVIDER:-''}
-    export STATS_TESTENV=${STATS_TESTENV:-''}
-    export STATS_OOOQ=${STATS_OOOQ:-''}
-    export START_JOB_TIME=${START_JOB_TIME:-''}
-    export ZUUL_PIPELINE=${ZUUL_PIPELINE:-''}
-    export DEVSTACK_GATE_TIMEOUT=${DEVSTACK_GATE_TIMEOUT:-''}
-    export REMAINING_TIME=${REMAINING_TIME:-''}
-    export LOCAL_WORKING_DIR="$WORKSPACE/.quickstart"
-    export OPT_WORKDIR=$LOCAL_WORKING_DIR
-    export WORKING_DIR="$HOME"
-    export LOGS_DIR=$WORKSPACE/logs
-    export VIRTUAL_ENV_DISABLE_PROMPT=1
-    export ANSIBLE_CONFIG=$OOOQ_DIR/ansible.cfg
-    export ARA_DATABASE=sqlite:///${LOCAL_WORKING_DIR}/ara.sqlite
-    export ZUUL_CHANGES=${ZUUL_CHANGES:-''}
-    export NODES_FILE={{ nodes_file }}
-    export TOCI_JOBTYPE=$TOCI_JOBTYPE
-    export STABLE_RELEASE=${STABLE_RELEASE:-''}
-    export QUICKSTART_RELEASE=${QUICKSTART_RELEASE:-''}
+export NODEPOOL_PROVIDER=${NODEPOOL_PROVIDER:-''}
+export STATS_TESTENV=${STATS_TESTENV:-''}
+export STATS_OOOQ=${STATS_OOOQ:-''}
+export ZUUL_PIPELINE=${ZUUL_PIPELINE:-''}
+export LOCAL_WORKING_DIR="$WORKSPACE/.quickstart"
+export OPT_WORKDIR=$LOCAL_WORKING_DIR
+export WORKING_DIR="$HOME"
+export LOGS_DIR=$WORKSPACE/logs
+export VIRTUAL_ENV_DISABLE_PROMPT=1
+export ANSIBLE_CONFIG=$OOOQ_DIR/ansible.cfg
+export ARA_DATABASE=sqlite:///${LOCAL_WORKING_DIR}/ara.sqlite
+export ZUUL_CHANGES=${ZUUL_CHANGES:-''}
+export NODES_FILE=${NODES_FILE:-''}
+export TOCI_JOBTYPE=$TOCI_JOBTYPE
+export STABLE_RELEASE=${STABLE_RELEASE:-''}
+export QUICKSTART_RELEASE=${QUICKSTART_RELEASE:-''}
 
-    set +u
-    source $LOCAL_WORKING_DIR/bin/activate
-    set -u
-    source $OOOQ_DIR/ansible_ssh_env.sh
+set +u
+source $LOCAL_WORKING_DIR/bin/activate
+set -u
+source $OOOQ_DIR/ansible_ssh_env.sh
 
-    /usr/bin/timeout --preserve-status 40m $QUICKSTART_COLLECTLOGS_CMD  > $LOGS_DIR/quickstart_collect_logs.log || \
-        echo "WARNING: quickstart collect-logs failed, check quickstart_collectlogs.log for details"
+sudo unbound-control dump_cache > /tmp/dns_cache.txt
+sudo chown {{ ansible_user_id }}: /tmp/dns_cache.txt
+cat /tmp/dns_cache.txt | gzip - > $LOGS_DIR/dns_cache.txt.gz
 
-    cp $LOGS_DIR/undercloud/var/log/postci.txt.gz $LOGS_DIR/ || true
+mkdir -p $LOGS_DIR/quickstart_files
+find $LOCAL_WORKING_DIR -maxdepth 1 -type f -not -name "*sqlite" | while read i; do gzip -cf \$i > $LOGS_DIR/quickstart_files/\$(basename \$i).txt.gz; done
 
-    if [[ -e $LOGS_DIR/undercloud/home/$USER/tempest/testrepository.subunit.gz ]]; then
-        cp $LOGS_DIR/undercloud/home/$USER/tempest/testrepository.subunit.gz ${LOGS_DIR}/testrepository.subunit.gz
-    elif [[ -e $LOGS_DIR/undercloud/home/$USER/pingtest.subunit.gz ]]; then
-        cp $LOGS_DIR/undercloud/home/$USER/pingtest.subunit.gz ${LOGS_DIR}/testrepository.subunit.gz
-    elif [[ -e $LOGS_DIR/undercloud/home/$USER/undercloud_sanity.subunit.gz ]]; then
-        cp $LOGS_DIR/undercloud/home/$USER/undercloud_sanity.subunit.gz ${LOGS_DIR}/testrepository.subunit.gz
-    fi
+$QUICKSTART_COLLECTLOGS_CMD  > $LOGS_DIR/quickstart_collect_logs.log || \
+    echo "WARNING: quickstart collect-logs failed, check quickstart_collectlogs.log for details"
 
-    # Copy tempest.html to root dir
-    cp $LOGS_DIR/undercloud/home/$USER/tempest/tempest.html.gz ${LOGS_DIR} || true
+cp $LOGS_DIR/undercloud/var/log/postci.txt.gz $LOGS_DIR/ || true
 
-    # Copy tempest and .testrepository directory to /opt/stack/new/tempest and
-    # unzip
-    sudo mkdir -p /opt/stack/new
-    sudo cp -Rf $LOGS_DIR/undercloud/home/$USER/tempest /opt/stack/new || true
-    sudo gzip -d -r /opt/stack/new/tempest/.testrepository || true
+if [[ -e $LOGS_DIR/undercloud/home/$USER/tempest/testrepository.subunit.gz ]]; then
+    cp $LOGS_DIR/undercloud/home/$USER/tempest/testrepository.subunit.gz ${LOGS_DIR}/testrepository.subunit.gz
+elif [[ -e $LOGS_DIR/undercloud/home/$USER/pingtest.subunit.gz ]]; then
+    cp $LOGS_DIR/undercloud/home/$USER/pingtest.subunit.gz ${LOGS_DIR}/testrepository.subunit.gz
+elif [[ -e $LOGS_DIR/undercloud/home/$USER/undercloud_sanity.subunit.gz ]]; then
+    cp $LOGS_DIR/undercloud/home/$USER/undercloud_sanity.subunit.gz ${LOGS_DIR}/testrepository.subunit.gz
+fi
 
-    # record the size of the logs directory
-    # -L, --dereference     dereference all symbolic links
-    # Note: tail -n +1 is to prevent the error 'Broken Pipe' e.g. 'sort: write failed: standard output: Broken pipe'
+# Copy tempest.html to root dir
+cp $LOGS_DIR/undercloud/home/$USER/tempest/tempest.html.gz ${LOGS_DIR} || true
 
-    du -L -ch $LOGS_DIR/* | tail -n +1 | sort -rh | head -n 200 &> $LOGS_DIR/log-size.txt || true
-EOF
+# Copy tempest and .testrepository directory to /opt/stack/new/tempest and
+# unzip
+sudo mkdir -p /opt/stack/new
+sudo cp -Rf $LOGS_DIR/undercloud/home/$USER/tempest /opt/stack/new || true
+sudo gzip -d -r /opt/stack/new/tempest/.testrepository || true
+
+# record the size of the logs directory
+# -L, --dereference     dereference all symbolic links
+# Note: tail -n +1 is to prevent the error 'Broken Pipe' e.g. 'sort: write failed: standard output: Broken pipe'
+
+du -L -ch $LOGS_DIR/* | tail -n +1 | sort -rh | head -n 200 &> $LOGS_DIR/log-size.txt || true
+END
 
 }
 
