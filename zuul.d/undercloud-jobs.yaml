@@ -16,7 +16,6 @@
       jobs:
         - tripleo-ci-centos-7-undercloud-oooq
         - tripleo-ci-centos-7-undercloud-containers
-        - tripleo-ci-centos-7-containerized-undercloud-upgrades
 
 - job:
     name: tripleo-ci-centos-7-undercloud-containers
@@ -55,6 +54,7 @@
 
 - job:
     name: tripleo-ci-centos-7-containerized-undercloud-upgrades
+    voting: false
     parent: tripleo-ci-base
     post-run: playbooks/tripleo-ci/post.yaml
     timeout: 10800
