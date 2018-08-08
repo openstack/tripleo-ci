@@ -21,7 +21,6 @@
 - job:
     name: tripleo-ci-centos-7-undercloud-containers
     parent: tripleo-ci-base
-    timeout: 10800
     nodeset: single-centos-7-node
     branches: ^(?!stable/(newton|ocata|pike|queens)).*$
     vars:
@@ -32,7 +31,6 @@
 - job:
     name: tripleo-ci-centos-7-undercloud-oooq
     parent: tripleo-ci-base
-    timeout: 10800
     nodeset: single-centos-7-node
     vars:
       toci_jobtype: singlenode-featureset003
@@ -42,7 +40,6 @@
 - job:
     name: tripleo-ci-centos-7-undercloud-upgrades
     parent: tripleo-ci-base
-    timeout: 10800
     nodeset: single-centos-7-node
     branches: ^(?!stable/(newton|ocata)).*$
     vars:
@@ -53,7 +50,6 @@
 - job:
     name: tripleo-ci-centos-7-containerized-undercloud-upgrades
     parent: tripleo-ci-base
-    timeout: 10800
     nodeset: single-centos-7-node
     branches: ^(?!stable/(newton|ocata|pike|queens)).*$
     vars:

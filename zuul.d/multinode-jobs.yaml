@@ -96,7 +96,6 @@
 - job:
     name: tripleo-ci-centos-7-3nodes-multinode
     parent: tripleo-ci-base
-    timeout: 10800
     voting: false
     nodeset: three-centos-7-nodes
     branches: ^(?!stable/(newton|ocata|pike)).*$
@@ -109,7 +108,6 @@
 - job:
     name: tripleo-ci-centos-7-containers-multinode
     parent: tripleo-ci-base
-    timeout: 10800
     branches: ^(?!stable/(newton|ocata)).*$
     vars:
       toci_jobtype: multinode-1ctlr-featureset010
@@ -120,7 +118,6 @@
 - job:
     name: tripleo-ci-centos-7-containers-multinode-queens
     parent: tripleo-ci-base
-    timeout: 10800
     branches: master
     vars:
       toci_jobtype: multinode-1ctlr-featureset010
@@ -132,7 +129,6 @@
 - job:
     name: tripleo-ci-centos-7-containers-multinode-pike
     parent: tripleo-ci-base
-    timeout: 10800
     branches: master
     vars:
       toci_jobtype: multinode-1ctlr-featureset010
@@ -144,7 +140,6 @@
 - job:
     name: tripleo-ci-centos-7-nonha-multinode-oooq
     parent: tripleo-ci-base
-    timeout: 10800
     branches: ^stable/(newton|ocata).*$
     vars:
       toci_jobtype: multinode-1ctlr-featureset004
@@ -155,7 +150,6 @@
 - job:
     name: tripleo-ci-centos-7-scenario001-multinode-oooq
     parent: tripleo-ci-base
-    timeout: 10800
     branches: ^stable/(newton|ocata).*$
     vars:
       toci_jobtype: multinode-1ctlr-featureset005
@@ -166,7 +160,6 @@
 - job:
     name: tripleo-ci-centos-7-scenario001-multinode-oooq-container
     parent: tripleo-ci-base
-    timeout: 10800
     branches: ^(?!stable/(newton|ocata)).*$
     vars:
       toci_jobtype: multinode-1ctlr-featureset016
@@ -177,7 +170,6 @@
 - job:
     name: tripleo-ci-centos-7-scenario002-multinode-oooq
     parent: tripleo-ci-base
-    timeout: 10800
     branches: ^stable/(newton|ocata).*$
     vars:
       toci_jobtype: multinode-1ctlr-featureset006
@@ -188,7 +180,6 @@
 - job:
     name: tripleo-ci-centos-7-scenario002-multinode-oooq-container
     parent: tripleo-ci-base
-    timeout: 10800
     branches: ^(?!stable/(newton|ocata)).*$
     vars:
       toci_jobtype: multinode-1ctlr-featureset017
@@ -199,7 +190,6 @@
 - job:
     name: tripleo-ci-centos-7-scenario002-multinode-oooq-container-refstack
     parent: tripleo-ci-base
-    timeout: 10800
     branches: ^(?!stable/(newton)).*$
     vars:
       toci_jobtype: multinode-1ctlr-featureset055
@@ -210,7 +200,6 @@
 - job:
     name: tripleo-ci-centos-7-scenario003-multinode-oooq
     parent: tripleo-ci-base
-    timeout: 10800
     branches: ^stable/ocata.*$
     vars:
       toci_jobtype: multinode-1ctlr-featureset007
@@ -221,7 +210,6 @@
 - job:
     name: tripleo-ci-centos-7-scenario003-multinode-oooq-container
     parent: tripleo-ci-base
-    timeout: 10800
     branches: ^(?!stable/(newton|ocata)).*$
     vars:
       toci_jobtype: multinode-1ctlr-featureset018
@@ -232,7 +220,6 @@
 - job:
     name: tripleo-ci-centos-7-scenario004-multinode-oooq
     parent: tripleo-ci-base
-    timeout: 10800
     branches: ^stable/ocata.*$
     vars:
       toci_jobtype: multinode-1ctlr-featureset008
@@ -243,7 +230,6 @@
 - job:
     name: tripleo-ci-centos-7-scenario004-multinode-oooq-container
     parent: tripleo-ci-base
-    timeout: 10800
     branches: ^(?!stable/(newton|ocata)).*$
     vars:
       toci_jobtype: multinode-1ctlr-featureset019
@@ -254,7 +240,6 @@
 - job:
     name: tripleo-ci-centos-7-scenario006-multinode-oooq
     parent: tripleo-ci-base
-    timeout: 10800
     voting: false
     branches: ^(?!stable/(newton|ocata)).*$
     vars:
@@ -266,7 +251,6 @@
 - job:
     name: tripleo-ci-centos-7-scenario007-multinode-oooq
     parent: tripleo-ci-base
-    timeout: 10800
     branches: ^stable/pike.*$
     vars:
       toci_jobtype: multinode-1ctlr-featureset028
@@ -277,7 +261,6 @@
 - job:
     name: tripleo-ci-centos-7-scenario007-multinode-oooq-container
     parent: tripleo-ci-base
-    timeout: 10800
     branches: ^(?!stable/(newton|ocata|pike)).*$
     vars:
       toci_jobtype: multinode-1ctlr-featureset030
@@ -288,7 +271,6 @@
 - job:
     name: tripleo-ci-centos-7-scenario008-multinode-oooq-container
     parent: tripleo-ci-base
-    timeout: 10800
     voting: false
     branches: ^(?!stable/(newton|ocata|pike)).*$
     vars:
@@ -300,7 +282,6 @@
 - job:
     name: tripleo-ci-centos-7-scenario008-multinode-oooq
     parent: tripleo-ci-base
-    timeout: 10800
     voting: false
     branches: ^(?!stable/(newton|ocata|pike|queens)).*$
     vars:
@@ -312,7 +293,6 @@
 - job:
     name: tripleo-ci-centos-7-scenario009-multinode-oooq
     parent: tripleo-ci-base
-    timeout: 10800
     voting: false
     branches: ^(?!stable/(newton|ocata)).*$
     vars:
@@ -324,7 +304,6 @@
 - job:
     name: tripleo-ci-centos-7-scenario010-multinode-oooq-container
     parent: tripleo-ci-base
-    timeout: 10800
     voting: false
     branches: ^(?!stable/(newton|ocata|pike)).*$
     vars:
@@ -338,7 +317,6 @@
     description: |
       Basic tripleo update job, this is not an upgrade job.
     parent: tripleo-ci-base
-    timeout: 10800
     voting: true
     branches: ^(?!stable/(newton|ocata|pike|queens)).*$
     vars:
@@ -353,7 +331,6 @@
 - job:
     name: tripleo-ci-centos-7-scenario011-multinode-oooq-container
     parent: tripleo-ci-base
-    timeout: 10800
     voting: false
     branches: ^(?!stable/(newton|ocata)).*$
     vars:
@@ -365,7 +342,6 @@
 - job:
     name: tripleo-ci-centos-7-scenario000-multinode-oooq-container-upgrades
     parent: tripleo-ci-base
-    timeout: 10800
     voting: false
     branches: ^(?!stable/(newton|ocata)).*$
     vars:
