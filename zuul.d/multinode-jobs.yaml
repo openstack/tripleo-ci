@@ -339,11 +339,17 @@
       nodes: 1ctlr
       featureset: '044'
 
+# The upgrades from Ocata to Pike needs to run
+# from an uncontainerized to a containerized
+# deployment, this job runs an upgrade from a
+# containerized to a containerized deployment.
+# Older upgrades than Pike can not use this job.
+# Launchpad bug: #1786062
 - job:
     name: tripleo-ci-centos-7-scenario000-multinode-oooq-container-upgrades
     parent: tripleo-ci-base
     voting: false
-    branches: ^(?!stable/(newton|ocata)).*$
+    branches: ^(?!stable/(newton|ocata|pike)).*$
     vars:
       toci_jobtype: multinode-1ctlr-featureset051
       environment_type: multinode
