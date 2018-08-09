@@ -6,7 +6,6 @@
 - job:
     name: tripleo-ci-centos-7-standalone
     parent: tripleo-ci-base
-    post-run: playbooks/tripleo-ci/post.yaml
     timeout: 10800
     nodeset: single-centos-7-node
     voting: false
