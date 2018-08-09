@@ -5,6 +5,15 @@ playbooks: |
   [
     "baremetal-full-deploy.yml"
   ]
+  {% elif featureset == '053' %}
+  [
+    "ovb-setup.yml",
+    "baremetal-full-undercloud.yml",
+    "baremetal-full-overcloud-prep.yml",
+    "baremetal-full-overcloud.yml",
+    "baremetal-full-overcloud-validate.yml",
+    "browbeat-minimal.yml"
+  ]
   {% else %}
   [
     "ovb-setup.yml",
