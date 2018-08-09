@@ -121,7 +121,7 @@ if [[ "$PLAYBOOK_DRY_RUN" == "1" ]]; then
 fi
 
 echo "-- Playbooks Output --------------------------"
-for playbook in $PLAYBOOKS; do
+for playbook in {{ " ".join(playbooks) }}; do
     echo "$QUICKSTART_INSTALL_CMD \
         ${RELEASE_ARGS[$playbook]:=$QUICKSTART_DEFAULT_RELEASE_ARG} \
         $NODES_ARGS \
@@ -142,7 +142,7 @@ if [[ "$PLAYBOOK_DRY_RUN" == "1" ]]; then
 else
     ## LOGS COLLECTION PREPARE
     create_collect_logs_script
-for playbook in $PLAYBOOKS; do
+for playbook in {{ " ".join(playbooks) }}; do
         echo "${RELEASE_ARGS[$playbook]:=$QUICKSTART_DEFAULT_RELEASE_ARG}"
         run_with_timeout $START_JOB_TIME $QUICKSTART_INSTALL_CMD \
            "${RELEASE_ARGS[$playbook]:=$QUICKSTART_DEFAULT_RELEASE_ARG}" \
