@@ -102,7 +102,6 @@
     nodeset: three-centos-7-nodes
     branches: ^(?!stable/(newton|ocata|pike)).*$
     vars:
-      toci_jobtype: multinode-2ctlr-featureset032
       environment_type: multinode
       nodes: 2ctlr
       featureset: '032'
@@ -114,7 +113,6 @@
     timeout: 10800
     branches: ^(?!stable/(newton|ocata)).*$
     vars:
-      toci_jobtype: multinode-1ctlr-featureset010
       environment_type: multinode
       nodes: 1ctlr
       featureset: '010'
@@ -126,7 +124,6 @@
     timeout: 10800
     branches: master
     vars:
-      toci_jobtype: multinode-1ctlr-featureset010
       branch_override: 'stable/queens'
       environment_type: multinode
       nodes: 1ctlr
@@ -139,7 +136,6 @@
     timeout: 10800
     branches: master
     vars:
-      toci_jobtype: multinode-1ctlr-featureset010
       branch_override: 'stable/pike'
       environment_type: multinode
       nodes: 1ctlr
@@ -152,7 +148,6 @@
     timeout: 10800
     branches: ^stable/(newton|ocata).*$
     vars:
-      toci_jobtype: multinode-1ctlr-featureset004
       environment_type: multinode
       nodes: 1ctlr
       featureset: '004'
@@ -164,7 +159,6 @@
     timeout: 10800
     branches: ^stable/(newton|ocata).*$
     vars:
-      toci_jobtype: multinode-1ctlr-featureset005
       environment_type: multinode
       nodes: 1ctlr
       featureset: '005'
@@ -176,7 +170,6 @@
     timeout: 10800
     branches: ^(?!stable/(newton|ocata)).*$
     vars:
-      toci_jobtype: multinode-1ctlr-featureset016
       environment_type: multinode
       nodes: 1ctlr
       featureset: '016'
@@ -188,7 +181,6 @@
     timeout: 10800
     branches: ^stable/(newton|ocata).*$
     vars:
-      toci_jobtype: multinode-1ctlr-featureset006
       environment_type: multinode
       nodes: 1ctlr
       featureset: '006'
@@ -200,7 +192,6 @@
     timeout: 10800
     branches: ^(?!stable/(newton|ocata)).*$
     vars:
-      toci_jobtype: multinode-1ctlr-featureset017
       environment_type: multinode
       nodes: 1ctlr
       featureset: '017'
@@ -224,7 +215,6 @@
     timeout: 10800
     branches: ^stable/ocata.*$
     vars:
-      toci_jobtype: multinode-1ctlr-featureset007
       environment_type: multinode
       nodes: 1ctlr
       featureset: '007'
@@ -236,7 +226,6 @@
     timeout: 10800
     branches: ^(?!stable/(newton|ocata)).*$
     vars:
-      toci_jobtype: multinode-1ctlr-featureset018
       environment_type: multinode
       nodes: 1ctlr
       featureset: '018'
@@ -248,7 +237,6 @@
     timeout: 10800
     branches: ^stable/ocata.*$
     vars:
-      toci_jobtype: multinode-1ctlr-featureset008
       environment_type: multinode
       nodes: 1ctlr
       featureset: '008'
@@ -260,7 +248,6 @@
     timeout: 10800
     branches: ^(?!stable/(newton|ocata)).*$
     vars:
-      toci_jobtype: multinode-1ctlr-featureset019
       environment_type: multinode
       nodes: 1ctlr
       featureset: '019'
@@ -273,7 +260,6 @@
     voting: false
     branches: ^(?!stable/(newton|ocata)).*$
     vars:
-      toci_jobtype: multinode-1ctlr-featureset026
       environment_type: multinode
       nodes: 1ctlr
       featureset: '026'
@@ -285,7 +271,6 @@
     timeout: 10800
     branches: ^stable/pike.*$
     vars:
-      toci_jobtype: multinode-1ctlr-featureset028
       environment_type: multinode
       nodes: 1ctlr
       featureset: '028'
@@ -297,7 +282,6 @@
     timeout: 10800
     branches: ^(?!stable/(newton|ocata|pike)).*$
     vars:
-      toci_jobtype: multinode-1ctlr-featureset030
       environment_type: multinode
       nodes: 1ctlr
       featureset: '030'
@@ -310,7 +294,6 @@
     voting: false
     branches: ^(?!stable/(newton|ocata|pike)).*$
     vars:
-      toci_jobtype: multinode-1ctlr-featureset031
       environment_type: multinode
       nodes: 1ctlr
       featureset: '031'
@@ -323,7 +306,6 @@
     voting: false
     branches: ^(?!stable/(newton|ocata|pike|queens)).*$
     vars:
-      toci_jobtype: multinode-1ctlr-featureset031
       environment_type: multinode
       nodes: 1ctlr
       featureset: '031'
@@ -336,7 +318,6 @@
     voting: false
     branches: ^(?!stable/(newton|ocata)).*$
     vars:
-      toci_jobtype: multinode-1ctlr-featureset033
       environment_type: multinode
       nodes: 1ctlr
       featureset: '033'
@@ -349,7 +330,6 @@
     voting: false
     branches: ^(?!stable/(newton|ocata|pike)).*$
     vars:
-      toci_jobtype: multinode-1ctlr-featureset038
       environment_type: multinode
       nodes: 1ctlr
       featureset: '038'
@@ -365,7 +345,6 @@
     voting: true
     branches: ^(?!stable/(newton|ocata|pike|queens)).*$
     vars:
-      toci_jobtype: multinode-1ctlr-featureset037
       environment_type: multinode
       nodes: 1ctlr
       featureset: '037'
@@ -398,7 +377,6 @@
     voting: false
     branches: ^(?!stable/(newton|ocata)).*$
     vars:
-      toci_jobtype: multinode-1ctlr-featureset044
       environment_type: multinode
       nodes: 1ctlr
       featureset: '044'
@@ -411,7 +389,6 @@
     voting: false
     branches: ^(?!stable/(newton|ocata)).*$
     vars:
-      toci_jobtype: multinode-1ctlr-featureset051
       environment_type: multinode
       nodes: 1ctlr
       featureset: '051'

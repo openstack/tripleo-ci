@@ -26,7 +26,6 @@
     nodeset: single-centos-7-node
     branches: ^(?!stable/(newton|ocata|pike|queens)).*$
     vars:
-      toci_jobtype: singlenode-featureset027
       environment_type: singlenode
       featureset: '027'
 
@@ -37,7 +36,6 @@
     timeout: 10800
     nodeset: single-centos-7-node
     vars:
-      toci_jobtype: singlenode-featureset003
       environment_type: singlenode
       featureset: '003'
 
@@ -49,7 +47,6 @@
     nodeset: single-centos-7-node
     branches: ^(?!stable/(newton|ocata)).*$
     vars:
-      toci_jobtype: singlenode-featureset047
       environment_type: singlenode
       featureset: '047'
 
@@ -61,6 +58,5 @@
     nodeset: single-centos-7-node
     branches: ^(?!stable/(newton|ocata|pike|queens)).*$
     vars:
-      toci_jobtype: singlenode-featureset050
       environment_type: singlenode
       featureset: '050'

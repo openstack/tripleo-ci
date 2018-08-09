@@ -67,7 +67,11 @@
         cmd: |
           set -e
           set -x
-          export TOCI_JOBTYPE={{ toci_jobtype }}
+          {% if nodes is defined %}
+          export TOCI_JOBTYPE={{ environment_type }}-{{ nodes }}-featureset{{ featureset }}
+          {% else %}
+          export TOCI_JOBTYPE={{ environment_type }}-featureset{{ featureset }}
+          {% endif %}
 
           # ZUUL does not set these for periodic jobs
           export ZUUL_BRANCH=${ZUUL_BRANCH:-master}
