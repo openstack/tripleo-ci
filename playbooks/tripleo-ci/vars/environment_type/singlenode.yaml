@@ -8,3 +8,12 @@ playbooks:
   - multinode-overcloud.yml
   - multinode-overcloud-upgrade.yml
   - multinode-validate.yml
+tags:
+  [
+    "build",
+    "undercloud-setup",
+    "undercloud-scripts",
+    "undercloud-install",
+    "undercloud-validate",
+    "images"
+  ]

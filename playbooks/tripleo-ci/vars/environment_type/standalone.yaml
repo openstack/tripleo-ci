@@ -3,3 +3,8 @@ environment_infra: osinfra
 playbooks:
   - quickstart.yml
   - multinode-standalone.yml
+tags:
+  [
+    "build",
+    "standalone"
+  ]

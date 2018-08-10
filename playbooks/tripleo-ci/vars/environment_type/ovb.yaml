@@ -14,3 +14,4 @@ playbooks: |
     "baremetal-full-overcloud-validate.yml"
   ]
   {% endif %}
+tags: [ "all" ]
