@@ -140,8 +140,6 @@ def compose_releases_dictionary(stable_release, featureset, upgrade_from,
         if featureset.get('overcloud_upgrade'):
             logger.info('Doing an overcloud upgrade')
             deploy_release = get_relative_release(stable_release, -1)
-            if deploy_release == 'rocky':
-                deploy_release = 'queens'
             if deploy_release == 'newton':
                 deploy_hash = get_dlrn_hash(deploy_release, NEWTON_HASH_NAME)
             else:
@@ -162,8 +160,6 @@ def compose_releases_dictionary(stable_release, featureset, upgrade_from,
     elif featureset.get('undercloud_upgrade'):
         logger.info('Doing an undercloud upgrade')
         install_release = get_relative_release(stable_release, -1)
-        if install_release == 'rocky':
-            install_release = 'queens'
         install_hash = get_dlrn_hash(install_release, CURRENT_HASH_NAME)
         releases_dictionary['undercloud_install_release'] = install_release
         releases_dictionary['undercloud_install_hash'] = install_hash

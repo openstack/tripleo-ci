@@ -199,7 +199,7 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
 done
 
 
-if [[ -f "$RELEASES_SCRIPT" ]] && [[ $FEATURESET_FILE =~ '037' || $FEATURESET_FILE =~ '050' || $FEATURESET_FILE =~ '010' || $FEATURESET_FILE =~ '011' ]]; then
+if [[ -f "$RELEASES_SCRIPT" ]] && [[ $FEATURESET_FILE =~  010|011|037|047|050 ]]; then
 
     python $RELEASES_SCRIPT \
         --stable-release ${STABLE_RELEASE:-"master"} \
