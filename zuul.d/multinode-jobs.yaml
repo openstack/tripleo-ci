@@ -90,6 +90,7 @@
     name: tripleo-multinode-branchful
     check:
       jobs:
+        - tripleo-ci-centos-7-containers-multinode-rocky
         - tripleo-ci-centos-7-containers-multinode-queens
         - tripleo-ci-centos-7-containers-multinode-pike
 
@@ -113,6 +114,19 @@
     branches: ^(?!stable/(newton|ocata)).*$
     vars:
       toci_jobtype: multinode-1ctlr-featureset010
+      environment_type: multinode
+      nodes: 1ctlr
+      featureset: '010'
+
+- job:
+    name: tripleo-ci-centos-7-containers-multinode-rocky
+    parent: tripleo-ci-base
+    timeout: 10800
+    voting: false
+    branches: master
+    vars:
+      toci_jobtype: multinode-1ctlr-featureset010
+      branch_override: 'stable/rocky'
       environment_type: multinode
       nodes: 1ctlr
       featureset: '010'
