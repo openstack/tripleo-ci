@@ -22,6 +22,12 @@ function previous_release_mixed_upgrade_case {
             # NOTE: we need to update this when we cut a stable branch
             echo "queens"
             ;;
+        stein)
+            echo "rocky"
+            ;;
+        rocky)
+            echo "queens"
+            ;;
         queens)
             echo "pike"
             ;;
