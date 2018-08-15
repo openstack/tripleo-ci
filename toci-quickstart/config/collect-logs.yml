@@ -41,6 +41,7 @@ artcl_collect_list:
   - /home/{{ undercloud_user }}/tripleo-config/
   - /home/{{ undercloud_user }}/undercloud-ansible-*/
   - /home/{{ undercloud_user }}/undercloud-install-*
+  - /home/{{ undercloud_user }}/browbeat/log/*
   - /tmp/ansible-mistral-action*/
   - /etc/ansible/
   - /etc/aodh/
