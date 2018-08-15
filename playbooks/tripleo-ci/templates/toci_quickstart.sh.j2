@@ -38,10 +38,11 @@ QUICKSTART_VENV_CMD="
     {{ undercloud }}
 "
 
+#REMOVE build from --skip-tags ASAP
 QUICKSTART_INSTALL_CMD="
     $LOCAL_WORKING_DIR/bin/ansible-playbook
     --tags {{ ','.join(tags) }}$EXTRA_TAGS
-    --skip-tags teardown-all
+    --skip-tags teardown-all,build
 "
 
 QUICKSTART_COLLECTLOGS_CMD="$LOCAL_WORKING_DIR/bin/ansible-playbook \

@@ -260,6 +260,7 @@
 - job:
     name: tripleo-ci-centos-7-scenario007-multinode-oooq-container
     parent: tripleo-ci-base
+    voting: false
     branches: ^(?!stable/(newton|ocata|pike)).*$
     vars:
       environment_type: multinode
