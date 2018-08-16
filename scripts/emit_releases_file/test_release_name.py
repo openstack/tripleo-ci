@@ -15,6 +15,15 @@ import pytest
                              'overcloud_deploy_hash': 'old-current-tripleo',
                              'overcloud_target_release': 'master',
                              'overcloud_target_hash': 'current-tripleo',
+                         }), ('rocky', {
+                             'undercloud_install_release': 'rocky',
+                             'undercloud_install_hash': 'current-tripleo',
+                             'undercloud_target_release': 'rocky',
+                             'undercloud_target_hash': 'current-tripleo',
+                             'overcloud_deploy_release': 'queens',
+                             'overcloud_deploy_hash': 'old-current-tripleo',
+                             'overcloud_target_release': 'rocky',
+                             'overcloud_target_hash': 'current-tripleo',
                          }), ('queens', {
                              'undercloud_install_release': 'queens',
                              'undercloud_install_hash': 'current-tripleo',
