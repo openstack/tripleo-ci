@@ -92,7 +92,7 @@
 
 - job:
     name: tripleo-ci-centos-7-3nodes-multinode
-    parent: tripleo-ci-base
+    parent: tripleo-ci-base-multinode
     voting: false
     nodeset: three-centos-7-nodes
     branches: ^(?!stable/(newton|ocata|pike)).*$
@@ -103,16 +103,18 @@
 
 - job:
     name: tripleo-ci-centos-7-containers-multinode
-    parent: tripleo-ci-base
+    parent: tripleo-ci-base-multinode
     branches: ^(?!stable/(newton|ocata)).*$
     vars:
       environment_type: multinode
       nodes: 1ctlr
       featureset: '010'
+      playbooks:
+        - multinode.yml
 
 - job:
     name: tripleo-ci-centos-7-containers-multinode-rocky
-    parent: tripleo-ci-base
+    parent: tripleo-ci-base-multinode
     timeout: 10800
     voting: false
     branches: master
@@ -122,30 +124,39 @@
       environment_type: multinode
       nodes: 1ctlr
       featureset: '010'
+      playbooks:
+        - multinode.yml
+
 
 - job:
     name: tripleo-ci-centos-7-containers-multinode-queens
-    parent: tripleo-ci-base
+    parent: tripleo-ci-base-multinode
     branches: master
     vars:
       branch_override: 'stable/queens'
       environment_type: multinode
       nodes: 1ctlr
       featureset: '010'
+      playbooks:
+        - multinode.yml
+
 
 - job:
     name: tripleo-ci-centos-7-containers-multinode-pike
-    parent: tripleo-ci-base
+    parent: tripleo-ci-base-multinode
     branches: master
     vars:
       branch_override: 'stable/pike'
       environment_type: multinode
       nodes: 1ctlr
       featureset: '010'
+      playbooks:
+        - multinode.yml
+
 
 - job:
     name: tripleo-ci-centos-7-nonha-multinode-oooq
-    parent: tripleo-ci-base
+    parent: tripleo-ci-base-multinode
     branches: ^stable/(newton|ocata).*$
     vars:
       environment_type: multinode
@@ -154,7 +165,7 @@
 
 - job:
     name: tripleo-ci-centos-7-scenario001-multinode-oooq
-    parent: tripleo-ci-base
+    parent: tripleo-ci-base-multinode
     branches: ^stable/(newton|ocata).*$
     vars:
       environment_type: multinode
@@ -163,7 +174,7 @@
 
 - job:
     name: tripleo-ci-centos-7-scenario001-multinode-oooq-container
-    parent: tripleo-ci-base
+    parent: tripleo-ci-base-multinode
     branches: ^(?!stable/(newton|ocata)).*$
     vars:
       environment_type: multinode
@@ -172,7 +183,7 @@
 
 - job:
     name: tripleo-ci-centos-7-scenario002-multinode-oooq
-    parent: tripleo-ci-base
+    parent: tripleo-ci-base-multinode
     branches: ^stable/(newton|ocata).*$
     vars:
       environment_type: multinode
@@ -181,7 +192,7 @@
 
 - job:
     name: tripleo-ci-centos-7-scenario002-multinode-oooq-container
-    parent: tripleo-ci-base
+    parent: tripleo-ci-base-multinode
     branches: ^(?!stable/(newton|ocata)).*$
     vars:
       environment_type: multinode
@@ -190,7 +201,7 @@
 
 - job:
     name: tripleo-ci-centos-7-scenario002-multinode-oooq-container-refstack
-    parent: tripleo-ci-base
+    parent: tripleo-ci-base-multinode
     branches: ^(?!stable/(newton)).*$
     vars:
       toci_jobtype: multinode-1ctlr-featureset055
@@ -200,7 +211,7 @@
 
 - job:
     name: tripleo-ci-centos-7-scenario003-multinode-oooq
-    parent: tripleo-ci-base
+    parent: tripleo-ci-base-multinode
     branches: ^stable/ocata.*$
     vars:
       environment_type: multinode
@@ -209,7 +220,7 @@
 
 - job:
     name: tripleo-ci-centos-7-scenario003-multinode-oooq-container
-    parent: tripleo-ci-base
+    parent: tripleo-ci-base-multinode
     branches: ^(?!stable/(newton|ocata)).*$
     vars:
       environment_type: multinode
@@ -218,7 +229,7 @@
 
 - job:
     name: tripleo-ci-centos-7-scenario004-multinode-oooq
-    parent: tripleo-ci-base
+    parent: tripleo-ci-base-multinode
     branches: ^stable/ocata.*$
     vars:
       environment_type: multinode
@@ -227,7 +238,7 @@
 
 - job:
     name: tripleo-ci-centos-7-scenario004-multinode-oooq-container
-    parent: tripleo-ci-base
+    parent: tripleo-ci-base-multinode
     branches: ^(?!stable/(newton|ocata)).*$
     vars:
       environment_type: multinode
@@ -236,7 +247,7 @@
 
 - job:
     name: tripleo-ci-centos-7-scenario006-multinode-oooq
-    parent: tripleo-ci-base
+    parent: tripleo-ci-base-multinode
     voting: false
     branches: ^(?!stable/(newton|ocata)).*$
     vars:
@@ -246,7 +257,7 @@
 
 - job:
     name: tripleo-ci-centos-7-scenario007-multinode-oooq
-    parent: tripleo-ci-base
+    parent: tripleo-ci-base-multinode
     branches: ^stable/pike.*$
     vars:
       environment_type: multinode
@@ -255,7 +266,7 @@
 
 - job:
     name: tripleo-ci-centos-7-scenario007-multinode-oooq-container
-    parent: tripleo-ci-base
+    parent: tripleo-ci-base-multinode
     voting: false
     branches: ^(?!stable/(newton|ocata|pike)).*$
     vars:
@@ -265,7 +276,7 @@
 
 - job:
     name: tripleo-ci-centos-7-scenario008-multinode-oooq-container
-    parent: tripleo-ci-base
+    parent: tripleo-ci-base-multinode
     voting: false
     branches: ^(?!stable/(newton|ocata|pike)).*$
     vars:
@@ -275,7 +286,7 @@
 
 - job:
     name: tripleo-ci-centos-7-scenario008-multinode-oooq
-    parent: tripleo-ci-base
+    parent: tripleo-ci-base-multinode
     voting: false
     branches: ^(?!stable/(newton|ocata|pike|queens)).*$
     vars:
@@ -285,7 +296,7 @@
 
 - job:
     name: tripleo-ci-centos-7-scenario009-multinode-oooq
-    parent: tripleo-ci-base
+    parent: tripleo-ci-base-multinode
     voting: false
     branches: ^(?!stable/(newton|ocata)).*$
     vars:
@@ -295,7 +306,7 @@
 
 - job:
     name: tripleo-ci-centos-7-scenario010-multinode-oooq-container
-    parent: tripleo-ci-base
+    parent: tripleo-ci-base-multinode
     voting: false
     branches: ^(?!stable/(newton|ocata|pike)).*$
     vars:
@@ -307,7 +318,7 @@
     name: tripleo-ci-centos-7-scenario000-multinode-oooq-container-updates
     description: |
       Basic tripleo update job, this is not an upgrade job.
-    parent: tripleo-ci-base
+    parent: tripleo-ci-base-multinode
     voting: false
     branches: ^(?!stable/(newton|ocata|pike|queens)).*$
     vars:
@@ -320,7 +331,7 @@
 
 - job:
     name: tripleo-ci-centos-7-scenario011-multinode-oooq-container
-    parent: tripleo-ci-base
+    parent: tripleo-ci-base-multinode
     voting: false
     branches: ^(?!stable/(newton|ocata)).*$
     vars:
@@ -336,7 +347,7 @@
 # Launchpad bug: #1786062
 - job:
     name: tripleo-ci-centos-7-scenario000-multinode-oooq-container-upgrades
-    parent: tripleo-ci-base
+    parent: tripleo-ci-base-multinode
     voting: false
     branches: ^(?!stable/(newton|ocata|pike)).*$
     vars:

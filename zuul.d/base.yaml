@@ -29,7 +29,6 @@
       - git.openstack.org/openstack/browbeat
     pre-run:
       - playbooks/nodepool-provider/pre.yaml
-      - playbooks/multinode-networking/pre.yaml
       - playbooks/openstack-zuul-jobs/legacy/pre.yaml
       - playbooks/tripleo-ci/ceph.yaml
     run: playbooks/tripleo-ci/run-v3.yaml
@@ -47,6 +46,99 @@
       - ^Puppetfile.*$
       - tox.ini
       - ^setup.*$
+
+- job:
+    name: tripleo-ci-base-multinode
+    abstract: true
+    description: |
+        Base abstract job for multinode TripleO CI zuulv3 jobs
+    parent: tripleo-ci-base
+    vars:
+      undercloud: 127.0.0.2
+      environment_infra: osinfra
+      playbooks:
+        - quickstart.yml
+        - multinode-undercloud.yml
+        - multinode-overcloud-prep.yml
+        - multinode-overcloud.yml
+        - multinode-overcloud-update.yml
+        - multinode-overcloud-upgrade.yml
+        - multinode-validate.yml
+      tags:
+        - build
+        - undercloud-setup
+        - undercloud-scripts
+        - undercloud-install
+        - undercloud-post-install
+        - tripleo-validations
+        - overcloud-scripts
+        - overcloud-prep-config
+        - overcloud-prep-containers
+        - overcloud-deploy
+        - overcloud-post-deploy
+        - overcloud-validate
+
+- job:
+    name: tripleo-ci-base-ovb
+    abstract: true
+    description: |
+        Base abstract job for OVB TripleO CI zuulv3 jobs
+    parent: tripleo-ci-base
+    nodeset: single-centos-7-node
+    vars:
+      undercloud: undercloud
+      environment_infra: ovb
+      playbooks:
+        - ovb-setup.yml
+        - baremetal-full-undercloud.yml
+        - baremetal-full-overcloud-prep.yml
+        - baremetal-full-overcloud.yml
+        - baremetal-full-overcloud-validate.yml
+      tags:
+        - all
+
+- job:
+    name: tripleo-ci-base-singlenode
+    abstract: true
+    description: |
+        Base abstract job for singlenode TripleO CI zuulv3 jobs
+    parent: tripleo-ci-base
+    nodeset: single-centos-7-node
+    vars:
+      undercloud: 127.0.0.2
+      environment_infra: osinfra
+      playbooks:
+        - quickstart.yml
+        - multinode-undercloud.yml
+        - multinode-undercloud-upgrade.yml
+        - multinode-overcloud-prep.yml
+        - multinode-overcloud.yml
+        - multinode-overcloud-upgrade.yml
+        - multinode-validate.yml
+      tags:
+        - build
+        - undercloud-setup
+        - undercloud-scripts
+        - undercloud-install
+        - undercloud-validate
+        - images
+
+- job:
+    name: tripleo-ci-base-standalone
+    abstract: true
+    description: |
+        Base abstract job for standalone TripleO CI zuulv3 jobs
+    parent: tripleo-ci-base
+    nodeset: single-centos-7-node
+    vars:
+      undercloud: 127.0.0.2
+      environment_infra: osinfra
+      playbooks:
+        - quickstart.yml
+        - multinode-standalone.yml
+      tags:
+        - build
+        - standalone
 
 - job:
     name: tripleo-ci-dsvm
