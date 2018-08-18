@@ -312,7 +312,7 @@
     description: |
       Basic tripleo update job, this is not an upgrade job.
     parent: tripleo-ci-base
-    voting: true
+    voting: false
     branches: ^(?!stable/(newton|ocata|pike|queens)).*$
     vars:
       environment_type: multinode
