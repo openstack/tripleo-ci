@@ -46,8 +46,10 @@ if [[ "${TOCI_JOBTYPE:-''}" =~ multinode ]]; then
         command -v losetup >/dev/null 2>&1 || { sudo yum -y install util-linux; }
         sudo dd if=/dev/zero of=/var/lib/ceph-osd.img bs=1 count=0 seek=7G
         sudo losetup /dev/loop3 /var/lib/ceph-osd.img
+    elif [[ -f /var/lib/ceph-osd.img ]]; then #loop3 and ceph-osd.img exist
+        echo "warning: looks like ceph loop device already created. Trying to continue"
     else
-        echo "ERROR: /dev/loop3 already exists, not using it with losetup"
+        echo "error: /dev/loop3 exists but not /var/lib/ceph-osd.img. Exiting."
         exit 1
     fi
     sudo lsblk
