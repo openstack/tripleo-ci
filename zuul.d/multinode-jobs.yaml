@@ -119,7 +119,6 @@
     voting: false
     branches: master
     vars:
-      toci_jobtype: multinode-1ctlr-featureset010
       branch_override: 'stable/rocky'
       environment_type: multinode
       nodes: 1ctlr
@@ -204,7 +203,6 @@
     parent: tripleo-ci-base-multinode
     branches: ^(?!stable/(newton)).*$
     vars:
-      toci_jobtype: multinode-1ctlr-featureset055
       environment_type: multinode
       nodes: 1ctlr
       featureset: '055'
