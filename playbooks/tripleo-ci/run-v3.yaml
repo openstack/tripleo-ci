@@ -46,6 +46,22 @@
     - centos-7
   name: tripleo CI jobs runner
   tasks:
+    - block:
+      - name: Check overridable settings
+        fail:
+          msg: "ERROR: {{ item }} is not overridable."
+        when: item not in ['run_tempest', 'tempest_whitelist', 'test_black_regex']
+        with_items: "{{ featureset_override }}"
+      - name: Generate featureset overriding file
+        template:
+          src: templates/featureset-override.j2
+          dest: "{{ tripleo_root }}/tripleo-ci/featureset-override.yaml"
+          mode: 0755
+          force: yes
+      - name: Include some extra for generating toci scripts
+        set_fact:
+          extra_vars: "--extra-vars @{{ tripleo_root }}/tripleo-ci/featureset-override.yaml"
+      when: featureset_override is defined
 
     - name: render toci_gate_test script
       template:
