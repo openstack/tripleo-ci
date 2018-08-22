@@ -22,10 +22,10 @@ function previous_release_mixed_upgrade_case {
             # NOTE: we need to update this when we cut a stable branch
             echo "queens"
             ;;
-        stein)
+        stein|promotion-testing-hash-stein)
             echo "rocky"
             ;;
-        rocky)
+        rocky|promotion-testing-hash-rocky)
             echo "queens"
             ;;
         queens)

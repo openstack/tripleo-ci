@@ -14,6 +14,7 @@ LONG_TERM_SUPPORT_RELEASES = ['queens']
 # NAMED DLRN HASHES
 NEWTON_HASH_NAME = 'current-passed-ci'
 CURRENT_HASH_NAME = 'current-tripleo'
+PROMOTION_HASH_NAME = 'tripleo-ci-testing'
 PREVIOUS_HASH_NAME = 'previous-current-tripleo'
 
 
@@ -83,7 +84,8 @@ def get_dlrn_hash(release, hash_name, retries=10, timeout=4):
     return full_hash[0]
 
 
-def compose_releases_dictionary(stable_release, featureset, upgrade_from):
+def compose_releases_dictionary(stable_release, featureset, upgrade_from,
+                                is_periodic=False):
     logger = logging.getLogger('emit-releases')
     if stable_release not in RELEASES:
         raise RuntimeError("The {} release is not supported by this tool"
@@ -118,6 +120,8 @@ def compose_releases_dictionary(stable_release, featureset, upgrade_from):
 
     if stable_release == 'newton':
         current_hash = get_dlrn_hash(stable_release, NEWTON_HASH_NAME)
+    elif is_periodic:
+        current_hash = get_dlrn_hash(stable_release, PROMOTION_HASH_NAME)
     else:
         current_hash = get_dlrn_hash(stable_release, CURRENT_HASH_NAME)
 
@@ -273,7 +277,8 @@ if __name__ == '__main__':
 
     releases_dictionary = compose_releases_dictionary(args.stable_release,
                                                       featureset,
-                                                      args.upgrade_from)
+                                                      args.upgrade_from,
+                                                      args.is_periodic)
 
     releases_dictionary = shim_convert_old_release_names(releases_dictionary,
                                                          args.is_periodic)
