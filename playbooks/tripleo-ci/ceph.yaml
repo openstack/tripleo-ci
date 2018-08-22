@@ -1,0 +1,24 @@
+- hosts: subnodes
+  name: Bootstrap subnodes - setup ceph-ansible /dev/loop3 /var/lib/ceph-osd.img
+  vars:
+    ceph_loop_device: /dev/loop3
+    ceph_loop_device_file: /var/lib/ceph-osd.img
+  tasks:
+    - name: stat ceph_loop_device see if it already exists
+      stat:
+        path: "{{ ceph_loop_device }}"
+      register: dev_loop3_res
+    - name: log to syslog if ceph_loop_device exists
+      syslogger:
+        msg: "boostrap-subnodes - warning {{ ceph_loop_device }} already exists"
+      when: dev_loop3_res.stat.exists
+    - name: Make sure we have losetup installed/latest
+      package:
+        name: util-linux
+        state: latest
+    - name: Use dd and losetup to create the loop device
+      become: true
+      shell: |
+        dd if=/dev/zero of={{ ceph_loop_device_file }} bs=1 count=0 seek=7G
+        losetup {{ ceph_loop_device }} {{ ceph_loop_device_file }}
+        lsblk
