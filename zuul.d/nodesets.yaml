@@ -17,6 +17,12 @@
           - secondary
 
 - nodeset:
+    name: single-fedora-28-node
+    nodes:
+      - name: primary
+        label: fedora-28
+
+- nodeset:
     name: single-centos-7-node
     nodes:
       - name: primary

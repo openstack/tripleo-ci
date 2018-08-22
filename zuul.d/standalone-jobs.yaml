@@ -10,3 +10,13 @@
     branches: ^(?!stable/(newton|ocata|pike|queens)).*$
     vars:
       featureset: '052'
+
+- job:
+    name: tripleo-ci-fedora-28-standalone
+    parent: tripleo-ci-base-standalone
+    nodeset: single-fedora-28-node
+    voting: false
+    branches: ^(?!stable/(newton|ocata|pike|queens)).*$
+    vars:
+      environment_type: standalone
+      featureset: '052'
