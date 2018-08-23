@@ -194,6 +194,12 @@ else
     echo "git+https://git.openstack.org/openstack/tripleo-upgrade.git@${ZUUL_BRANCH}#egg=tripleo-upgrade" >> ${TRIPLEO_ROOT}/tripleo-quickstart/quickstart-extras-requirements.txt
 fi
 
+# Import gated external repo in oooq - starting with browbeat
+if [[ -d $TRIPLEO_ROOT/browbeat ]]; then
+    sed -i "s#git+https://git.openstack.org/openstack/browbeat#file://${TRIPLEO_ROOT}/browbeat#1" ${TRIPLEO_ROOT}/tripleo-quickstart/quickstart-extras-requirements.txt
+fi
+
+
 # Start time tracking
 export STATS_TESTENV=$(date +%s)
 pushd $TRIPLEO_ROOT/tripleo-ci
