@@ -54,7 +54,7 @@ function show_options {
     echo "      --delorean-setup        -- Install local delorean build environment."
     echo "      --delorean-build        -- Build a delorean package locally"
     echo "      --multinode-setup       -- Perform multinode setup."
-    echo "      --bootstrap-subnodes    -- Perform bootstrap setup on subnodes."
+    echo "      --bootstrap-subnodes    -- Perform bootstrap setup on subnodes. WARNING bootstrap-subnodes is deprecated and will be removed."
     echo "      --setup-nodepool-files  -- Setup nodepool files on subnodes."
     echo "      --undercloud            -- Install the undercloud."
     echo "      --overcloud-images      -- Build and load overcloud images."
@@ -1459,7 +1459,7 @@ function undercloud_sanity_check {
 }
 
 function bootstrap_subnodes {
-    log "Bootstrap subnodes"
+    log "WARNING: Bootstrap subnodes is deprecated and will be removed. "
 
     local sub_nodes
     sub_nodes=$(cat /etc/nodepool/sub_nodes_private)

@@ -188,7 +188,6 @@ artcl_collect_list:
   - /var/log/journal.txt
   - /var/log/postci.txt
   - /var/log/secure
-  - /var/log/bootstrap-subnodes.log
   - /var/log/unbound.log
   - /var/log/yum.log
   - /var/log/aodh/

@@ -284,26 +284,6 @@ else
     undercloud_haproxy_admin_ip=$undercloud_net_range"3"
     export no_proxy=$undercloud_services_ip,$undercloud_haproxy_public_ip,$undercloud_haproxy_admin_ip,$MY_IP,$MY_IP_eth1
 
-
-
-    # multinode bootstrap script
-    export DO_BOOTSTRAP_SUBNODES=${DO_BOOTSTRAP_SUBNODES:-1}
-    export BOOTSTRAP_SUBNODES_MINIMAL=1
-    overcloud_release=${UPGRADE_RELEASE:-$STABLE_RELEASE}
-    if [ "${overcloud_release}" = "newton" ]; then
-        BOOTSTRAP_SUBNODES_MINIMAL=0
-    fi
-
-    echo_vars_to_deploy_env_oooq
-    subnodes_scp_deploy_env
-    if [ "$DO_BOOTSTRAP_SUBNODES" = "1" ]; then
-        $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh \
-            --bootstrap-subnodes \
-            2>&1 | awk '{ print strftime("%Y-%m-%d %H:%M:%S |"), $0; fflush(); }' | sudo tee /var/log/bootstrap-subnodes.log \
-            || (tail -n 50 /var/log/bootstrap-subnodes.log && false)
-    fi
-
-
     # finally, run quickstart
     ./toci_quickstart.sh
 fi
