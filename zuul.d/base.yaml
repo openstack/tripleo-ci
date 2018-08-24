@@ -59,11 +59,11 @@
       # https://review.openstack.org/#/c/523178/ for context
       unbound_cache_min_ttl: 900
     required-projects:
-      - openstack-infra/devstack-gate
-      - openstack-infra/tripleo-ci
-      - openstack/tripleo-quickstart
-      - openstack/tripleo-quickstart-extras
-      - openstack/tripleo-upgrade
+      - git.openstack.org/openstack-infra/devstack-gate
+      - git.openstack.org/openstack-infra/tripleo-ci
+      - git.openstack.org/openstack/tripleo-quickstart
+      - git.openstack.org/openstack/tripleo-quickstart-extras
+      - git.openstack.org/openstack/tripleo-upgrade
     irrelevant-files:
       - ^.*\.md$
       - ^.*\.rst$
