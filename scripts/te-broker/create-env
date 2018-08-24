@@ -44,15 +44,15 @@ sed -i -e "s/key_name:.*/key_name: ${KEY_NAME}/" $ENVFILE
 sed -i -e "s/node_count:.*/node_count: ${NODECOUNT}/" $ENVFILE
 sed -i -e "s/provision_net_shared:.*/provision_net_shared: true/" $ENVFILE
 sed -i -e "s/public_net_shared:.*/public_net_shared: true/" $ENVFILE
-if [[ $NODEPOOL_PROVIDER == "rdo-cloud-tripleo" ]]; then
+if [[ $NODEPOOL_PROVIDER == "rdo-cloud-tripleo" ]] || [[ $NODEPOOL_PROVIDER == "vexxhost-rdo-ca-ymq-1" ]]; then
     sed -i -e "s/provision_net_shared:.*/provision_net_shared: false/" $ENVFILE
     sed -i -e "s/public_net_shared:.*/public_net_shared: false/" $ENVFILE
-    sed -i -e "s/bmc_flavor:.*/bmc_flavor: ci.m1.small/" $ENVFILE
-    sed -i -e "s/baremetal_flavor:.*/baremetal_flavor: ci.m1.large/" $ENVFILE
+    sed -i -e "s/bmc_flavor:.*/bmc_flavor: ${BMC_FLAVOR}/" $ENVFILE
+    sed -i -e "s/baremetal_flavor:.*/baremetal_flavor: ${BAREMETAL_FLAVOR}/" $ENVFILE
 fi
 if [ -n "$CREATE_UNDERCLOUD" ]; then
     sed -i -e "s/undercloud_name:.*/undercloud_name: extra-node/" $ENVFILE
-    sed -i -e "s/undercloud_flavor:.*/undercloud_flavor: m1.small/" $ENVFILE
+    sed -i -e "s/undercloud_flavor:.*/undercloud_flavor: ${UNDERCLOUD_FLAVOR}/" $ENVFILE
     BUILD_NODES_JSON_EXTRA_ARGS="--add_undercloud"
 fi
 ENVIRONMENT_ARGS="-e $ENVFILE -e environments/bmc-use-cache.yaml -e environments/undercloud-floating-none.yaml"
@@ -86,10 +86,10 @@ fi
 if [ $EXTRA_NODECOUNT -gt 0 ]; then
     EXTRA_NODE_KEY_NAME="extra_node_key"
     /bin/cp --remove-destination environments/base-extra-node.yaml $EXTRA_ENVFILE
-    sed -i -e "s/baremetal_flavor:.*/baremetal_flavor: ci.m1.small/" $EXTRA_ENVFILE
+    sed -i -e "s/baremetal_flavor:.*/baremetal_flavor: ${EXTRA_NODE_FLAVOR}/" $EXTRA_ENVFILE
     sed -i -e "s/key_name:.*/key_name: ${EXTRA_NODE_KEY_NAME}/" $EXTRA_ENVFILE
     sed -i -e "s/node_count:.*/node_count: ${EXTRA_NODECOUNT}/" $EXTRA_ENVFILE
-    sed -i -e "s/baremetal_image:.*/baremetal_image: CentOS-7-x86_64-GenericCloud-1708/" $EXTRA_ENVFILE
+    sed -i -e "s/baremetal_image:.*/baremetal_image: ${BAREMETAL_IMAGE}/" $EXTRA_ENVFILE
     # We changed the path of the environment, so we need to fix the relative
     # path in the resource registry too.
     sed -i -e "s|../templates/baremetal-ports-extra-node-port-security.yaml|templates/baremetal-ports-extra-node-port-security.yaml|" $EXTRA_ENVFILE

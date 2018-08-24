@@ -20,6 +20,13 @@ periodic: >-
 
 nodepool_provider: "{{ hostvars[inventory_hostname].nodepool.provider }}"
 
+rhcloud: >-
+  {%- if nodepool_provider in ['rdo-cloud-tripleo', 'rdo-cloud'] -%}
+  rdocloud
+  {%- elif nodepool_provider == 'vexxhost-rdo-ca-ymq-1' -%}
+  vexxhost
+  {%- endif -%}
+
 nodes_file: >-
   {% if nodes is defined -%}
   {{ tripleo_quickstart_dir }}/config/nodes/{{ nodes }}.yml
@@ -31,8 +38,8 @@ nodes_args: >-
   {%- endif %}
 
 rdo_env_vars: >-
-  {% if nodepool_provider in ['rdo-cloud-tripleo', 'rdo-cloud'] -%}
-  --extra-vars @{{ tripleo_ci_dir }}/toci-quickstart/config/testenv/{{ environment_type }}-rdocloud.yml
+  {% if rhcloud -%}
+  --extra-vars @{{ tripleo_ci_dir }}/toci-quickstart/config/testenv/{{ environment_type }}-{{ rhcloud }}.yml
   {%- endif %}
 
 env_vars: "--extra-vars @{{ tripleo_ci_dir }}/toci-quickstart/config/testenv/{{ environment_type }}.yml {{ rdo_env_vars }}"

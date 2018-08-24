@@ -19,14 +19,13 @@ if [ -f /etc/nodepool/provider ] ; then
     # source variables common across all the scripts.
     source /etc/ci/mirror_info.sh
 
-    if [ ${NODEPOOL_PROVIDER:-''} == 'rdo-cloud-tripleo' ]; then
-        source $(dirname $0)/scripts/rdocloud.env
-
-        # In order to save space remove the cached git repositories, at this point in
-        # CI the ones we are interested in have been cloned to /opt/stack/new. We
-        # can also remove some distro images cached on the images.
-        sudo rm -rf /opt/git
-    fi
+    {% if rhcloud -%}
+    source $(dirname $0)/scripts/{{ rhcloud }}.env
+    # In order to save space remove the cached git repositories, at this point in
+    # CI the ones we are interested in have been cloned to /opt/stack/new. We
+    # can also remove some distro images cached on the images.
+    sudo rm -rf /opt/git
+    {% endif %}
 fi
 
 # default $NODEPOOL_PROVIDER if not already set as it's used later
@@ -76,7 +75,15 @@ export RELEASES_SCRIPT_LOGFILE=$WORKSPACE/logs/emit_releases_file.log
 case {{ environment_type | default('standalone') }} in
     ovb)
         OVB=1
-        UCINSTANCEID=$(http_proxy= curl http://169.254.169.254/openstack/2015-10-15/meta_data.json | python -c 'import json, sys; print json.load(sys.stdin)["uuid"]')
+        METADATA_FILENAME='/mnt/config/openstack/latest/meta_data.json'
+        if sudo test -f $METADATA_FILENAME; then
+            METADATA=$(sudo cat /mnt/config/openstack/latest/meta_data.json)
+            set +x
+            UCINSTANCEID=$(echo $METADATA | python -c 'import json, sys; print json.load(sys.stdin)["uuid"]')
+            set -x
+        else
+            UCINSTANCEID=$(http_proxy= curl http://169.254.169.254/openstack/2015-10-15/meta_data.json | python -c 'import json, sys; print json.load(sys.stdin)["uuid"]')
+        fi
     ;;
     multinode)
         SUBNODES_SSH_KEY=/etc/nodepool/id_rsa

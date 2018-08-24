@@ -23,6 +23,11 @@ if [ -f /etc/nodepool/provider ] ; then
     export RHCLOUD=''
     if [ ${NODEPOOL_PROVIDER:-''} == 'rdo-cloud-tripleo' ]; then
         RHCLOUD='rdocloud'
+    elif [ ${NODEPOOL_PROVIDER:-''} == 'vexxhost-rdo-ca-ymq-1' ]; then
+        RHCLOUD='vexxhost'
+    fi
+
+    if [ -n $RHCLOUD ]; then
         source $(dirname $0)/scripts/$RHCLOUD.env
 
         # In order to save space remove the cached git repositories, at this point in
@@ -125,7 +130,15 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
         ovb)
             OVB=1
             ENVIRONMENT="ovb"
-            UCINSTANCEID=$(http_proxy= curl http://169.254.169.254/openstack/2015-10-15/meta_data.json | python -c 'import json, sys; print json.load(sys.stdin)["uuid"]')
+            METADATA_FILENAME='/mnt/config/openstack/latest/meta_data.json'
+            if sudo test -f $METADATA_FILENAME; then
+                METADATA=$(sudo cat /mnt/config/openstack/latest/meta_data.json)
+                set +x
+                UCINSTANCEID=$(echo $METADATA | python -c 'import json, sys; print json.load(sys.stdin)["uuid"]')
+                set -x
+            else
+                UCINSTANCEID=$(http_proxy= curl http://169.254.169.254/openstack/2015-10-15/meta_data.json | python -c 'import json, sys; print json.load(sys.stdin)["uuid"]')
+            fi
             if [[ " $QUICKSTART_SH_JOBS " =~ " $TOCI_JOBTYPE " ]]; then
                 export PLAYBOOKS=${PLAYBOOKS:-"baremetal-full-deploy.yml"}
             else
