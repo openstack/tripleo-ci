@@ -19,6 +19,7 @@ artcl_collect_list:
   - /home/{{ undercloud_user }}/*.txt
   - /home/{{ undercloud_user }}/*.json
   - /home/{{ undercloud_user }}/*.conf
+  - /home/{{ undercloud_user }}/*.cfg
   - /home/{{ undercloud_user }}/*.yml
   - /home/{{ undercloud_user }}/*.yaml
   - /home/{{ undercloud_user }}/*.sh
