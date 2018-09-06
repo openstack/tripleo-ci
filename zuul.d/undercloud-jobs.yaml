@@ -18,7 +18,7 @@
 
 - job:
     name: tripleo-ci-centos-7-undercloud-containers
-    parent: tripleo-ci-base
+    parent: tripleo-ci-base-singlenode
     nodeset: single-centos-7-node
     branches: ^(?!stable/(newton|ocata|pike|queens)).*$
     vars:
@@ -27,7 +27,7 @@
 
 - job:
     name: tripleo-ci-centos-7-undercloud-oooq
-    parent: tripleo-ci-base
+    parent: tripleo-ci-base-singlenode
     nodeset: single-centos-7-node
     vars:
       environment_type: singlenode
@@ -35,7 +35,7 @@
 
 - job:
     name: tripleo-ci-centos-7-undercloud-upgrades
-    parent: tripleo-ci-base
+    parent: tripleo-ci-base-singlenode
     nodeset: single-centos-7-node
     branches: ^(?!stable/(newton|ocata)).*$
     vars:
@@ -44,7 +44,7 @@
 
 - job:
     name: tripleo-ci-centos-7-containerized-undercloud-upgrades
-    parent: tripleo-ci-base
+    parent: tripleo-ci-base-singlenode
     nodeset: single-centos-7-node
     branches: ^(?!stable/(newton|ocata|pike|queens)).*$
     vars:
