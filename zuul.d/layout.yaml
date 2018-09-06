@@ -19,9 +19,7 @@
         - openstack-tox-py35:
             files:
               - ^scripts/emit_releases_file/.*$
-        - openstack-tox-pep8:
-            files:
-              - ^scripts/emit_releases_file/.*$
+        - openstack-tox-linters
         - tripleo-ci-centos-7-scenario001-multinode-oooq:
             files:
               - ^playbooks/tripleo-ci/.*$
