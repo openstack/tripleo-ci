@@ -1,10 +1,4 @@
 - hosts: all
-  roles:
-    - role: fetch-zuul-cloner
-      destination: "/usr/zuul-env/bin/zuul-cloner"
-      repo_src_dir: "/home/zuul/src/git.openstack.org"
-    - legacy-copy-jenkins-scripts
-
   tasks:
     - name: Create nodepool directory
       file:
