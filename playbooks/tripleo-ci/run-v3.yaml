@@ -15,6 +15,11 @@
         path: '{{ workspace }}'
         state: directory
 
+    - name: Ensure legacy logs directory
+      file:
+        path: '{{ workspace }}/logs'
+        state: directory
+
     - name: Hard link tripleo-ci to openstack namespace dir
       shell:
         cmd: |
@@ -26,6 +31,15 @@
         executable: /bin/bash
         chdir: '{{ tripleo_root }}'
       environment: '{{ zuul | zuul_legacy_vars }}'
+
+
+    - set_fact:
+        zuul_dump: "{{ {'zuul': zuul} }}"
+
+    - name: Dump zuul variables on the host to pass it to inner ansible
+      copy:
+        content: "{{ zuul_dump|to_nice_yaml }}"
+        dest: "{{ workspace }}/logs//zuul-variables.yaml"
 
 - hosts:
     - primary

@@ -132,6 +132,7 @@ for playbook in {{ " ".join(playbooks) }}; do
         {{ vxlan_vars }} \
         $DEFAULT_ARGS \
         $LOCAL_WORKING_DIR/playbooks/$playbook ${PLAYBOOKS_ARGS[$playbook]:-}" \
+        --extra-vars @{{ workspace }}/logs/zuul-variables.yaml \
         | sed  's/--/\n--/g' \
         | tee -a $LOGS_DIR/playbook_executions.log
     echo "# --------------------------------------- " \
@@ -154,6 +155,7 @@ for playbook in {{ " ".join(playbooks) }}; do
            {{ vxlan_vars }} \
            $DEFAULT_ARGS \
            --extra-vars ci_job_end_time=$(( START_JOB_TIME + REMAINING_TIME*60 )) \
+           --extra-vars @{{ workspace }}/logs/zuul-variables.yaml \
             $LOCAL_WORKING_DIR/playbooks/$playbook "${PLAYBOOKS_ARGS[$playbook]:-}" \
             2>&1 | tee -a $LOGS_DIR/quickstart_install.log && exit_value=0 || exit_value=$?
 
