@@ -22,6 +22,7 @@
     nodeset: two-centos-7-nodes
     roles:
       - zuul: git.openstack.org/openstack-infra/zuul-jobs
+      - zuul: git.openstack.org/openstack-infra/openstack-zuul-jobs
     required-projects:
       - git.openstack.org/openstack-infra/tripleo-ci
       - git.openstack.org/openstack/tripleo-quickstart
