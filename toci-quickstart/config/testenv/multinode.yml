@@ -50,3 +50,7 @@ influxdb_password:
 influxdb_dbname: tripleo_ci
 influxdb_data_file_path: "{{ artcl_collect_dir }}/influxdb_data"
 influxdb_create_data_file: true
+
+run_tripleo_validations: false
+run_tripleo_validations_negative_tests: false
+run_tripleo_validations_setup: false

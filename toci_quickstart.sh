@@ -19,6 +19,7 @@ export DEFAULT_ARGS="--extra-vars local_working_dir=$LOCAL_WORKING_DIR \
     --inventory $LOCAL_WORKING_DIR/hosts \
     --extra-vars tripleo_root=$TRIPLEO_ROOT \
     --extra-vars working_dir=$WORKING_DIR \
+    --skip-tags "tripleo-validations,teardown-all" \
 "
 
 # --install-deps arguments installs deps and then quits, no other arguments are
@@ -41,7 +42,6 @@ QUICKSTART_VENV_CMD="
 QUICKSTART_INSTALL_CMD="
     $LOCAL_WORKING_DIR/bin/ansible-playbook
     --tags $TAGS
-    --skip-tags teardown-all
 "
 
 QUICKSTART_COLLECTLOGS_CMD="$LOCAL_WORKING_DIR/bin/ansible-playbook \
@@ -55,7 +55,6 @@ QUICKSTART_COLLECTLOGS_CMD="$LOCAL_WORKING_DIR/bin/ansible-playbook \
     --extra-vars @$COLLECT_CONF \
     --extra-vars artcl_collect_dir=$LOGS_DIR \
     --tags all \
-    --skip-tags teardown-all \
 "
 
 export QUICKSTART_DEFAULT_RELEASE_ARG="--extra-vars @$LOCAL_WORKING_DIR/config/release/tripleo-ci/$QUICKSTART_RELEASE.yml"
