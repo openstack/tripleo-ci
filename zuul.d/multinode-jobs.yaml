@@ -226,6 +226,8 @@
       # Note (dmsimard): This enforces a minimum TTL for DNS records, see
       # https://review.openstack.org/#/c/523178/ for context
       unbound_cache_min_ttl: 900
+      extra_tags:
+        - overcloud-update
 
 - job:
     name: tripleo-ci-centos-7-scenario011-multinode-oooq-container
@@ -250,3 +252,5 @@
     vars:
       nodes: 1ctlr
       featureset: '051'
+      extra_tags:
+        - overcloud-upgrade

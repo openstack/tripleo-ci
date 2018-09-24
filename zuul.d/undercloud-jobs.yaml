@@ -40,6 +40,8 @@
     branches: ^(stable/(pike|queens|rocky)).*$
     vars:
       featureset: '047'
+      extra_tags:
+        - undercloud-upgrade
 
 - job:
     name: tripleo-ci-centos-7-containerized-undercloud-upgrades
@@ -52,3 +54,5 @@
     voting: false
     vars:
       featureset: '050'
+      extra_tags:
+        - undercloud-upgrade

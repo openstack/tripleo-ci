@@ -100,7 +100,6 @@ case {{ environment_type | default('standalone') }} in
     ;;
 esac
 
-EXTRA_TAGS=""
 MIXED_UPGRADE_TYPE=''
 
 # Order matters.  ffu featureset has both mixed version and ffu_overcloud_upgrade.
@@ -108,10 +107,7 @@ if is_featureset ffu_overcloud_upgrade "{{ job_featureset_file }}"; then
     MIXED_UPGRADE_TYPE='ffu_upgrade'
 elif  is_featureset mixed_upgrade "{{ job_featureset_file }}"; then
     MIXED_UPGRADE_TYPE='mixed_upgrade'
-elif is_featureset overcloud_update "{{ job_featureset_file }}"; then
-    EXTRA_TAGS=",overcloud-update"
 elif is_featureset undercloud_upgrade "{{ job_featureset_file }}"; then
-    EXTRA_TAGS=",undercloud-upgrade"
     export UPGRADE_RELEASE=$QUICKSTART_RELEASE
     export QUICKSTART_RELEASE=$(previous_release_mixed_upgrade_case "${UPGRADE_RELEASE}")
 fi
@@ -119,10 +115,7 @@ fi
 if [ -n "${MIXED_UPGRADE_TYPE}" ]; then
     export UPGRADE_RELEASE=$(previous_release_from "${STABLE_RELEASE}" "${MIXED_UPGRADE_TYPE}")
     QUICKSTART_RELEASE="$QUICKSTART_RELEASE-undercloud-$UPGRADE_RELEASE-overcloud"
-    EXTRA_TAGS=",overcloud-upgrade"
 fi
-
-export EXTRA_TAGS
 
 {% if periodic|bool %}
 PERIODIC=1

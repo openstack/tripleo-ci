@@ -59,6 +59,7 @@
         - multinode-standalone-upgrade.yml
       tags:
         - standalone
+      extra_tags:
         - standalone-upgrade
     irrelevant-files:
       - ^.*\.md$
