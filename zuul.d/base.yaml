@@ -10,7 +10,7 @@
         Base abstract job for all TripleO CI zuulv3 jobs
     parent: multinode
     timeout: 10800
-    post-timeout: 2400
+    post-timeout: 3600
     vars:
       unbound_cache_min_ttl: 900
       ara_generate_html: true
