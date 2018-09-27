@@ -59,6 +59,7 @@
     vars:
       undercloud: 127.0.0.2
       environment_infra: osinfra
+      environment_type: multinode
       common_featureset: featureset-multinode-common.yml
       playbooks:
         - quickstart.yml
@@ -92,6 +93,7 @@
     vars:
       undercloud: undercloud
       environment_infra: ovb
+      environment_type: ovb
       playbooks:
         - ovb-setup.yml
         - baremetal-full-undercloud.yml
@@ -111,6 +113,7 @@
     vars:
       undercloud: 127.0.0.2
       environment_infra: osinfra
+      environment_type: singlenode
       common_featureset: featureset-multinode-common.yml
       playbooks:
         - quickstart.yml
@@ -138,6 +141,7 @@
     vars:
       undercloud: 127.0.0.2
       environment_infra: osinfra
+      environment_type: standalone
       common_featureset: featureset-multinode-common.yml
       playbooks:
         - quickstart.yml
