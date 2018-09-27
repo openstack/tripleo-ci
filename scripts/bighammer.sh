@@ -56,7 +56,7 @@ function tapper(){
         sudo chown centos /opt/stack/new
         git clone https://git.openstack.org/openstack-infra/tripleo-ci /opt/stack/new/tripleo-ci
         cd /opt/stack/new/tripleo-ci
-        OVERRIDE_ZUUL_BRANCH= ZUUL_BRANCH=master WORKSPACE=/tmp TOCI_JOBTYPE=nonha DEVSTACK_GATE_TIMEOUT=180 ./toci_gate_test.sh
+        DISTRIBUTION=CentOS DISTRIBUTION_MAJOR_VERSION=7 OVERRIDE_ZUUL_BRANCH= ZUUL_BRANCH=master WORKSPACE=/tmp TOCI_JOBTYPE=nonha DEVSTACK_GATE_TIMEOUT=180 ./toci_gate_test.sh
         exit 0
 EOF
     set +x
