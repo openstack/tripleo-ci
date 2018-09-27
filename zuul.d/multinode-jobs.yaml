@@ -28,6 +28,7 @@
       queue: tripleo
       jobs:
         - tripleo-ci-centos-7-containers-multinode
+        - tripleo-ci-centos-7-standalone
 
 - project-template:
     name: tripleo-multinode-container-full
@@ -52,6 +53,7 @@
         - tripleo-ci-centos-7-scenario002-multinode-oooq-container
         - tripleo-ci-centos-7-scenario003-multinode-oooq-container
         - tripleo-ci-centos-7-scenario004-multinode-oooq-container
+        - tripleo-ci-centos-7-standalone
 
 - project-template:
     name: tripleo-multinode-baremetal-full
