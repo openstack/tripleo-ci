@@ -169,6 +169,7 @@ artcl_collect_list:
   - /etc/sysctl.*
   - /etc/sysctl.d/
   - /etc/systemd/*.conf
+  - /etc/systemd/system/ceph*
   - /etc/tacker/
   - /etc/target/
   - /etc/tempest/
