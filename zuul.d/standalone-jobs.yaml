@@ -7,7 +7,6 @@
     name: tripleo-ci-centos-7-standalone
     parent: tripleo-ci-base-standalone
     nodeset: single-centos-7-node
-    voting: false
     branches: ^(?!stable/(newton|ocata|pike|queens)).*$
     vars:
       environment_type: standalone
