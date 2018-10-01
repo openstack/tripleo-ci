@@ -11,6 +11,9 @@ undercloud_docker_registry_mirror: "{{ lookup('env','NODEPOOL_DOCKER_REGISTRY_PR
 
 dlrn_use_local_mirrors: true
 
+# ara install and config
+undercloud_ansible_cfg: false
+
 vxlan_networking: true
 hostname_correction: true # workaround restriction on toci images
 

@@ -6,6 +6,9 @@ extra_args: >
     -e /usr/share/openstack-tripleo-heat-templates/environments/debug.yaml
     --overcloud-ssh-user {{ undercloud_user }}
 
+# ara install and config
+undercloud_ansible_cfg: false
+
 toci_vxlan_networking: true
 toci_vxlan_networking_multinode: true
 vxlan_mtu: 1350
