@@ -29,6 +29,7 @@
       jobs:
         - tripleo-ci-centos-7-containers-multinode
         - tripleo-ci-centos-7-standalone
+        - tripleo-ci-centos-7-scenario000-multinode-oooq-container-updates
 
 - project-template:
     name: tripleo-multinode-container-full
@@ -54,6 +55,7 @@
         - tripleo-ci-centos-7-scenario003-multinode-oooq-container
         - tripleo-ci-centos-7-scenario004-multinode-oooq-container
         - tripleo-ci-centos-7-standalone
+        - tripleo-ci-centos-7-scenario000-multinode-oooq-container-updates
 
 - project-template:
     name: tripleo-multinode-baremetal-full
@@ -319,7 +321,7 @@
     description: |
       Basic tripleo update job, this is not an upgrade job.
     parent: tripleo-ci-base-multinode
-    voting: false
+    voting: true
     branches: ^(?!stable/(newton|ocata|pike|queens)).*$
     vars:
       environment_type: multinode
