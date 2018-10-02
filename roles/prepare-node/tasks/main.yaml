@@ -1,0 +1,59 @@
+- name: Swap is essential as we are not meeting memory requirements
+  include_role:
+    name: configure-swap
+
+- name: Set legacy log path
+  include_role:
+    name: set-zuul-log-path-fact
+
+- name: Ensure legacy workspace directory
+  file:
+    path: '{{ workspace }}'
+    state: directory
+
+- name: Ensure legacy logs directory
+  file:
+    path: '{{ workspace }}/logs'
+    state: directory
+
+- name: Assure src folder has safe permissions
+  # Workaround for https://bugs.launchpad.net/tripleo/+bug/1807703
+  file:
+    path: /home/zuul/src/
+    state: directory
+    mode: u=rwX,g=rX,o=rX
+    recurse: yes
+
+- name: Copy tripleo-ci to openstack namespace dir
+  shell:
+    cmd: |
+        set -e
+        set -x
+        # we still need all the repos under the same root directory, but instead of using
+        # zuul-cloner, use the wrapped commands directly
+        # reflink is an safer alternative to hardlinking which could fail
+        cp -dR --reflink=auto /home/zuul/src/git.openstack.org/openstack-infra/tripleo-ci .
+    executable: /bin/bash
+    chdir: '{{ tripleo_root }}'
+  environment: '{{ zuul | zuul_legacy_vars }}'
+
+- name: "set zull_dump"
+  set_fact:
+    zuul_dump: "{{ {'zuul': zuul} }}"
+
+- name: Dump zuul variables on the host to pass it to inner ansible
+  copy:
+    content: "{{ zuul_dump|to_nice_yaml }}"
+    dest: "{{ workspace }}/logs/zuul-variables.yaml"
+
+- name: Remove package exclusions from package manager
+  become: true
+  ini_file:
+    path: "{{ item }}"
+    section: main
+    option: exclude
+    state: absent
+  failed_when: false
+  with_items:
+    - /etc/yum.conf
+    - /etc/dnf/dnf.conf

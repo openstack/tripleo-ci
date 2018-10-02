@@ -1,0 +1,5 @@
+- hosts: all
+  name: Common tasks for nodes preparation
+  roles:
+    - role: common
+    - role: prepare-node
