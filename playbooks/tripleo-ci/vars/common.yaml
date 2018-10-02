@@ -31,7 +31,7 @@ nodes_args: >-
   {%- endif %}
 
 rdo_env_vars: >-
-  {% if nodepool_provider == 'rdo-cloud-tripleo' -%}
+  {% if nodepool_provider in ['rdo-cloud-tripleo', 'rdo-cloud'] -%}
   --extra-vars @{{ tripleo_ci_dir }}/toci-quickstart/config/testenv/{{ environment_type }}-rdocloud.yml
   {%- endif %}
 
