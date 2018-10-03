@@ -141,51 +141,26 @@ done
 {% else %}
     ## LOGS COLLECTION PREPARE
     create_collect_logs_script
-for playbook in {{ " ".join(playbooks) }}; do
-        echo "${RELEASE_ARGS[$playbook]:=$QUICKSTART_DEFAULT_RELEASE_ARG}"
-        run_with_timeout $START_JOB_TIME $QUICKSTART_INSTALL_CMD \
-           "${RELEASE_ARGS[$playbook]:=$QUICKSTART_DEFAULT_RELEASE_ARG}" \
+    for playbook in {{ " ".join(playbooks) }}; do
+        echo ${RELEASE_ARGS[$playbook]:=$QUICKSTART_DEFAULT_RELEASE_ARG}
+        $QUICKSTART_INSTALL_CMD \
+           ${RELEASE_ARGS[$playbook]:=$QUICKSTART_DEFAULT_RELEASE_ARG} \
            {{ nodes_args }} \
            {{ featureset_conf }} \
            {{ env_vars }} \
            {{ extra_vars }} \
            {{ vxlan_vars }} \
            $DEFAULT_ARGS \
-           --extra-vars ci_job_end_time=$(( START_JOB_TIME + REMAINING_TIME*60 )) \
            --extra-vars @{{ workspace }}/logs/zuul-variables.yaml \
-            $LOCAL_WORKING_DIR/playbooks/$playbook "${PLAYBOOKS_ARGS[$playbook]:-}" \
+            $LOCAL_WORKING_DIR/playbooks/$playbook ${PLAYBOOKS_ARGS[$playbook]:-} \
             2>&1 | tee -a $LOGS_DIR/quickstart_install.log && exit_value=0 || exit_value=$?
 
         # Print status of playbook run
         [[ "$exit_value" == 0 ]] && echo "Playbook run of $playbook passed successfully"
         [[ "$exit_value" != 0 ]] && echo "Playbook run of $playbook failed" && break
-done
+    done
     [[ "$exit_value" == 0 ]] && echo "Playbook run passed successfully" || echo "Playbook run failed"
-
-    ## LOGS COLLECTION RUN (if applicable)
-    if [[ "${NODEPOOL_PROVIDER:-''}" == "rdo-cloud-tripleo" ]] || [[ "${NODEPOOL_PROVIDER:-''}" == "tripleo-test-cloud-rh1" ]]; then
-        if [[ "$TOCI_JOBTYPE" =~ "ovb" ]]; then
-            bash $LOGS_DIR/collect_logs.sh
-            # rename script to not to run it in multinode jobs
-            mv $LOGS_DIR/collect_logs.sh $LOGS_DIR/ovb_collect_logs.sh
-        fi
-    fi
-
 {% endif %}
 
-popd
-
-sudo unbound-control dump_cache > /tmp/dns_cache.txt
-sudo chown {{ ansible_user_id }}: /tmp/dns_cache.txt
-cat /tmp/dns_cache.txt | gzip - > $LOGS_DIR/dns_cache.txt.gz
-
-{% if periodic|bool %}
-if [[ -e {{ workspace }}/hash_info.sh ]] ; then
-    echo export JOB_EXIT_VALUE=$exit_value >> {{ workspace }}/hash_info.sh
-fi
-{% endif %}
-
-mkdir -p $LOGS_DIR/quickstart_files
-find $LOCAL_WORKING_DIR -maxdepth 1 -type f -not -name "*sqlite" | while read i; do gzip -cf $i > $LOGS_DIR/quickstart_files/$(basename $i).txt.gz; done
 echo 'Quickstart completed.'
 exit $exit_value

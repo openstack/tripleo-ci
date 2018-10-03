@@ -62,7 +62,6 @@ export NODECOUNT=0
 export OVERCLOUD_HOSTS=
 export CONTROLLER_HOSTS=
 export SUBNODES_SSH_KEY=
-TIMEOUT_SECS=$((DEVSTACK_GATE_TIMEOUT*60))
 export EXTRA_VARS=${EXTRA_VARS:-""}
 export VXLAN_VARS=${VXLAN_VARS:-""}
 export EXTRANODE=""
@@ -170,7 +169,7 @@ if [ -z "${TE_DATAFILE:-}" -a "{{ environment_infra }}" = "ovb" ] ; then
     NETISO_ENV="multi-nic"
 
     # provision env in rh cloud, then start quickstart
-    ./testenv-client -b $GEARDSERVER:4730 -t $TIMEOUT_SECS \
+    ./testenv-client -b $GEARDSERVER:4730 -t {{ zuul.timeout }} \
         --envsize $NODECOUNT --ucinstance $UCINSTANCEID \
         --net-iso $NETISO_ENV $EXTRANODE -- ./toci_quickstart.sh
 elif [ "{{ environment_infra }}" = "ovb" ] ; then
