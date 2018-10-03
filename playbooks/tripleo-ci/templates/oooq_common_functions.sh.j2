@@ -19,8 +19,7 @@ function previous_release_mixed_upgrade_case {
     local release="${1:-master}"
     case "${release}" in
         ''|master|promotion-testing-hash-master)
-            # NOTE: we need to update this when we cut a stable branch
-            echo "queens"
+            echo "rocky"
             ;;
         stein|promotion-testing-hash-stein)
             echo "rocky"

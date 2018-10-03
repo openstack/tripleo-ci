@@ -114,7 +114,7 @@ QUICKSTART_RELEASE="promotion-testing-hash-${QUICKSTART_RELEASE}"
 EMIT_RELEASES_EXTRA_ARGS="$EMIT_RELEASES_EXTRA_ARGS --is-periodic"
 {% endif %}
 
-if [[ -f "$RELEASES_SCRIPT" ]] && [[ {{ featureset }} =~ 037|050|010|011 ]]; then
+if [[ -f "$RELEASES_SCRIPT" ]] && [[ {{ featureset }} =~ 010|011|037|047|050 ]]; then
 
     python $RELEASES_SCRIPT \
         --stable-release ${STABLE_RELEASE:-"master"} \
