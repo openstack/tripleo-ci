@@ -10,6 +10,10 @@
       include_role:
         name: configure-swap
 
+    - name: Set legacy log path
+      include_role:
+        name: set-zuul-log-path-fact
+
     - name: Ensure legacy workspace directory
       file:
         path: '{{ workspace }}'
@@ -105,7 +109,7 @@
 
           # Compatibility with zuul v3 variables
           export JOB_NAME={{ zuul.job }}
-          export LOG_PATH={{ zuul.change[-2:] }}/{{ zuul.change }}/{{ zuul.patchset }}/{{ zuul.pipeline }}/{{ zuul.job }}/{{ zuul.build[:7] }}
+          export LOG_PATH={{ zuul_log_path }}
 
           export BRANCH_OVERRIDE="{{ branch_override | default('default') }}"
           if [ "$BRANCH_OVERRIDE" != "default" ] ; then
