@@ -80,6 +80,12 @@ if [[ -f "$RELEASES_FILE_OUTPUT" ]]; then
             $OVERCLOUD_TARGET_RELEASE $OVERCLOUD_TARGET_HASH)
         ["multinode-validate.yml"]=$(get_extra_vars_from_release \
             $OVERCLOUD_TARGET_RELEASE $OVERCLOUD_TARGET_HASH)
+        ["multinode-standalone.yml"]=$(get_extra_vars_from_release \
+            $STANDALONE_DEPLOY_RELEASE $STANDALONE_DEPLOY_HASH \
+            $STANDALONE_DEPLOY_NEWEST_HASH)
+        ["multinode-standalone-upgrade.yml"]=$(get_extra_vars_from_release \
+            $STANDALONE_TARGET_RELEASE $STANDALONE_TARGET_HASH \
+            $STANDALONE_TARGET_NEWEST_HASH)
     )
 
 fi

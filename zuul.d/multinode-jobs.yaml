@@ -23,6 +23,7 @@
         - tripleo-ci-centos-7-scenario000-multinode-oooq-container-upgrades
         - tripleo-ci-centos-7-standalone
         - tripleo-ci-fedora-28-standalone
+        - tripleo-ci-centos-7-standalone-upgrade
 
     gate:
       queue: tripleo
@@ -47,6 +48,7 @@
         - tripleo-ci-centos-7-scenario000-multinode-oooq-container-upgrades
         - tripleo-ci-centos-7-standalone
         - tripleo-ci-fedora-28-standalone
+        - tripleo-ci-centos-7-standalone-upgrade
     gate:
       queue: tripleo
       jobs:
