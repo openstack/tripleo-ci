@@ -14,7 +14,7 @@ featureset_conf: >-
 periodic: >-
   {% if 'periodic' in zuul.pipeline -%}
   true
-  {% else %}
+  {%- else -%}
   false
   {%- endif %}
 
