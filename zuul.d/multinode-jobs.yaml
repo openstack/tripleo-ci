@@ -7,7 +7,6 @@
     name: tripleo-multinode-baremetal-minimal
     check:
       jobs:
-        - tripleo-ci-centos-7-3nodes-multinode
         - tripleo-ci-centos-7-nonha-multinode-oooq
     gate:
       queue: tripleo
@@ -59,7 +58,6 @@
     name: tripleo-multinode-baremetal-full
     check:
       jobs:
-        - tripleo-ci-centos-7-3nodes-multinode
         - tripleo-ci-centos-7-nonha-multinode-oooq
         - tripleo-ci-centos-7-scenario001-multinode-oooq
         - tripleo-ci-centos-7-scenario002-multinode-oooq
