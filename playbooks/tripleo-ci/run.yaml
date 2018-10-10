@@ -30,6 +30,8 @@
           set -e
           set -x
           export TOCI_JOBTYPE={{ toci_jobtype }}
+          export DISTRIBUTION={{ ansible_distribution }}
+          export DISTRIBUTION_MAJOR_VERSION={{ ansible_distribution_major_version }}
 
           # ZUUL does not set these for periodic jobs
           export ZUUL_BRANCH=${ZUUL_BRANCH:-master}
