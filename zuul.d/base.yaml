@@ -29,6 +29,7 @@
       - git.openstack.org/openstack/tripleo-quickstart-extras
       - git.openstack.org/openstack/tripleo-upgrade
       - git.openstack.org/openstack/browbeat
+      - git.openstack.org/openstack/tripleo-ha-utils
     pre-run:
       - playbooks/nodepool-provider/pre.yaml
       - playbooks/openstack-zuul-jobs/legacy/pre.yaml
