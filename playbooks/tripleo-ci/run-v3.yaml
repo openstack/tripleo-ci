@@ -103,6 +103,10 @@
           export TOCI_JOBTYPE={{ environment_type }}-featureset{{ featureset }}
           {% endif %}
 
+          {% if nodes is defined %}
+          export NODES_FILE={{ nodes_file }}
+          {% endif %}
+
           # ZUUL does not set these for periodic jobs
           export ZUUL_BRANCH=${ZUUL_BRANCH:-master}
           export ZUUL_REF=${ZUUL_REF:-None}
