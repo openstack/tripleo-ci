@@ -17,8 +17,8 @@
 
 - job:
     name: tripleo-buildimage-ironic-python-agent-centos-7
-    parent: tripleo-ci-dsvm
-    run: playbooks/tripleo-buildimage/run.yaml
+    parent: tripleo-ci-base
+    run: playbooks/tripleo-buildimage/run-v3.yaml
     post-run: playbooks/tripleo-buildimage/post.yaml
     timeout: 4200
     nodeset: single-centos-7-node
@@ -33,9 +33,11 @@
       - git.openstack.org/openstack/tripleo-common
       - git.openstack.org/openstack/tripleo-image-elements
       - git.openstack.org/openstack/tripleo-puppet-elements
+      - git.openstack.org/openstack/tripleo-repos
       - git.openstack.org/openstack/requirements
     vars:
       tripleo_image_type: ironic-python-agent
+      tripleo_image_os: centos7
     voting: false
     irrelevant-files:
       - ^.*\.rst$
@@ -43,8 +45,8 @@
 
 - job:
     name: tripleo-buildimage-overcloud-full-centos-7
-    parent: tripleo-ci-dsvm
-    run: playbooks/tripleo-buildimage/run.yaml
+    parent: tripleo-ci-base
+    run: playbooks/tripleo-buildimage/run-v3.yaml
     post-run: playbooks/tripleo-buildimage/post.yaml
     timeout: 4200
     nodeset: single-centos-7-node
@@ -58,17 +60,19 @@
       - git.openstack.org/openstack/tripleo-common
       - git.openstack.org/openstack/tripleo-image-elements
       - git.openstack.org/openstack/tripleo-puppet-elements
+      - git.openstack.org/openstack/tripleo-repos
     vars:
       tripleo_image_type: overcloud-full
+      tripleo_image_os: centos7
     irrelevant-files:
       - ^.*\.rst$
       - ^releasenotes/.*$
 
 - job:
     name: tripleo-buildimage-overcloud-hardened-full-centos-7
-    parent: tripleo-ci-dsvm
-    run: playbooks/tripleo-buildimage/run.yaml
-    post-run: playbooks/tripleo-build/post.yaml
+    parent: tripleo-ci-base
+    run: playbooks/tripleo-buildimage/run-v3.yaml
+    post-run: playbooks/tripleo-buildimage/post.yaml
     timeout: 4200
     nodeset: single-centos-7-node
     required-projects:
@@ -80,9 +84,11 @@
       - git.openstack.org/openstack/tripleo-common
       - git.openstack.org/openstack/tripleo-image-elements
       - git.openstack.org/openstack/tripleo-puppet-elements
+      - git.openstack.org/openstack/tripleo-repos
       - git.openstack.org/openstack/requirements
     vars:
       tripleo_image_type: overcloud-hardened-full
+      tripleo_image_os: centos7
     voting: false
     irrelevant-files:
       - ^.*\.rst$

@@ -1,0 +1,83 @@
+- hosts: all
+  name: TripleO image building job
+  roles:
+    - role: bindep
+      bindep_dir: "{{ ansible_user_dir }}/{{ zuul.projects['git.openstack.org/openstack/python-tripleoclient'].src_dir }}"
+    - role: tripleo-repos
+      tripleo_repos_repository: "{{ ansible_user_dir }}/{{ zuul.projects['git.openstack.org/openstack/tripleo-repos'].src_dir }}"
+  tasks:
+    - name: Include common buildimage vars
+      include_vars:
+        file: "common.yaml"
+
+    - name: Swap is essential as we are not meeting memory requirements
+      include_role:
+        name: configure-swap
+
+    - name: Set legacy log path
+      include_role:
+        name: set-zuul-log-path-fact
+
+    - name: Ensure legacy workspace directory
+      file:
+        path: '{{ workspace }}'
+        state: directory
+
+    - name: Ensure legacy logs directory
+      file:
+        path: '{{ workspace }}/logs'
+        state: directory
+
+    - name: Install pip
+      package:
+        name: python-pip
+        state: present
+
+    - name: Install virtualenv
+      package:
+        name: python-virtualenv
+        state: present
+
+    - name: pip install tripleo items
+      become: true
+      pip:
+        name:
+          - "file://{{ openstack_git_root }}/diskimage-builder"
+          - "file://{{ openstack_git_root }}/python-tripleoclient"
+          - "file://{{ openstack_git_root }}/tripleo-common"
+        state: present
+        virtualenv: "{{ workspace }}/venv"
+
+    # NOTE(aschultz) :we dropped support for instack-undercloud in Stein so
+    # we use a directory existance check to determine if we should include it
+    - name: Run image build
+      args:
+        chdir: '{{ workspace }}'
+      shell: |
+        set -x
+        source {{ workspace }}/venv/bin/activate
+        TRIPLEO_COMMON_PATH="{{ openstack_git_root }}/tripleo-common"
+
+        ELEMENTS="{{ openstack_git_root }}/tripleo-puppet-elements/elements:"
+        ELEMENTS+="{{ openstack_git_root }}/tripleo-image-elements/elements:"
+        ELEMENTS+="{{ openstack_git_root }}/heat-templates/hot/software-config/elements"
+
+        if [ -d "{{ openstack_git_root }}/instack-undercloud/elements" ]; then
+          ELEMENTS="{{ openstack_git_root }}/instack-undercloud/elements:${ELEMENTS}"
+        fi
+
+        if [ "{{ tripleo_image_type }}" == "overcloud-hardened-full" ]; then
+          CONFIG_FILES="--config-file $TRIPLEO_COMMON_PATH/image-yaml/overcloud-hardened-images.yaml --config-file $TRIPLEO_COMMON_PATH/image-yaml/overcloud-hardened-images-{{ tripleo_image_os }}.yaml"
+        else
+          CONFIG_FILES="--config-file $TRIPLEO_COMMON_PATH/image-yaml/overcloud-images.yaml --config-file $TRIPLEO_COMMON_PATH/image-yaml/overcloud-images-{{ tripleo_image_os }}.yaml"
+        fi
+
+        export ELEMENTS_PATH=$ELEMENTS
+        export DIB_YUM_REPO_CONF="/etc/yum.repos.d/delorean*"
+
+        openstack overcloud image build --image-name {{ tripleo_image_type }} $CONFIG_FILES > {{ workspace }}/build.log 2> {{ workspace }}/build-err.log
+        RESULT=$?
+
+        mv *.log {{ workspace }}/logs/
+        exit $RESULT
+

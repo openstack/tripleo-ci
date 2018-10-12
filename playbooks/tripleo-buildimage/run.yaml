@@ -1,3 +1,4 @@
+### DEPRECATED USE run-v3.yaml
 - hosts: all
   name: Autoconverted job legacy-tripleo-buildimage
   roles:
@@ -49,6 +50,7 @@
           ELEMENTS="$WORKSPACE/tripleo-puppet-elements/elements:"
           ELEMENTS+="$WORKSPACE/tripleo-image-elements/elements:"
           ELEMENTS+="$WORKSPACE/heat-templates/hot/software-config/elements"
+          TOX_ENV=venv
 
           # Basic Deployment (CLI)
           # http://docs.openstack.org/developer/tripleo-docs/basic_deployment/basic_deployment_cli.html
@@ -91,7 +93,7 @@
           export DIB_YUM_REPO_CONF="/etc/yum.repos.d/delorean*"
 
           # install dib & tripleo-common source
-          tox -evenv -- pip install $WORKSPACE/diskimage-builder $WORKSPACE/tripleo-common
+          tox -- pip install $WORKSPACE/diskimage-builder $WORKSPACE/tripleo-common
 
           TRIPLEO_COMMON_PATH=$WORKSPACE/tripleo-common
           export ELEMENTS_PATH=$ELEMENTS
@@ -101,9 +103,9 @@
               CONFIG_FILES="--config-file $TRIPLEO_COMMON_PATH/image-yaml/overcloud-images.yaml --config-file $TRIPLEO_COMMON_PATH/image-yaml/overcloud-images-centos7.yaml"
           fi
           if [ "$ZUUL_BRANCH" == "stable/newton" ]; then
-              tox -evenv -- openstack overcloud image build --type {{ tripleo_image_type }} --elements-path="$ELEMENTS"
+              tox -- openstack overcloud image build --type {{ tripleo_image_type }} --elements-path="$ELEMENTS"
           else
-              tox -evenv -- openstack overcloud image build --image-name {{ tripleo_image_type }} $CONFIG_FILES
+              tox -- openstack overcloud image build --image-name {{ tripleo_image_type }} $CONFIG_FILES
           fi
 
           mkdir -p $WORKSPACE/logs
