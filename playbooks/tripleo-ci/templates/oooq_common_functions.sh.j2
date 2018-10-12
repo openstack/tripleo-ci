@@ -156,3 +156,16 @@ function sanitize_ip_address {
         echo $ip
     fi
 }
+
+function python_cmd() {
+    basename $(command -v python3 || command -v python2)
+}
+
+function package_manager() {
+    PKG="$(command -v dnf || command -v yum)"
+    if [ "$(python_cmd)" == "python3" ]; then
+        echo "${PKG} -y --exclude='python2*' $*"
+    else
+        echo "${PKG} -y --exclude='python3*' $*"
+    fi
+}

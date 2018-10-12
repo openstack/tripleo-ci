@@ -38,16 +38,17 @@ mkdir -p $WORKSPACE/logs
 # Set job as failed until it's overwritten by pingtest/tempest real test subunit
 cat $TRIPLEO_ROOT/tripleo-ci/scripts/fake_fail_subunit | gzip - > $WORKSPACE/logs/testrepository.subunit.gz
 
+# Since python3 became default on some distros without even having a python/pip
+# command installed due to PEP-0394, we can no longer rely on having
+# unversioned commands available like python(2|3) or pip(2|3). We should only
+# call pip using module approach which ensures we use the right version.
+$(python_cmd) -m pip --version || \
+    (curl "https://bootstrap.pypa.io/get-pip.py" -o "get-pip.py"; sudo $(python_cmd) get-pip.py)
 
-# NOTE(trown): In openstack-infra we have pip already, but this will ensure we
-# have it available in other environments.
-command -v pip || \
-    (curl "https://bootstrap.pypa.io/get-pip.py" -o "get-pip.py"; sudo python get-pip.py)
-
-sudo yum -y install python-requests python-urllib3
-sudo pip install shyaml
-
-
+sudo $(package_manager) install python*-requests python*-urllib3 shyaml
+# shyaml may not have a rpm on older distros
+which shyaml 2>/dev/null || \
+    sudo $(python_cmd) -m pip install shyaml
 
 # Sets whether or not this job will upload images.
 export PERIODIC=0
@@ -168,7 +169,7 @@ if [ -z "${TE_DATAFILE:-}" -a "{{ environment_infra }}" = "ovb" ] ; then
     export GEARDSERVER=${TEBROKERIP-192.168.1.1}
     # NOTE(pabelanger): We need gear for testenv, but this really should be
     # handled by tox.
-    sudo pip install gear
+    sudo $(python_cmd) -m pip install gear
     # Kill the whole job if it doesn't get a testenv in 20 minutes as it likely will timout in zuul
     ( sleep 1200 ; [ ! -e /tmp/toci.started ] && sudo kill -9 $$ ) &
 
