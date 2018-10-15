@@ -9,5 +9,4 @@
     nodeset: single-centos-7-node
     branches: ^(?!stable/(newton|ocata|pike|queens)).*$
     vars:
-      environment_type: standalone
       featureset: '052'

@@ -99,7 +99,6 @@
     nodeset: three-centos-7-nodes
     branches: ^(?!stable/(newton|ocata|pike)).*$
     vars:
-      environment_type: multinode
       nodes: 2ctlr
       featureset: '032'
 
@@ -108,7 +107,6 @@
     parent: tripleo-ci-base-multinode
     branches: ^(?!stable/(newton|ocata)).*$
     vars:
-      environment_type: multinode
       nodes: 1ctlr
       featureset: '010'
       playbooks:
@@ -122,7 +120,6 @@
     branches: master
     vars:
       branch_override: 'stable/rocky'
-      environment_type: multinode
       nodes: 1ctlr
       featureset: '010'
       playbooks:
@@ -135,7 +132,6 @@
     branches: master
     vars:
       branch_override: 'stable/queens'
-      environment_type: multinode
       nodes: 1ctlr
       featureset: '010'
       playbooks:
@@ -148,7 +144,6 @@
     branches: master
     vars:
       branch_override: 'stable/pike'
-      environment_type: multinode
       nodes: 1ctlr
       featureset: '010'
       playbooks:
@@ -160,7 +155,6 @@
     parent: tripleo-ci-base-multinode
     branches: ^stable/(newton|ocata).*$
     vars:
-      environment_type: multinode
       nodes: 1ctlr
       featureset: '004'
 
@@ -169,7 +163,6 @@
     parent: tripleo-ci-base-multinode
     branches: ^stable/(newton|ocata).*$
     vars:
-      environment_type: multinode
       nodes: 1ctlr
       featureset: '005'
 
@@ -178,7 +171,6 @@
     parent: tripleo-ci-base-multinode
     branches: ^(?!stable/(newton|ocata)).*$
     vars:
-      environment_type: multinode
       nodes: 1ctlr
       featureset: '016'
 
@@ -187,7 +179,6 @@
     parent: tripleo-ci-base-multinode
     branches: ^stable/(newton|ocata).*$
     vars:
-      environment_type: multinode
       nodes: 1ctlr
       featureset: '006'
 
@@ -196,7 +187,6 @@
     parent: tripleo-ci-base-multinode
     branches: ^(?!stable/(newton|ocata)).*$
     vars:
-      environment_type: multinode
       nodes: 1ctlr
       featureset: '017'
 
@@ -205,7 +195,6 @@
     parent: tripleo-ci-base-multinode
     branches: ^(?!stable/(newton)).*$
     vars:
-      environment_type: multinode
       nodes: 1ctlr
       featureset: '055'
 
@@ -214,7 +203,6 @@
     parent: tripleo-ci-base-multinode
     branches: ^stable/ocata.*$
     vars:
-      environment_type: multinode
       nodes: 1ctlr
       featureset: '007'
 
@@ -223,7 +211,6 @@
     parent: tripleo-ci-base-multinode
     branches: ^(?!stable/(newton|ocata)).*$
     vars:
-      environment_type: multinode
       nodes: 1ctlr
       featureset: '018'
 
@@ -232,7 +219,6 @@
     parent: tripleo-ci-base-multinode
     branches: ^stable/ocata.*$
     vars:
-      environment_type: multinode
       nodes: 1ctlr
       featureset: '008'
 
@@ -241,7 +227,6 @@
     parent: tripleo-ci-base-multinode
     branches: ^(?!stable/(newton|ocata)).*$
     vars:
-      environment_type: multinode
       nodes: 1ctlr
       featureset: '019'
 
@@ -251,7 +236,6 @@
     voting: false
     branches: ^(?!stable/(newton|ocata)).*$
     vars:
-      environment_type: multinode
       nodes: 1ctlr
       featureset: '026'
 
@@ -260,7 +244,6 @@
     parent: tripleo-ci-base-multinode
     branches: ^stable/pike.*$
     vars:
-      environment_type: multinode
       nodes: 1ctlr
       featureset: '028'
 
@@ -270,7 +253,6 @@
     voting: false
     branches: ^(?!stable/(newton|ocata|pike)).*$
     vars:
-      environment_type: multinode
       nodes: 1ctlr
       featureset: '030'
 
@@ -280,7 +262,6 @@
     voting: false
     branches: ^(?!stable/(newton|ocata|pike)).*$
     vars:
-      environment_type: multinode
       nodes: 1ctlr
       featureset: '031'
 
@@ -290,7 +271,6 @@
     voting: false
     branches: ^(?!stable/(newton|ocata|pike|queens)).*$
     vars:
-      environment_type: multinode
       nodes: 1ctlr
       featureset: '031'
 
@@ -300,7 +280,6 @@
     voting: false
     branches: ^(?!stable/(newton|ocata)).*$
     vars:
-      environment_type: multinode
       nodes: 1ctlr
       featureset: '033'
 
@@ -310,7 +289,6 @@
     voting: false
     branches: ^(?!stable/(newton|ocata|pike)).*$
     vars:
-      environment_type: multinode
       nodes: 1ctlr
       featureset: '038'
 
@@ -322,7 +300,6 @@
     voting: true
     branches: ^(?!stable/(newton|ocata|pike|queens)).*$
     vars:
-      environment_type: multinode
       nodes: 1ctlr
       featureset: '037'
       # Note (dmsimard): This enforces a minimum TTL for DNS records, see
@@ -335,7 +312,6 @@
     voting: false
     branches: ^(?!stable/(newton|ocata)).*$
     vars:
-      environment_type: multinode
       nodes: 1ctlr
       featureset: '044'
 
@@ -351,6 +327,5 @@
     voting: false
     branches: ^(?!stable/(newton|ocata|pike)).*$
     vars:
-      environment_type: multinode
       nodes: 1ctlr
       featureset: '051'

@@ -23,7 +23,6 @@
     nodeset: single-centos-7-node
     branches: ^(?!stable/(newton|ocata|pike|queens)).*$
     vars:
-      environment_type: singlenode
       featureset: '027'
 
 - job:
@@ -32,7 +31,6 @@
     nodeset: single-centos-7-node
     branches: ^(stable/(newton|ocata|pike|queens|rocky)).*$
     vars:
-      environment_type: singlenode
       featureset: '003'
 
 - job:
@@ -41,7 +39,6 @@
     nodeset: single-centos-7-node
     branches: ^(?!stable/(newton|ocata)).*$
     vars:
-      environment_type: singlenode
       featureset: '047'
 
 - job:
@@ -53,5 +50,4 @@
     # https://review.openstack.org/#/c/608282/
     voting: false
     vars:
-      environment_type: singlenode
       featureset: '050'
