@@ -54,7 +54,7 @@
       - name: Check overridable settings
         fail:
           msg: "ERROR: {{ item }} is not overridable."
-        when: item not in ['run_tempest', 'tempest_whitelist', 'test_black_regex']
+        when: item not in ['run_tempest', 'tempest_whitelist', 'test_black_regex', 'tempest_format', 'tempest_extra_config', 'tempest_plugins']
         with_items: "{{ featureset_override }}"
       - name: Generate featureset overriding file
         template:
