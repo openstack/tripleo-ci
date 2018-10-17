@@ -37,7 +37,7 @@
     name: tripleo-ci-centos-7-undercloud-upgrades
     parent: tripleo-ci-base-singlenode
     nodeset: single-centos-7-node
-    branches: ^(?!stable/(newton|ocata)).*$
+    branches: ^(stable/(pike|queens|rocky)).*$
     vars:
       featureset: '047'
 
