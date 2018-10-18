@@ -16,6 +16,7 @@
       jobs:
         - tripleo-ci-centos-7-undercloud-oooq
         - tripleo-ci-centos-7-undercloud-containers
+        - tripleo-ci-centos-7-containerized-undercloud-upgrades
 
 - job:
     name: tripleo-ci-centos-7-undercloud-containers
@@ -49,9 +50,6 @@
     parent: tripleo-ci-base-singlenode
     nodeset: single-centos-7-node
     branches: ^(?!stable/(newton|ocata|pike|queens)).*$
-    # TODO(emilien) make it voting when we released Stein
-    # https://review.openstack.org/#/c/608282/
-    voting: false
     vars:
       environment_type: singlenode
       featureset: '050'
