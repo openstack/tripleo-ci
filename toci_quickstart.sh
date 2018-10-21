@@ -44,10 +44,12 @@ QUICKSTART_INSTALL_CMD="
     --tags $TAGS
 "
 
+export QUICKSTART_DEFAULT_RELEASE_ARG="--extra-vars @$LOCAL_WORKING_DIR/config/release/tripleo-ci/${DISTRIBUTION:-CentOS}-${DISTRIBUTION_MAJOR_VERSION:-7}/$QUICKSTART_RELEASE.yml"
+
 QUICKSTART_COLLECTLOGS_CMD="$LOCAL_WORKING_DIR/bin/ansible-playbook \
     $LOCAL_WORKING_DIR/playbooks/collect-logs.yml \
     -vv \
-    --extra-vars @$LOCAL_WORKING_DIR/config/release/tripleo-ci/$QUICKSTART_RELEASE.yml \
+    $QUICKSTART_DEFAULT_RELEASE_ARG \
     $FEATURESET_CONF \
     $ENV_VARS \
     $EXTRA_VARS \
@@ -56,8 +58,6 @@ QUICKSTART_COLLECTLOGS_CMD="$LOCAL_WORKING_DIR/bin/ansible-playbook \
     --extra-vars artcl_collect_dir=$LOGS_DIR \
     --tags all \
 "
-
-export QUICKSTART_DEFAULT_RELEASE_ARG="--extra-vars @$LOCAL_WORKING_DIR/config/release/tripleo-ci/${DISTRIBUTION:-CentOS}-${DISTRIBUTION_MAJOR_VERSION:-7}/$QUICKSTART_RELEASE.yml"
 
 declare -A RELEASE_ARGS=()
 

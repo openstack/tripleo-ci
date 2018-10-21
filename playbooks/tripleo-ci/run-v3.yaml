@@ -102,6 +102,8 @@
           {% else %}
           export TOCI_JOBTYPE={{ environment_type }}-featureset{{ featureset }}
           {% endif %}
+          export DISTRIBUTION={{ ansible_distribution }}
+          export DISTRIBUTION_MAJOR_VERSION={{ ansible_distribution_major_version }}
 
           {% if nodes is defined %}
           export NODES_FILE={{ nodes_file }}
