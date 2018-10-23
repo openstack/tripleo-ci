@@ -16,7 +16,6 @@
       jobs:
         - tripleo-ci-centos-7-undercloud-oooq
         - tripleo-ci-centos-7-undercloud-containers
-        - tripleo-ci-centos-7-containerized-undercloud-upgrades
 
 - job:
     name: tripleo-ci-centos-7-undercloud-containers
@@ -47,5 +46,9 @@
     parent: tripleo-ci-base-singlenode
     nodeset: single-centos-7-node
     branches: ^(?!stable/(newton|ocata|pike|queens)).*$
+    # TODO(rlandy) make it voting when we confirm
+    # https://review.openstack.org/#/c/611800/
+    # is working as expected.
+    voting: false
     vars:
       featureset: '050'
