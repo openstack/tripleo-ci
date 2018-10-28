@@ -240,6 +240,7 @@ artcl_collect_list:
   - /var/log/swift/
   - /var/log/tacker/
   - /var/log/tempest/
+  - /var/log/tripleo-container-image-prepare.log
   - /var/log/trove/
   - /var/log/vitrage/
   - /var/log/watcher/
