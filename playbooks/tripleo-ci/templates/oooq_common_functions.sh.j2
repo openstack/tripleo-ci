@@ -159,7 +159,58 @@ function sanitize_ip_address {
 }
 
 function python_cmd() {
-    basename $(command -v python3 || command -v python2)
+    distribution=unknown
+    distribution_major_version=unknown
+    # we prefer python2 because on few systems python->python3
+    python_cmd=python2
+
+    if [ -f /etc/os-release ]; then
+        . /etc/os-release
+        distribution_major_version=${VERSION_ID%.*}
+        case $NAME in
+        "Red Hat"*) distribution="RedHat"
+            if [ "$distribution_major_version" -ge "8" ]; then
+                python_cmd=python3
+            fi
+            ;;
+        "CentOS"*)
+            distribution="CentOS"
+            if [ "$distribution_major_version" -ge "8" ]; then
+                python_cmd=python3
+            fi
+            ;;
+        "Fedora"*)
+            distribution="Fedora"
+            if [ "$distribution_major_version" -ge "28" ]; then
+                python_cmd=python3
+            fi
+            ;;
+        "Ubuntu"*)
+            distribution="Ubuntu"
+            ;;
+        "Debian"*)
+            distribution="Debian"
+            ;;
+        esac
+    elif [ -f /etc/lsb-release ]; then
+        . /etc/lsb-release
+        distribution=${DISTRIB_ID}xx
+        distribution_major_version=${DISTRIB_RELEASE%.*}
+    elif [ -f /etc/debian_version ]; then
+        distribution="Debian"
+        distribution_major_version=$(cat /etc/debian_version | cut -d. -f1)
+    else
+        # Covers for FreeBSD and many others
+        distribution=$(uname -s)
+        if [ $distribution = Darwin ]; then
+            distribution="MacOSX"
+            distribution_major_version=$(sw_vers -productVersion | cut -d. -f1)
+        fi
+        which $python_cmd 2>&1 >/dev/null || {
+            python_cmd=/usr/local/bin/python2.7
+        }
+    fi
+    echo $python_cmd
 }
 
 function package_manager() {
