@@ -28,6 +28,12 @@ def releases_dictionary():
         'overcloud_deploy_hash': 'current-tripleo',
         'overcloud_target_release': 'master',
         'overcloud_target_hash': 'current-tripleo',
+        'standalone_deploy_release': 'master',
+        'standalone_deploy_newest_hash': 'current',
+        'standalone_deploy_hash': 'current-tripleo',
+        'standalone_target_release': 'master',
+        'standalone_target_newest_hash': 'current',
+        'standalone_target_hash': 'current-tripleo',
     }
 
 
@@ -40,6 +46,12 @@ def releases_dictionary():
     'overcloud_deploy_hash',
     'overcloud_target_release',
     'overcloud_target_hash',
+    'standalone_deploy_release',
+    'standalone_deploy_newest_hash',
+    'standalone_deploy_hash',
+    'standalone_target_release',
+    'standalone_target_newest_hash',
+    'standalone_target_hash',
 ])
 def test_missing_key_fails(releases_dictionary, deleted_key):
     wrong_releases_dictionary = releases_dictionary.pop(deleted_key)

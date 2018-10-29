@@ -62,6 +62,17 @@ def test_ffu_overcloud_upgrade_only_supported_from_newton(stable_release):
         compose_releases_dictionary(stable_release, featureset, upgrade_from)
 
 
+@pytest.mark.parametrize('stable_release',
+                         ['newton', 'ocata', 'pike', 'queens', 'rocky'])
+def test_standalone_upgrade_only_supported_from_stein(stable_release):
+    featureset = {
+        'standalone_upgrade': True,
+    }
+    upgrade_from = False
+    with pytest.raises(RuntimeError):
+        compose_releases_dictionary(stable_release, featureset, upgrade_from)
+
+
 def test_fail_with_wrong_release():
     with pytest.raises(RuntimeError):
         compose_releases_dictionary('foobar', {}, False)

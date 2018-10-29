@@ -1,3 +1,35 @@
+"""
+Helper script that generates environmental variables for upgrade/update.
+
+From the stable-release parameter it calculate environmental variables
+for mixed release.
+
+It supports:
+ - overcloud-upgrade from stable_release ocata.
+ - overcloud-update, all releases.
+ - undercloud-upgrade from stable_release ocata.
+ - fast forward upgrade;
+   - newton->queens;
+ - standalone-upgrade from stable_release stein.
+
+It exports those environmental variables in the OUTPUT_FILE:
+
+ - UNDERCLOUD_INSTALL_RELEASE
+ - UNDERCLOUD_INSTALL_HASH
+ - UNDERCLOUD_TARGET_RELEASE
+ - UNDERCLOUD_TARGET_HASH
+ - OVERCLOUD_DEPLOY_RELEASE
+ - OVERCLOUD_DEPLOY_HASH
+ - OVERCLOUD_TARGET_RELEASE
+ - OVERCLOUD_TARGET_HASH
+ - STANDALONE_DEPLOY_RELEASE
+ - STANDALONE_DEPLOY_NEWEST_HASH
+ - STANDALONE_DEPLOY_HASH
+ - STANDALONE_TARGET_RELEASE
+ - STANDALONE_TARGET_NEWEST_HASH
+ - STANDALONE_TARGET_HASH
+
+"""
 import argparse
 import logging
 import logging.handlers
@@ -10,10 +42,12 @@ import yaml
 RELEASES = ['newton', 'ocata', 'pike', 'queens', 'rocky', 'master']
 # Define long term releases
 LONG_TERM_SUPPORT_RELEASES = ['queens']
+UNSUPPORTED_STANDALONE = ['newton', 'ocata', 'pike', 'queens', 'rocky']
 
 # NAMED DLRN HASHES
 NEWTON_HASH_NAME = 'current-passed-ci'
 CURRENT_HASH_NAME = 'current-tripleo'
+NEWEST_HASH_NAME = 'current'
 PROMOTION_HASH_NAME = 'tripleo-ci-testing'
 PREVIOUS_HASH_NAME = 'previous-current-tripleo'
 
@@ -111,6 +145,11 @@ def compose_releases_dictionary(stable_release, featureset, upgrade_from,
             not featureset.get('mixed_upgrade'):
         raise RuntimeError("Overcloud upgrade has to be mixed upgrades")
 
+    if featureset.get('standalone_upgrade') and \
+            stable_release in UNSUPPORTED_STANDALONE:
+        raise RuntimeError(
+            "Standalone upgrade doesn't support {}".format(stable_release))
+
     if featureset.get('ffu_overcloud_upgrade') and \
             stable_release not in LONG_TERM_SUPPORT_RELEASES:
         raise RuntimeError(
@@ -118,6 +157,7 @@ def compose_releases_dictionary(stable_release, featureset, upgrade_from,
             "used in a fast forward upgrade. Current long-term support "
             "releases:  {}".format(stable_release, LONG_TERM_SUPPORT_RELEASES))
 
+    newest_hash = get_dlrn_hash(stable_release, NEWEST_HASH_NAME)
     if stable_release == 'newton':
         current_hash = get_dlrn_hash(stable_release, NEWTON_HASH_NAME)
     elif is_periodic:
@@ -133,7 +173,13 @@ def compose_releases_dictionary(stable_release, featureset, upgrade_from,
         'overcloud_deploy_release': stable_release,
         'overcloud_deploy_hash': current_hash,
         'overcloud_target_release': stable_release,
-        'overcloud_target_hash': current_hash
+        'overcloud_target_hash': current_hash,
+        'standalone_deploy_release': stable_release,
+        'standalone_deploy_hash': current_hash,
+        'standalone_deploy_newest_hash': newest_hash,
+        'standalone_target_release': stable_release,
+        'standalone_target_hash': current_hash,
+        'standalone_target_newest_hash': newest_hash,
     }
 
     if featureset.get('mixed_upgrade'):
@@ -163,6 +209,16 @@ def compose_releases_dictionary(stable_release, featureset, upgrade_from,
         install_hash = get_dlrn_hash(install_release, CURRENT_HASH_NAME)
         releases_dictionary['undercloud_install_release'] = install_release
         releases_dictionary['undercloud_install_hash'] = install_hash
+
+    elif featureset.get('standalone_upgrade'):
+        logger.info('Doing an standalone upgrade')
+        install_release = get_relative_release(stable_release, -1)
+        install_hash = get_dlrn_hash(install_release, CURRENT_HASH_NAME)
+        install_newest_hash = get_dlrn_hash(install_release, NEWEST_HASH_NAME)
+        releases_dictionary['standalone_deploy_release'] = install_release
+        releases_dictionary['standalone_deploy_newest_hash'] = \
+            install_newest_hash
+        releases_dictionary['standalone_deploy_hash'] = install_hash
 
     elif featureset.get('overcloud_update'):
         logger.info('Doing an overcloud update')
@@ -198,7 +254,8 @@ def shim_convert_old_release_names(releases_names, is_periodic):
     elif is_periodic:
         for key in [
                 'undercloud_install_release', 'undercloud_target_release',
-                'overcloud_deploy_release', 'overcloud_target_release'
+                'overcloud_deploy_release', 'overcloud_target_release',
+                'standalone_deploy_release', 'standalone_target_release'
         ]:
             modified_releases_name[
                 key] = "promotion-testing-hash-" + releases_names[key]
@@ -219,6 +276,12 @@ export OVERCLOUD_DEPLOY_RELEASE="{overcloud_deploy_release}"
 export OVERCLOUD_DEPLOY_HASH="{overcloud_deploy_hash}"
 export OVERCLOUD_TARGET_RELEASE="{overcloud_target_release}"
 export OVERCLOUD_TARGET_HASH="{overcloud_target_hash}"
+export STANDALONE_DEPLOY_RELEASE="{standalone_deploy_release}"
+export STANDALONE_DEPLOY_HASH="{standalone_deploy_hash}"
+export STANDALONE_DEPLOY_NEWEST_HASH="{standalone_deploy_newest_hash}"
+export STANDALONE_TARGET_RELEASE="{standalone_target_release}"
+export STANDALONE_TARGET_NEWEST_HASH="{standalone_target_newest_hash}"
+export STANDALONE_TARGET_HASH="{standalone_target_hash}"
 '''.format(**releases_dictionary)
         with open(bash_file_name, 'w') as bash_file:
             bash_file.write(bash_script)
