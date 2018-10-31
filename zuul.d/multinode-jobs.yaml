@@ -51,10 +51,6 @@
       queue: tripleo
       jobs:
         - tripleo-ci-centos-7-containers-multinode
-        - tripleo-ci-centos-7-scenario001-multinode-oooq-container
-        - tripleo-ci-centos-7-scenario002-multinode-oooq-container
-        - tripleo-ci-centos-7-scenario003-multinode-oooq-container
-        - tripleo-ci-centos-7-scenario004-multinode-oooq-container
         - tripleo-ci-centos-7-standalone
         - tripleo-ci-centos-7-scenario000-multinode-oooq-container-updates
 
@@ -172,6 +168,7 @@
     name: tripleo-ci-centos-7-scenario001-multinode-oooq-container
     parent: tripleo-ci-base-multinode
     branches: ^(?!stable/(newton|ocata)).*$
+    voting: false
     vars:
       nodes: 1ctlr
       featureset: '016'
@@ -188,6 +185,7 @@
     name: tripleo-ci-centos-7-scenario002-multinode-oooq-container
     parent: tripleo-ci-base-multinode
     branches: ^(?!stable/(newton|ocata)).*$
+    voting: false
     vars:
       nodes: 1ctlr
       featureset: '017'
@@ -212,6 +210,7 @@
     name: tripleo-ci-centos-7-scenario003-multinode-oooq-container
     parent: tripleo-ci-base-multinode
     branches: ^(?!stable/(newton|ocata)).*$
+    voting: false
     vars:
       nodes: 1ctlr
       featureset: '018'
@@ -228,6 +227,7 @@
     name: tripleo-ci-centos-7-scenario004-multinode-oooq-container
     parent: tripleo-ci-base-multinode
     branches: ^(?!stable/(newton|ocata)).*$
+    voting: false
     vars:
       nodes: 1ctlr
       featureset: '019'
