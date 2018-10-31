@@ -1,0 +1,49 @@
+- hosts: primary
+  tasks:
+    - name: Include common vars
+      include_vars:
+        file: "common.yaml"
+
+    - name: Grab job artifacts
+      become: true
+      args:
+        chdir: "{{ workspace }}"
+      shell: |
+        set -x
+        mkdir -p {{ workspace }}/conf/
+        mkdir -p {{ workspace }}/logs/system
+        mkdir -p {{ workspace }}/etc/docker
+
+        mv *.conf {{ workspace }}/conf/
+        mv *.log {{ workspace }}/logs/
+        rsync -var --no-links /var/log/ {{ workspace }}/logs/system/ || true
+        rsync -var --no-links /etc/docker/ {{ workspace }}/etc/docker/ || true
+        gzip -r "{{ workspace }}/logs"  "{{ workspace }}/conf" "{{ workspace }}/etc"
+        chmod -R a+r "{{ workspace }}"
+        chown -R {{ ansible_user }}: "{{ workspace }}"
+
+    - name: Rename compressed text based files to end with txt.gz extension
+      become: true
+      shell: >
+        set -o pipefail &&
+        find {{ workspace }}/logs {{ workspace }}/conf {{ workspace }}/etc -type f |
+        awk 'function rename(orig)
+        { new=orig; sub(/\.gz$/, ".txt.gz", new); system("mv " orig " " new) }
+        /\.(conf|ini|json|sh|log|yaml|yml|repo|cfg|j2|py)\.gz$/ { rename($0) }
+        /(\/logs\/|\/etc\/)[^ \/\.]+\.gz$/ { rename($0) }';
+
+    - name: Copy files from {{ ansible_user_dir }}/workspace/ on node
+      #no_log: true
+      synchronize:
+        src: '{{ ansible_user_dir }}/workspace/'
+        dest: '{{ zuul.executor.log_root }}'
+        mode: pull
+        copy_links: true
+        verify_host: true
+        rsync_opts:
+          - --include=/etc/**
+          - --include=/conf/**
+          - --include=/logs/**
+          - --include=*/
+          - --exclude=*
+          - --prune-empty-dirs
