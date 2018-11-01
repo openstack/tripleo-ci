@@ -216,8 +216,8 @@ function python_cmd() {
 function package_manager() {
     PKG="$(command -v dnf || command -v yum)"
     if [ "$(python_cmd)" == "python3" ]; then
-        echo "${PKG} -y --exclude='python2*' $*"
+        echo "${PKG} -y --exclude=python2* $*"
     else
-        echo "${PKG} -y --exclude='python3*' $*"
+        echo "${PKG} -y --exclude=python3* $*"
     fi
 }
