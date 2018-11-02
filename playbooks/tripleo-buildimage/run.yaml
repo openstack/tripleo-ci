@@ -46,8 +46,7 @@
           set -e
           set -x
           cd python-tripleoclient
-          ELEMENTS="$WORKSPACE/instack-undercloud/elements:"
-          ELEMENTS+="$WORKSPACE/tripleo-puppet-elements/elements:"
+          ELEMENTS="$WORKSPACE/tripleo-puppet-elements/elements:"
           ELEMENTS+="$WORKSPACE/tripleo-image-elements/elements:"
           ELEMENTS+="$WORKSPACE/heat-templates/hot/software-config/elements"
 
@@ -55,20 +54,29 @@
           # http://docs.openstack.org/developer/tripleo-docs/basic_deployment/basic_deployment_cli.html
           case "$ZUUL_BRANCH" in
               "stable/newton")
+                  ELEMENTS+=":$WORKSPACE/instack-undercloud/elements"
                   DELOREAN_REPO_URL="https://trunk.rdoproject.org/centos7-newton/current"
                   DELOREAN_DEPS_URL="https://trunk.rdoproject.org/centos7-newton"
                   ;;
               "stable/ocata")
+                  ELEMENTS+=":$WORKSPACE/instack-undercloud/elements"
                   DELOREAN_REPO_URL="https://trunk.rdoproject.org/centos7-ocata/current"
                   DELOREAN_DEPS_URL="https://trunk.rdoproject.org/centos7-ocata"
                   ;;
               "stable/pike")
+                  ELEMENTS+=":$WORKSPACE/instack-undercloud/elements"
                   DELOREAN_REPO_URL="https://trunk.rdoproject.org/centos7-pike/current"
                   DELOREAN_DEPS_URL="https://trunk.rdoproject.org/centos7-pike"
                   ;;
               "stable/queens")
+                  ELEMENTS+=":$WORKSPACE/instack-undercloud/elements"
                   DELOREAN_REPO_URL="https://trunk.rdoproject.org/centos7-queens/current"
                   DELOREAN_DEPS_URL="https://trunk.rdoproject.org/centos7-queens"
+                  ;;
+              "stable/rocky")
+                  ELEMENTS+=":$WORKSPACE/instack-undercloud/elements"
+                  DELOREAN_REPO_URL="https://trunk.rdoproject.org/centos7-rocky/current"
+                  DELOREAN_DEPS_URL="https://trunk.rdoproject.org/centos7-rocky"
                   ;;
               *)
                   DELOREAN_REPO_URL="https://trunk.rdoproject.org/centos7-master/current-tripleo"
