@@ -52,9 +52,17 @@
   tasks:
     - block:
       - name: Check overridable settings
+        vars:
+          tempest_overrides:
+            - 'run_tempest'
+            - 'tempest_whitelist'
+            - 'test_black_regex'
+            - 'tempest_format'
+            - 'tempest_extra_config'
+            - 'tempest_plugins'
         fail:
           msg: "ERROR: {{ item }} is not overridable."
-        when: item not in ['run_tempest', 'tempest_whitelist', 'test_black_regex', 'tempest_format', 'tempest_extra_config', 'tempest_plugins']
+        when: item not in "{{ tempest_overrides }}"
         with_items: "{{ featureset_override }}"
       - name: Generate featureset overriding file
         template:
