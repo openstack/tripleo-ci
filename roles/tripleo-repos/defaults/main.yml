@@ -1,0 +1,6 @@
+---
+# defaults file for tripleo-repos
+tripleo_repos_repository: "git+https://git.openstack.org/openstack/tripleo-repos"
+workspace: "{{ ansible_user_dir }}"
+centos_mirror_host: "http://mirror.centos.org"
+rdo_mirror_host: "https://trunk.rdoproject.org"

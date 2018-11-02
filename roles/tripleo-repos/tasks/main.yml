@@ -1,0 +1,45 @@
+---
+- name: Install pip
+  become: true
+  package:
+    name: python-pip
+    state: present
+
+- name: Install virtualenv
+  become: true
+  package:
+    name: python-virtualenv
+    state: present
+
+- name: pip install tripleo-repos
+  become: true
+  pip:
+    name: "{{ tripleo_repos_repository }}"
+    virtualenv: "{{ workspace }}/venv"
+
+- name: Get branch
+  set_fact:
+    ci_branch: "{{ zuul.branch | default('master') | replace('stable/','') }}"
+  when: zuul is defined
+
+- name: Install repos
+  become: true
+  shell: |
+    set -ex
+    source {{ workspace }}/venv/bin/activate
+    if [ -f /etc/ci/mirror_info.sh ]; then
+      source /etc/ci/mirror_info.sh
+      CENTOS_MIRROR_HOST="http://${NODEPOOL_MIRROR_HOST}"
+    fi
+    CENTOS_MIRROR_HOST=${CENTOS_MIRROR_HOST:-"{{ centos_mirror_host }}"}
+    RDO_MIRROR_HOST=${NODEPOOL_RDO_PROXY:-"{{ rdo_mirror_host }}"}
+
+    if [ "{{ ci_branch | default('master') }}" == "master" ]; then
+      REPO=current-tripleo
+    else
+      REPO=current
+    fi
+
+    tripleo-repos -b "{{ ci_branch | default('master') }}" \
+                  --centos-mirror $CENTOS_MIRROR_HOST \
+                  --rdo-mirror $RDO_MIRROR_HOST $REPO
