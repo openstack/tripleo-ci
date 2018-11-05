@@ -55,6 +55,7 @@ QUICKSTART_COLLECTLOGS_CMD="$LOCAL_WORKING_DIR/bin/ansible-playbook \
     $DEFAULT_ARGS \
     --extra-vars @{{ tripleo_root }}/tripleo-ci/toci-quickstart/config/collect-logs.yml \
     --extra-vars artcl_collect_dir=$LOGS_DIR \
+    --extra-vars @{{ workspace }}/logs/zuul-variables.yaml \
     --tags all \
 "
 
