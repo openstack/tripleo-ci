@@ -77,3 +77,7 @@ artg_repos_dir: /home/zuul/src/git.openstack.org/openstack
 
 # https://bugs.launchpad.net/tripleo/+bug/1799895
 undercloud_workers: 1
+
+# Ironic debug
+# https://bugs.launchpad.net/tripleo/+bug/1797526
+step_introspect_debug: true
