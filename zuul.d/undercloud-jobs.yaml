@@ -15,7 +15,6 @@
       queue: tripleo
       jobs:
         - tripleo-ci-centos-7-undercloud-oooq
-        - tripleo-ci-centos-7-undercloud-containers
 
 - job:
     name: tripleo-ci-centos-7-undercloud-containers
