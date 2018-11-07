@@ -1,6 +1,17 @@
+- name: Write console log to localhost as fact zuul_console_json
+  hosts: localhost
+  tasks:
+    - name: capture console log json as fact
+      set_fact:
+        zuul_console_json: "{{ lookup('file', zuul.executor.log_root + '/job-output.json') }}"
+
 - name: Collect logs
   hosts: primary
   tasks:
+    - name: Copy zuul_console_json log to workspace for reproducer
+      copy:
+        content: "{{ hostvars['localhost'].zuul_console_json }}"
+        dest: "{{ ansible_user_dir }}/workspace/logs/zuul_console.json"
 
     - name: Run ansible playbook to collect logs
       shell: |
