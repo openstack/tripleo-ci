@@ -182,6 +182,7 @@ artcl_collect_list:
   - /etc/unbound/conf.d/unbound-logging.conf
   - /etc/vconsole.conf
   - /etc/yum/
+  - /etc/dnf/
   - /etc/yum.conf
   - /etc/yum.repos.d/
   - /etc/zaqar/
@@ -193,6 +194,7 @@ artcl_collect_list:
   - /var/log/secure
   - /var/log/unbound.log
   - /var/log/yum.log
+  - /var/log/dnf.log
   - /var/log/aodh/
   - /var/log/audit/
   - /var/log/barbican/
