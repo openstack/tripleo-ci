@@ -1,0 +1,38 @@
+---
+# zuul.d/build-containers.yaml
+# Zuul layout for TripleO Build Containers jobs.
+
+- project-template:
+    name: tripleo-build-containers-jobs
+    check:
+      jobs:
+        - tripleo-build-containers-centos-7
+
+- job:
+    name: tripleo-build-containers-centos-7
+    parent: tripleo-ci-base-singlenode
+    pre-run:
+      - playbooks/tripleo-buildcontainers/pre.yaml
+    run: playbooks/tripleo-buildcontainers/run.yaml
+    post-run: playbooks/tripleo-buildcontainers/post.yaml
+    timeout: 7200
+    nodeset: single-centos-7-node
+    voting: false
+    required-projects:
+      - git.openstack.org/openstack/ansible-role-container-registry
+      - git.openstack.org/openstack/kolla
+      - git.openstack.org/openstack/python-tripleoclient
+      - git.openstack.org/openstack/requirements
+      - git.openstack.org/openstack/tripleo-common
+      - git.openstack.org/openstack/tripleo-repos
+    irrelevant-files:
+      - ^.*\.rst$
+      - ^releasenotes/.*$
+    files:
+      # tripleo-ci
+      - ^playbooks/tripleo-buildcontainers/.*$
+      # tripleo-common
+      - ^container-images/.*$
+      - ^tripleo_common/image/.*$
+      # python-tripleoclient
+      - ^tripleoclient/v1/container.*$

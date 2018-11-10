@@ -1,0 +1,76 @@
+- hosts: all
+  name: TripleO container image building job
+  roles:
+    - role: bindep
+      bindep_dir: "{{ ansible_user_dir }}/{{ zuul.projects['git.openstack.org/openstack/python-tripleoclient'].src_dir }}"
+  tasks:
+    - name: Include common vars
+      include_vars:
+        file: "common.yaml"
+
+    - name: Get branch
+      set_fact:
+        ci_branch: "{{ zuul.branch | default('master') | replace('stable/','') }}"
+
+    - name: Swap is essential as we are not meeting memory requirements
+      include_role:
+        name: configure-swap
+
+    - name: Set legacy log path
+      include_role:
+        name: set-zuul-log-path-fact
+
+    - name: Ensure legacy workspace directory
+      file:
+        path: '{{ workspace }}'
+        state: directory
+
+    - name: Ensure legacy logs directory
+      file:
+        path: '{{ workspace }}/logs'
+        state: directory
+
+    - name: Install pip
+      become: true
+      package:
+        name: python-pip
+        state: present
+
+    - name: Install virtualenv
+      become: true
+      package:
+        name: python-virtualenv
+        state: present
+
+    - name: pip install required items
+      become: true
+      pip:
+        name: "{{ item }}"
+        state: present
+        virtualenv: "{{ workspace }}/venv"
+      with_items:
+        - "file://{{ openstack_git_root }}/kolla"
+        - "file://{{ openstack_git_root }}/tripleo-common"
+        - "file://{{ openstack_git_root }}/python-tripleoclient"
+
+    # TODO(aschultz): make the kolla-build branch aware
+    - name: Generate kolla-build.conf
+      template:
+        src: templates/kolla-build.conf.j2
+        dest: "{{ workspace }}/kolla-build.conf"
+        mode: 0644
+        force: yes
+
+    - name: Run image build
+      args:
+        chdir: '{{ workspace }}'
+      shell: |
+        set -x
+        source {{ workspace }}/venv/bin/activate
+        TRIPLEO_COMMON_PATH="{{ openstack_git_root }}/tripleo-common"
+
+        openstack overcloud container image build \
+            --config-file $TRIPLEO_COMMON_PATH/container-images/overcloud_containers.yaml \
+            --kolla-config-file {{ workspace }}/kolla-build.conf > {{ workspace }}/build.log 2> {{ workspace }}/build-err.log
+        RESULT=$?
+        exit $RESULT

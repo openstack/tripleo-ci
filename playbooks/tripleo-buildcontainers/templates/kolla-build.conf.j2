@@ -1,0 +1,9 @@
+[DEFAULT]
+base=centos
+type=binary
+namespace='{{ ci_branch | replace("/", "") }}'
+registry=127.0.0.1:8787
+tag=latest
+template_override={{ openstack_git_root }}/tripleo-common/container-images/tripleo_kolla_template_overrides.j2
+rpm_setup=http://localhost/delorean.repo,http://localhost/delorean-deps.repo
+

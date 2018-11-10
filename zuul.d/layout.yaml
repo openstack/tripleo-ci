@@ -11,6 +11,7 @@
       - tripleo-multinode-experimental
       - tripleo-undercloud-jobs
       - tripleo-multinode-branchful
+      - tripleo-build-containers-jobs
     check:
       jobs:
         - openstack-tox-linters

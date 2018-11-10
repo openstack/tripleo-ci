@@ -1,0 +1,66 @@
+- hosts: all
+  name: TripleO Setup Container Registry and repos mirror
+  roles:
+    - role: tripleo-repos
+      tripleo_repos_repository: "{{ ansible_user_dir }}/{{ zuul.projects['git.openstack.org/openstack/tripleo-repos'].src_dir }}"
+  tasks:
+    - name: Include common vars
+      include_vars:
+        file: "common.yaml"
+
+    - name: Ensure legacy workspace directory
+      file:
+        path: '{{ workspace }}'
+        state: directory
+
+    - name: Setup docker registry
+      block:
+        - name: Install ansible
+          become: true
+          package:
+            name: ansible
+            state: present
+
+        - name: Create playbook structure
+          file:
+            path: '{{ workspace }}/container-registry'
+            src: '{{ openstack_git_root }}/ansible-role-container-registry'
+            state: link
+
+        - name: Configure docker registry
+          template:
+            src: templates/docker-playbook.yaml.j2
+            dest: '{{ workspace }}/docker-playbook.yaml'
+            mode: 0644
+            force: yes
+
+        - name: Run ansible playbook to configure docker
+          args:
+            chdir: '{{ workspace }}'
+          shell: |
+            ansible-playbook docker-playbook.yaml --extra-vars "container_registry_deployment_user={{ ansible_user }}"
+
+        - name: Add docker masquerading rules
+          become: true
+          command: iptables -t nat -A POSTROUTING -s 172.17.0.0/16 ! -o docker0 -j MASQUERADE
+
+        - name: Reset connection because of group changes for current user
+          meta: reset_connection
+
+    - name: Setup repo web service
+      become: true
+      block:
+        - name: Install apache
+          package:
+            name: httpd
+            state: present
+
+        - name: Start apache
+          service:
+            name: httpd
+            state: running
+
+        - name: Fetch delorean repos
+          shell: |
+              set -ex
+              cp /etc/yum.repos.d/delorean* /var/www/html/

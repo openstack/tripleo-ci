@@ -1,0 +1,2 @@
+workspace: "{{ ansible_user_dir }}/workspace"
+openstack_git_root: "{{ ansible_user_dir }}/src/git.openstack.org/openstack"
