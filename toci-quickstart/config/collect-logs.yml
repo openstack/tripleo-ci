@@ -52,6 +52,7 @@ artcl_collect_list:
   - /etc/ceilometer/
   - /etc/centos-release*
   - /etc/ceph/
+  - /etc/chrony.conf
   - /etc/ci/
   - /etc/cinder/
   - /etc/cloud/
