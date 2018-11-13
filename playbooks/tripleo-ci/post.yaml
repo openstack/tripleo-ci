@@ -8,6 +8,10 @@
 - name: Collect logs
   hosts: primary
   tasks:
+    - name: set collection timeout
+      set_fact:
+        collect_timeout_sec: "{{ zuul.post_timeout|default(3600) -  copy_logs_time|default(300) }}"
+
     - name: Copy zuul_console_json log to workspace for reproducer
       copy:
         content: "{{ hostvars['localhost'].zuul_console_json }}"
@@ -36,29 +40,50 @@
         fi
       when: environment_type != "ovb" or not undercloud_logs.stat.exists
 
+    - name: Check script existence
+      stat:
+        path: "{{ ansible_user_dir  }}/workspace/logs/collect_logs.sh"
+      register: collect_logs_path
 
-- hosts:
-    - primary
-    - centos-7
-  tasks:
+    - name: Collect logs with a timeout
+      block:
+        - name: Run ansible playbook to collect logs
+          shell: |
+              timeout --preserve-status -s 15 \
+                -k {{ [collect_timeout_sec|int, 60]|sum|string }} {{ collect_timeout_sec|string }} \
+                bash {{ ansible_user_dir }}/workspace/logs/collect_logs.sh
+          when: collect_logs_path.stat.exists
+          register: collect_logs_run
 
-    - name: Ensure artifacts directory exists
-      file:
-        path: '{{ zuul.executor.work_root }}/artifacts'
-        state: directory
-      delegate_to: localhost
+      rescue:
+        - name: warn when collect logs timed out (SIGTERM or SIGKILL used)
+          debug:
+            msg: "ERROR: Collect logs timed out"
+          when: collect_logs_path.stat.exists and (collect_logs_run.rc == 143 or collect_logs_run.rc == 137)
 
-    - name: Copy files from {{ ansible_user_dir }}/workspace/ on node
-      no_log: true
-      failed_when: false
-      synchronize:
-        src: '{{ ansible_user_dir }}/workspace/'
-        dest: '{{ zuul.executor.log_root }}'
-        mode: pull
-        copy_links: true
-        verify_host: true
-        rsync_opts:
-          - --include=/logs/**
-          - --include=*/
-          - --exclude=*
-          - --prune-empty-dirs
+        - name: warn when collect logs failed
+          debug:
+            msg: "ERROR: Collect logs failed, please check the logs"
+          when: collect_logs_path.stat.exists and collect_logs_run.rc != 143 and collect_logs_run.rc != 137
+
+      always:
+        - name: Ensure artifacts directory exists
+          file:
+            path: '{{ zuul.executor.work_root }}/artifacts'
+            state: directory
+          delegate_to: localhost
+
+        - name: Copy files from {{ ansible_user_dir }}/workspace/ on node
+          no_log: true
+          failed_when: false
+          synchronize:
+            src: '{{ ansible_user_dir }}/workspace/'
+            dest: '{{ zuul.executor.log_root }}'
+            mode: pull
+            copy_links: true
+            verify_host: true
+            rsync_opts:
+              - --include=/logs/**
+              - --include=*/
+              - --exclude=*
+              - --prune-empty-dirs
