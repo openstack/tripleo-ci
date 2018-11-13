@@ -10,7 +10,6 @@ if [[ $NODEPOOL_PROVIDER == "rdo-cloud-tripleo" ]]; then
 elif [[ $NODEPOOL_PROVIDER == "vexxhost-rdo-ca-ymq-1" ]]; then
     ENVFILE=$BASEPATH/scripts/vexxhost.env
 fi
-fi
 
 
 TENUM=0
