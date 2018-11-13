@@ -164,7 +164,7 @@ else
     [[ "$exit_value" == 0 ]] && echo "Playbook run passed successfully" || echo "Playbook run failed"
 
     ## LOGS COLLECTION RUN (if applicable)
-    if [[ "${NODEPOOL_PROVIDER:-''}" == "rdo-cloud-tripleo" ]] || \
+    if [[ "${NODEPOOL_PROVIDER:-''}" == "rdo-cloud"* ]] || \
        [[ "${NODEPOOL_PROVIDER:-''}" == "vexxhost-rdo-ca-ymq-1" ]] ; then
         if [[ "$TOCI_JOBTYPE" =~ "ovb" ]]; then
             bash $LOGS_DIR/collect_logs.sh
