@@ -49,16 +49,6 @@ except:
     print("/usr/share/diskimage-builder/elements")
 ')
 export ELEMENTS_PATH="${COMMON_ELEMENTS_PATH}:/usr/share/instack-undercloud:/usr/share/tripleo-image-elements:/usr/share/tripleo-puppet-elements"
-
-if [[ "${STABLE_RELEASE}" = "mitaka" ]] ; then
-ELEMENTS=$(\
-tripleo-build-images \
-  --image-json-output \
-  --image-config-file /usr/share/tripleo-common/image-yaml/overcloud-images-centos7.yaml \
-  --image-config-file /usr/share/tripleo-common/image-yaml/overcloud-images.yaml \
-  | jq '. | map(select(.imagename == "overcloud-full")) | .[0].elements | map(.+" ") | add' \
-  | sed 's/"//g')
-else
 ELEMENTS=$(\
 tripleo-build-images \
   --image-json-output \
@@ -67,7 +57,6 @@ tripleo-build-images \
   --image-config-file /usr/share/tripleo-common/image-yaml/overcloud-images.yaml \
   | jq '. | .[0].elements | map(.+" ") | add' \
   | sed 's/"//g')
-fi
 
 # delorean-repo is excluded b/c we've already run --repo-setup on this node and
 # we don't want to overwrite that.
@@ -92,15 +81,6 @@ sudo -E instack \
 # we have one.
 [ -s /etc/machine-id ] || sudo -E systemd-machine-id-setup
 
-if [[ "${STABLE_RELEASE}" = "mitaka" ]] ; then
-PACKAGES=$(\
-tripleo-build-images \
-  --image-json-output \
-  --image-config-file /usr/share/tripleo-common/image-yaml/overcloud-images-centos7.yaml \
-  --image-config-file /usr/share/tripleo-common/image-yaml/overcloud-images.yaml \
-  | jq '. | map(select(.imagename == "overcloud-full")) | .[0].packages | .[] | tostring' \
-  | sed 's/"//g')
-else
 PACKAGES=$(\
 tripleo-build-images \
   --image-json-output \
@@ -109,7 +89,6 @@ tripleo-build-images \
   --image-config-file /usr/share/tripleo-common/image-yaml/overcloud-images.yaml \
   | jq '. | .[0].packages | .[] | tostring' \
   | sed 's/"//g')
-fi
 
 # Install additional packages expected by the image
 sudo yum -y install $PACKAGES

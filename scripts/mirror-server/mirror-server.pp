@@ -46,10 +46,6 @@ file {"/var/www/html/builds-newton":
     ensure => "directory",
     owner  => "apache",
 }
-file {"/var/www/html/builds-mitaka":
-    ensure => "directory",
-    owner  => "apache",
-}
 cron {"refresh-server":
     command => "timeout 20m puppet apply /opt/stack/tripleo-ci/scripts/mirror-server/mirror-server.pp",
     minute  => "*/30"

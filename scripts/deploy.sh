@@ -150,11 +150,6 @@ sudo mkdir -p /etc/puppet/hieradata
 
 if [ "$OSINFRA" = 1 ]; then
     echo "net_config_override = $TRIPLEO_ROOT/tripleo-ci/undercloud-configs/net-config-multinode.json.template" >> ~/undercloud.conf
-
-    # Use the dummy network interface if on mitaka
-    if [ "$STABLE_RELEASE" = "mitaka" ]; then
-        echo "local_interface = ci-dummy" >> ~/undercloud.conf
-    fi
 fi
 
 # If we're testing an undercloud upgrade, remove the ci repo, since we don't
@@ -584,8 +579,6 @@ if [ "$UNDERCLOUD_MAJOR_UPGRADE" == 1 ] ; then
         export STABLE_RELEASE="queens"
     elif [ "$STABLE_RELEASE" = "ocata" ]; then
         export STABLE_RELEASE="pike"
-    elif [ "$STABLE_RELEASE" = "mitaka" ]; then
-        export STABLE_RELEASE="newton"
     elif [ "$STABLE_RELEASE" = "newton" ]; then
         export STABLE_RELEASE="ocata"
     fi
