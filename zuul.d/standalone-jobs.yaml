@@ -32,8 +32,6 @@
     vars:
       environment_type: standalone
       featureset: '052'
-      featureset_override:
-        run_tempest: false
     irrelevant-files:
       - ^.*\.md$
       - ^.*\.rst$
