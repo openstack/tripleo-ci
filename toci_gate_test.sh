@@ -21,7 +21,7 @@ if [ -f /etc/nodepool/provider ] ; then
     source /etc/ci/mirror_info.sh
 
     export RHCLOUD=''
-    if [ ${NODEPOOL_PROVIDER:-''} == 'rdo-cloud-tripleo' ]; then
+    if [[ ${NODEPOOL_PROVIDER:-''} == 'rdo-cloud'* ]]; then
         RHCLOUD='rdocloud'
     elif [ ${NODEPOOL_PROVIDER:-''} == 'vexxhost-rdo-ca-ymq-1' ]; then
         RHCLOUD='vexxhost'
@@ -160,7 +160,7 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
             fi
             FEATURESET_CONF=" --extra-vars @$LWD/config/general_config/featureset-multinode-common.yml $FEATURESET_CONF"
             ENV_VARS="$ENV_VARS --extra-vars @$TRIPLEO_ROOT/tripleo-ci/toci-quickstart/config/testenv/multinode.yml"
-            if [[ $NODEPOOL_PROVIDER == "rdo-cloud-tripleo" ]]; then
+            if [[ $NODEPOOL_PROVIDER == "rdo-cloud"* ]]; then
                 ENV_VARS="$ENV_VARS --extra-vars @$TRIPLEO_ROOT/tripleo-ci/toci-quickstart/config/testenv/multinode-rdocloud.yml"
             fi
             UNDERCLOUD="127.0.0.2"
@@ -178,7 +178,7 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
             fi
             FEATURESET_CONF=" --extra-vars @$LWD/config/general_config/featureset-multinode-common.yml $FEATURESET_CONF"
             ENV_VARS="$ENV_VARS --extra-vars @$TRIPLEO_ROOT/tripleo-ci/toci-quickstart/config/testenv/multinode.yml"
-            if [[ $NODEPOOL_PROVIDER == "rdo-cloud-tripleo" ]]; then
+            if [[ $NODEPOOL_PROVIDER == "rdo-cloud"* ]]; then
                 ENV_VARS="$ENV_VARS --extra-vars @$TRIPLEO_ROOT/tripleo-ci/toci-quickstart/config/testenv/multinode-rdocloud.yml"
             fi
             TAGS="build,undercloud-setup,undercloud-scripts,undercloud-install,undercloud-validate,images"
@@ -189,7 +189,7 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
             export PLAYBOOKS=${PLAYBOOKS:-"quickstart.yml multinode-standalone.yml"}
             FEATURESET_CONF=" --extra-vars @$LWD/config/general_config/featureset-multinode-common.yml $FEATURESET_CONF"
             ENV_VARS="$ENV_VARS --extra-vars @$TRIPLEO_ROOT/tripleo-ci/toci-quickstart/config/testenv/multinode.yml"
-            if [[ $NODEPOOL_PROVIDER == "rdo-cloud-tripleo" ]]; then
+            if [[ $NODEPOOL_PROVIDER == "rdo-cloud"* ]]; then
                 ENV_VARS="$ENV_VARS --extra-vars @$TRIPLEO_ROOT/tripleo-ci/toci-quickstart/config/testenv/multinode-rdocloud.yml"
             fi
             TAGS="build,standalone"
