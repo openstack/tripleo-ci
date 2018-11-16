@@ -53,17 +53,24 @@
     - block:
       - name: Check overridable settings
         vars:
-          tempest_overrides:
+          allowed_overrides:
             - 'run_tempest'
             - 'tempest_whitelist'
             - 'test_black_regex'
             - 'tempest_format'
             - 'tempest_extra_config'
             - 'tempest_plugins'
+            - 'standalone_environment_files'
         fail:
           msg: "ERROR: {{ item }} is not overridable."
-        when: item not in "{{ tempest_overrides }}"
+        when: item not in "{{ allowed_overrides }}"
         with_items: "{{ featureset_override }}"
+      - name: Generate standalone_custom_env_files from standalone_environment_files
+        set_fact:
+          featureset_override: "{{ featureset_override | combine(custom_env, recursive=true) }}"
+        vars:
+          custom_env: { 'standalone_custom_env_files': "{{ featureset_override.standalone_environment_files | default([]) | map('regex_replace', '(.*)', '/usr/share/openstack-tripleo-heat-templates/\\1') | list }}" }
+        when: featureset_override['standalone_environment_files'] is defined
       - name: Generate featureset overriding file
         template:
           src: templates/featureset-override.j2
