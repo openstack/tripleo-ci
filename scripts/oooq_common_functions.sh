@@ -36,9 +36,6 @@ function previous_release_mixed_upgrade_case {
         ocata)
             echo "newton"
             ;;
-        newton)
-            echo "mitaka"
-            ;;
         *)
             echo "UNKNOWN_RELEASE"
             return 1

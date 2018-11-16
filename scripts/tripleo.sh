@@ -126,12 +126,7 @@ OVERCLOUD_DEPLOY=${OVERCLOUD_DEPLOY:-""}
 OVERCLOUD_DELETE=${OVERCLOUD_DELETE:-""}
 OVERCLOUD_DELETE_TIMEOUT=${OVERCLOUD_DELETE_TIMEOUT:-"300"}
 OVERCLOUD_DEPLOY_ARGS=${OVERCLOUD_DEPLOY_ARGS:-""}
-# --validation-errors-fatal was deprecated in newton and removed in ocata
-if [[ "${STABLE_RELEASE}" = "mitaka" ]]; then
-    OVERCLOUD_VALIDATE_ARGS=${OVERCLOUD_VALIDATE_ARGS-"--validation-errors-fatal --validation-warnings-fatal"}
-else
-    OVERCLOUD_VALIDATE_ARGS=${OVERCLOUD_VALIDATE_ARGS-"--validation-warnings-fatal"}
-fi
+OVERCLOUD_VALIDATE_ARGS=${OVERCLOUD_VALIDATE_ARGS-"--validation-warnings-fatal"}
 OVERCLOUD_UPDATE=${OVERCLOUD_UPDATE:-""}
 OVERCLOUD_UPGRADE=${OVERCLOUD_UPGRADE:-""}
 OVERCLOUD_UPGRADE_CONVERGE=${OVERCLOUD_UPGRADE_CONVERGE:-""}
@@ -162,12 +157,7 @@ OVERCLOUD_IMAGES_DIB_YUM_REPO_CONF=${OVERCLOUD_IMAGES_DIB_YUM_REPO_CONF:-"\
     $REPO_PREFIX/delorean.repo \
     $REPO_PREFIX/delorean-current.repo \
     $REPO_PREFIX/delorean-deps.repo"}
-# Use Ceph/Jewel for all but mitaka
-if [[ "${STABLE_RELEASE}" = "mitaka" ]] ; then
-  CEPH_RELEASE=hammer
-else
-  CEPH_RELEASE=jewel
-fi
+CEPH_RELEASE=jewel
 CEPH_REPO_FILE=centos-ceph-$CEPH_RELEASE.repo
 if [[ -e /etc/ci/mirror_info.sh ]]; then
     source /etc/ci/mirror_info.sh
@@ -211,9 +201,6 @@ ALT_OVERCLOUDRC=${ALT_OVERCLOUDRC:-""}
 export SCRIPTS_DIR=$(dirname ${BASH_SOURCE[0]:-$0})
 OVB=${OVB:-0}
 
-if [[ "${STABLE_RELEASE}" = "mitaka" ]] ; then
-    export OS_IMAGE_API_VERSION=1
-fi
 # Make sure we use Puppet to deploy packages on scenario upgrades jobs after ocata release
 if [[ "${STABLE_RELEASE}" != "newton" ]] ; then
     OVERCLOUD_UPGRADE_ARGS="$OVERCLOUD_UPGRADE_ARGS -e $TRIPLEO_ROOT/tripleo-ci/test-environments/enable_package_install.yaml "
@@ -293,14 +280,8 @@ function repo_setup {
 
     if [ "$TRIPLEO_OS_DISTRO" = "centos" ]; then
         # Enable Storage/SIG Ceph repo
-        if [[ "${STABLE_RELEASE}" = "mitaka" ]] ; then
-            if rpm -q centos-release-ceph-hammer; then
-                sudo yum -y erase centos-release-ceph-hammer
-            fi
-        else
-            if rpm -q centos-release-ceph-jewel; then
-                sudo yum -y erase centos-release-ceph-jewel
-            fi
+        if rpm -q centos-release-ceph-jewel; then
+            sudo yum -y erase centos-release-ceph-jewel
         fi
         sudo /bin/bash -c "cat <<-EOF>$REPO_PREFIX/$CEPH_REPO_FILE
 [centos-ceph-$CEPH_RELEASE]
@@ -451,12 +432,8 @@ function delorean_build {
         log "Building for release $REVIEW_RELEASE"
         # first check if we have a stable release
         sed -i -e "s%baseurl=.*%baseurl=$NODEPOOL_RDO_PROXY/centos7-$REVIEW_RELEASE%" projects.ini
-        if [ "$REVIEW_RELEASE" = "mitaka" ]; then
-            sed -i -e "s%distro=.*%distro=rpm-$REVIEW_RELEASE%" projects.ini
-        else
-            # RDO changed the distgit branch for stable releases starting from newton.
-            sed -i -e "s%distro=.*%distro=$REVIEW_RELEASE-rdo%" projects.ini
-        fi
+        # RDO changed the distgit branch for stable releases starting from newton.
+        sed -i -e "s%distro=.*%distro=$REVIEW_RELEASE-rdo%" projects.ini
         sed -i -e "s%source=.*%source=stable/$REVIEW_RELEASE%" projects.ini
     elif [ -n "$FEATURE_BRANCH" ]; then
         # next, check if we are testing for a feature branch
@@ -502,7 +479,7 @@ function delorean_build {
         GITHASH=$(git rev-parse HEAD)
 
         # Set the branches delorean reads to the same git hash as PROJ has left for us
-        for BRANCH in master origin/master stable/mitaka origin/stable/mitaka stable/newton origin/stable/newton stable/ocata origin/stable/ocata stable/pike origin/stable/pike stable/queens origin/stable/queens; do
+        for BRANCH in master origin/master stable/newton origin/stable/newton stable/ocata origin/stable/ocata stable/pike origin/stable/pike stable/queens origin/stable/queens; do
             git checkout -b $BRANCH || git checkout $BRANCH
             git reset --hard $GITHASH
         done
@@ -569,7 +546,7 @@ function overcloud_images {
     log "Overcloud images"
 
     # This hack is no longer needed in ocata.
-    if [[ "${STABLE_RELEASE}" =~ ^(mitaka|newton)$ ]]; then
+    if [[ "${STABLE_RELEASE}" =~ ^(newton)$ ]]; then
         # Ensure yum-plugin-priorities is installed
 
         # get the right path for diskimage-builder version
@@ -598,7 +575,7 @@ except:
     log "Overcloud images saved in $OVERCLOUD_IMAGES_PATH"
     pushd $OVERCLOUD_IMAGES_PATH
     log "OVERCLOUD_IMAGES_DIB_YUM_REPO_CONF=$OVERCLOUD_IMAGES_DIB_YUM_REPO_CONF"
-    if [[ "${STABLE_RELEASE}" =~ ^(mitaka|newton)$ ]] ; then
+    if [[ "${STABLE_RELEASE}" =~ ^(newton)$ ]] ; then
         OVERCLOUD_IMAGES_ARGS="$OVERCLOUD_IMAGES_LEGACY_ARGS"
     fi
     DIB_YUM_REPO_CONF=$OVERCLOUD_IMAGES_DIB_YUM_REPO_CONF \
@@ -625,18 +602,13 @@ function register_nodes {
     fi
 
     stackrc_check
-    if [[ "${STABLE_RELEASE}" = "mitaka" ]] ; then
-        openstack baremetal import --json $INSTACKENV_JSON_PATH
-        # This step is a part of the import command from Newton on
-        openstack baremetal configure boot
+
+    if [ "$INTROSPECT_NODES" = 1 ]; then
+        # Keep the nodes in manageable state so that they may be
+        # introspected later.
+        openstack overcloud node import $INSTACKENV_JSON_PATH
     else
-        if [ "$INTROSPECT_NODES" = 1 ]; then
-            # Keep the nodes in manageable state so that they may be
-            # introspected later.
-            openstack overcloud node import $INSTACKENV_JSON_PATH
-        else
-            openstack overcloud node import $INSTACKENV_JSON_PATH --provide
-        fi
+        openstack overcloud node import $INSTACKENV_JSON_PATH --provide
     fi
 
     ironic node-list
@@ -651,15 +623,11 @@ function introspect_nodes {
 
     stackrc_check
 
-    if [[ "${STABLE_RELEASE}" = "mitaka" ]] ; then
-        openstack baremetal introspection bulk start
-    else
-        # Note: Unlike the legacy bulk command, overcloud node
-        # introspect will only run on nodes in the 'manageable'
-        # provisioning state.
-        openstack overcloud node introspect --all-manageable
-        openstack overcloud node provide --all-manageable
-    fi
+    # Note: Unlike the legacy bulk command, overcloud node
+    # introspect will only run on nodes in the 'manageable'
+    # provisioning state.
+    openstack overcloud node introspect --all-manageable
+    openstack overcloud node provide --all-manageable
 
     log "Introspect nodes - DONE."
 
