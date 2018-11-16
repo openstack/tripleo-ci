@@ -105,19 +105,30 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
     case $JOB_TYPE_PART in
         featureset*)
             FEATURESET_FILE="$LWD/config/general_config/$JOB_TYPE_PART.yml"
+            # featurset_file is not yet in its final destination so we
+            # have to use current_featureset_file.
+            CURRENT_FEATURESET_FILE="$TRIPLEO_ROOT/tripleo-quickstart/config/general_config/$JOB_TYPE_PART.yml"
             FEATURESET_CONF="$FEATURESET_CONF --extra-vars @$FEATURESET_FILE"
             MIXED_UPGRADE_TYPE=''
             # Order matters.  ffu featureset has both mixed version and ffu_overcloud_upgrade.
-            if is_featureset ffu_overcloud_upgrade "$TRIPLEO_ROOT/tripleo-quickstart/config/general_config/$JOB_TYPE_PART.yml"; then
+            if is_featureset ffu_overcloud_upgrade "${CURRENT_FEATURESET_FILE}"; then
                 MIXED_UPGRADE_TYPE='ffu_upgrade'
-            elif  is_featureset mixed_upgrade  "$TRIPLEO_ROOT/tripleo-quickstart/config/general_config/$JOB_TYPE_PART.yml"; then
+            elif  is_featureset mixed_upgrade  "${CURRENT_FEATURESET_FILE}"; then
                 MIXED_UPGRADE_TYPE='mixed_upgrade'
-            elif is_featureset overcloud_update "$TRIPLEO_ROOT/tripleo-quickstart/config/general_config/$JOB_TYPE_PART.yml"; then
+            elif is_featureset overcloud_update "${CURRENT_FEATURESET_FILE}"; then
                 TAGS="$TAGS,overcloud-update"
-            elif is_featureset undercloud_upgrade "$TRIPLEO_ROOT/tripleo-quickstart/config/general_config/$JOB_TYPE_PART.yml"; then
+            elif is_featureset undercloud_upgrade "${CURRENT_FEATURESET_FILE}"; then
                 TAGS="$TAGS,undercloud-upgrade"
                 export UPGRADE_RELEASE=$QUICKSTART_RELEASE
                 export QUICKSTART_RELEASE=$(previous_release_mixed_upgrade_case "${UPGRADE_RELEASE}")
+            fi
+            # The case is iterating over TOCI_JOBTYPE which is
+            # standalone-featureset.  So featureset comes after and we
+            # can override TAGS safely.
+            if is_featureset standalone_upgrade "${CURRENT_FEATURESET_FILE}" ; then
+                # We don't want "build" as it would wrongly build test
+                # package under the N-1 version.
+                TAGS="standalone,standalone-upgrade"
             fi
             # Set UPGRADE_RELEASE if applicable
             if [ -n "${MIXED_UPGRADE_TYPE}" ]; then
@@ -186,7 +197,8 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
         standalone)
             ENVIRONMENT="osinfra"
             UNDERCLOUD="127.0.0.2"
-            export PLAYBOOKS=${PLAYBOOKS:-"quickstart.yml multinode-standalone.yml"}
+            # Adding upgrade playbook here to be consistant with the v3 definition.
+            export PLAYBOOKS=${PLAYBOOKS:-"quickstart.yml multinode-standalone.yml multinode-standalone-upgrade.yml "}
             FEATURESET_CONF=" --extra-vars @$LWD/config/general_config/featureset-multinode-common.yml $FEATURESET_CONF"
             ENV_VARS="$ENV_VARS --extra-vars @$TRIPLEO_ROOT/tripleo-ci/toci-quickstart/config/testenv/multinode.yml"
             if [[ $NODEPOOL_PROVIDER == "rdo-cloud"* ]]; then
@@ -212,7 +224,7 @@ for JOB_TYPE_PART in $(sed 's/-/ /g' <<< "${TOCI_JOBTYPE:-}") ; do
 done
 
 
-if [[ -f "$RELEASES_SCRIPT" ]] && [[ $FEATURESET_FILE =~  010|011|037|047|050 ]]; then
+if [[ -f "$RELEASES_SCRIPT" ]] && [[ $FEATURESET_FILE =~  010|011|037|047|050|056 ]]; then
 
     python $RELEASES_SCRIPT \
         --stable-release ${STABLE_RELEASE:-"master"} \

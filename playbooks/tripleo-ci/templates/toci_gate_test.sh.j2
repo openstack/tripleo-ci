@@ -99,6 +99,7 @@ esac
 
 EXTRA_TAGS=""
 MIXED_UPGRADE_TYPE=''
+
 # Order matters.  ffu featureset has both mixed version and ffu_overcloud_upgrade.
 if is_featureset ffu_overcloud_upgrade "{{ job_featureset_file }}"; then
     MIXED_UPGRADE_TYPE='ffu_upgrade'
@@ -126,7 +127,7 @@ QUICKSTART_RELEASE="promotion-testing-hash-${QUICKSTART_RELEASE}"
 EMIT_RELEASES_EXTRA_ARGS="$EMIT_RELEASES_EXTRA_ARGS --is-periodic"
 {% endif %}
 
-if [[ -f "$RELEASES_SCRIPT" ]] && [[ {{ featureset }} =~ 010|011|037|047|050 ]]; then
+if [[ -f "$RELEASES_SCRIPT" ]] && [[ {{ featureset }} =~ 010|011|037|047|050|056 ]]; then
 
     python $RELEASES_SCRIPT \
         --stable-release ${STABLE_RELEASE:-"master"} \
