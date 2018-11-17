@@ -28,7 +28,7 @@
     parent: tripleo-ci-base-standalone
     nodeset: single-fedora-28-node
     voting: false
-    branches: ^(?!stable/(newton|ocata|pike|queens)).*$
+    branches: ^(?!stable/(newton|ocata|pike|queens|rocky)).*$
     vars:
       environment_type: standalone
       featureset: '052'
@@ -52,7 +52,7 @@
     parent: tripleo-ci-base-standalone
     nodeset: single-centos-7-node
     voting: false
-    branches: ^(?!stable/(newton|ocata|pike|queens)).*$
+    branches: ^(?!stable/(newton|ocata|pike|queens|rocky)).*$
     vars:
       featureset: '056'
       playbooks:
