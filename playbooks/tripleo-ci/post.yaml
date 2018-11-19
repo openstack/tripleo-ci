@@ -13,11 +13,29 @@
         content: "{{ hostvars['localhost'].zuul_console_json }}"
         dest: "{{ ansible_user_dir }}/workspace/logs/zuul_console.json"
 
-    - name: Run ansible playbook to collect logs
+    - name: Check for artifacts created by a previous collect_logs
+      stat:
+        path: "{{ ansible_user_dir  }}/workspace/logs/undercloud"
+      register: undercloud_logs
+
+    # Collect logs in ovb needs to run before te broker deletes the overcloud nodes.
+    # if a timeout happens, collect logs will not run, overcloud nodes will get deleted
+    # and we'll not even get undercloud logs
+    # Check if we have and undercloud dir in logs. If not, launch collect logs.
+    # TODO(gcerami) find a way to run collect logs before te broker deletes the env in
+    # case of timeout.
+    - name: Remark of collect logs running before post in ovb
+      debug:
+        msg: "OVB job collect logs already run, not running collect_logs in post"
+      when: environment_type == "ovb" and undercloud_logs.stat.exists
+
+    - name: Run ansible playbook to collect logs for non-ovb jobs, or ovb jobs that weren't able to run collect logs
       shell: |
         if [[ -e {{ ansible_user_dir }}/workspace/logs/collect_logs.sh ]]; then
           bash {{ ansible_user_dir }}/workspace/logs/collect_logs.sh
         fi
+      when: environment_type != "ovb" or not undercloud_logs.stat.exists
+
 
 - hosts:
     - primary
