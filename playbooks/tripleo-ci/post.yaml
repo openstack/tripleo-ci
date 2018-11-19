@@ -32,20 +32,7 @@
 
     - name: Copy files from {{ ansible_user_dir }}/workspace/ on node
       no_log: true
-      synchronize:
-        src: '{{ ansible_user_dir }}/workspace/'
-        dest: '{{ zuul.executor.work_root }}/artifacts/images/'
-        mode: pull
-        copy_links: true
-        verify_host: true
-        rsync_opts:
-          - --include=/images/*
-          - --include=*/
-          - --exclude=*
-          - --prune-empty-dirs
-
-    - name: Copy files from {{ ansible_user_dir }}/workspace/ on node
-      no_log: true
+      failed_when: false
       synchronize:
         src: '{{ ansible_user_dir }}/workspace/'
         dest: '{{ zuul.executor.log_root }}'
