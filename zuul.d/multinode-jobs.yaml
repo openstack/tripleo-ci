@@ -24,6 +24,7 @@
         - tripleo-ci-centos-7-standalone
         - tripleo-ci-fedora-28-standalone
         - tripleo-ci-centos-7-standalone-upgrade
+
     gate:
       queue: tripleo
       jobs:
@@ -58,8 +59,9 @@
         - tripleo-ci-centos-7-standalone
         - tripleo-ci-fedora-28-standalone
         - tripleo-ci-centos-7-standalone-upgrade
-        - tripleo-ci-centos-7-scenario003-standalone
         - tripleo-ci-centos-7-scenario001-standalone
+        - tripleo-ci-centos-7-scenario002-standalone
+        - tripleo-ci-centos-7-scenario003-standalone
         - tripleo-ci-centos-7-scenario004-standalone
 
     gate:
@@ -154,7 +156,7 @@
 - job:
     name: tripleo-ci-centos-7-scenario002-multinode-oooq-container
     parent: tripleo-ci-base-multinode
-    branches: ^(?!stable/(newton|ocata)).*$
+    branches: ^stable/(pike|queens|rocky).*$
     voting: false
     vars:
       nodes: 1ctlr
