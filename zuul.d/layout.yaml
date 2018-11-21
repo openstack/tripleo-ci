@@ -31,27 +31,6 @@
         - tripleo-buildimage-overcloud-hardened-full-centos-7:
             files:
               - ^playbooks/tripleo-buildimage/.*$
-        - tripleo-ci-centos-7-scenario001-multinode-oooq:
-            files:
-              - ^playbooks/tripleo-ci/.*$
-        - tripleo-ci-centos-7-scenario002-multinode-oooq:
-            files:
-              - ^playbooks/tripleo-ci/.*$
-        - tripleo-ci-centos-7-scenario002-multinode-oooq:
-            files:
-              - ^playbooks/tripleo-ci/.*$
-        - tripleo-ci-centos-7-scenario003-multinode-oooq:
-            files:
-              - ^playbooks/tripleo-ci/.*$
-        - tripleo-ci-centos-7-scenario004-multinode-oooq:
-            files:
-              - ^playbooks/tripleo-ci/.*$
-        - tripleo-ci-centos-7-scenario007-multinode-oooq:
-            files:
-              - ^playbooks/tripleo-ci/.*$
-        - tripleo-ci-centos-7-scenario009-multinode-oooq:
-            files:
-              - ^playbooks/tripleo-ci/.*$
         - tripleo-ci-centos-7-scenario001-multinode-oooq-container:
             files:
               - ^playbooks/tripleo-ci/.*$
@@ -68,6 +47,9 @@
             files:
               - ^playbooks/tripleo-ci/.*$
         - tripleo-ci-centos-7-scenario008-multinode-oooq-container:
+            files:
+              - ^playbooks/tripleo-ci/.*$
+        - tripleo-ci-centos-7-scenario009-multinode-oooq-container:
             files:
               - ^playbooks/tripleo-ci/.*$
     gate:

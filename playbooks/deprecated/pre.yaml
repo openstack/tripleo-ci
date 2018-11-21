@@ -1,0 +1,14 @@
+- name: Deprecation warning
+  hosts: all
+  gather_facts: no
+  tasks:
+    - name: Warn that the job is deprecated
+      debug:
+        msg: |
+          --------------------------------------------------------
+          D E P R E C A T E D   J O B   W A R N I N G
+          --------------------------------------------------------
+          This job is deprecated and is no longer supported.
+          Please DO NOT use this job in your Zuul config.
+
+          Refer to #tripleo irc channel on Freenode for more info.
