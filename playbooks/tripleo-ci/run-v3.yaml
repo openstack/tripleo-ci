@@ -61,6 +61,7 @@
             - 'tempest_extra_config'
             - 'tempest_plugins'
             - 'standalone_environment_files'
+            - 'standalone_container_cli'
         fail:
           msg: "ERROR: {{ item }} is not overridable."
         when: item not in "{{ allowed_overrides }}"
