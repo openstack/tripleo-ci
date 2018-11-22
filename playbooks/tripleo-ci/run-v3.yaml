@@ -36,7 +36,6 @@
         chdir: '{{ tripleo_root }}'
       environment: '{{ zuul | zuul_legacy_vars }}'
 
-
     - set_fact:
         zuul_dump: "{{ {'zuul': zuul} }}"
 
@@ -72,6 +71,9 @@
         vars:
           custom_env: { 'standalone_custom_env_files': "{{ featureset_override.standalone_environment_files | default([]) | map('regex_replace', '(.*)', '/usr/share/openstack-tripleo-heat-templates/\\1') | list }}" }
         when: featureset_override['standalone_environment_files'] is defined
+      - include_role:
+          name: ceph-loop-device
+        when: "{{ standalone_ceph|default(false) }}"
       - name: Generate featureset overriding file
         template:
           src: templates/featureset-override.j2
