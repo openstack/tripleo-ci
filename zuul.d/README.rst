@@ -14,6 +14,9 @@ config can be overriden:
  - `tempest_format`: Installing tempest from venv, packages or containers
  - `tempest_extra_config`: A dict values in order to override the tempest.conf
  - `tempest_plugins`: List of tempest plugins needs to be installed
+ - `standalone_environment_files`: List of environment files to be overriden
+   by the featureset configuration on standalone deployment. The environment
+   file should exist in tripleo-heat-templates repo.
 
 Example::
 
@@ -32,3 +35,6 @@ Example::
             tempest_plugins:
               - 'python-keystone-tests-tempest'
               - 'python-cinder-tests-tempest'
+            standalone_environment_files:
+              - 'environments/low-memory-usage.yaml'
+              - 'ci/environments/scenario003-standalone.yaml'
