@@ -1,0 +1,3 @@
+---
+ceph_loop_device: /dev/loop3
+ceph_loop_device_file: /var/lib/ceph-osd.img
