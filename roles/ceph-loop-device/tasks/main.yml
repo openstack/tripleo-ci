@@ -3,14 +3,18 @@
   stat:
     path: "{{ ceph_loop_device }}"
   register: dev_loop3_res
+
 - name: log to syslog if ceph_loop_device exists
   syslogger:
     msg: "boostrap-subnodes - warning {{ ceph_loop_device }} already exists"
   when: dev_loop3_res.stat.exists
+
 - name: Make sure we have losetup installed/latest
+  become: true
   package:
     name: util-linux
     state: latest
+
 - name: Use dd and losetup to create the loop device
   become: true
   shell: |
