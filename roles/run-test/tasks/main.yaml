@@ -16,6 +16,8 @@
         - 'standalone_container_cli'
         - 'test_white_regex'
         - 'tempest_workers'
+        - 'dlrn_hash_tag'
+        - 'dlrn_hash_tag_newest'
     fail:
       msg: "ERROR: {{ item }} is not overridable."
     when: item not in "{{ allowed_overrides }}"
@@ -70,6 +72,14 @@
     src: templates/oooq_common_functions.sh.j2
     dest: "{{ tripleo_root }}/tripleo-ci/scripts/oooq_common_functions.sh"
     force: yes
+
+- name: render ready releases.sh file
+  copy:
+    content: "{{ ready_releases_file }}"
+    dest: "{{ workspace }}/logs/releases.sh"
+    mode: 0644
+    force: yes
+  when: ready_releases_file is defined
 
 - shell:
     cmd: |
