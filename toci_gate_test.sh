@@ -257,7 +257,7 @@ else
 fi
 
 # Import gated external repo in oooq
-for EXTERNAL_REPO in 'browbeat' 'tripleo-ha-utils'; do
+for EXTERNAL_REPO in 'browbeat' 'tripleo-ha-utils' 'tripleo-quickstart-extras'; do
     if [[ -d $TRIPLEO_ROOT/$EXTERNAL_REPO ]]; then
         sed -i "s#git+https://git.openstack.org/openstack/$EXTERNAL_REPO#file://${TRIPLEO_ROOT}/$EXTERNAL_REPO#1" ${TRIPLEO_ROOT}/tripleo-quickstart/quickstart-extras-requirements.txt
     fi
