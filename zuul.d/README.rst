@@ -17,6 +17,7 @@ config can be overriden:
  - `standalone_environment_files`: List of environment files to be overriden
    by the featureset configuration on standalone deployment. The environment
    file should exist in tripleo-heat-templates repo.
+ - `test_white_regex`: Regex to be used by tempest
 
 Example::
 
