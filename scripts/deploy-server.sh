@@ -11,9 +11,9 @@ echo puppetlabs-apache adrien-filemapper | xargs -n 1 puppet module install
 git clone https://github.com/puppetlabs/puppetlabs-vcsrepo.git /etc/puppet/modules/vcsrepo
 
 if [ -e /sys/class/net/eth1 ] ; then
-     echo -e 'DEVICE=eth1\nBOOTPROTO=dhcp\nONBOOT=yes\nPERSISTENT_DHCLIENT=yes\nPEERDNS=no' > /etc/sysconfig/network-scripts/ifcfg-eth1
-     ifdown eth1
-     ifup eth1
+    echo -e 'DEVICE=eth1\nBOOTPROTO=dhcp\nONBOOT=yes\nPERSISTENT_DHCLIENT=yes\nPEERDNS=no' > /etc/sysconfig/network-scripts/ifcfg-eth1
+    ifdown eth1
+    ifup eth1
 fi
 
 CIREPO=/opt/stack/tripleo-ci

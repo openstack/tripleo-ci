@@ -151,16 +151,16 @@ done
     for playbook in {{ " ".join(playbooks) }}; do
         echo ${RELEASE_ARGS[$playbook]:=$QUICKSTART_DEFAULT_RELEASE_ARG}
         $QUICKSTART_INSTALL_CMD \
-           ${RELEASE_ARGS[$playbook]:=$QUICKSTART_DEFAULT_RELEASE_ARG} \
-           {{ nodes_args }} \
-           {{ featureset_conf }} \
-           {{ env_vars }} \
-           {{ extra_vars }} \
-           {{ vxlan_vars }} \
-           $DEFAULT_ARGS \
-           --extra-vars @{{ workspace }}/logs/zuul-variables.yaml \
-            $LOCAL_WORKING_DIR/playbooks/$playbook ${PLAYBOOKS_ARGS[$playbook]:-} \
-            2>&1 | tee -a $LOGS_DIR/quickstart_install.log && exit_value=0 || exit_value=$?
+            ${RELEASE_ARGS[$playbook]:=$QUICKSTART_DEFAULT_RELEASE_ARG} \
+            {{ nodes_args }} \
+            {{ featureset_conf }} \
+            {{ env_vars }} \
+            {{ extra_vars }} \
+            {{ vxlan_vars }} \
+            $DEFAULT_ARGS \
+            --extra-vars @{{ workspace }}/logs/zuul-variables.yaml \
+                $LOCAL_WORKING_DIR/playbooks/$playbook ${PLAYBOOKS_ARGS[$playbook]:-} \
+                2>&1 | tee -a $LOGS_DIR/quickstart_install.log && exit_value=0 || exit_value=$?
 
         # Print status of playbook run
         [[ "$exit_value" == 0 ]] && echo "Playbook run of $playbook passed successfully"

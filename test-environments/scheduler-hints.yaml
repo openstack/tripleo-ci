@@ -1,3 +1,4 @@
+---
 parameter_defaults:
   ControllerSchedulerHints:
     'capabilities:node': 'controller-%index%'

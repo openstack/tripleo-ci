@@ -4,11 +4,11 @@ from __future__ import print_function
 import argparse
 import difflib
 import json
-import requests
 import os
+import requests
 
-from colorama import init
 from colorama import Fore
+from colorama import init
 
 GERRIT_DETAIL_API = "https://review.openstack.org/changes/{}/detail"
 GERRIT_USER_NAME = "zuul"
@@ -16,8 +16,9 @@ ZUUL_PIPELINE = "check"
 
 
 def parse_ci_message(message):
-    """Convert zuul's gerrit message into a dict with job name as key and
-    job url as value
+    """Convert zuul's gerrit message into a dict
+
+    Dictionary contains job name as key and job url as value
     """
 
     jobs = {}
@@ -29,8 +30,7 @@ def parse_ci_message(message):
 
 
 def get_file(logs_url, file):
-    """Download a file from logs server for this job
-    """
+    """Download a file from logs server for this job"""
 
     response = requests.get(logs_url + '/logs/' + file)
     if response.ok:
@@ -39,8 +39,7 @@ def get_file(logs_url, file):
 
 
 def get_last_jobs(change):
-    """Get the last CI jobs execution at check pipeline for this review
-    """
+    """Get the last CI jobs execution at check pipeline for this review"""
 
     last_jobs = {}
     detail_url = GERRIT_DETAIL_API.format(change)
@@ -62,8 +61,9 @@ def get_last_jobs(change):
 
 
 def download(jobs, file_path):
-    """Download a file from all the specified jobs and return them as a
-    dictionary with job name as key and file content as value
+    """Download a file from all the specified jobs
+
+    Return them as a dictionary with job name as key and file content as value
     """
     downloaded_files = {}
     for job, logs in jobs.iteritems():
@@ -76,9 +76,7 @@ def download(jobs, file_path):
 
 
 def is_equal(lho_jobs, rho_jobs, file_path):
-    """Check the differences of file_path between the lho and rho job sets and
-    print out them
-    """
+    """Prints differences of file_path between the lho and rho job sets"""
 
     lho_files = download(lho_jobs, file_path)
     rho_files = download(rho_jobs, file_path)

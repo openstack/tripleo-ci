@@ -27,7 +27,7 @@ USER=centos
 # makes some assumptions but good enough for now
 nova keypair-add --pub-key ~/.ssh/id_rsa.pub bighammer || true
 
-function tapper(){
+function tapper {
     set -x
     NODENAME=test-node-$1
 
@@ -35,8 +35,8 @@ function tapper(){
     #trap "nova delete $NODENAME" RETURN ERR
     sleep 60
     if [ "$(nova show $NODENAME | awk '/status/ {print $4}')" != "ACTIVE" ] ; then
-          nova show $NODENAME
-          return 1
+        nova show $NODENAME
+        return 1
     fi
 
     IP=$(nova show $NODENAME | awk '/private network/ {print $5}')

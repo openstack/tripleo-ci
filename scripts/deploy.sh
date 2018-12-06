@@ -1,3 +1,4 @@
+#!/bin/bash
 set -eux
 set -o pipefail
 
@@ -305,9 +306,9 @@ if [ "$OSINFRA" = "0" ]; then
     stop_metric "tripleo.${STABLE_RELEASE:-master}.${TOCI_JOBTYPE}.register.nodes.seconds"
 
     if [ $INTROSPECT == 1 ] ; then
-       start_metric "tripleo.${STABLE_RELEASE:-master}.${TOCI_JOBTYPE}.introspect.seconds"
-       $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --introspect-nodes
-       stop_metric "tripleo.${STABLE_RELEASE:-master}.${TOCI_JOBTYPE}.introspect.seconds"
+        start_metric "tripleo.${STABLE_RELEASE:-master}.${TOCI_JOBTYPE}.introspect.seconds"
+        $TRIPLEO_ROOT/tripleo-ci/scripts/tripleo.sh --introspect-nodes
+        stop_metric "tripleo.${STABLE_RELEASE:-master}.${TOCI_JOBTYPE}.introspect.seconds"
     fi
 
     if [ $PREDICTABLE_PLACEMENT == 1 ]; then
@@ -451,7 +452,7 @@ if [ "$MULTINODE" == 0 ] && [ "$OVERCLOUD" == 1 ] ; then
             echo "crm_resource for openstack-heat-engine has failed!"
             exit $exitcode
             }
-         stop_metric "tripleo.${STABLE_RELEASE:-master}.${TOCI_JOBTYPE}.overcloud.settle.seconds"
+        stop_metric "tripleo.${STABLE_RELEASE:-master}.${TOCI_JOBTYPE}.overcloud.settle.seconds"
     fi
 fi
 
@@ -464,10 +465,10 @@ if [ "$OVERCLOUD_MAJOR_UPGRADE" == 1 ] ; then
     # and thus the contents of delorean-ci may contain packages
     # we want to test for the current branch on upgrade
     if [ -s /etc/nodepool/sub_nodes_private ]; then
-      for ip in $(cat /etc/nodepool/sub_nodes_private); do
-        ssh $SSH_OPTIONS -tt -i /etc/nodepool/id_rsa $ip \
-          sudo sed -i -e \"s/enabled=0/enabled=1/\" /etc/yum.repos.d/delorean-ci.repo
-      done
+        for ip in $(cat /etc/nodepool/sub_nodes_private); do
+            ssh $SSH_OPTIONS -tt -i /etc/nodepool/id_rsa $ip \
+            sudo sed -i -e \"s/enabled=0/enabled=1/\" /etc/yum.repos.d/delorean-ci.repo
+        done
     fi
 
     source ~/stackrc

@@ -1,16 +1,18 @@
 #!/bin/python3.4
 
+from builtins import FileExistsError
 import cgi
-import cgitb
 import fcntl
 import os
 import shutil
 import sys
 import tempfile
 
-basedir="/var/www/html/"
+basedir = "/var/www/html/"
 
 print("Content-Type: text/html\n")
+
+
 def saveform(form, storagedir):
     for key in form.keys():
         entry = form[key]
@@ -35,6 +37,7 @@ def saveform(form, storagedir):
             if line not in fp.read():
                 fp.write(line)
             fp.close()
+
 
 def run():
 
@@ -73,5 +76,5 @@ def run():
         fcntl.lockf(fd, fcntl.LOCK_UN)
         os.close(fd)
 
-sys.exit(run())
 
+sys.exit(run())

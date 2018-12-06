@@ -21,9 +21,9 @@
 import argparse
 import json
 import logging
-import sys
-import subprocess
 import os
+import subprocess
+import sys
 import tempfile
 import textwrap
 import threading
@@ -65,7 +65,8 @@ class TestCallback(object):
         if time_waiting > 90:
             logger.warn('%.1f seconds waiting for a worker.' % (time_waiting))
 
-        if "Couldn't retrieve env" in job.arguments or "Failed creating OVB stack" in job.arguments:
+        if "Couldn't retrieve env" in job.arguments or \
+                "Failed creating OVB stack" in job.arguments:
             logger.error(job.arguments)
             self.rv = 2
             job.sendWorkComplete("")
@@ -80,7 +81,7 @@ class TestCallback(object):
 
             try:
                 self.rv = subprocess.call(self.command)
-            except:
+            except Exception:
                 logger.exception("Error calling command")
                 self.rv = 2
 
@@ -195,14 +196,14 @@ def main(args=sys.argv[1:]):
     job_params = {
         "callback_name": callback_name,
         "timeout": opts.timeout,
-        "envsize":opts.envsize,
-        "compute_envsize":opts.compute_envsize,
-        "ucinstance":opts.ucinstance,
+        "envsize": opts.envsize,
+        "compute_envsize": opts.compute_envsize,
+        "ucinstance": opts.ucinstance,
         "create_undercloud": "true" if opts.create_undercloud else "",
-        "ssh_key":opts.ssh_key,
-        "net_iso":opts.net_iso,
-        "extra_nodes":opts.extra_nodes,
-        "job_identifier":job_identifier,
+        "ssh_key": opts.ssh_key,
+        "net_iso": opts.net_iso,
+        "extra_nodes": opts.extra_nodes,
+        "job_identifier": job_identifier,
     }
     job = gear.Job('lockenv', json.dumps(job_params))
     client.submitJob(job)
@@ -226,6 +227,7 @@ def main(args=sys.argv[1:]):
         subprocess.call(["sudo", "kill", "-9", "-%d" % os.getpgrp()])
     logger.debug("Exiting with status : %d", cb.rv)
     return cb.rv
+
 
 if __name__ == '__main__':
     exit(main())

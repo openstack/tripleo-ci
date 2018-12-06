@@ -51,30 +51,30 @@ except:
 export ELEMENTS_PATH="${COMMON_ELEMENTS_PATH}:/usr/share/instack-undercloud:/usr/share/tripleo-image-elements:/usr/share/tripleo-puppet-elements"
 ELEMENTS=$(\
 tripleo-build-images \
-  --image-json-output \
-  --image-name overcloud-full \
-  --image-config-file /usr/share/tripleo-common/image-yaml/overcloud-images-centos7.yaml \
-  --image-config-file /usr/share/tripleo-common/image-yaml/overcloud-images.yaml \
-  | jq '. | .[0].elements | map(.+" ") | add' \
-  | sed 's/"//g')
+    --image-json-output \
+    --image-name overcloud-full \
+    --image-config-file /usr/share/tripleo-common/image-yaml/overcloud-images-centos7.yaml \
+    --image-config-file /usr/share/tripleo-common/image-yaml/overcloud-images.yaml \
+    | jq '. | .[0].elements | map(.+" ") | add' \
+    | sed 's/"//g')
 
 # delorean-repo is excluded b/c we've already run --repo-setup on this node and
 # we don't want to overwrite that.
 sudo -E instack \
-  -e centos7 \
-     enable-packages-install \
-     install-types \
-     $ELEMENTS \
-  -k extra-data \
-     pre-install \
-     install \
-     post-install \
-  -b 05-fstab-rootfs-label \
-     00-fix-requiretty \
-     90-rebuild-ramdisk \
-     00-usr-local-bin-secure-path \
-  -x delorean-repo \
-  -d
+    -e centos7 \
+        enable-packages-install \
+        install-types \
+        $ELEMENTS \
+    -k extra-data \
+        pre-install \
+        install \
+        post-install \
+    -b 05-fstab-rootfs-label \
+        00-fix-requiretty \
+        90-rebuild-ramdisk \
+        00-usr-local-bin-secure-path \
+    -x delorean-repo \
+    -d
 
 # In the imported elements we have remove-machine-id.  In multinode
 # jobs that could mean we end up without /etc/machine-id.  Make sure
@@ -83,12 +83,12 @@ sudo -E instack \
 
 PACKAGES=$(\
 tripleo-build-images \
-  --image-json-output \
-  --image-name overcloud-full \
-  --image-config-file /usr/share/tripleo-common/image-yaml/overcloud-images-centos7.yaml \
-  --image-config-file /usr/share/tripleo-common/image-yaml/overcloud-images.yaml \
-  | jq '. | .[0].packages | .[] | tostring' \
-  | sed 's/"//g')
+    --image-json-output \
+    --image-name overcloud-full \
+    --image-config-file /usr/share/tripleo-common/image-yaml/overcloud-images-centos7.yaml \
+    --image-config-file /usr/share/tripleo-common/image-yaml/overcloud-images.yaml \
+    | jq '. | .[0].packages | .[] | tostring' \
+    | sed 's/"//g')
 
 # Install additional packages expected by the image
 sudo yum -y install $PACKAGES

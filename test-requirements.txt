@@ -1,8 +1,8 @@
-flake8
 pytest
 pytest-html
 pytest-cov
 mock
 requests
 pprint
+pre-commit>=1.10 # MIT License
 PyYAML

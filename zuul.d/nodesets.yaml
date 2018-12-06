@@ -1,3 +1,4 @@
+---
 - nodeset:
     name: two-centos-7-nodes
     nodes:

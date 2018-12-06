@@ -55,8 +55,8 @@
     gate:
       queue: tripleo
       jobs:
-          # Don't put a files section on the linters job, otherwise no
-          # jobs might be defined and nothing can merge in this repo.
+        # Don't put a files section on the linters job, otherwise no
+        # jobs might be defined and nothing can merge in this repo.
         - openstack-tox-linters
         - openstack-tox-py27:
             files:

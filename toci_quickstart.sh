@@ -151,16 +151,16 @@ else
     for playbook in $PLAYBOOKS; do
         echo "${RELEASE_ARGS[$playbook]:=$QUICKSTART_DEFAULT_RELEASE_ARG}"
         run_with_timeout $START_JOB_TIME $QUICKSTART_INSTALL_CMD \
-           "${RELEASE_ARGS[$playbook]:=$QUICKSTART_DEFAULT_RELEASE_ARG}" \
-           $NODES_ARGS \
-           $FEATURESET_CONF \
-           $ENV_VARS \
-           $EXTRA_VARS \
-           $VXLAN_VARS \
-           $DEFAULT_ARGS \
-           --extra-vars ci_job_end_time=$(( START_JOB_TIME + REMAINING_TIME*60 )) \
-            $LOCAL_WORKING_DIR/playbooks/$playbook "${PLAYBOOKS_ARGS[$playbook]:-}" \
-            2>&1 | tee -a $LOGS_DIR/quickstart_install.log && exit_value=0 || exit_value=$?
+            "${RELEASE_ARGS[$playbook]:=$QUICKSTART_DEFAULT_RELEASE_ARG}" \
+            $NODES_ARGS \
+            $FEATURESET_CONF \
+            $ENV_VARS \
+            $EXTRA_VARS \
+            $VXLAN_VARS \
+            $DEFAULT_ARGS \
+            --extra-vars ci_job_end_time=$(( START_JOB_TIME + REMAINING_TIME*60 )) \
+                $LOCAL_WORKING_DIR/playbooks/$playbook "${PLAYBOOKS_ARGS[$playbook]:-}" \
+                2>&1 | tee -a $LOGS_DIR/quickstart_install.log && exit_value=0 || exit_value=$?
 
         # Print status of playbook run
         [[ "$exit_value" == 0 ]] && echo "Playbook run of $playbook passed successfully"
