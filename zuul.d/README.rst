@@ -18,6 +18,7 @@ config can be overriden:
    by the featureset configuration on standalone deployment. The environment
    file should exist in tripleo-heat-templates repo.
  - `test_white_regex`: Regex to be used by tempest
+ - `tempest_workers`: Numbers of parallel workers to run
 
 Example::
 
@@ -33,6 +34,7 @@ Example::
             tempest_black_regex: 'tempest.api.network|tempest.api.compute'
             tempest_format: 'containers'
             tempest_extra_config: {'telemetry.alarm_granularity': '60'}
+            tempest_workers: 1
             tempest_plugins:
               - 'python-keystone-tests-tempest'
               - 'python-cinder-tests-tempest'
