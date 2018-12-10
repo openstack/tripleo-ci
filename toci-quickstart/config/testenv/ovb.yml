@@ -18,6 +18,7 @@ non_root_user_setup: false
 step_set_undercloud_hostname: true
 undercloud_hostname: undercloud
 undercloud_docker_registry_mirror: "{{ lookup('env','NODEPOOL_DOCKER_REGISTRY_PROXY') }}"
+dlrn_use_local_mirrors: true
 run_validate_undercloud: true
 step_overcloud_prep_flavors: false
 
