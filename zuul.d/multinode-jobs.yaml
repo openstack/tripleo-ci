@@ -49,6 +49,7 @@
         - tripleo-ci-centos-7-standalone
         - tripleo-ci-fedora-28-standalone
         - tripleo-ci-centos-7-standalone-upgrade
+        - tripleo-ci-centos-7-scenario003-standalone
     gate:
       queue: tripleo
       jobs:
