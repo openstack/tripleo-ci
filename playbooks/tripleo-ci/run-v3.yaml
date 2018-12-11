@@ -62,6 +62,7 @@
             - 'standalone_environment_files'
             - 'standalone_container_cli'
             - 'test_white_regex'
+            - 'tempest_workers'
         fail:
           msg: "ERROR: {{ item }} is not overridable."
         when: item not in "{{ allowed_overrides }}"
