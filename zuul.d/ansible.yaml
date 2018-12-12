@@ -1,0 +1,15 @@
+---
+# zuul.d/ansible.yaml
+# Zuul layout for TripleO Ansible jobs.
+
+- project-template:
+    name: tripleo-ansible-role-jobs
+    description: |
+      Run default tests for ansible-role repositories: Run
+      tox based linters.
+    check:
+      jobs:
+        - openstack-tox-linters
+    gate:
+      jobs:
+        - openstack-tox-linters
