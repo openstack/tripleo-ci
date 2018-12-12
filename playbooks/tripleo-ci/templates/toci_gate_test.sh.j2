@@ -43,13 +43,16 @@ cat $TRIPLEO_ROOT/tripleo-ci/scripts/fake_fail_subunit | gzip - > $WORKSPACE/log
 # unversioned commands available like python(2|3) or pip(2|3). We should only
 # call pip using module approach which ensures we use the right version.
 $(python_cmd) -m pip --version || \
-    (curl "https://bootstrap.pypa.io/get-pip.py" -o "get-pip.py"; sudo $(python_cmd) get-pip.py)
+    (curl -s "https://bootstrap.pypa.io/get-pip.py" -o "get-pip.py"; sudo $(python_cmd) get-pip.py)
 
 if [ "$(python_cmd)" == "python3" ]; then
-    sudo $(package_manager) install python3-requests python3-urllib3 python3-PyYAML shyaml
+    sudo $(package_manager) reinstall python3-setuptools
+    sudo $(package_manager) install python3-setuptools python3-requests python3-urllib3 python3-PyYAML shyaml
 else
-    sudo $(package_manager) install python2-requests python-requests python-urllib3 PyYAML
+    sudo $(package_manager) reinstall python2-setuptools
+    sudo $(package_manager) install python2-setuptools python2-requests python-requests python-urllib3 PyYAML
 fi
+
 # shyaml may not have a rpm on older distros
 which shyaml 2>/dev/null || \
     sudo $(python_cmd) -m pip install shyaml
@@ -176,6 +179,7 @@ if [ ! -e $WORKSPACE/instackenv.json -a "{{ environment_infra }}" = "ovb" ] ; th
     export GEARDSERVER=${TEBROKERIP-192.168.1.1}
     # NOTE(pabelanger): We need gear for testenv, but this really should be
     # handled by tox.
+    sudo yum install -y python-docutils
     sudo $(python_cmd) -m pip install gear
     # Kill the whole job if it doesn't get a testenv in 20 minutes as it likely will timout in zuul
     ( sleep 1800 ; [ ! -e /tmp/toci.started ] && sudo kill -9 $$ ) &
