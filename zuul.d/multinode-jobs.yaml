@@ -7,11 +7,11 @@
     name: tripleo-multinode-baremetal-minimal
     check:
       jobs:
-        - tripleo-ci-centos-7-nonha-multinode-oooq
+        - noop
     gate:
       queue: tripleo
       jobs:
-        - tripleo-ci-centos-7-nonha-multinode-oooq
+        - noop
 
 - project-template:
     name: tripleo-multinode-container-minimal
@@ -24,13 +24,22 @@
         - tripleo-ci-centos-7-standalone
         - tripleo-ci-fedora-28-standalone
         - tripleo-ci-centos-7-standalone-upgrade
-
     gate:
       queue: tripleo
       jobs:
         - tripleo-ci-centos-7-containers-multinode
         - tripleo-ci-centos-7-standalone
         - tripleo-ci-centos-7-scenario000-multinode-oooq-container-updates
+
+- project-template:
+    name: tripleo-multinode-baremetal-full
+    check:
+      jobs:
+        - noop
+    gate:
+      queue: tripleo
+      jobs:
+        - noop
 
 - project-template:
     name: tripleo-multinode-container-full
@@ -58,30 +67,10 @@
         - tripleo-ci-centos-7-scenario000-multinode-oooq-container-updates
 
 - project-template:
-    name: tripleo-multinode-baremetal-full
-    check:
-      jobs:
-        - tripleo-ci-centos-7-nonha-multinode-oooq
-        - tripleo-ci-centos-7-scenario001-multinode-oooq
-        - tripleo-ci-centos-7-scenario002-multinode-oooq
-        - tripleo-ci-centos-7-scenario003-multinode-oooq
-        - tripleo-ci-centos-7-scenario004-multinode-oooq
-        - tripleo-ci-centos-7-scenario007-multinode-oooq
-        - tripleo-ci-centos-7-scenario009-multinode-oooq
-    gate:
-      queue: tripleo
-      jobs:
-        - tripleo-ci-centos-7-nonha-multinode-oooq
-        - tripleo-ci-centos-7-scenario001-multinode-oooq
-        - tripleo-ci-centos-7-scenario002-multinode-oooq
-        - tripleo-ci-centos-7-scenario003-multinode-oooq
-        - tripleo-ci-centos-7-scenario004-multinode-oooq
-
-- project-template:
     name: tripleo-multinode-experimental
     experimental:
       jobs:
-        - tripleo-ci-centos-7-scenario006-multinode-oooq
+        - tripleo-ci-centos-7-scenario006-multinode-oooq-container
         - tripleo-ci-centos-7-scenario010-multinode-oooq-container
         - tripleo-ci-centos-7-scenario011-multinode-oooq-container
 
@@ -150,23 +139,6 @@
       playbooks:
         - multinode.yml
 
-
-- job:
-    name: tripleo-ci-centos-7-nonha-multinode-oooq
-    parent: tripleo-ci-base-multinode
-    branches: ^stable/(newton|ocata).*$
-    vars:
-      nodes: 1ctlr
-      featureset: '004'
-
-- job:
-    name: tripleo-ci-centos-7-scenario001-multinode-oooq
-    parent: tripleo-ci-base-multinode
-    branches: ^stable/(newton|ocata).*$
-    vars:
-      nodes: 1ctlr
-      featureset: '005'
-
 - job:
     name: tripleo-ci-centos-7-scenario001-multinode-oooq-container
     parent: tripleo-ci-base-multinode
@@ -175,14 +147,6 @@
     vars:
       nodes: 1ctlr
       featureset: '016'
-
-- job:
-    name: tripleo-ci-centos-7-scenario002-multinode-oooq
-    parent: tripleo-ci-base-multinode
-    branches: ^stable/(newton|ocata).*$
-    vars:
-      nodes: 1ctlr
-      featureset: '006'
 
 - job:
     name: tripleo-ci-centos-7-scenario002-multinode-oooq-container
@@ -202,14 +166,6 @@
       featureset: '055'
 
 - job:
-    name: tripleo-ci-centos-7-scenario003-multinode-oooq
-    parent: tripleo-ci-base-multinode
-    branches: ^stable/ocata.*$
-    vars:
-      nodes: 1ctlr
-      featureset: '007'
-
-- job:
     name: tripleo-ci-centos-7-scenario003-multinode-oooq-container
     parent: tripleo-ci-base-multinode
     branches: ^stable/(pike|queens|rocky).*$
@@ -217,14 +173,6 @@
     vars:
       nodes: 1ctlr
       featureset: '018'
-
-- job:
-    name: tripleo-ci-centos-7-scenario004-multinode-oooq
-    parent: tripleo-ci-base-multinode
-    branches: ^stable/ocata.*$
-    vars:
-      nodes: 1ctlr
-      featureset: '008'
 
 - job:
     name: tripleo-ci-centos-7-scenario004-multinode-oooq-container
@@ -236,21 +184,13 @@
       featureset: '019'
 
 - job:
-    name: tripleo-ci-centos-7-scenario006-multinode-oooq
+    name: tripleo-ci-centos-7-scenario006-multinode-oooq-container
     parent: tripleo-ci-base-multinode
     voting: false
     branches: ^(?!stable/(newton|ocata)).*$
     vars:
       nodes: 1ctlr
       featureset: '026'
-
-- job:
-    name: tripleo-ci-centos-7-scenario007-multinode-oooq
-    parent: tripleo-ci-base-multinode
-    branches: ^stable/pike.*$
-    vars:
-      nodes: 1ctlr
-      featureset: '028'
 
 - job:
     name: tripleo-ci-centos-7-scenario007-multinode-oooq-container
@@ -271,16 +211,7 @@
       featureset: '031'
 
 - job:
-    name: tripleo-ci-centos-7-scenario008-multinode-oooq
-    parent: tripleo-ci-base-multinode
-    voting: false
-    branches: ^(?!stable/(newton|ocata|pike|queens)).*$
-    vars:
-      nodes: 1ctlr
-      featureset: '031'
-
-- job:
-    name: tripleo-ci-centos-7-scenario009-multinode-oooq
+    name: tripleo-ci-centos-7-scenario009-multinode-oooq-container
     parent: tripleo-ci-base-multinode
     voting: false
     branches: ^(?!stable/(newton|ocata)).*$

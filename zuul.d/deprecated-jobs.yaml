@@ -1,0 +1,92 @@
+---
+# zuul.d/deprecated-jobs.yaml
+# Zuul layout for TripleO deprecated jobs.
+# It contains all the deprecated jobs that should be removed from Zuul.
+
+- job:
+    name: tripleo-ci-deprecated
+    description: |
+      Deprecated TripleO Job
+      Job no longer supported that should be removed from Zuul config.
+    parent: tripleo-ci-base-multinode
+    pre-run: playbooks/deprecated/pre.yaml
+
+#TODO(rfolco): non-containeirized (nc) scenarios are no longer supported.
+# These (nc) scenario jobs ran until ocata release and should be removed
+# or replaced by containerized scenario jobs *-container.
+- job:
+    name: tripleo-ci-centos-7-scenario001-multinode-oooq
+    parent: tripleo-ci-deprecated
+    branches: none/deprecated
+    vars:
+      nodes: 1ctlr
+      featureset: '005'
+
+- job:
+    name: tripleo-ci-centos-7-scenario002-multinode-oooq
+    parent: tripleo-ci-deprecated
+    branches: none/deprecated
+    vars:
+      nodes: 1ctlr
+      featureset: '006'
+
+- job:
+    name: tripleo-ci-centos-7-scenario003-multinode-oooq
+    parent: tripleo-ci-deprecated
+    branches: none/deprecated
+    vars:
+      nodes: 1ctlr
+      featureset: '007'
+
+- job:
+    name: tripleo-ci-centos-7-scenario004-multinode-oooq
+    parent: tripleo-ci-deprecated
+    branches: none/deprecated
+    vars:
+      nodes: 1ctlr
+      featureset: '008'
+
+- job:
+    name: tripleo-ci-centos-7-scenario007-multinode-oooq
+    parent: tripleo-ci-deprecated
+    branches: none/deprecated
+    vars:
+      nodes: 1ctlr
+      featureset: '028'
+
+- job:
+    name: tripleo-ci-centos-7-scenario008-multinode-oooq
+    parent: tripleo-ci-deprecated
+    voting: false
+    branches: none/deprecated
+    vars:
+      nodes: 1ctlr
+      featureset: '031'
+
+- job:
+    name: tripleo-ci-centos-7-nonha-multinode-oooq
+    parent: tripleo-ci-deprecated
+    branches: none/deprecated
+    vars:
+      nodes: 1ctlr
+      featureset: '004'
+
+#TODO(rfolco): scen00{6,9} are containeirized, remove this when
+# all projects using them rename to the *-container (dup) jobs
+- job:
+    name: tripleo-ci-centos-7-scenario006-multinode-oooq
+    parent: tripleo-ci-deprecated
+    voting: false
+    branches: ^(?!stable/(newton|ocata)).*$
+    vars:
+      nodes: 1ctlr
+      featureset: '026'
+
+- job:
+    name: tripleo-ci-centos-7-scenario009-multinode-oooq
+    parent: tripleo-ci-deprecated
+    voting: false
+    branches: ^(?!stable/(newton|ocata)).*$
+    vars:
+      nodes: 1ctlr
+      featureset: '033'
