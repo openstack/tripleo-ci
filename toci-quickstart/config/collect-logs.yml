@@ -21,7 +21,7 @@ artcl_collect_list:
   - /home/{{ undercloud_user }}/*.conf
   - /home/{{ undercloud_user }}/*.cfg
   - /home/{{ undercloud_user }}/*.yml
-  - /home/{{ undercloud_user }}/*.yaml
+  - /home/{{ undercloud_user }}/*.yaml*
   - /home/{{ undercloud_user }}/*.sh
   - /home/{{ undercloud_user }}/deploy-overcloudrc
   - /home/{{ undercloud_user }}/network-environment.yaml
