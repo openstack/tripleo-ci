@@ -236,6 +236,7 @@ artcl_collect_list:
   - /var/log/ovn/
   - /var/log/pacemaker/
   - /var/log/panko/
+  - /var/log/pcsd/
   - /var/log/qdr/
   - /var/log/rabbitmq/
   - /var/log/redis/
