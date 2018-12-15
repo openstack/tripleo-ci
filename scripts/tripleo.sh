@@ -167,11 +167,11 @@ NODEPOOL_RDO_PROXY=${NODEPOOL_RDO_PROXY:-https://trunk.rdoproject.org}
 NODEPOOL_BUILDLOGS_CENTOS_PROXY="${NODEPOOL_BUILDLOGS_CENTOS_PROXY:-https://buildlogs.centos.org}"
 NODEPOOL_CBS_CENTOS_PROXY="${NODEPOOL_CBS_CENTOS_PROXY:-https://cbs.centos.org/repos}"
 OVERCLOUD_IMAGES_DIB_YUM_REPO_CONF=${OVERCLOUD_IMAGES_DIB_YUM_REPO_CONF}"\
-  $REPO_PREFIX/$CEPH_REPO_FILE"
+    $REPO_PREFIX/$CEPH_REPO_FILE"
 OPSTOOLS_REPO_ENABLED=${OPSTOOLS_REPO_ENABLED:-"0"}
 if [[ "${OPSTOOLS_REPO_ENABLED}" = 1 ]]; then
-  OVERCLOUD_IMAGES_DIB_YUM_REPO_CONF=${OVERCLOUD_IMAGES_DIB_YUM_REPO_CONF}"\
-    $REPO_PREFIX/centos-opstools.repo"
+    OVERCLOUD_IMAGES_DIB_YUM_REPO_CONF=${OVERCLOUD_IMAGES_DIB_YUM_REPO_CONF}"\
+        $REPO_PREFIX/centos-opstools.repo"
 fi
 FEATURE_BRANCH=${FEATURE_BRANCH:-}
 DELOREAN_SETUP=${DELOREAN_SETUP:-""}
@@ -250,7 +250,11 @@ function log {
 }
 
 function source_rc {
-    if [ $1 = "stackrc" ] ; then cloud="Undercloud"; else cloud="Overcloud"; fi
+    if [ $1 = "stackrc" ]; then
+        cloud="Undercloud"
+    else
+        cloud="Overcloud"
+    fi
     echo "You must source a $1 file for the $cloud."
     echo "Attempting to source $HOME/$1"
     source $HOME/$1
@@ -665,8 +669,7 @@ function overcloud_deploy {
     exitval=0
     log "Deploy command arguments: $OVERCLOUD_DEPLOY_ARGS"
     openstack overcloud deploy $OVERCLOUD_DEPLOY_ARGS || exitval=1
-    if [ $exitval -eq 1 ];
-    then
+    if [ $exitval -eq 1 ]; then
         log "Overcloud create - FAILED!"
         exit 1
     fi
@@ -713,8 +716,7 @@ function overcloud_update {
         log "Overcloud update started."
         exitval=0
         openstack overcloud deploy $OVERCLOUD_UPDATE_ARGS || exitval=1
-        if [ $exitval -eq 1 ];
-        then
+        if [ $exitval -eq 1 ]; then
             log "Overcloud update - FAILED!"
             exit 1
         fi

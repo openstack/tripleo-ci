@@ -21,7 +21,7 @@ set -x
 # NOTE(bnemec): This function starts the port deletions in the background.
 # To ensure they complete before you proceed, you must call "wait" after
 # calling this function.
-function delete_ports() {
+function delete_ports {
     local subnetid=${1:-}
     if [ -z "$subnetid" ]; then
         return
@@ -37,8 +37,7 @@ CONSOLE_LOG_PATH=/var/www/html/tebroker/console-logs/
 nova console-log bmc-${ENVNUM} | tail -n 100 | awk -v envnum="$ENVNUM" '$0=envnum ": " $0' >> /var/log/bmc-console-logs
 
 # Save all the consoles in the stack to a dedicated directory, stripping out ANSI color codes.
-for server in $(openstack server list -f value -c Name | grep baremetal-${ENVNUM}) bmc-$ENVNUM
-do
+for server in $(openstack server list -f value -c Name | grep baremetal-${ENVNUM}) bmc-$ENVNUM ; do
     openstack console log show $server | sed 's/\[[0-9;]*[a-zA-Z]//g' | gzip > $CONSOLE_LOG_PATH/$server-console.log.gz || true
 done
 
@@ -55,7 +54,7 @@ wait
 # If there was a keypair for this specific run, delete it.
 openstack keypair delete "tripleo-ci-key-$ENVNUM" || true
 
-function delete_stack() {
+function delete_stack {
     local stackname=$1
     # Nothing to do if the specified stack doesn't exist
     if ! heat stack-show $stackname; then

@@ -1,3 +1,4 @@
+#!/bin/bash
 # Periodic stable jobs set OVERRIDE_ZUUL_BRANCH, gate stable jobs
 # just have the branch they're proposed to, e.g ZUUL_BRANCH, in both
 # cases we need to set STABLE_RELEASE to match for tripleo.sh

@@ -9,8 +9,7 @@ function set_env {
 # The updates job already takes a long time, always use cache for it
 [[ "$TOCI_JOBTYPE" =~ updates ]] && set_env "false"
 # There are some projects that require images building
-for PROJFULLREF in ${ZUUL_CHANGES//^/ };
-do
+for PROJFULLREF in ${ZUUL_CHANGES//^/ }; do
     PROJ=${PROJFULLREF%%:*};
     PROJ=${PROJ##*/};
     [[ "$PROJ" =~ diskimage-builder|tripleo-image-elements|tripleo-puppet-elements|instack-undercloud|python-tripleoclient|tripleo-common ]] && set_env "true"

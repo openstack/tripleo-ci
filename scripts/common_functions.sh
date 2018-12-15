@@ -1,3 +1,4 @@
+#!/bin/bash
 # Tripleo CI functions
 
 # Revert a commit for tripleo ci
@@ -5,7 +6,7 @@
 # $2 : hash id of commit to revert
 # $3 : bug id of reason for revert (used to skip revert if found in commit
 #      that triggers ci).
-function temprevert(){
+function temprevert {
     # Before reverting check to ensure this isn't the related fix
     if git --git-dir=$TRIPLEO_ROOT/${ZUUL_PROJECT#*/}/.git log -1 | grep -iE "bug.*$3" ; then
         echo "Skipping temprevert because bug fix $3 was found in git message."
@@ -24,7 +25,7 @@ function temprevert(){
 # $2 : hash id of commit to pin too
 # $3 : bug id of reason for the pin (used to skip revert if found in commit
 #      that triggers ci).
-function pin(){
+function pin {
     # Before reverting check to ensure this isn't the related fix
     if git --git-dir=$TRIPLEO_ROOT/${ZUUL_PROJECT#*/}/.git log -1 | grep -iE "bug.*$3" ; then
         echo "Skipping pin because bug fix $3 was found in git message."
@@ -42,7 +43,7 @@ function pin(){
 # $2 : Gerrit refspec to cherry pick
 # $3 : bug id of reason for the cherry pick (used to skip cherry pick if found
 #      in commit that triggers ci).
-function cherrypick(){
+function cherrypick {
     local PROJ_NAME=$1
     local REFSPEC=$2
 
@@ -66,14 +67,14 @@ function cherrypick(){
 
 # echo's out a project name from a ref
 # $1 : e.g. openstack/nova:master:refs/changes/87/64787/3 returns nova
-function filterref(){
+function filterref {
     PROJ=${1%%:*}
     PROJ=${PROJ##*/}
     echo $PROJ
 }
 
 # Mount a qcow image, copy in the delorean repositories and update the packages
-function update_image(){
+function update_image {
     IMAGE=$1
     MOUNTDIR=$(mktemp -d)
     case ${IMAGE##*.} in
@@ -133,7 +134,7 @@ function update_image(){
 
 # Decide if a particular cached artifact can be used in this CI test
 # Takes a single argument representing the name of the artifact being checked.
-function canusecache(){
+function canusecache {
 
     # If we are uploading to the cache then we shouldn't use it
     [ "$CACHEUPLOAD" == 1 ] && return 1
@@ -165,7 +166,7 @@ function canusecache(){
     return 0
 }
 
-function extract_logs(){
+function extract_logs {
     local name=$1
     mkdir -p $WORKSPACE/logs/$name
     local logs_tar="$WORKSPACE/logs/$name.tar.xz"
@@ -178,7 +179,7 @@ function extract_logs(){
     fi
 }
 
-function postci(){
+function postci {
     local exit_val=${1:-0}
     set -x
     set +e
@@ -368,10 +369,10 @@ function echo_vars_to_deploy_env {
 }
 
 function stop_dstat {
-	ps axjf | grep bin/dstat | grep -v grep | awk '{print $2;}' | sudo xargs -t -n 1 -r kill
+    ps axjf | grep bin/dstat | grep -v grep | awk '{print $2;}' | sudo xargs -t -n 1 -r kill
 }
 
-function item_in_array () {
+function item_in_array {
     local item
     for item in "${@:2}"; do
         if [[ "$item" == "$1" ]]; then

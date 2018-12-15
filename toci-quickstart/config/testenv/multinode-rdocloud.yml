@@ -1,3 +1,4 @@
+---
 # TRIPLEO-CI environment settings
 undercloud_user: "{{ lookup('env','USER') }}"
 non_root_user: "{{ undercloud_user }}"

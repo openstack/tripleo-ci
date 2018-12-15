@@ -30,7 +30,7 @@ and Lauchpad API connections) and generate the CI reports which contact
 the API of the upstream Jenkins servers.
 
 If you want to do a quick build to test out new HTML formatting, etc. you
-can disable the reviewday and CI reports by running the following:  
+can disable the reviewday and CI reports by running the following:
 
   cd tripleo-ci/scripts/website
   SKIP\_REVIEWDAY="Y" SKIP\_CI\_REPORTS="Y" OUT\_HTML='out\_html' bash generate\_site.sh

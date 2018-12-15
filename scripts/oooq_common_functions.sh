@@ -65,7 +65,7 @@ function is_featureset {
     local type="${1}"
     local featureset_file="${2}"
 
-    [ $(shyaml get-value "${type}" "False"< "${featureset_file}") = "True" ]
+    [[ $(shyaml get-value "${type}" "False"< "${featureset_file}") = "True" ]]
 }
 
 function run_with_timeout {
