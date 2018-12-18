@@ -5,13 +5,8 @@
 
 - project-template:
     name: tripleo-multinode-baremetal-minimal
-    check:
-      jobs:
-        - noop
     gate:
       queue: tripleo
-      jobs:
-        - noop
 
 - project-template:
     name: tripleo-multinode-container-minimal
@@ -34,13 +29,8 @@
 
 - project-template:
     name: tripleo-multinode-baremetal-full
-    check:
-      jobs:
-        - noop
     gate:
       queue: tripleo
-      jobs:
-        - noop
 
 - project-template:
     name: tripleo-multinode-container-full
