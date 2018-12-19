@@ -86,16 +86,6 @@
         - tripleo-ci-centos-7-containers-multinode-pike
 
 - job:
-    name: tripleo-ci-centos-7-3nodes-multinode
-    parent: tripleo-ci-base-multinode
-    voting: false
-    nodeset: three-centos-7-nodes
-    branches: ^(?!stable/(newton|ocata|pike)).*$
-    vars:
-      nodes: 2ctlr
-      featureset: '032'
-
-- job:
     name: tripleo-ci-centos-7-containers-multinode
     parent: tripleo-ci-base-multinode
     branches: ^(?!stable/(newton|ocata)).*$
