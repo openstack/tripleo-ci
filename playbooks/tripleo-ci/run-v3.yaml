@@ -44,6 +44,18 @@
         content: "{{ zuul_dump|to_nice_yaml }}"
         dest: "{{ workspace }}/logs//zuul-variables.yaml"
 
+    - name: Remove package exclusions from package manager
+      become: true
+      ini_file:
+        path: "{{ item }}"
+        section: main
+        option: exclude
+        state: absent
+      failed_when: false
+      with_items:
+        - /etc/yum.conf
+        - /etc/dnf/dnf.conf
+
 - hosts:
     - primary
     - centos-7
