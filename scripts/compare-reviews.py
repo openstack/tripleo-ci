@@ -40,6 +40,11 @@ def get_file(logs_url, file):
 
 def get_last_jobs(change):
     """Get the last CI jobs execution at check pipeline for this review"""
+    patchset = None
+    if '/' in change:
+        change_patchset = change.split('/')
+        change = change_patchset[0]
+        patchset = change_patchset[1]
 
     last_jobs = {}
     detail_url = GERRIT_DETAIL_API.format(change)
@@ -52,7 +57,17 @@ def get_last_jobs(change):
             if message['author']['username'] == GERRIT_USER_NAME
             and "({} pipeline)".format(ZUUL_PIPELINE) in message['message']
         ]
-        last_message = zuul_messages[-1]
+
+        if patchset:
+            patchset = "Patch Set {}".format(patchset)
+            filtered = [m for m in zuul_messages if patchset in m['message']]
+            if len(filtered) == 0:
+                raise RuntimeError("{} not found for review {}".format(
+                    patchset, change))
+            last_message = filtered[0]
+        else:
+            last_message = zuul_messages[-1]
+
         last_jobs = parse_ci_message(last_message['message'])
         date = last_message['date']
     else:
@@ -108,7 +123,8 @@ if __name__ == '__main__':
         'reviews',
         metavar='review',
         nargs=2,
-        help='left-side and right-side review to compare')
+        help='left-side and right-side review numbers to compare it can'
+        'include the specific patchset, examples:610491 or 610491/1')
 
     parser.add_argument(
         '--files',
