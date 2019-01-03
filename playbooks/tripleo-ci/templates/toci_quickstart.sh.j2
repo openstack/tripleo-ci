@@ -47,7 +47,7 @@ export QUICKSTART_DEFAULT_RELEASE_ARG="--extra-vars @$LOCAL_WORKING_DIR/config/r
 
 QUICKSTART_COLLECTLOGS_CMD="$LOCAL_WORKING_DIR/bin/ansible-playbook \
     $LOCAL_WORKING_DIR/playbooks/collect-logs.yml \
-    -vv \
+    -vvvv \
     $QUICKSTART_DEFAULT_RELEASE_ARG \
     {{ featureset_conf }} \
     {{ env_vars }} \
