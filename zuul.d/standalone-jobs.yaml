@@ -109,7 +109,7 @@
 
 - job:
     name: tripleo-ci-centos-7-scenario002-standalone
-    voting: false
+    voting: true
     parent: tripleo-ci-base-standalone
     nodeset: single-centos-7-node
     branches: ^(?!stable/(newton|ocata|pike|queens|rocky)).*$
