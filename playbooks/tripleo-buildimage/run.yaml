@@ -30,7 +30,6 @@
             --cache-dir /opt/git \
             git://git.openstack.org \
             openstack/diskimage-builder \
-            openstack/heat-templates \
             openstack/heat-agents \
             openstack/instack-undercloud \
             openstack/python-tripleoclient \
@@ -49,7 +48,7 @@
           cd python-tripleoclient
           ELEMENTS="$WORKSPACE/tripleo-puppet-elements/elements:"
           ELEMENTS+="$WORKSPACE/tripleo-image-elements/elements:"
-          ELEMENTS+="$WORKSPACE/heat-templates/hot/software-config/elements"
+          ELEMENTS+="$WORKSPACE/heat-agents"
           TOX_ENV=venv
 
           # Basic Deployment (CLI)

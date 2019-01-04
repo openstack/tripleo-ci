@@ -25,7 +25,6 @@
     required-projects:
       - git.openstack.org/openstack/diskimage-builder
       - git.openstack.org/openstack/heat-agents
-      - git.openstack.org/openstack/heat-templates
       - git.openstack.org/openstack/instack-undercloud
       - git.openstack.org/openstack/ironic
       - git.openstack.org/openstack/ironic-python-agent
@@ -53,7 +52,6 @@
     required-projects:
       - git.openstack.org/openstack/diskimage-builder
       - git.openstack.org/openstack/heat-agents
-      - git.openstack.org/openstack/heat-templates
       - git.openstack.org/openstack/instack-undercloud
       - git.openstack.org/openstack/python-tripleoclient
       - git.openstack.org/openstack/requirements
@@ -78,7 +76,6 @@
     required-projects:
       - git.openstack.org/openstack/diskimage-builder
       - git.openstack.org/openstack/heat-agents
-      - git.openstack.org/openstack/heat-templates
       - git.openstack.org/openstack/instack-undercloud
       - git.openstack.org/openstack/python-tripleoclient
       - git.openstack.org/openstack/tripleo-common

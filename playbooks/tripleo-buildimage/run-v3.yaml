@@ -60,7 +60,7 @@
 
         ELEMENTS="{{ openstack_git_root }}/tripleo-puppet-elements/elements:"
         ELEMENTS+="{{ openstack_git_root }}/tripleo-image-elements/elements:"
-        ELEMENTS+="{{ openstack_git_root }}/heat-templates/hot/software-config/elements"
+        ELEMENTS+="{{ openstack_git_root }}/heat-agents"
 
         if [ -d "{{ openstack_git_root }}/instack-undercloud/elements" ]; then
           ELEMENTS="{{ openstack_git_root }}/instack-undercloud/elements:${ELEMENTS}"
