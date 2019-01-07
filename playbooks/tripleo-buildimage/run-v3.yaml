@@ -10,24 +10,6 @@
       include_vars:
         file: "common.yaml"
 
-    - name: Swap is essential as we are not meeting memory requirements
-      include_role:
-        name: configure-swap
-
-    - name: Set legacy log path
-      include_role:
-        name: set-zuul-log-path-fact
-
-    - name: Ensure legacy workspace directory
-      file:
-        path: '{{ workspace }}'
-        state: directory
-
-    - name: Ensure legacy logs directory
-      file:
-        path: '{{ workspace }}/logs'
-        state: directory
-
     - name: Install pip
       package:
         name: python-pip
