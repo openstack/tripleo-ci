@@ -135,7 +135,7 @@
 
 - job:
     name: tripleo-ci-centos-7-scenario003-standalone
-    voting: true
+    voting: false
     parent: tripleo-ci-base-standalone
     nodeset: single-centos-7-node
     branches: ^(?!stable/(newton|ocata|pike|queens|rocky)).*$
@@ -157,7 +157,7 @@
 
 - job:
     name: tripleo-ci-centos-7-scenario004-standalone
-    voting: true
+    voting: false
     parent: tripleo-ci-base-standalone
     nodeset: single-centos-7-node
     branches: ^(?!stable/(newton|ocata|pike|queens|rocky)).*$
