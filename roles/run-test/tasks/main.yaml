@@ -18,6 +18,7 @@
         - 'tempest_workers'
         - 'dlrn_hash_tag'
         - 'dlrn_hash_tag_newest'
+        - 'use_os_tempest'
     fail:
       msg: "ERROR: {{ item }} is not overridable."
     when: item not in "{{ allowed_overrides }}"

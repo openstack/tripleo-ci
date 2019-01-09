@@ -32,6 +32,9 @@
       - git.openstack.org/openstack/tripleo-ha-utils
       - name: git.openstack.org/openstack/openstack-virtual-baremetal
         override-checkout: stable/1.0
+      - git.openstack.org/openstack/openstack-ansible-os_tempest
+      - git.openstack.org/openstack/ansible-role-python_venv_build
+      - git.openstack.org/openstack/ansible-config_template
     pre-run:
       - playbooks/nodepool-provider/pre.yaml
       - playbooks/openstack-zuul-jobs/legacy/pre.yaml

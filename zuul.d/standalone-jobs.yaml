@@ -443,3 +443,15 @@
           'share.capability_snapshot_support': 'False'
           'share.capability_create_share_from_snapshot_support': 'False'
         test_white_regex: ''
+
+- job:
+    name: tripleo-ci-centos-7-standalone-os-tempest
+    parent: tripleo-ci-base-standalone
+    nodeset: single-centos-7-node
+    branches: ^(?!stable/(newton|ocata|pike|queens|rocky)).*$
+    voting: false
+    vars:
+      featureset: '052'
+      featureset_override:
+        run_tempest: false
+        use_os_tempest: true

@@ -53,6 +53,7 @@
         - tripleo-ci-centos-7-scenario002-standalone
         - tripleo-ci-centos-7-scenario003-standalone
         - tripleo-ci-centos-7-scenario004-standalone
+        - tripleo-ci-centos-7-standalone-os-tempest
 
     gate:
       queue: tripleo
