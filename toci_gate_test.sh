@@ -266,23 +266,7 @@ done
 # Start time tracking
 export STATS_TESTENV=$(date +%s)
 pushd $TRIPLEO_ROOT/tripleo-ci
-if [ ! -e $WORKSPACE/instackenv.json -a "$ENVIRONMENT" = "ovb" ] ; then
-    echo "Running with te-broker"
-    export GEARDSERVER=${TEBROKERIP-192.168.1.1}
-    # NOTE(pabelanger): We need gear for testenv, but this really should be
-    # handled by tox.
-    sudo pip install gear
-    # Kill the whole job if it doesn't get a testenv in 20 minutes as it likely will timout in zuul
-    ( sleep 1200 ; [ ! -e /tmp/toci.started ] && sudo kill -9 $$ ) &
-
-    # We only support multi-nic at the moment
-    NETISO_ENV="multi-nic"
-
-    # provision env in rh cloud, then start quickstart
-    ./testenv-client -b $GEARDSERVER:4730 -t $TIMEOUT_SECS \
-        --envsize $NODECOUNT --ucinstance $UCINSTANCEID \
-        --net-iso $NETISO_ENV $EXTRANODE -- ./toci_quickstart.sh
-elif [ -e $WORKSPACE/instackenv.json -a "$ENVIRONMENT" = "ovb" ] ; then
+if [ -e $WORKSPACE/instackenv.json -a "$ENVIRONMENT" = "ovb" ] ; then
     echo "Running without te-broker"
     export TE_DATAFILE=$WORKSPACE/instackenv.json
     ./toci_quickstart.sh
