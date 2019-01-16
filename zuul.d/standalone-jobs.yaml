@@ -86,16 +86,16 @@
               - workbooks/ceph-ansible.yaml
               - tripleo_common/actions/ansible.py
               # tripleo-heat-templates
-              - ^(docker|puppet)/services/.*aodh.*$
-              - ^(docker|puppet)/services/.*ceilometer.*$
-              - ^(docker|puppet)/services/.*ceph.*$
-              - ^(docker|puppet)/services/.*cinder.*$
-              - ^(docker|puppet)/services/.*glance.*$
-              - ^(docker|puppet)/services/.*gnocchi.*$
-              - ^(docker|puppet)/services/.*logging.*$
-              - ^(docker|puppet)/services/.*metrics.*$
-              - ^(docker|puppet)/services/.*monitoring.*$
-              - ^(docker|puppet)/services/.*panko.*$
+              - ^((docker|puppet)/services|deployment)/.*aodh.*$
+              - ^((docker|puppet)/services|deployment)/.*ceilometer.*$
+              - ^((docker|puppet)/services|deployment)/.*ceph.*$
+              - ^((docker|puppet)/services|deployment)/.*cinder.*$
+              - ^((docker|puppet)/services|deployment)/.*glance.*$
+              - ^((docker|puppet)/services|deployment)/.*gnocchi.*$
+              - ^((docker|puppet)/services|deployment)/.*logging.*$
+              - ^((docker|puppet)/services|deployment)/.*metrics.*$
+              - ^((docker|puppet)/services|deployment)/.*monitoring.*$
+              - ^((docker|puppet)/services|deployment)/.*panko.*$
               - ci/environments/scenario001-standalone.yaml
               - ^environments\/.*.yaml
               - ^deployed-server/.*$
@@ -124,16 +124,16 @@
               - workbooks/ceph-ansible.yaml
               - tripleo_common/actions/ansible.py
               # tripleo-heat-templates
-              - ^(docker|puppet)/services/.*aodh.*$
-              - ^(docker|puppet)/services/.*barbican.*$
-              - ^(docker|puppet)/services/.*ceilometer.*$
-              - ^(docker|puppet)/services/.*cinder.*$
-              - ^(docker|puppet)/services/.*ec2-api.*$
-              - ^(docker|puppet)/services/.*glance.*$
-              - ^(docker|puppet)/services/.*gnocchi.*$
-              - ^(docker|puppet)/services/.*panko.*$
-              - ^(docker|puppet)/services/.*swift.*$
-              - ^(docker|puppet)/services/.*zaqar.*$
+              - ^((docker|puppet)/services|deployment)/.*aodh.*$
+              - ^((docker|puppet)/services|deployment)/.*barbican.*$
+              - ^((docker|puppet)/services|deployment)/.*ceilometer.*$
+              - ^((docker|puppet)/services|deployment)/.*cinder.*$
+              - ^((docker|puppet)/services|deployment)/.*ec2-api.*$
+              - ^((docker|puppet)/services|deployment)/.*glance.*$
+              - ^((docker|puppet)/services|deployment)/.*gnocchi.*$
+              - ^((docker|puppet)/services|deployment)/.*panko.*$
+              - ^((docker|puppet)/services|deployment)/.*swift.*$
+              - ^((docker|puppet)/services|deployment)/.*zaqar.*$
               - ci/environments/scenario002-standalone.yaml
               - ^environments\/.*.yaml
               - ^deployed-server/.*$
@@ -159,10 +159,10 @@
               - ^container-images/.*$
               - tripleo_common/image/kolla_builder.py
               # tripleo-heat-templates
-              - ^(docker|puppet)/services/.*designate.*$
-              - ^(docker|puppet)/services/.*glance.*$
-              - ^(docker|puppet)/services/.*mistral.*$
-              - ^(docker|puppet)/services/.*sahara.*$
+              - ^((docker|puppet)/services|deployment)/.*designate.*$
+              - ^((docker|puppet)/services|deployment)/.*glance.*$
+              - ^((docker|puppet)/services|deployment)/.*mistral.*$
+              - ^((docker|puppet)/services|deployment)/.*sahara.*$
               - ci/environments/scenario003-standalone.yaml
               - ^environments\/.*.yaml
               - ^deployed-server/.*$
@@ -186,9 +186,9 @@
               - tripleo_common/image/kolla_builder.py
               - zuul.d/layout.yaml
               # tripleo-heat-templates
-              - ^docker/services/ceph.*$
-              - ^docker/services/glance.*$
-              - ^docker/services/manila.*$
+              - ^(docker/services|deployment)/ceph.*$
+              - ^(docker/services|deployment)/glance.*$
+              - ^(docker/services|deployment)/manila.*$
               - ci/environments/scenario004-standalone.yaml
               - ^environments\/.*.yaml
               - ^deployed-server/.*$
@@ -212,16 +212,16 @@
               - workbooks/ceph-ansible.yaml
               - tripleo_common/actions/ansible.py
               # tripleo-heat-templates
-              - ^(docker|puppet)/services/.*aodh.*$
-              - ^(docker|puppet)/services/.*ceilometer.*$
-              - ^(docker|puppet)/services/.*ceph.*$
-              - ^(docker|puppet)/services/.*cinder.*$
-              - ^(docker|puppet)/services/.*glance.*$
-              - ^(docker|puppet)/services/.*gnocchi.*$
-              - ^(docker|puppet)/services/.*logging.*$
-              - ^(docker|puppet)/services/.*metrics.*$
-              - ^(docker|puppet)/services/.*monitoring.*$
-              - ^(docker|puppet)/services/.*panko.*$
+              - ^((docker|puppet)/services|deployment)/.*aodh.*$
+              - ^((docker|puppet)/services|deployment)/.*ceilometer.*$
+              - ^((docker|puppet)/services|deployment)/.*ceph.*$
+              - ^((docker|puppet)/services|deployment)/.*cinder.*$
+              - ^((docker|puppet)/services|deployment)/.*glance.*$
+              - ^((docker|puppet)/services|deployment)/.*gnocchi.*$
+              - ^((docker|puppet)/services|deployment)/.*logging.*$
+              - ^((docker|puppet)/services|deployment)/.*metrics.*$
+              - ^((docker|puppet)/services|deployment)/.*monitoring.*$
+              - ^((docker|puppet)/services|deployment)/.*panko.*$
               - ci/environments/scenario001-standalone.yaml
               - ^environments\/.*.yaml
               - ^deployed-server/.*$
@@ -250,16 +250,16 @@
               - workbooks/ceph-ansible.yaml
               - tripleo_common/actions/ansible.py
               # tripleo-heat-templates
-              - ^(docker|puppet)/services/.*aodh.*$
-              - ^(docker|puppet)/services/.*barbican.*$
-              - ^(docker|puppet)/services/.*ceilometer.*$
-              - ^(docker|puppet)/services/.*cinder.*$
-              - ^(docker|puppet)/services/.*ec2-api.*$
-              - ^(docker|puppet)/services/.*glance.*$
-              - ^(docker|puppet)/services/.*gnocchi.*$
-              - ^(docker|puppet)/services/.*panko.*$
-              - ^(docker|puppet)/services/.*swift.*$
-              - ^(docker|puppet)/services/.*zaqar.*$
+              - ^((docker|puppet)/services|deployment)/.*aodh.*$
+              - ^((docker|puppet)/services|deployment)/.*barbican.*$
+              - ^((docker|puppet)/services|deployment)/.*ceilometer.*$
+              - ^((docker|puppet)/services|deployment)/.*cinder.*$
+              - ^((docker|puppet)/services|deployment)/.*ec2-api.*$
+              - ^((docker|puppet)/services|deployment)/.*glance.*$
+              - ^((docker|puppet)/services|deployment)/.*gnocchi.*$
+              - ^((docker|puppet)/services|deployment)/.*panko.*$
+              - ^((docker|puppet)/services|deployment)/.*swift.*$
+              - ^((docker|puppet)/services|deployment)/.*zaqar.*$
               - ci/environments/scenario002-standalone.yaml
               - ^environments\/.*.yaml
               - ^deployed-server/.*$
@@ -288,9 +288,9 @@
               - tripleo_common/image/kolla_builder.py
               - zuul.d/layout.yaml
               # tripleo-heat-templates
-              - ^docker/services/ceph.*$
-              - ^docker/services/glance.*$
-              - ^docker/services/manila.*$
+              - ^(docker/services|deployment)/ceph.*$
+              - ^(docker/services|deployment)/glance.*$
+              - ^(docker/services|deployment)/manila.*$
               - ci/environments/scenario004-standalone.yaml
               - ^environments\/.*.yaml
               - ^deployed-server/.*$
