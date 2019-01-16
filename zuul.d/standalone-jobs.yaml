@@ -162,6 +162,7 @@
               - ^((docker|puppet)/services|deployment)/.*designate.*$
               - ^((docker|puppet)/services|deployment)/.*glance.*$
               - ^((docker|puppet)/services|deployment)/.*mistral.*$
+              - ^((docker|puppet)/services|deployment)/.*nova.*$
               - ^((docker|puppet)/services|deployment)/.*sahara.*$
               - ci/environments/scenario003-standalone.yaml
               - ^environments\/.*.yaml
