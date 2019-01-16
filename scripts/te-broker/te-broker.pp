@@ -1,7 +1,7 @@
 Exec { path => [ "/bin/", "/sbin/" ] }
 
 vcsrepo {"/opt/stack/openstack-virtual-baremetal":
-    source => "https://github.com/cybertron/openstack-virtual-baremetal.git",
+    source => "https://git.openstack.org/openstack/openstack-virtual-baremetal.git",
     provider => git,
     ensure => latest,
 }
