@@ -30,6 +30,7 @@
       - git.openstack.org/openstack/tripleo-upgrade
       - git.openstack.org/openstack/browbeat
       - git.openstack.org/openstack/tripleo-ha-utils
+      - git.openstack.org/openstack/openstack-virtual-baremetal
     pre-run:
       - playbooks/nodepool-provider/pre.yaml
       - playbooks/openstack-zuul-jobs/legacy/pre.yaml
