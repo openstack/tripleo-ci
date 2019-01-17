@@ -353,6 +353,25 @@
               # python-tripleoclient
               - ^tripleoclient/heat_launcher.*$
               - ^tripleoclient/v1/tripleo_(deploy|config|upgrade).*$
+        - tripleo-ci-centos-7-scenario007-standalone:
+            files:
+              # tripleo-common
+              - workbooks/ceph-ansible.yaml
+              - ^container-images/.*$
+              - tripleo_common/actions/ansible.py
+              - tripleo_common/image/kolla_builder.py
+              # tripleo-heat-templates
+              - ^((docker|puppet)/services|deployment)/.*neutron.*$
+              - ci/environments/scenario007-standalone.yaml
+              - ^environments\/.*.yaml
+              - ^deployed-server/.*$
+              - ^network/endpoints/.*$
+              - ^common/.*$
+              - zuul.d/*
+              # tripleo-quickstart
+              - config/general_config/featureset052.yml
+              # puppet-tripleo
+              - ^manifests/haproxy.*$
         - tripleo-ci-centos-7-standalone-rocky
         - tripleo-ci-centos-7-standalone-upgrade
         - tripleo-ci-centos-7-standalone-upgrade-stein
@@ -566,6 +585,23 @@
           baremetal.use_provision_network: 'True'
         tempest_whitelist:
           - 'ironic_tempest_plugin.tests.scenario.test_baremetal_multitenancy.BaremetalMultitenancy.test_baremetal_multitenancy'
+
+- job:
+    name: tripleo-ci-centos-7-scenario007-standalone
+    voting: false
+    parent: tripleo-ci-base-standalone
+    nodeset: single-centos-7-node
+    branches: ^(?!stable/(newton|ocata|pike|queens|rocky|stein)).*$
+    vars:
+      featureset: '052'
+      featureset_override:
+        run_tempest: true
+        standalone_environment_files:
+          - 'environments/low-memory-usage.yaml'
+          - 'ci/environments/scenario007-standalone.yaml'
+        tempest_test_whitelist:
+          - 'tempest.scenario.test_network_basic_ops.TestNetworkBasicOps.test_network_basic_ops'
+        use_os_tempest: false
 
 - job:
     name: tripleo-ci-centos-7-standalone-os-tempest
