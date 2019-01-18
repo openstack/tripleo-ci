@@ -123,7 +123,9 @@ function create_collect_logs_script {
     /usr/bin/timeout --preserve-status 40m $QUICKSTART_COLLECTLOGS_CMD  > $LOGS_DIR/quickstart_collect_logs.log || \
         echo "WARNING: quickstart collect-logs failed, check quickstart_collectlogs.log for details"
 
-    cp $LOGS_DIR/undercloud/var/log/postci.txt.gz $LOGS_DIR/ || true
+    if [ -f $LOGS_DIR/undercloud/var/log/postci.txt.gz ]; then
+        cp $LOGS_DIR/undercloud/var/log/postci.txt.gz $LOGS_DIR/
+    fi
 
     if [[ -e $LOGS_DIR/undercloud/home/$USER/tempest/testrepository.subunit.gz ]]; then
         cp $LOGS_DIR/undercloud/home/$USER/tempest/testrepository.subunit.gz ${LOGS_DIR}/testrepository.subunit.gz
@@ -134,13 +136,21 @@ function create_collect_logs_script {
     fi
 
     # Copy tempest.html to root dir
-    cp $LOGS_DIR/undercloud/home/$USER/tempest/tempest.html.gz ${LOGS_DIR} || true
+    if [ -f  $LOGS_DIR/undercloud/home/$USER/tempest/tempest.html.gz ]; then
+        cp $LOGS_DIR/undercloud/home/$USER/tempest/tempest.html.gz ${LOGS_DIR}
+    fi
 
     # Copy tempest and .testrepository directory to /opt/stack/new/tempest and
     # unzip
-    sudo mkdir -p /opt/stack/new
-    sudo cp -Rf $LOGS_DIR/undercloud/home/$USER/tempest /opt/stack/new || true
-    sudo gzip -d -r /opt/stack/new/tempest/.testrepository || true
+    sudo -s -- <<SUDO
+    mkdir -p /opt/stack/new
+    if [ -d $LOGS_DIR/undercloud/home/$USER/tempest ]; then
+        cp -Rf $LOGS_DIR/undercloud/home/$USER/tempest /opt/stack/new
+    fi
+    if [ -d /opt/stack/new/tempest/.testrepository ]; then
+        gzip -d -r /opt/stack/new/tempest/.testrepository
+    fi
+    SUDO
 
     # record the size of the logs directory
     # -L, --dereference     dereference all symbolic links

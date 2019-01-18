@@ -116,13 +116,21 @@ elif [[ -e $LOGS_DIR/undercloud/home/$USER/undercloud_sanity.subunit.gz ]]; then
 fi
 
 # Copy tempest.html to root dir
-cp $LOGS_DIR/undercloud/home/$USER/tempest/tempest.html.gz ${LOGS_DIR} || true
+if [ -f  $LOGS_DIR/undercloud/home/$USER/tempest/tempest.html.gz ]; then
+    cp $LOGS_DIR/undercloud/home/$USER/tempest/tempest.html.gz ${LOGS_DIR}
+fi
 
 # Copy tempest and .testrepository directory to /opt/stack/new/tempest and
 # unzip
-sudo mkdir -p /opt/stack/new
-sudo cp -Rf $LOGS_DIR/undercloud/home/$USER/tempest /opt/stack/new || true
-sudo gzip -d -r /opt/stack/new/tempest/.testrepository || true
+sudo -s -- <<SUDO
+mkdir -p /opt/stack/new
+if [ -d $LOGS_DIR/undercloud/home/$USER/tempest ]; then
+    cp -Rf $LOGS_DIR/undercloud/home/$USER/tempest /opt/stack/new
+fi
+if [ -d /opt/stack/new/tempest/.testrepository ]; then
+    gzip -d -r /opt/stack/new/tempest/.testrepository
+fi
+SUDO
 
 # record the size of the logs directory
 # -L, --dereference     dereference all symbolic links
