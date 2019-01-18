@@ -280,6 +280,31 @@
               - ^manifests/profile/(base|pacemaker)/panko.*$
               - ^manifests/profile/(base|pacemaker)/swift.*$
               - ^manifests/profile/(base|pacemaker)/zaqar.*$
+        - tripleo-ci-centos-7-scenario003-standalone:
+            files:
+              # tripleo-common
+              - ^container-images/.*$
+              - tripleo_common/image/kolla_builder.py
+              # tripleo-heat-templates
+              - ^((docker|puppet)/services|deployment)/.*designate.*$
+              - ^((docker|puppet)/services|deployment)/.*glance.*$
+              - ^((docker|puppet)/services|deployment)/.*mistral.*$
+              - ^((docker|puppet)/services|deployment)/.*nova.*$
+              - ^((docker|puppet)/services|deployment)/.*sahara.*$
+              - ci/environments/scenario003-standalone.yaml
+              - ^environments\/.*.yaml
+              - ^deployed-server/.*$
+              - ^network/endpoints/.*$
+              - ^common/.*$
+              - zuul.d/*
+              # tripleo-quickstart
+              - config/general_config/featureset052.yml
+              # puppet-tripleo
+              - ^manifests/haproxy.*$
+              - ^manifests/profile/(base|pacemaker)/glance.*$
+              - ^manifests/profile/(base|pacemaker)/mistral.*$
+              - ^manifests/profile/(base|pacemaker)/sahara.*$
+              - ^manifests/profile/(base|pacemaker)/designate.*$
         - tripleo-ci-centos-7-scenario004-standalone:
             files:
               # tripleo-common
@@ -304,9 +329,6 @@
               - ^manifests/haproxy.*$
               - ^manifests/profile/(base|pacemaker)/glance.*$
               - ^manifests/profile/(base|pacemaker)/manila.*$
-
-
-
 
 - job:
     name: tripleo-ci-centos-7-scenario001-standalone
@@ -360,7 +382,7 @@
 
 - job:
     name: tripleo-ci-centos-7-scenario003-standalone
-    voting: false
+    voting: true
     parent: tripleo-ci-base-standalone
     nodeset: single-centos-7-node
     branches: ^(?!stable/(newton|ocata|pike|queens|rocky)).*$
