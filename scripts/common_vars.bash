@@ -11,6 +11,10 @@ export ZUUL_BRANCH=${ZUUL_BRANCH:-""}
 if [ "$ZUUL_BRANCH" = "stable/jewel" ]; then
     export STABLE_RELEASE="ocata"
 fi
+# For OVB repo "stable/1.0" is feature branch
+if [ "$ZUUL_BRANCH" = "stable/1.0" -a "$ZUUL_PROJECT" = "openstack/openstack-virtual-baremetal" ]; then
+    export ZUUL_BRANCH="master"
+fi
 
 export OVERRIDE_ZUUL_BRANCH=${OVERRIDE_ZUUL_BRANCH:-""}
 export STABLE_RELEASE=${STABLE_RELEASE:-""}
