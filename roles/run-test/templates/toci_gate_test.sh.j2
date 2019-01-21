@@ -125,12 +125,16 @@ EMIT_RELEASES_EXTRA_ARGS="$EMIT_RELEASES_EXTRA_ARGS --is-periodic"
 
 if [[ -f "$RELEASES_SCRIPT" ]] && [[ {{ featureset }} =~ 010|011|037|047|050|056 ]]; then
 
-    python $RELEASES_SCRIPT \
-        --stable-release ${STABLE_RELEASE:-"master"} \
-        --featureset-file $TRIPLEO_ROOT/tripleo-quickstart/config/general_config/$(basename {{ job_featureset_file }}) \
-        --output-file $RELEASES_FILE_OUTPUT \
-        --log-file $RELEASES_SCRIPT_LOGFILE \
-        $EMIT_RELEASES_EXTRA_ARGS
+    if [[  -f "$RELEASES_FILE_OUTPUT" ]]; then
+       echo "Importing ready releases.sh file - skipping releases.sh file generation."
+    else
+        python $RELEASES_SCRIPT \
+            --stable-release ${STABLE_RELEASE:-"master"} \
+            --featureset-file $TRIPLEO_ROOT/tripleo-quickstart/config/general_config/$(basename {{ job_featureset_file }}) \
+            --output-file $RELEASES_FILE_OUTPUT \
+            --log-file $RELEASES_SCRIPT_LOGFILE \
+            $EMIT_RELEASES_EXTRA_ARGS
+    fi
 fi
 
 
