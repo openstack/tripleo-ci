@@ -40,10 +40,6 @@
           shell: |
             ansible-playbook docker-playbook.yaml --extra-vars "container_registry_deployment_user={{ ansible_user }}"
 
-        - name: Add docker masquerading rules
-          become: true
-          command: iptables -t nat -A POSTROUTING -s 172.17.0.0/16 ! -o docker0 -j MASQUERADE
-
         - name: Reset connection because of group changes for current user
           meta: reset_connection
 
@@ -64,3 +60,7 @@
           shell: |
               set -ex
               cp /etc/yum.repos.d/delorean* /var/www/html/
+
+        - name: Add http iptables rules from containers
+          command: iptables -I openstack-INPUT 1 -p tcp --dport 80 -s 172.17.0.0/16 -j ACCEPT
+          become: true
