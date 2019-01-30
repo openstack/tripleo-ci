@@ -7,6 +7,11 @@
     check:
       jobs:
         - tripleo-build-containers-centos-7
+    gate:
+      queue: tripleo
+      jobs:
+        - tripleo-build-containers-centos-7
+
 
 - job:
     name: tripleo-build-containers-centos-7
@@ -17,7 +22,7 @@
     post-run: playbooks/tripleo-buildcontainers/post.yaml
     timeout: 7200
     nodeset: single-centos-7-node
-    voting: false
+    voting: true
     required-projects:
       - git.openstack.org/openstack/ansible-role-container-registry
       - git.openstack.org/openstack/kolla
@@ -31,6 +36,7 @@
     files:
       # tripleo-ci
       - ^playbooks/tripleo-buildcontainers/.*$
+      - zuul.d/build-containers.yaml
       # tripleo-common
       - ^container-images/.*$
       - ^tripleo_common/image/.*$
