@@ -105,7 +105,7 @@ $SUDO_CP mkdir -p $OUT_HTML
 # Reviewday
 if [ -z "$SKIP_REVIEWDAY" ]; then
     pushd reviewday
-    tox -erun -- "-p $REVIEWDAY_INPUT_FILE"
+    tox -erun -- "-p$REVIEWDAY_INPUT_FILE"
     $SUDO_CP cp -a arrow* out_report/*.png out_report/*.js out_report/*.css $OUT_HTML
     DATA=$(cat out_report/data_table.html)
     popd
