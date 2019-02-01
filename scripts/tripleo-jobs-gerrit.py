@@ -193,18 +193,22 @@ def gen_html(data, html_file, table_file, stats_hours, job_names, options):
     fp.write("Limit: " + options.l)
 
     total = passed_jobs + partial_jobs + failed_jobs
+    if total:
+        passed_percent = float(passed_jobs) / float(total) * 100
+        partial_percent = float(partial_jobs) / float(total) * 100
+        failed_percent = float(failed_jobs) / float(total) * 100
+    else:
+        passed_percent = 0
+        partial_percent = 0
+        failed_percent = 0
+
     fp.write("<p>Overall</p>")
+    fp.write("Passed: %d/%d (%d %%)<br/>" % (passed_jobs, total, passed_percent))
     fp.write(
-        "Passed: %d/%d (%d %%)<br/>"
-        % (passed_jobs, total, float(passed_jobs) / float(total) * 100)
+        "Partial Failures: %d/%d (%d %%)<br/>" % (partial_jobs, total, partial_percent)
     )
     fp.write(
-        "Partial Failures: %d/%d (%d %%)<br/>"
-        % (partial_jobs, total, float(partial_jobs) / float(total) * 100)
-    )
-    fp.write(
-        "Complete Failures: %d/%d (%d %%)<br/>"
-        % (failed_jobs, total, float(failed_jobs) / float(total) * 100)
+        "Complete Failures: %d/%d (%d %%)<br/>" % (failed_jobs, total, failed_percent)
     )
 
     fp.close()
