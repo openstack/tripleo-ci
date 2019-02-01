@@ -10,22 +10,18 @@ import sys
 # Do not include the -nv suffix in the job name here.  The code will handle
 # reading both the voting and non-voting forms of the job if they exist.
 DEFAULT_JOB_NAMES = [
+    'tripleo-ci-centos-7-undercloud-containers',
     'tripleo-ci-centos-7-containers-multinode',
-    'tripleo-ci-centos-7-scenario001-multinode-oooq-container',
-    'tripleo-ci-centos-7-scenario002-multinode-oooq-container',
-    'tripleo-ci-centos-7-scenario003-multinode-oooq-container',
-    'tripleo-ci-centos-7-scenario004-multinode-oooq-container',
-    'tripleo-ci-centos-7-scenario007-multinode-oooq-container',
-    'tripleo-ci-centos-7-undercloud-containers,'
-    'tripleo-ci-centos-7-undercloud-upgrades',
+    'tripleo-ci-centos-7-scenario000-multinode-oooq-container-updates',
+    'tripleo-ci-centos-7-standalone',
+    'tripleo-ci-centos-7-scenario001-standalone',
+    'tripleo-ci-centos-7-scenario002-standalone',
+    'tripleo-ci-centos-7-scenario003-standalone',
+    'tripleo-ci-centos-7-scenario004-standalone',
 ]
 
 DEFAULT_PROJECTS = [
     'openstack/tripleo-heat-templates',
-    'openstack/dib-utils',
-    'openstack/diskimage-builder',
-    'openstack/instack',
-    'openstack/instack-undercloud',
     'openstack/os-apply-config',
     'openstack/os-collect-config',
     'openstack/os-net-config',
@@ -36,7 +32,15 @@ DEFAULT_PROJECTS = [
     'openstack/tripleo-common',
     'openstack/tripleo-image-elements',
     'openstack/tripleo-puppet-elements',
-    'openstack/mistral',
+    'openstack/tripleo-ansible',
+    'openstack/tripleo-repos',
+    'openstack/tripleo-upgrade',
+    'openstack/tripleo-ui',
+    'openstack/tripleo-quickstart',
+    'openstack/tripleo-quickstart-extras',
+    'openstack/tripleo-ha-utils',
+    'openstack/tripleo-validations',
+    'openstack/tripleo-ipsec',
     '^openstack/puppet-.*',
 ]
 
