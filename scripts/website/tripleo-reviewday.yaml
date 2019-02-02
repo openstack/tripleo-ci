@@ -1,8 +1,4 @@
 projects:
-  - name: instack
-    launchpad_project: tripleo
-  - name: instack-undercloud
-    launchpad_project: tripleo
   - name: os-apply-config
   - name: os-collect-config
   - name: os-net-config
@@ -23,18 +19,30 @@ projects:
     launchpad_project: tripleo
   - name: tripleo-validations
     launchpad_project: tripleo
+  - name: tripleo-ha-utils
+    launchpad_project: tripleo
   - name: openstack-infra/tripleo-ci
-  - name: ansible-role-k8s-cookiecutter
-  - name: ansible-role-k8s-keystone
-  - name: ansible-role-k8s-mariadb
-  - name: ansible-role-k8s-tripleo
-  - name: ansible-role-k8s-glance
+    launchpad_project: tripleo
   - name: paunch
+    launchpad_project: tripleo
   - name: puppet-tripleo
+    launchpad_project: tripleo
+  - name: puppet-pacemaker
   - name: tempest-tripleo-ui
+    launchpad_project: tripleo
   - name: tripleo-common-tempest-plugin
+    launchpad_project: tripleo
   - name: tripleo-ipsec
+    launchpad_project: tripleo
   - name: tripleo-quickstart
+    launchpad_project: tripleo
   - name: tripleo-quickstart-extras
+    launchpad_project: tripleo
   - name: tripleo-ui
+    launchpad_project: tripleo
   - name: tripleo-upgrade
+    launchpad_project: tripleo
+  - name: tripleo-repos
+    launchpad_project: tripleo
+  - name: tripleo-ansible
+    launchpad_project: tripleo
