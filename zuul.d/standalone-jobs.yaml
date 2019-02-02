@@ -253,6 +253,10 @@
               - zuul.d/layout.yaml
               # tripleo-quickstart-extras
               - roles/standalone/.*
+              # python-tripleoclient
+              - ^tripleoclient/heat_launcher.*$
+              - ^tripleoclient/v1/tripleo_(deploy|config|upgrade).*$
+
         - tripleo-ci-centos-7-scenario002-standalone:
             files:
               # tripleo-common
@@ -292,6 +296,10 @@
               - ^manifests/profile/(base|pacemaker)/zaqar.*$
               # tripleo-quickstart-extras
               - roles/standalone/.*
+              # python-tripleoclient
+              - ^tripleoclient/heat_launcher.*$
+              - ^tripleoclient/v1/tripleo_(deploy|config|upgrade).*$
+
         - tripleo-ci-centos-7-scenario003-standalone:
             files:
               # tripleo-common
@@ -319,6 +327,10 @@
               - ^manifests/profile/(base|pacemaker)/designate.*$
               # tripleo-quickstart-extras
               - roles/standalone/.*
+              # python-tripleoclient
+              - ^tripleoclient/heat_launcher.*$
+              - ^tripleoclient/v1/tripleo_(deploy|config|upgrade).*$
+
         - tripleo-ci-centos-7-scenario004-standalone:
             files:
               # tripleo-common
@@ -345,6 +357,10 @@
               - ^manifests/profile/(base|pacemaker)/manila.*$
               # tripleo-quickstart-extras
               - roles/standalone/.*
+              # python-tripleoclient
+              - ^tripleoclient/heat_launcher.*$
+              - ^tripleoclient/v1/tripleo_(deploy|config|upgrade).*$
+
 
 - job:
     name: tripleo-ci-centos-7-scenario001-standalone
