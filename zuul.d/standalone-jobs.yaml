@@ -118,6 +118,7 @@
               - zuul.d/layout.yaml
               # tripleo-quickstart-extras
               - roles/standalone/.*
+              - roles/validate-tempest/.*
         - tripleo-ci-centos-7-scenario002-standalone:
             files:
               # tripleo-common
@@ -157,6 +158,7 @@
               - ^manifests/profile/(base|pacemaker)/zaqar.*$
               # tripleo-quickstart-extras
               - roles/standalone/.*
+              - roles/validate-tempest/.*
         - tripleo-ci-centos-7-scenario003-standalone:
             files:
               # tripleo-common
@@ -184,6 +186,7 @@
               - ^manifests/profile/(base|pacemaker)/designate.*$
               # tripleo-quickstart-extras
               - roles/standalone/.*
+              - roles/validate-tempest/.*
         - tripleo-ci-centos-7-scenario004-standalone:
             files:
               # tripleo-common
@@ -210,6 +213,7 @@
               - ^manifests/profile/(base|pacemaker)/manila.*$
               # tripleo-quickstart-extras
               - roles/standalone/.*
+              - roles/validate-tempest/.*
     gate:
       queue: tripleo
       jobs:
