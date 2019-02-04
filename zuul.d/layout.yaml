@@ -52,6 +52,9 @@
         - tripleo-ci-centos-7-scenario009-multinode-oooq-container:
             files:
               - ^playbooks/tripleo-ci/.*$
+        - tripleo-ci-centos-7-scenario012-multinode-oooq-container:
+            files:
+              - ^playbooks/tripleo-ci/.*$
     gate:
       queue: tripleo
       jobs:
