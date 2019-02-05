@@ -44,6 +44,7 @@
         - tripleo-ci-centos-7-scenario004-multinode-oooq-container
         - tripleo-ci-centos-7-scenario007-multinode-oooq-container
         - tripleo-ci-centos-7-scenario008-multinode-oooq-container
+        - tripleo-ci-centos-7-scenario012-multinode-oooq-container
         - tripleo-ci-centos-7-scenario000-multinode-oooq-container-updates
         - tripleo-ci-centos-7-scenario000-multinode-oooq-container-upgrades
         - tripleo-ci-centos-7-standalone
@@ -238,6 +239,15 @@
     vars:
       nodes: 1ctlr
       featureset: '044'
+
+- job:
+    name: tripleo-ci-centos-7-scenario012-multinode-oooq-container
+    parent: tripleo-ci-base-multinode
+    voting: false
+    branches: ^(?!stable/(newton|ocata|pike|queens|rocky)).*$
+    vars:
+      nodes: 1ctlr
+      featureset: '054'
 
 # The upgrades from Ocata to Pike needs to run
 # from an uncontainerized to a containerized
