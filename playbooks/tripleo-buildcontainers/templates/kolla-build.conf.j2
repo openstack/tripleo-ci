@@ -1,10 +1,14 @@
 [DEFAULT]
 base=centos
 type=binary
-namespace='{{ ci_branch | replace("/", "") }}'
-registry=127.0.0.1:8787
-tag=latest
+registry={{ push_registry }}
+tag={{ push_tag }}
 template_override={{ openstack_git_root }}/tripleo-common/container-images/tripleo_kolla_template_overrides.j2
 # we use the repos off the main host as they will already have the correct mirror info in them
 rpm_setup_config=http://172.17.0.1/delorean.repo,http://172.17.0.1/delorean-{{ ci_branch }}-testing.repo
-
+push={{ push_containers }}
+{% if 'periodic' in zuul.pipeline %}
+namespace='tripleomaster'
+{% else %}
+namespace='{{ ci_branch | replace("/", "") }}'
+{% endif %}

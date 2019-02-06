@@ -1,0 +1,3 @@
+push_registry: "127.0.0.1:8787"
+push_tag: "latest"
+push_containers: "false"

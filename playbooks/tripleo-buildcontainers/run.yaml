@@ -8,9 +8,12 @@
       include_vars:
         file: "common.yaml"
 
-    - name: Get branch
+    - name: Set facts for kolla-build.conf
       set_fact:
         ci_branch: "{{ zuul.branch | default('master') | replace('stable/','') }}"
+        push_registry: "{{ push_registry | default('127.0.0.1:8787') }}"
+        push_tag: "{{ push_tag | default('latest') }}"
+        push_containers: "{{ push_containers | default(false) | bool }}"
 
     - name: Install pip
       become: true
