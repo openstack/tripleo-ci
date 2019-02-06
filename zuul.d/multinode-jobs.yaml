@@ -95,6 +95,7 @@
     timeout: 10800
     voting: false
     branches: master
+    override-checkout: 'stable/rocky'
     vars:
       branch_override: 'stable/rocky'
       nodes: 1ctlr
@@ -107,6 +108,7 @@
     name: tripleo-ci-centos-7-containers-multinode-queens
     parent: tripleo-ci-base-multinode
     branches: master
+    override-checkout: 'stable/queens'
     vars:
       branch_override: 'stable/queens'
       nodes: 1ctlr
@@ -119,6 +121,7 @@
     name: tripleo-ci-centos-7-containers-multinode-pike
     parent: tripleo-ci-base-multinode
     branches: master
+    override-checkout: 'stable/pike'
     vars:
       branch_override: 'stable/pike'
       nodes: 1ctlr
