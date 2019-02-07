@@ -172,6 +172,7 @@ done
     {% if environment_type == "ovb" -%}
         echo "Running collect logs now, before the nodes are destryed by te broker"
         /usr/bin/timeout --preserve-status 40m bash $LOGS_DIR/collect_logs.sh  > $LOGS_DIR/quickstart_collect_logs.log
+        mv $LOGS_DIR/collect_logs.sh $LOGS_DIR/ovb_collect_logs.sh
     {% else %}
         echo "Running Collect Logs in post"
     {% endif %}
