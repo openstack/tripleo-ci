@@ -51,11 +51,13 @@
         chdir: '{{ workspace }}'
       shell: |
         set -x
+        BUILDAH=""
         source {{ workspace }}/venv/bin/activate
         TRIPLEO_COMMON_PATH="{{ openstack_git_root }}/tripleo-common"
 
+        if [[ "{{ use_buildah | default(False) }}" == "True" ]]; then BUILDAH="--use-buildah"; fi
         openstack overcloud container image build \
             --config-file $TRIPLEO_COMMON_PATH/container-images/overcloud_containers.yaml \
-            --kolla-config-file {{ workspace }}/kolla-build.conf > {{ workspace }}/build.log 2> {{ workspace }}/build-err.log
+            --kolla-config-file {{ workspace }}/kolla-build.conf $BUILDAH > {{ workspace }}/build.log 2> {{ workspace }}/build-err.log
         RESULT=$?
         exit $RESULT

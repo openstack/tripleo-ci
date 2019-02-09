@@ -43,6 +43,23 @@
         - name: Reset connection because of group changes for current user
           meta: reset_connection
 
+        - name: Prepare Buildah
+          become: true
+          when: use_buildah | default(false) | bool
+          block:
+            - name: Install Buildah
+              package:
+                name: buildah
+                state: present
+
+            - name: Configure insecure registry
+              ini_file:
+                path: /etc/containers/registries.conf
+                section: 'registries.insecure'
+                option: registries
+                value:
+                  - localhost:8787
+
     - name: Setup repo web service
       become: true
       block:

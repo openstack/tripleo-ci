@@ -7,6 +7,7 @@
     check:
       jobs:
         - tripleo-build-containers-centos-7
+        - tripleo-build-containers-centos-7-buildah
     gate:
       queue: tripleo
       jobs:
@@ -17,3 +18,11 @@
     parent: tripleo-build-containers-base-with-files
     nodeset: single-centos-7-node
     voting: true
+
+- job:
+    name: tripleo-build-containers-centos-7-buildah
+    parent: tripleo-build-containers-base-with-files
+    nodeset: single-centos-7-node
+    branches: ^(?!stable/(pike|queens|rocky)).*$
+    vars:
+      use_buildah: true
