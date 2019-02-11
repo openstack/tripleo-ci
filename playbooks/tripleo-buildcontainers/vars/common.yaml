@@ -1,2 +1,20 @@
 workspace: "{{ ansible_user_dir }}/workspace"
 openstack_git_root: "{{ ansible_user_dir }}/src/git.openstack.org/openstack"
+
+# https://review.openstack.org/#/c/624838/
+kolla_f28_patch: 624838
+
+virtualenv_python:
+  yum: python
+  dnf: python3
+
+exclude_containers:
+  dnf:
+    - fluentd
+    - opendaylight
+    - skydive-agent
+    - skydive-analyzer
+    - sensu-client
+    - sensu-base
+  yum:
+    - opendaylight

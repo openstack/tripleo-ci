@@ -1,8 +1,5 @@
 - hosts: all
   name: TripleO container image building job
-  roles:
-    - role: bindep
-      bindep_dir: "{{ ansible_user_dir }}/{{ zuul.projects['git.openstack.org/openstack/python-tripleoclient'].src_dir }}"
   tasks:
     - name: Include common vars
       include_vars:
@@ -15,28 +12,37 @@
         push_tag: "{{ push_tag | default('latest') }}"
         push_containers: "{{ push_containers | default(false) | bool }}"
 
-    - name: Install pip
-      become: true
-      package:
-        name: python-pip
-        state: present
+    - name: grab kolla patch if needed
+      when: ansible_pkg_mgr == "dnf"
+      shell: |
+        set -euxo pipefail
+        git config --global user.email "zuul@openstack.org"
+        git config --global user.name "Zuul"
+        git remote add upstream https://git.openstack.org/openstack/kolla
+        git ls-remote https://git.openstack.org/openstack/kolla | \
+          grep -E refs/changes/[[:digit:]]+/{{ kolla_f28_patch }}/ | \
+          awk '{print $2}' | \
+          sort -t / -k 5 -g -r | \
+          head -1 | \
+          xargs -I{} git fetch https://git.openstack.org/openstack/kolla {} && \
+          git checkout -b f28 FETCH_HEAD && \
+          git pull --rebase upstream master
 
-    - name: Install virtualenv
-      become: true
-      package:
-        name: python-virtualenv
-        state: present
+      args:
+        chdir: "{{ openstack_git_root }}/kolla"
+        warn: false
+      register: result
+      changed_when: "'nothing to commit, working directory clean' not in result.stdout_lines"
 
-    - name: pip install required items
-      become: true
+    - name: pip install kolla
       pip:
-        name: "{{ item }}"
-        state: present
+        name:
+          - "file://{{ openstack_git_root }}/kolla"
+          - "file://{{ openstack_git_root }}/tripleo-common"
+          - "file://{{ openstack_git_root }}/python-tripleoclient"
         virtualenv: "{{ workspace }}/venv"
-      with_items:
-        - "file://{{ openstack_git_root }}/kolla"
-        - "file://{{ openstack_git_root }}/tripleo-common"
-        - "file://{{ openstack_git_root }}/python-tripleoclient"
+        virtualenv_python: "{{ virtualenv_python[ansible_pkg_mgr] }}"
+        virtualenv_site_packages: true
 
     # TODO(aschultz): make the kolla-build branch aware
     - name: Generate kolla-build.conf
@@ -51,13 +57,18 @@
         chdir: '{{ workspace }}'
       shell: |
         set -x
-        BUILDAH=""
         source {{ workspace }}/venv/bin/activate
         TRIPLEO_COMMON_PATH="{{ openstack_git_root }}/tripleo-common"
 
-        if [[ "{{ use_buildah | default(False) }}" == "True" ]]; then BUILDAH="--use-buildah"; fi
         openstack overcloud container image build \
             --config-file $TRIPLEO_COMMON_PATH/container-images/overcloud_containers.yaml \
-            --kolla-config-file {{ workspace }}/kolla-build.conf $BUILDAH > {{ workspace }}/build.log 2> {{ workspace }}/build-err.log
+            --kolla-config-file {{ workspace }}/kolla-build.conf \
+            {% for item in exclude_containers[ansible_pkg_mgr] %}
+             --exclude {{ item }} \
+            {% endfor %}
+            {% if use_buildah is defined and use_buildah %}
+             --use-buildah \
+            {% endif %}
+            > {{ workspace }}/build.log 2> {{ workspace }}/build-err.log
         RESULT=$?
         exit $RESULT
