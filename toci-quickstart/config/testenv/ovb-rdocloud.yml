@@ -8,9 +8,7 @@ custom_nameserver:
     - 1.1.1.1
     - 1.0.0.1
     - 38.145.33.91
-undercloud_undercloud_nameservers: "{{ custom_nameserver }}"
 external_net: '38.145.32.0/22'
-overcloud_dns_servers: "{{ custom_nameserver }}"
 ntp_server: 'pool.ntp.org'
 workers_args: >-
     -e {{ overcloud_templates_path }}/environments/low-memory-usage.yaml
