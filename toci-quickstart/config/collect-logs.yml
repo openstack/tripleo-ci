@@ -220,6 +220,7 @@ artcl_collect_list:
   - /var/log/heat-launcher/
   - /var/log/horizon/
   - /var/log/httpd/
+  - /var/log/ipaclient-install.log
   - /var/log/ironic/
   - /var/log/ironic-inspector/
   - /var/log/libvirt/
