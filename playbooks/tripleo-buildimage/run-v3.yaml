@@ -49,9 +49,13 @@
         fi
 
         if [ "{{ tripleo_image_type }}" == "overcloud-hardened-full" ]; then
-          CONFIG_FILES="--config-file $TRIPLEO_COMMON_PATH/image-yaml/overcloud-hardened-images.yaml --config-file $TRIPLEO_COMMON_PATH/image-yaml/overcloud-hardened-images-{{ tripleo_image_os }}.yaml"
+          CONFIG_FILES="--config-file \
+            $TRIPLEO_COMMON_PATH/image-yaml/overcloud-hardened-images.yaml \
+            --config-file $TRIPLEO_COMMON_PATH/image-yaml/overcloud-hardened-images-{{ tripleo_image_os }}.yaml"
         else
-          CONFIG_FILES="--config-file $TRIPLEO_COMMON_PATH/image-yaml/overcloud-images.yaml --config-file $TRIPLEO_COMMON_PATH/image-yaml/overcloud-images-{{ tripleo_image_os }}.yaml"
+          CONFIG_FILES="--config-file \
+            $TRIPLEO_COMMON_PATH/image-yaml/overcloud-images.yaml \
+            --config-file $TRIPLEO_COMMON_PATH/image-yaml/overcloud-images-{{ tripleo_image_os }}.yaml"
         fi
 
         export ELEMENTS_PATH=$ELEMENTS
@@ -62,4 +66,4 @@
 
         mv *.log {{ workspace }}/logs/
         exit $RESULT
-
+      changed_when: true

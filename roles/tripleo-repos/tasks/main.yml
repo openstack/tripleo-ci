@@ -57,7 +57,7 @@
 - name: Install repos
   become: true
   shell: |
-    set -ex
+    set -exo pipefail
     source {{ workspace }}/venv/bin/activate
     if [ -f /etc/ci/mirror_info.sh ]; then
       source /etc/ci/mirror_info.sh
@@ -84,6 +84,8 @@
       --rdo-mirror $RDO_MIRROR_HOST $REPO
   register: result
   changed_when: "'Installed:' in result.stdout_lines"
+  args:
+    warn: false
 
 # TODO(rfolco): normalize centos/fedora repo names, fedora sets delorean.repo and fedora-stable.repo,
 # while centos sets delorean.repo and delorean-master-testing.repo.

@@ -12,7 +12,8 @@
         path: '{{ ansible_user_dir }}/workspace'
         state: directory
 
-    - shell:
+    - name: run zuul-cloner
+      shell:
         cmd: |
           set -e
           set -x
@@ -40,8 +41,10 @@
         executable: /bin/bash
         chdir: '{{ ansible_user_dir }}/workspace'
       environment: '{{ zuul | zuul_legacy_vars }}'
+      changed_when: true
 
-    - shell:
+    - name: run openstack overcloud image build
+      shell:
         cmd: |
           set -e
           set -x
@@ -97,9 +100,11 @@
           TRIPLEO_COMMON_PATH=$WORKSPACE/tripleo-common
           export ELEMENTS_PATH=$ELEMENTS
           if [ "{{ tripleo_image_type }}" == "overcloud-hardened-full" ]; then
-              CONFIG_FILES="--config-file $TRIPLEO_COMMON_PATH/image-yaml/overcloud-hardened-images.yaml --config-file $TRIPLEO_COMMON_PATH/image-yaml/overcloud-hardened-images-centos7.yaml"
+              CONFIG_FILES="--config-file $TRIPLEO_COMMON_PATH/image-yaml/overcloud-hardened-images.yaml \
+                --config-file $TRIPLEO_COMMON_PATH/image-yaml/overcloud-hardened-images-centos7.yaml"
           else
-              CONFIG_FILES="--config-file $TRIPLEO_COMMON_PATH/image-yaml/overcloud-images.yaml --config-file $TRIPLEO_COMMON_PATH/image-yaml/overcloud-images-centos7.yaml"
+              CONFIG_FILES="--config-file $TRIPLEO_COMMON_PATH/image-yaml/overcloud-images.yaml \
+              --config-file $TRIPLEO_COMMON_PATH/image-yaml/overcloud-images-centos7.yaml"
           fi
           if [ "$ZUUL_BRANCH" == "stable/newton" ]; then
               tox -- openstack overcloud image build --type {{ tripleo_image_type }} --elements-path="$ELEMENTS"
@@ -112,3 +117,4 @@
         executable: /bin/bash
         chdir: '{{ ansible_user_dir }}/workspace'
       environment: '{{ zuul | zuul_legacy_vars }}'
+      changed_when: true

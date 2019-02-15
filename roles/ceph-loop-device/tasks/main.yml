@@ -23,6 +23,7 @@
     dd if=/dev/zero of={{ item.0 }} bs=1 count=0 seek=7G
     losetup {{ item.1 }} {{ item.0 }}
     lsblk
+  changed_when: true
   with_together:
     - ["{{ ceph_loop_device_file }}", "{{ ceph_loop_device_file_legacy }}"]
     - ["{{ ceph_loop_device }}", "{{ ceph_loop_device_legacy }}"]
@@ -36,3 +37,4 @@
     lvcreate -n {{ ceph_logical_volume_db }} -l 375 {{ ceph_logical_volume_group }}
     lvcreate -n {{ ceph_logical_volume_data }} -l 1041 {{ ceph_logical_volume_group }}
     lvs
+  changed_when: true

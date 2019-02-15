@@ -1,17 +1,20 @@
 - hosts: all
   name: TripleO Setup Container Registry and repos mirror
   tasks:
+
     - name: Include tripleo-repos
       include_role:
           name: tripleo-repos
       vars:
         override_repos: "{{ buildcontainers_override_repos | default('') }}"
         tripleo_repos_repository: "{{ ansible_user_dir }}/{{ zuul.projects['opendev.org/openstack/tripleo-repos'].src_dir }}"
+
     - name: Include bindep role
       include_role:
         name: bindep
       vars:
         bindep_dir: "{{ ansible_user_dir }}/{{ zuul.projects['opendev.org/openstack/python-tripleoclient'].src_dir }}"
+
     - name: Run build containers pre tasks
       include_role:
         name: build-containers

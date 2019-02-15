@@ -9,7 +9,8 @@
         path: '{{ ansible_user_dir }}/workspace'
         state: directory
 
-    - shell:
+    - name: zuul-cloner
+      shell:
         cmd: |
           set -e
           set -x
@@ -24,8 +25,10 @@
         executable: /bin/bash
         chdir: '{{ ansible_user_dir }}/workspace'
       environment: '{{ zuul | zuul_legacy_vars }}'
+      changed_when: true
 
-    - shell:
+    - name: run safe-devstack-vm-gate-wrap.sh
+      shell:
         cmd: |
           set -e
           set -x
@@ -63,3 +66,4 @@
         executable: /bin/bash
         chdir: '{{ ansible_user_dir }}/workspace'
       environment: '{{ zuul | zuul_legacy_vars }}'
+      changed_when: true
