@@ -21,3 +21,20 @@
     dd if=/dev/zero of={{ ceph_loop_device_file }} bs=1 count=0 seek=7G
     losetup {{ ceph_loop_device }} {{ ceph_loop_device_file }}
     lsblk
+
+- name: Get branch
+  set_fact:
+    ci_branch: "{{ zuul.branch | default('master') | replace('stable/','') }}"
+
+- name: Use {pv,vg,lv}create to create logical volumes on loop device
+  become: true
+  shell: |
+    pvcreate {{ ceph_loop_device }}
+    vgcreate {{ ceph_logical_volume_group }} {{ ceph_loop_device }}
+    lvcreate -n {{ ceph_logical_volume_wal }} -l 375 {{ ceph_logical_volume_group }}
+    lvcreate -n {{ ceph_logical_volume_db }} -l 375 {{ ceph_logical_volume_group }}
+    lvcreate -n {{ ceph_logical_volume_data }} -l 1041 {{ ceph_logical_volume_group }}
+    lvs
+  when:
+    - ci_branch is defined
+    - ci_branch is not match('(newton|ocata|pike|queens|rocky)')
