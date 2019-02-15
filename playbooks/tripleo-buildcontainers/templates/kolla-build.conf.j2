@@ -5,5 +5,6 @@ namespace='{{ ci_branch | replace("/", "") }}'
 registry=127.0.0.1:8787
 tag=latest
 template_override={{ openstack_git_root }}/tripleo-common/container-images/tripleo_kolla_template_overrides.j2
-rpm_setup=http://localhost/delorean.repo,http://localhost/delorean-deps.repo
+# we use the repos off the main host as they will already have the correct mirror info in them
+rpm_setup_config=http://172.17.0.1/delorean.repo,http://172.17.0.1/delorean-{{ ci_branch }}-testing.repo
 

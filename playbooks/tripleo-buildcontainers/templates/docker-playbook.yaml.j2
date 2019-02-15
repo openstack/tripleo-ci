@@ -1,4 +1,6 @@
 - hosts: localhost
   become: true
+  vars:
+    container_registry_docker_options: --log-driver=journald --signature-verification=false --iptables=true --live-restore
   roles:
     - container-registry
