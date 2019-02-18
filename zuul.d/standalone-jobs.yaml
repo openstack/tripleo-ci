@@ -119,6 +119,11 @@
               # tripleo-quickstart-extras
               - roles/standalone/.*
               - roles/validate-tempest/.*
+              # tripleo-ci
+              - roles/run-test/.*
+              - roles/common/.*
+              - roles/prepare-node/.*
+              - roles/ceph-loop-device/.* # scen1/4 ceph
         - tripleo-ci-centos-7-scenario002-standalone:
             files:
               # tripleo-common
@@ -159,6 +164,10 @@
               # tripleo-quickstart-extras
               - roles/standalone/.*
               - roles/validate-tempest/.*
+              # tripleo-ci
+              - roles/run-test/.*
+              - roles/prepare-node/.*
+              - roles/common/.*
         - tripleo-ci-centos-7-scenario003-standalone:
             files:
               # tripleo-common
@@ -187,6 +196,10 @@
               # tripleo-quickstart-extras
               - roles/standalone/.*
               - roles/validate-tempest/.*
+              # tripleo-ci
+              - roles/run-test/.*
+              - roles/common/.*
+              - roles/prepare-node/.*
         - tripleo-ci-centos-7-scenario004-standalone:
             files:
               # tripleo-common
@@ -214,6 +227,11 @@
               # tripleo-quickstart-extras
               - roles/standalone/.*
               - roles/validate-tempest/.*
+              # tripleo-ci
+              - roles/run-test/.*
+              - roles/common/.*
+              - roles/prepare-node/.*
+              - roles/ceph-loop-device/.* # scen1/4 ceph
     gate:
       queue: tripleo
       jobs:
