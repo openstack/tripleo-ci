@@ -9,7 +9,7 @@ artcl_rsync_logs: false
 artcl_collect_list:
   - /var/lib/docker-puppet/
   - /var/lib/heat-config/
-  - /var/lib/kolla/config_files
+  - /var/lib/kolla/config_files/
   - /var/lib/mistral/
   - /var/lib/tripleo-config/
   - /var/lib/unbound/unbound.log
@@ -123,7 +123,7 @@ artcl_collect_list:
   - /etc/oci-register-machine.conf
   - /etc/octavia/
   - /etc/openldap/
-  - /etc/openstack-dashboard
+  - /etc/openstack-dashboard/
   - /etc/openvswitch/
   - /etc/origin/
   - /etc/os-*
@@ -166,6 +166,7 @@ artcl_collect_list:
   - /etc/sssd/
   - /etc/sudo.conf
   - /etc/sudoers*
+  - /etc/sudoers.d/
   - /etc/swift/
   - /etc/sysconfig/
   - /etc/sysctl.*
