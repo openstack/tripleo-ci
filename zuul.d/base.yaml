@@ -155,3 +155,26 @@
       tags:
         - build
         - standalone
+
+# Please do not add files: to tripleo-build-containers-base otherwise the periodic job wont run
+# See https://storyboard.openstack.org/#!/story/2005040
+- job:
+    name: tripleo-build-containers-base
+    abstract: true
+    description: |
+        Base abstract job for standalone TripleO CI build-containers jobs
+    parent: tripleo-ci-base-singlenode
+    pre-run:
+      - playbooks/tripleo-buildcontainers/pre.yaml
+    run: playbooks/tripleo-buildcontainers/run.yaml
+    post-run: playbooks/tripleo-buildcontainers/post.yaml
+    timeout: 7200
+    voting: false
+    required-projects:
+      - git.openstack.org/openstack/ansible-role-container-registry
+      - git.openstack.org/openstack/kolla
+      - git.openstack.org/openstack/python-tripleoclient
+      - git.openstack.org/openstack/requirements
+      - git.openstack.org/openstack/tripleo-common
+      - git.openstack.org/openstack/tripleo-repos
+
