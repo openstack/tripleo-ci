@@ -423,7 +423,6 @@
       featureset: '052'
       standalone_ceph: true
       featureset_override:
-        standalone_container_cli: docker
         standalone_environment_files:
           - 'environments/low-memory-usage.yaml'
           - 'ci/environments/scenario001-standalone.yaml'
@@ -447,7 +446,6 @@
     vars:
       featureset: '052'
       featureset_override:
-        standalone_container_cli: docker
         standalone_environment_files:
           - 'environments/low-memory-usage.yaml'
           - 'ci/environments/scenario002-standalone.yaml'
@@ -475,7 +473,6 @@
         standalone_environment_files:
           - 'environments/low-memory-usage.yaml'
           - 'ci/environments/scenario003-standalone.yaml'
-        standalone_container_cli: docker
         tempest_whitelist:
           - 'tempest.scenario.test_network_basic_ops.TestNetworkBasicOps.test_network_basic_ops'
           - 'sahara_tempest_plugin.tests.api.test_data_sources.DataSourceTest'
