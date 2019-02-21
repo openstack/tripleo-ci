@@ -1,0 +1,14 @@
+---
+
+- name: Converge
+  hosts: all
+  tasks:
+
+    - name: import tripleo-repos role
+      include_role:
+        name: tripleo-repos
+
+    - name: validate that we can install openstack-tripleo-common
+      package:
+        name: openstack-tripleo-common
+        state: latest
