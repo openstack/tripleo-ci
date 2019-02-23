@@ -12,23 +12,8 @@
       jobs:
         - tripleo-build-containers-centos-7
 
-
 - job:
     name: tripleo-build-containers-centos-7
-    parent: tripleo-build-containers-base
+    parent: tripleo-build-containers-base-with-files
     nodeset: single-centos-7-node
     voting: true
-    irrelevant-files:
-      - ^.*\.rst$
-      - ^releasenotes/.*$
-    files:
-      # tripleo-ci
-      - ^playbooks/tripleo-buildcontainers/.*$
-      - zuul.d/base.yaml
-      - zuul.d/nodesets.yaml
-      - roles/tripleo-repos/.*
-      # tripleo-common
-      - ^container-images/.*$
-      - ^tripleo_common/image/.*$
-      # python-tripleoclient
-      - ^tripleoclient/v1/container.*$
