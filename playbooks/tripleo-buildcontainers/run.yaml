@@ -66,7 +66,7 @@
       args:
         chdir: '{{ workspace }}'
       shell: |
-        set -x
+        set -o pipefail
         source {{ workspace }}/venv/bin/activate
         TRIPLEO_COMMON_PATH="{{ openstack_git_root }}/tripleo-common"
 
@@ -79,7 +79,7 @@
             {% if use_buildah is defined and use_buildah %}
              --use-buildah \
             {% endif %}
-            > {{ workspace }}/build.log 2> {{ workspace }}/build-err.log
+            2>&1 {{ timestamper_cmd }} > {{ workspace }}/build.log
         RESULT=$?
         exit $RESULT
 
