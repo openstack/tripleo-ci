@@ -33,12 +33,13 @@
         msg: "OVB job collect logs already run, not running collect_logs in post"
       when: environment_type == "ovb" and undercloud_logs.stat.exists
 
-    - name: Run ansible playbook to collect logs for non-ovb jobs, or ovb jobs that weren't able to run collect logs
+    - name: Run ansible playbook to collect logs for ovb jobs that weren't able to run collect logs
       shell: |
         if [[ -e {{ ansible_user_dir }}/workspace/logs/collect_logs.sh ]]; then
           bash {{ ansible_user_dir }}/workspace/logs/collect_logs.sh
+          mv {{ ansible_user_dir }}/workspace/logs/collect_logs.sh {{ ansible_user_dir }}/workspace/logs/ovb_collect_logs.sh
         fi
-      when: environment_type != "ovb" or not undercloud_logs.stat.exists
+      when: environment_type == "ovb" and not undercloud_logs.stat.exists
 
     - name: Check script existence
       stat:
