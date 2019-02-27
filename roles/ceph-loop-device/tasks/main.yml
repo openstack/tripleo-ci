@@ -37,4 +37,4 @@
     lvs
   when:
     - ci_branch is defined
-    - ci_branch is not match('(newton|ocata|pike|queens|rocky)')
+    - ci_branch is not match('(newton|ocata|pike)')
