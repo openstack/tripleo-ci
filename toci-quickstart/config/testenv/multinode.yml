@@ -62,3 +62,4 @@ run_tripleo_validations_setup: false
 # https://bugs.launchpad.net/tripleo/+bug/1817600
 # turn off performance monitoring.
 install_atop: false
+ara_generate_html: false
