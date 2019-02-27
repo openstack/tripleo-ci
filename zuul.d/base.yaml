@@ -188,6 +188,15 @@
       - ^.*\.rst$
       - ^releasenotes/.*$
     files:
+      # generic:
+      - ^bindep.txt$
+      - ^lower-constraints.txt$
+      - ^requirements.txt$
+      - ^setup.cfg$
+      - ^setup.py$
+      # kolla
+      - ^docker/.*$
+      - kolla.*$
       # tripleo-ci
       - ^(playbooks|roles)/tripleo-buildcontainers/.*$
       - ^(playbooks|roles)/tripleo-repos/.*$
