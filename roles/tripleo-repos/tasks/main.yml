@@ -34,10 +34,12 @@
     CENTOS_MIRROR_HOST=${CENTOS_MIRROR_HOST:-"{{ centos_mirror_host }}"}
     RDO_MIRROR_HOST=${NODEPOOL_RDO_PROXY:-"{{ rdo_mirror_host }}"}
 
-    if [ "{{ ci_branch | default('master') }}" == "master" ]; then
-      REPO=current-tripleo
+    if [ "{{ override_repos }}" != "" ]; then
+        REPO="{{ override_repos }}"
+    elif [ "{{ ci_branch | default('master') }}" == "master" ]; then
+        REPO=current-tripleo
     else
-      REPO=current
+        REPO=current
     fi
 
     tripleo-repos -b "{{ ci_branch | default('master') }}" \
