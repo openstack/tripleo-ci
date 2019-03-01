@@ -5,6 +5,12 @@ tripleo_quickstart_dir: "{{ ansible_user_dir }}/{{ zuul.projects['git.openstack.
 vxlan_vars: "-e toci_vxlan_networking='false' -e vxlan_networking='false'"
 extra_vars: ""
 job_featureset_file: "{{ tripleo_quickstart_dir }}/config/general_config/featureset{{ featureset }}.yml"
+skip_tags_list: >-
+  {% if environment_type == 'baremetal' -%}
+  tripleo-validations
+  {%- else -%}
+  tripleo-validations,teardown-all
+  {%- endif -%}
 
 featureset_conf: >-
   {% if common_featureset is defined -%}
