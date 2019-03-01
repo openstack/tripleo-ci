@@ -212,6 +212,7 @@ artcl_collect_list:
   - /var/log/deployed-server-enable-ssh-admin.log
   - /var/log/deployed-server-os-collect-config.log
   - /var/log/designate/
+  - /var/log/dirsrv/
   - /var/log/dmesg/
   - /var/log/extra/
   - /var/log/ec2api/
@@ -224,6 +225,7 @@ artcl_collect_list:
   - /var/log/ipaclient-install.log
   - /var/log/ironic/
   - /var/log/ironic-inspector/
+  - /var/log/krb5*.log
   - /var/log/libvirt/
   - /var/log/keystone/
   - /var/log/manila/
@@ -237,14 +239,20 @@ artcl_collect_list:
   - /var/log/octavia/
   - /var/log/openvswitch/
   - /var/log/ovn/
+  - /var/log/os-apply-config.log
   - /var/log/pacemaker/
+  - /var/log/pacemaker.log*
   - /var/log/panko/
+  - /var/log/paunch.log
   - /var/log/pcsd/
+  - /var/log/pki/
   - /var/log/qdr/
   - /var/log/rabbitmq/
   - /var/log/redis/
   - /var/log/sahara/
   - /var/log/sensu/
+  - /var/log/setup-ipa-client.log
+  - /var/log/sssd/
   - /var/log/swift/
   - /var/log/tacker/
   - /var/log/tempest/
