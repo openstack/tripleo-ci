@@ -16,12 +16,16 @@
     check:
       jobs:
         - openstack-tox-linters
-        - openstack-tox-py27:
+        - openstack-tox-py27: &files
             files:
+              - ^bindep.txt$
+              - ^requirements.txt$
               - ^scripts/emit_releases_file/.*$
+              - ^setup.cfg$
+              - ^setup.py$
+              - ^tox.ini$
         - openstack-tox-py35:
-            files:
-              - ^scripts/emit_releases_file/.*$
+            <<: *files
         - tripleo-buildimage-overcloud-full-centos-7:
             files:
               - ^playbooks/tripleo-buildimage/.*$
