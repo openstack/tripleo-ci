@@ -6,13 +6,13 @@
 
 - project:
     templates:
-      - tripleo-standalone-scenarios-full
+      - tripleo-build-containers-jobs
       - tripleo-multinode-baremetal-full
+      - tripleo-multinode-branchful
       - tripleo-multinode-container-full
       - tripleo-multinode-experimental
+      - tripleo-standalone-scenarios-full
       - tripleo-undercloud-jobs
-      - tripleo-multinode-branchful
-      - tripleo-build-containers-jobs
     check:
       jobs:
         - openstack-tox-linters

@@ -1,5 +1,5 @@
 [DEFAULT]
-base=centos
+base={{ ansible_distribution|lower }}
 type=binary
 registry={{ push_registry }}
 tag={{ push_tag }}

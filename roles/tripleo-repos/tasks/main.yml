@@ -1,14 +1,13 @@
 ---
-- name: Install pip
+- name: install system packages
   become: true
   package:
-    name: python-pip
-    state: present
-
-- name: Install virtualenv
-  become: true
-  package:
-    name: python-virtualenv
+    name:
+      - "git"
+      - "{{ python_libselinux[ansible_pkg_mgr] }}"
+      - "{{ python_setuptools[ansible_pkg_mgr] }}"
+      - "{{ python_virtualenv[ansible_pkg_mgr] }}"
+      - "{{ python_pip[ansible_pkg_mgr] }}"
     state: present
 
 - name: pip install tripleo-repos
@@ -16,6 +15,8 @@
   pip:
     name: "{{ tripleo_repos_repository }}"
     virtualenv: "{{ workspace }}/venv"
+    virtualenv_python: "{{ virtualenv_python[ansible_pkg_mgr] }}"
+    virtualenv_site_packages: true
 
 - name: Get branch
   set_fact:
@@ -29,9 +30,13 @@
     source {{ workspace }}/venv/bin/activate
     if [ -f /etc/ci/mirror_info.sh ]; then
       source /etc/ci/mirror_info.sh
-      CENTOS_MIRROR_HOST="http://${NODEPOOL_MIRROR_HOST}"
+      DISTRO_MIRROR_HOST="http://${NODEPOOL_MIRROR_HOST}"
     fi
-    CENTOS_MIRROR_HOST=${CENTOS_MIRROR_HOST:-"{{ centos_mirror_host }}"}
+    {% if ansible_distribution | lower == 'fedora' %}
+    DISTRO_MIRROR_HOST=${DISTRO_MIRROR_HOST:-"{{ fedora_mirror_host }}"}
+    {% else %}
+    DISTRO_MIRROR_HOST=${DISTRO_MIRROR_HOST:-"{{ centos_mirror_host }}"}
+    {% endif %}
     RDO_MIRROR_HOST=${NODEPOOL_RDO_PROXY:-"{{ rdo_mirror_host }}"}
 
     if [ "{{ override_repos }}" != "" ]; then
@@ -42,6 +47,19 @@
         REPO=current
     fi
 
-    tripleo-repos -b "{{ ci_branch | default('master') }}" \
-                  --centos-mirror $CENTOS_MIRROR_HOST \
-                  --rdo-mirror $RDO_MIRROR_HOST $REPO
+    tripleo-repos \
+      -b "{{ ci_branch | default('master') }}" \
+      --mirror $DISTRO_MIRROR_HOST \
+      --rdo-mirror $RDO_MIRROR_HOST $REPO
+  register: result
+  changed_when: "'Installed:' in result.stdout_lines"
+
+# TODO(rfolco): normalize centos/fedora repo names, fedora sets delorean.repo and fedora-stable.repo,
+# while centos sets delorean.repo and delorean-master-testing.repo.
+- name: rename fedora-stable.repo
+  become: true
+  shell: |
+    set -ex
+    # Rename fedora-stable.repo as kola.conf.j2 template expects delorean*
+    mv /etc/yum.repos.d/fedora-stable.repo /etc/yum.repos.d/delorean-master-testing.repo
+  when: ansible_distribution|lower  == "fedora"
