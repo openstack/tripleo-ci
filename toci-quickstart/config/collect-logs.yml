@@ -28,13 +28,7 @@ artcl_collect_list:
   - /home/{{ undercloud_user }}/workspace/ovb/*.y*ml
   - /home/{{ undercloud_user }}/skip_file
   - /home/{{ undercloud_user }}/*.subunit
-  - /home/{{ undercloud_user }}/tempest/*.xml
-  - /home/{{ undercloud_user }}/tempest/*.html
-  - /home/{{ undercloud_user }}/tempest/*.log
-  - /home/{{ undercloud_user }}/tempest/*.subunit
-  - /home/{{ undercloud_user }}/tempest/*.sh
-  - /home/{{ undercloud_user }}/tempest/etc/*.conf
-  - /home/{{ undercloud_user }}/tempest/.testrepository/*
+  - /home/{{ undercloud_user }}/tempest/
   - /home/{{ undercloud_user }}/tripleo-heat-installer-templates/
   - /home/{{ undercloud_user }}/local_tht/
   - /home/{{ undercloud_user }}/inventory
@@ -268,3 +262,4 @@ artcl_exclude_list:
   - /etc/puppet/modules/
   - /var/log/journal/*
   - /var/log/extra/lsof*
+  - /home/{{ undercloud_user }}/tempest/etc/cirros*
