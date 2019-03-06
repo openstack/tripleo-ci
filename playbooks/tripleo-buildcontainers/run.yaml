@@ -12,6 +12,16 @@
         push_tag: "{{ push_tag | default('latest') }}"
         push_containers: "{{ push_containers | default(false) | bool }}"
 
+    - name: Get contents of delorean repo baseurl for the version hash
+      become: true
+      shell: >
+        cat /etc/yum.repos.d/delorean.repo |awk -F= '/baseurl/ {print $2}'
+      register: baseurl
+
+    - name: Set version_hash fact
+      set_fact:
+        version_hash: "{{ baseurl.stdout.split('/')[-1] }}"
+
     - name: grab kolla patch if needed
       when: ansible_pkg_mgr == "dnf"
       shell: |
@@ -72,3 +82,22 @@
             > {{ workspace }}/build.log 2> {{ workspace }}/build-err.log
         RESULT=$?
         exit $RESULT
+
+    - name: Retrieve the images by version_hash and retag with tripleo-ci-testing if periodic
+      when:
+        - zuul is defined
+        - "'periodic' in zuul.pipeline"
+      block:
+        - name: Retrieve list of built images
+          shell: >
+            docker images --format "{{ '{{' }}.Repository{{ '}}' }}" \
+              --filter "reference=*:{{ version_hash }}"
+          register: built_images
+
+        - name: Tag images
+          vars:
+            image: "{{ item }}"
+          include: tag.yml
+          static: no
+          with_items: "{{ built_images.stdout_lines }}"
+
