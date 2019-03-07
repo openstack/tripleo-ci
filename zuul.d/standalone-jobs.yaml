@@ -96,6 +96,7 @@
               - ^((docker|puppet)/services|deployment)/.*metrics.*$
               - ^((docker|puppet)/services|deployment)/.*monitoring.*$
               - ^((docker|puppet)/services|deployment)/.*panko.*$
+              - ^((docker|puppet)/services|deployment)/database/redis.*$
               - ci/environments/scenario001-standalone.yaml
               - ^environments\/.*.yaml
               - ^deployed-server/.*$
@@ -142,6 +143,7 @@
               - ^((docker|puppet)/services|deployment)/.*panko.*$
               - ^((docker|puppet)/services|deployment)/.*swift.*$
               - ^((docker|puppet)/services|deployment)/.*zaqar.*$
+              - ^((docker|puppet)/services|deployment)/database/redis.*$
               - ci/environments/scenario002-standalone.yaml
               - ^environments\/.*.yaml
               - ^deployed-server/.*$
@@ -212,6 +214,7 @@
               - ^(docker/services|deployment)/ceph.*$
               - ^(docker/services|deployment)/glance.*$
               - ^(docker/services|deployment)/manila.*$
+              - ^((docker|puppet)/services|deployment)/database/mysql.*$
               - ci/environments/scenario004-standalone.yaml
               - ^environments\/.*.yaml
               - ^deployed-server/.*$
