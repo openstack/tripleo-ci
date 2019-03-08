@@ -62,5 +62,6 @@ run_tripleo_validations_setup: false
 
 # https://bugs.launchpad.net/tripleo/+bug/1817600
 # turn off performance monitoring.
-install_atop: false
 ara_generate_html: false
+# run atop with interval (-i) of 180 seconds instead of default 10
+atop_command: atop -i 180 -R -w /var/log/atop.bin
