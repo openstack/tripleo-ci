@@ -3,7 +3,7 @@
 
 # These values are defined now in the te-broker config
 # https://github.com/openstack-infra/tripleo-ci/blob/master/scripts/te-broker/create-env#L47
-
+cloudenv: "rdo"
 custom_nameserver:
     - 1.1.1.1
     - 1.0.0.1

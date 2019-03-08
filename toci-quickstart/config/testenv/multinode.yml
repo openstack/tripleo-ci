@@ -1,4 +1,5 @@
 # TRIPLEO-CI environment settings
+cloudenv: "upstream"
 undercloud_user: "{{ lookup('env','USER') }}"
 non_root_user: "{{ undercloud_user }}"
 ssh_user: "{{ undercloud_user }}"
