@@ -132,11 +132,22 @@ if [ -d /opt/stack/new/tempest/.testrepository ]; then
 fi
 SUDO
 
+# clean up base log dir
+if [[ -e $LOGS_DIR/releases.sh ]]; then
+    mv $LOGS_DIR/releases.sh $LOGS_DIR/quickstart_files/
+fi
+if [[ -e $LOGS_DIR/playbook_executions.log ]]; then
+    mv $LOGS_DIR/playbook_executions.log $LOGS_DIR/quickstart_files/
+fi
+if [[ -e $LOGS_DIR/emit_releases_file.log ]]; then
+    mv $LOGS_DIR/emit_releases_file.log $LOGS_DIR/quickstart_files/
+fi
+
 # record the size of the logs directory
 # -L, --dereference     dereference all symbolic links
 # Note: tail -n +1 is to prevent the error 'Broken Pipe' e.g. 'sort: write failed: standard output: Broken pipe'
 
-du -L -ch $LOGS_DIR/* | tail -n +1 | sort -rh | head -n 200 &> $LOGS_DIR/log-size.txt || true
+du -L -ch $LOGS_DIR/* | tail -n +1 | sort -rh | head -n 200 &> $LOGS_DIR/quickstart_files/log-size.txt || true
 END
 
 }
