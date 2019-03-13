@@ -18,3 +18,6 @@ exclude_containers:
     - sensu-base
   yum:
     - opendaylight
+
+timestamper_cmd: >-
+    | awk '{ print strftime("%Y-%m-%d %H:%M:%S |"), $0; fflush(); }'
