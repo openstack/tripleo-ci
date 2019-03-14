@@ -10,6 +10,8 @@
     branches: ^(?!stable/(newton|ocata|pike|queens)).*$
     vars:
       featureset: '052'
+      featureset_override:
+        tempest_format: container
     irrelevant-files:
       - ^.*\.md$
       - ^.*\.rst$
