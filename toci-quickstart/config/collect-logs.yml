@@ -102,6 +102,7 @@ artcl_collect_list:
   - /etc/manila/
   - /etc/mistral/
   - /etc/modprobe.d/
+  - /etc/modules-load.d/
   - /etc/mongo*
   - /etc/my.cnf*
   - /etc/my.cnf.d/
