@@ -511,12 +511,13 @@
           'share.capability_create_share_from_snapshot_support': 'False'
         test_white_regex: ''
 
+# NOTE(rfolco): scen012 should run on master only until it gets stable
 - job:
     name: tripleo-ci-centos-7-scenario012-standalone
     voting: false
     parent: tripleo-ci-base-standalone
     nodeset: single-centos-7-node
-    branches: ^(?!stable/(newton|ocata|pike|queens|rocky)).*$
+    branches: ^(?!stable/(newton|ocata|pike|queens|rocky|stein)).*$
     vars:
       featureset: '060'
       standalone_ceph: true

@@ -244,11 +244,12 @@
       nodes: 1ctlr
       featureset: '044'
 
+# NOTE(rfolco): scen012 should run on master only until it gets stable
 - job:
     name: tripleo-ci-centos-7-scenario012-multinode-oooq-container
     parent: tripleo-ci-base-multinode
     voting: false
-    branches: ^(?!stable/(newton|ocata|pike|queens|rocky)).*$
+    branches: ^(?!stable/(newton|ocata|pike|queens|rocky|stein)).*$
     vars:
       nodes: 1ctlr
       featureset: '054'
