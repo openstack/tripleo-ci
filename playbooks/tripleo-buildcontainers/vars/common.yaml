@@ -18,6 +18,8 @@ exclude_containers:
     - sensu-base
   yum:
     - opendaylight
+  rocky:
+    - grafana
 
 timestamper_cmd: >-
     | awk '{ print strftime("%Y-%m-%d %H:%M:%S |"), $0; fflush(); }'
