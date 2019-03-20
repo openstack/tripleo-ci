@@ -1,0 +1,13 @@
+#!/bin/bash -eux
+source {{ workspace }}/venv/bin/activate
+TRIPLEO_COMMON_PATH="{{ openstack_git_root }}/tripleo-common"
+
+openstack overcloud container image build \
+    --config-file $TRIPLEO_COMMON_PATH/container-images/overcloud_containers.yaml \
+    --kolla-config-file {{ workspace }}/kolla-build.conf \
+    {% for item in exclude_containers[ansible_pkg_mgr] %}
+        --exclude {{ item }} \
+    {% endfor %}
+    {% if use_buildah is defined and use_buildah %}
+        --use-buildah \
+    {% endif %}
