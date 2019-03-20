@@ -17,6 +17,7 @@
 
         mv *.conf {{ workspace }}/conf/
         mv *.log {{ workspace }}/logs/
+        mv *.sh {{ workspace }}/logs/
         mv /tmp/kolla-* {{ workspace }}/logs/buildah-builds/ || true
         rsync -var --no-links /var/log/ {{ workspace }}/logs/system/ || true
         rsync -var --no-links /etc/docker/ {{ workspace }}/etc/docker/ || true

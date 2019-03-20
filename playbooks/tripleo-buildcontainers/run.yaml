@@ -62,26 +62,17 @@
         mode: 0644
         force: yes
 
+    - name: Generate building script
+      template:
+        src: templates/build.sh.j2
+        dest: "{{ workspace }}/build_containers.sh"
+        mode: 0777
+        force: yes
+
     - name: Run image build
       args:
         chdir: '{{ workspace }}'
-      shell: |
-        set -o pipefail
-        source {{ workspace }}/venv/bin/activate
-        TRIPLEO_COMMON_PATH="{{ openstack_git_root }}/tripleo-common"
-
-        openstack overcloud container image build \
-            --config-file $TRIPLEO_COMMON_PATH/container-images/overcloud_containers.yaml \
-            --kolla-config-file {{ workspace }}/kolla-build.conf \
-            {% for item in exclude_containers[ansible_pkg_mgr] %}
-             --exclude {{ item }} \
-            {% endfor %}
-            {% if use_buildah is defined and use_buildah %}
-             --use-buildah \
-            {% endif %}
-            2>&1 {{ timestamper_cmd }} > {{ workspace }}/build.log
-        RESULT=$?
-        exit $RESULT
+      shell: set -o pipefail && bash build_containers.sh 2>&1 {{ timestamper_cmd }} > {{ workspace }}/build.log
 
     - name: Retrieve the images by version_hash and retag with tripleo-ci-testing if periodic
       when:
