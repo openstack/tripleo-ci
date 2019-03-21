@@ -16,6 +16,7 @@
         mkdir -p {{ workspace }}/logs/buildah-builds
 
         mv *.conf {{ workspace }}/conf/
+        mv {{ openstack_git_root }}/tripleo-common/container-images/overcloud_containers.yaml {{ workspace }}/conf/
         mv *.log {{ workspace }}/logs/
         mv *.sh {{ workspace }}/logs/
         mv /tmp/kolla-* {{ workspace }}/logs/buildah-builds/ || true
