@@ -9,7 +9,6 @@
       set_fact:
         ci_branch: "{{ zuul.branch | default('master') | replace('stable/','') }}"
         push_registry: "{{ push_registry | default('127.0.0.1:8787') }}"
-        push_tag: "{{ push_tag | default('latest') }}"
         push_containers: "{{ push_containers | default(false) | bool }}"
 
     - name: Get contents of delorean repo baseurl for the version hash
@@ -73,22 +72,4 @@
       args:
         chdir: '{{ workspace }}'
       shell: set -o pipefail && bash build_containers.sh 2>&1 {{ timestamper_cmd }} > {{ workspace }}/build.log
-
-    - name: Retrieve the images by version_hash and retag with tripleo-ci-testing if periodic
-      when:
-        - zuul is defined
-        - "'periodic' in zuul.pipeline"
-      block:
-        - name: Retrieve list of built images
-          shell: >
-            docker images --format "{{ '{{' }}.Repository{{ '}}' }}" \
-              --filter "reference=*:{{ version_hash }}"
-          register: built_images
-
-        - name: Tag images
-          vars:
-            image: "{{ item }}"
-          include: tag.yml
-          static: no
-          with_items: "{{ built_images.stdout_lines }}"
 
