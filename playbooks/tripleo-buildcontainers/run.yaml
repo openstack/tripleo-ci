@@ -5,9 +5,23 @@
       include_vars:
         file: "common.yaml"
 
+    - name: Set branch for building containers check jobs
+      set_fact:
+        ci_branch: "{{ zuul.branch | replace('stable/','') }}"
+      when: zuul is defined
+
+    - name: Set branch for building containers branchless
+      set_fact:
+        ci_branch: "{{ branch_override | replace('stable/','') }}"
+      when: branch_override is defined
+
+    - name: Set branch for building containers periodic
+      set_fact:
+        ci_branch: "{{ release }}"
+      when: release is defined
+
     - name: Set facts for kolla-build.conf
       set_fact:
-        ci_branch: "{{ zuul.branch | default('master') | replace('stable/','') }}"
         push_registry: "{{ push_registry | default('127.0.0.1:8787') }}"
         push_containers: "{{ push_containers | default(false) | bool }}"
 

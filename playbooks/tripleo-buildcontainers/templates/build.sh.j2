@@ -2,16 +2,10 @@
 source {{ workspace }}/venv/bin/activate
 TRIPLEO_COMMON_PATH="{{ openstack_git_root }}/tripleo-common"
 
-{% if zuul.branch == 'stable/rocky' %}
-    {% for item in exclude_containers['rocky'] %}
-sed -i "/{{ item }}/,+1 d" $TRIPLEO_COMMON_PATH/container-images/overcloud_containers.yaml
-    {% endfor %}
-{% endif %}
-
 openstack overcloud container image build \
     --config-file $TRIPLEO_COMMON_PATH/container-images/overcloud_containers.yaml \
     --kolla-config-file {{ workspace }}/kolla-build.conf \
-    {% if zuul.branch != 'stable/rocky' %}
+    {% if ci_branch != 'rocky' %}
     {% for item in exclude_containers[ansible_pkg_mgr] %}
         --exclude {{ item }} \
     {% endfor %}

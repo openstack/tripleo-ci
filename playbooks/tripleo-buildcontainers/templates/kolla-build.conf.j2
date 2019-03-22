@@ -7,9 +7,5 @@ template_override={{ openstack_git_root }}/tripleo-common/container-images/tripl
 # we use the repos off the main host as they will already have the correct mirror info in them
 rpm_setup_config=http://172.17.0.1/delorean.repo,http://172.17.0.1/delorean-{{ ci_branch }}-testing.repo
 push={{ push_containers }}
-{% if 'periodic' in zuul.pipeline %}
-namespace=tripleo{{ release|default("master") }}
-{% else %}
-namespace={{ ci_branch | replace("/", "") }}
-{% endif %}
+namespace=tripleo{{ ci_branch }}
 debug=True

@@ -18,10 +18,20 @@
     virtualenv_python: "{{ virtualenv_python[ansible_pkg_mgr] }}"
     virtualenv_site_packages: true
 
-- name: Get branch
+- name: Set branch for building containers check jobs
   set_fact:
-    ci_branch: "{{ zuul.branch | default('master') | replace('stable/','') }}"
+    ci_branch: "{{ zuul.branch | replace('stable/','') }}"
   when: zuul is defined
+
+- name: Set branch for building containers branchless
+  set_fact:
+    ci_branch: "{{ branch_override | replace('stable/','') }}"
+  when: branch_override is defined
+
+- name: Set branch for building containers periodic
+  set_fact:
+    ci_branch: "{{ release }}"
+  when: release is defined
 
 - name: Install repos
   become: true
