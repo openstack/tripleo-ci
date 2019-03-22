@@ -10,18 +10,16 @@ virtualenv_python:
   yum: python
   dnf: python3
 
-python_pip:
-  yum: python-pip
-  dnf: python3-pip
-
-python_setuptools:
-  yum: python-setuptools
-  dnf: python3-setuptools
-
-python_virtualenv:
-  yum: python-virtualenv
-  dnf: python3-virtualenv
-
-python_libselinux:
-  yum: libselinux-python
-  dnf: python3-libselinux
+rpm_packages:
+  yum:
+    # we have special handling to provide pip on py27 systems
+    - git
+    - libselinux-python
+    - python-setuptools
+    - python-virtualenv
+  dnf:
+    - git
+    - python3-libselinux
+    - python3-pip
+    - python3-setuptools
+    - python3-virtualenv
