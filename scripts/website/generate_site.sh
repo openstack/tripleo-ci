@@ -24,7 +24,7 @@ SKIP_BLOG=${SKIP_BLOG:-''}
 
 # TRIPLEO-DOCS
 if [ ! -d tripleo-docs ]; then
-    git clone git://git.openstack.org/openstack/tripleo-docs
+    git clone https://git.openstack.org/openstack/tripleo-docs
     pushd tripleo-docs
     tox -edocs #initial run
     popd
@@ -60,7 +60,7 @@ popd
 
 #REVIEWDAY
 if [ ! -d reviewday ]; then
-    git clone git://git.openstack.org/openstack-infra/reviewday
+    git clone https://git.openstack.org/openstack-infra/reviewday
 else
     pushd reviewday
     git reset --hard origin/master
@@ -70,7 +70,7 @@ fi
 
 #TRIPLEO CI
 if [ ! -d tripleo-ci ]; then
-    git clone git://git.openstack.org/openstack-infra/tripleo-ci
+    git clone https://git.openstack.org/openstack-infra/tripleo-ci
 else
     pushd tripleo-ci
     git reset --hard origin/master
