@@ -51,7 +51,8 @@ def test_overcloud_upgrades_has_to_be_mixed(upgrade_type):
 
 
 @pytest.mark.parametrize('stable_release',
-                         ['ocata', 'pike', 'newton', 'rocky', 'master'])
+                         ['ocata', 'pike', 'newton',
+                          'rocky', 'stein', 'master'])
 def test_ffu_overcloud_upgrade_only_supported_from_newton(stable_release):
     featureset = {
         'mixed_upgrade': True,
