@@ -12,3 +12,4 @@ namespace=tripleo{{ release|default("master") }}
 {% else %}
 namespace={{ ci_branch | replace("/", "") }}
 {% endif %}
+debug=True
