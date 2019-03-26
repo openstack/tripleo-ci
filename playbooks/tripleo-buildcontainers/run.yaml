@@ -28,6 +28,7 @@
     - name: Get contents of delorean repo baseurl for the version hash
       become: true
       shell: >
+        set -o pipefail &&
         cat /etc/yum.repos.d/delorean.repo |awk -F= '/baseurl/ {print $2}'
       register: baseurl
 

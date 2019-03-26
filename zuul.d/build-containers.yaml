@@ -7,17 +7,28 @@
     check:
       jobs:
         - tripleo-build-containers-centos-7
+        - tripleo-build-containers-centos-7-rocky
         - tripleo-build-containers-centos-7-buildah
     gate:
       queue: tripleo
       jobs:
         - tripleo-build-containers-centos-7
+        - tripleo-build-containers-centos-7-rocky
 
 - job:
     name: tripleo-build-containers-centos-7
     parent: tripleo-build-containers-base-with-files
     nodeset: single-centos-7-node
     voting: true
+
+- job:
+    name: tripleo-build-containers-centos-7-rocky
+    parent: tripleo-build-containers-base-with-files
+    nodeset: single-centos-7-node
+    override-checkout: stable/rocky
+    voting: true
+    vars:
+      branch_override: stable/rocky
 
 - job:
     name: tripleo-build-containers-centos-7-buildah
