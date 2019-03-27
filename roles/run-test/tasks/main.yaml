@@ -14,6 +14,7 @@
         - 'tempest_plugins'
         - 'standalone_environment_files'
         - 'standalone_container_cli'
+        - 'tempest_test_whitelist'
         - 'test_white_regex'
         - 'tempest_workers'
         - 'dlrn_hash_tag'
