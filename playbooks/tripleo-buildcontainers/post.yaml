@@ -22,7 +22,8 @@
         rsync -var --no-links /var/log/ {{ workspace }}/logs/system/ || true
         rsync -var --no-links /etc/docker/ {{ workspace }}/etc/docker/ || true
         rsync -var --no-links /etc/containers/ {{ workspace }}/etc/containers/ || true
-        rsync -var --no-links /etc/yum.repos.d/ {{ workspace }}/etc/yum.repos.d/ || true
+        rsync -var --no-links --include 'yum.repos.d/***' --include 'yum.conf' --include 'dnf/***' --exclude='*' /etc/ {{ workspace }}/etc/ || true
+
         gzip -r "{{ workspace }}/logs"  "{{ workspace }}/conf" "{{ workspace }}/etc"
         chmod -R a+r "{{ workspace }}"
         chown -R {{ ansible_user }}: "{{ workspace }}"
