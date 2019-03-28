@@ -543,3 +543,5 @@
       featureset_override:
         run_tempest: false
         use_os_tempest: true
+        tempest_tempest_conf_overrides:
+          auth.use_dynamic_credentials: true
