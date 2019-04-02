@@ -76,6 +76,7 @@
     name: tripleo-multinode-branchful
     check:
       jobs:
+        - tripleo-ci-centos-7-containers-multinode-stein
         - tripleo-ci-centos-7-containers-multinode-rocky
         - tripleo-ci-centos-7-containers-multinode-queens
         - tripleo-ci-centos-7-containers-multinode-pike
@@ -85,6 +86,20 @@
     parent: tripleo-ci-base-multinode
     branches: ^(?!stable/(newton|ocata)).*$
     vars:
+      nodes: 1ctlr
+      featureset: '010'
+      playbooks:
+        - multinode.yml
+
+- job:
+    name: tripleo-ci-centos-7-containers-multinode-stein
+    parent: tripleo-ci-base-multinode
+    timeout: 10800
+    voting: false
+    branches: master
+    override-checkout: 'stable/stein'
+    vars:
+      branch_override: 'stable/stein'
       nodes: 1ctlr
       featureset: '010'
       playbooks:
