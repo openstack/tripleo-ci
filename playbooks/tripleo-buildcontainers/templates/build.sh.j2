@@ -2,8 +2,7 @@
 source {{ workspace }}/venv/bin/activate
 TRIPLEO_COMMON_PATH="{{ openstack_git_root }}/tripleo-common"
 
-openstack overcloud container image build \
-    --config-file $TRIPLEO_COMMON_PATH/container-images/overcloud_containers.yaml \
+openstack overcloud container image build {{ container_config }}\
     --kolla-config-file {{ workspace }}/kolla-build.conf \
     {% if ci_branch != 'rocky' %}
     {% for item in exclude_containers[ansible_pkg_mgr] %}

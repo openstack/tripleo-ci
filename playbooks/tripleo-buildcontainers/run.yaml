@@ -24,6 +24,7 @@
       set_fact:
         push_registry: "{{ push_registry | default('127.0.0.1:8787') }}"
         push_containers: "{{ push_containers | default(false) | bool }}"
+        container_config: ""
 
     - name: Get contents of delorean repo baseurl for the version hash
       become: true
@@ -75,6 +76,12 @@
         dest: "{{ workspace }}/kolla-build.conf"
         mode: 0644
         force: yes
+
+    - name: Set config-file
+      set_fact:
+        container_config: "--config-file $TRIPLEO_COMMON_PATH/container-images/overcloud_containers.yaml"
+      when: ci_branch in ['pike', 'queens', 'rocky']
+
 
     - name: Generate building script
       template:
