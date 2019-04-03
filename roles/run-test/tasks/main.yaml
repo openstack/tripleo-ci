@@ -21,6 +21,8 @@
         - 'dlrn_hash_tag_newest'
         - 'use_os_tempest'
         - 'tempest_tempest_conf_overrides'
+        - 'tempest_services'
+        - 'tempest_run_concurrency'
     fail:
       msg: "ERROR: {{ item }} is not overridable."
     when: item not in "{{ allowed_overrides }}"
