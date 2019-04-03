@@ -601,3 +601,8 @@
         use_os_tempest: true
         tempest_tempest_conf_overrides:
           auth.use_dynamic_credentials: true
+        tempest_test_whitelist:
+          - 'tempest.api.identity.v3'
+          - 'tempest.scenario.test_server_basic_ops'
+          - 'tempest.api.volume.admin.test_multi_backend'
+          - 'tempest.scenario.test_object_storage_basic_ops'
