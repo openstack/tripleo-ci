@@ -14,6 +14,7 @@
       jobs:
         - tripleo-build-containers-centos-7
         - tripleo-build-containers-centos-7-rocky
+        - tripleo-build-containers-centos-7-buildah
 
 - job:
     name: tripleo-build-containers-centos-7
@@ -33,6 +34,7 @@
 - job:
     name: tripleo-build-containers-centos-7-buildah
     parent: tripleo-build-containers-base-with-files
+    voting: true
     nodeset: single-centos-7-node
     branches: ^(?!stable/(pike|queens|rocky)).*$
     vars:
