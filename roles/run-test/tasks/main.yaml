@@ -23,6 +23,7 @@
         - 'tempest_tempest_conf_overrides'
         - 'tempest_services'
         - 'tempest_run_concurrency'
+        - 'validate_ha_overcloud'
     fail:
       msg: "ERROR: {{ item }} is not overridable."
     when: item not in "{{ allowed_overrides }}"
