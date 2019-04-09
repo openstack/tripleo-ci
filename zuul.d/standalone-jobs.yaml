@@ -26,6 +26,15 @@
       # like parent but with requirements.txt and setup.py removed
 
 - job:
+    name: tripleo-ci-centos-7-standalone-rocky
+    parent: tripleo-ci-centos-7-standalone
+    voting: false
+    branches: master
+    override-checkout: 'stable/rocky'
+    vars:
+      branch_override: 'stable/rocky'
+
+- job:
     name: tripleo-ci-fedora-28-standalone
     parent: tripleo-ci-base-standalone
     nodeset: single-fedora-28-node
@@ -298,6 +307,7 @@
               - roles/common/.*
               - roles/prepare-node/.*
               - roles/ceph-loop-device/.* # scen1/4 ceph
+        - tripleo-ci-centos-7-standalone-rocky
     gate:
       queue: tripleo
       jobs:
