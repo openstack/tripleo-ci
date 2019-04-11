@@ -55,5 +55,7 @@
     voting: false
     vars:
       featureset: '050'
+      featureset_override:
+        validate_services: true
       extra_tags:
         - undercloud-upgrade
