@@ -24,6 +24,7 @@
         - 'tempest_services'
         - 'tempest_run_concurrency'
         - 'validate_ha_overcloud'
+        - 'validate_services'
     fail:
       msg: "ERROR: {{ item }} is not overridable."
     when: item not in "{{ allowed_overrides }}"
