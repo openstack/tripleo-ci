@@ -4,5 +4,5 @@ pytest-cov
 mock
 requests
 pprint
-pre-commit>=1.10 # MIT License
+pre-commit>=1.10  # MIT License
 PyYAML
