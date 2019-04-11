@@ -1,6 +1,8 @@
-pytest
-pytest-html
-pytest-cov
+ansi2html  # GPL (soft-dependency of pytest-html)
+pytest  # MIT
+pytest-cov  # MIT
+pytest-html  # MPL 2.0
+pytest-xdist  # MIT
 mock
 requests
 pprint

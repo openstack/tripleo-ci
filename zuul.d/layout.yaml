@@ -17,6 +17,8 @@
       jobs:
         - openstack-tox-linters
         - openstack-tox-py27: &files
+            success-url: "tox/reports.html"
+            failure-url: "tox/reports.html"
             files:
               - ^bindep.txt$
               - ^requirements.txt$
