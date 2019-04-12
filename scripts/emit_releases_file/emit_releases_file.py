@@ -81,6 +81,13 @@ def load_featureset_file(featureset_file):
 
 
 def get_dlrn_hash(release, hash_name, retries=10, timeout=4):
+    """Get the dlrn hash for the release and hash name
+
+    Retrieves the delorean.repo for the provided release and hash name, e.g.
+    https://trunk.rdoproject.org/centos7-master/current/delorean.repo for
+    master and current. The hash is taken from the repo file contents
+    and returned.
+    """
     logger = logging.getLogger('emit-releases')
     full_hash_pattern = re.compile('[a-z,0-9]{40}_[a-z,0-9]{8}')
     repo_url = ('https://trunk.rdoproject.org/centos7-%s/%s/delorean.repo' %
@@ -120,6 +127,26 @@ def get_dlrn_hash(release, hash_name, retries=10, timeout=4):
 
 def compose_releases_dictionary(stable_release, featureset, upgrade_from,
                                 is_periodic=False):
+    """Compose the release dictionary for stable_release and featureset
+
+    This contains the main logic determining the contents of the release file.
+
+    First perform some validations on the input - ensure the release is
+    supported and the featureset doesn't contain conflicting directives
+    like both overcloud_upgrade and undercloud_upgrade.
+
+    The provided stable_release set as the target, and then the featureset
+    determines the type of upgrade. This is used to determine the deploy
+    release and hash/teg relative to the target:
+      * Standalone, Undercloud and Overcloud Upgrade: deploy current-tripleo
+        of previous release to stable_release and upgrade to current of
+        stable_release
+      * Overcloud FFWDUpgrade: as above, except deploy is set to
+        tripleo-ci-testing of 3 previous releases from stable_release
+    rocky).
+      * Overcloud Update: stable_release is equal to target, but going from
+        previous-current-tripleo to current hashes.
+    """
     logger = logging.getLogger('emit-releases')
     if stable_release not in RELEASES:
         raise RuntimeError("The {} release is not supported by this tool"
@@ -234,6 +261,17 @@ def compose_releases_dictionary(stable_release, featureset, upgrade_from,
 
 
 def shim_convert_old_release_names(releases_names, is_periodic):
+    """Convert release names for mixed upgrade and periodics
+
+    For overcloud upgrade jobs we start with already upgraded undercloud
+    and use config files named "{{target}}-undercloud-{{deploy}}-overcloud"
+    like ocata-undercloud-newton-overcloud so we need to set both deploy and
+    target names to point this release config.
+
+    For periodic jobs the deploy and target config files are in files named
+    promotion-testing-hash-{{release}} so the deploy and target names are
+    prefixed with promotion-testing-hash-
+    """
     # TODO(trown): Remove this shim when we no longer need to use the
     # old style double release files.
 
