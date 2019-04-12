@@ -1,0 +1,89 @@
+---
+- name: set tripleo repos
+  include_role:
+    name: tripleo-repos
+  vars:
+    override_repos: "{{ buildcontainers_override_repos | default('') }}"
+    tripleo_repos_repository: "{{ ansible_user_dir }}/{{ zuul.projects['git.openstack.org/openstack/tripleo-repos'].src_dir }}"
+- name: install deps via bindep
+  include_role:
+    name: bindep
+  vars:
+    bindep_dir: "{{ ansible_user_dir }}/{{ zuul.projects['git.openstack.org/openstack/python-tripleoclient'].src_dir }}"
+- name: Include common vars
+  include_vars:
+    dir: "vars"
+
+- name: Ensure legacy workspace directory
+  file:
+    path: '{{ workspace }}'
+    state: directory
+
+- name: Setup docker registry
+  block:
+    - name: Install ansible
+      become: true
+      package:
+        name: ansible
+        state: present
+
+    - name: Create playbook structure
+      file:
+        path: '{{ workspace }}/container-registry'
+        src: '{{ openstack_git_root }}/ansible-role-container-registry'
+        state: link
+
+    - name: Configure docker registry
+      template:
+        src: templates/docker-playbook.yaml.j2
+        dest: '{{ workspace }}/docker-playbook.yaml'
+        mode: 0644
+        force: yes
+
+    - name: Run ansible playbook to configure docker
+      args:
+        chdir: '{{ workspace }}'
+      shell: |
+        ansible-playbook docker-playbook.yaml --extra-vars "container_registry_deployment_user={{ ansible_user }}"
+
+    - name: Reset connection because of group changes for current user
+      meta: reset_connection
+
+    - name: Prepare Buildah
+      become: true
+      when: use_buildah | default(false) | bool
+      block:
+        - name: Install Buildah
+          package:
+            name: buildah
+            state: present
+
+        - name: Configure insecure registry
+          ini_file:
+            path: /etc/containers/registries.conf
+            section: 'registries.insecure'
+            option: registries
+            value:
+              - localhost:8787
+
+- name: Setup repo web service
+  become: true
+  block:
+    - name: Install apache
+      package:
+        name: httpd
+        state: present
+
+    - name: Start apache
+      service:
+        name: httpd
+        state: started
+
+    - name: Fetch delorean repos
+      shell: |
+          set -ex
+          cp /etc/yum.repos.d/delorean* /var/www/html/
+
+    - name: Add http iptables rules from containers
+      command: iptables -I openstack-INPUT 1 -p tcp --dport 80 -s 172.17.0.0/16 -j ACCEPT
+      become: true

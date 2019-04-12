@@ -1,5 +1,5 @@
 #!/bin/bash -eux
-source {{ workspace }}/venv/bin/activate
+source {{ workspace }}/venv_build/bin/activate
 TRIPLEO_COMMON_PATH="{{ openstack_git_root }}/tripleo-common"
 
 openstack overcloud container image build {{ container_config }}\

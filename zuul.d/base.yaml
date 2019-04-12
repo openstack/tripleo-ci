@@ -199,6 +199,7 @@
       - kolla.*$
       # tripleo-ci
       - ^(playbooks|roles)/tripleo-buildcontainers/.*$
+      - ^roles/build-containers/.*$
       - ^(playbooks|roles)/tripleo-repos/.*$
       - ^zuul.d/build-containers.yaml$
       - ^zuul.d/base.yaml$

@@ -1,0 +1,95 @@
+---
+- name: Include common vars
+  include_vars:
+    dir: "vars"
+
+- name: Set branch for building containers check jobs
+  set_fact:
+    ci_branch: "{{ zuul.branch | replace('stable/','') }}"
+  when: zuul is defined
+
+- name: Set branch for building containers branchless
+  set_fact:
+    ci_branch: "{{ branch_override | replace('stable/','') }}"
+  when: branch_override is defined
+
+- name: Set branch for building containers periodic
+  set_fact:
+    ci_branch: "{{ release }}"
+  when: release is defined
+
+- name: Set facts for kolla-build.conf
+  set_fact:
+    push_registry: "{{ push_registry | default('127.0.0.1:8787') }}"
+    push_containers: "{{ push_containers | default(false) | bool }}"
+    container_config: ""
+
+- name: Get contents of delorean repo baseurl for the version hash
+  become: true
+  shell: >
+    set -o pipefail &&
+    cat /etc/yum.repos.d/delorean.repo |awk -F= '/baseurl/ {print $2}'
+  register: baseurl
+
+- name: Set version_hash fact
+  set_fact:
+    version_hash: "{{ baseurl.stdout.split('/')[-1] }}"
+
+- name: grab kolla patch if needed
+  when: ansible_pkg_mgr == "dnf"
+  shell: |
+    set -euxo pipefail
+    git config --global user.email "zuul@openstack.org"
+    git config --global user.name "Zuul"
+    git remote add upstream https://git.openstack.org/openstack/kolla
+    git ls-remote https://git.openstack.org/openstack/kolla | \
+      grep -E refs/changes/[[:digit:]]+/{{ kolla_f28_patch }}/ | \
+      awk '{print $2}' | \
+      sort -t / -k 5 -g -r | \
+      head -1 | \
+      xargs -I{} git fetch https://git.openstack.org/openstack/kolla {} && \
+      git checkout -b f28 FETCH_HEAD && \
+      git pull --rebase upstream master
+
+  args:
+    chdir: "{{ openstack_git_root }}/kolla"
+    warn: false
+  register: result
+  changed_when: "'nothing to commit, working directory clean' not in result.stdout_lines"
+
+- name: pip install kolla
+  pip:
+    name:
+      - "file://{{ openstack_git_root }}/kolla"
+      - "file://{{ openstack_git_root }}/tripleo-common"
+      - "file://{{ openstack_git_root }}/python-tripleoclient"
+    virtualenv: "{{ workspace }}/venv_build"
+    virtualenv_python: "{{ virtualenv_python[ansible_pkg_mgr] }}"
+    virtualenv_site_packages: true
+
+# TODO(aschultz): make the kolla-build branch aware
+- name: Generate kolla-build.conf
+  template:
+    src: templates/kolla-build.conf.j2
+    dest: "{{ workspace }}/kolla-build.conf"
+    mode: 0644
+    force: yes
+
+- name: Set config-file
+  set_fact:
+    container_config: "--config-file $TRIPLEO_COMMON_PATH/container-images/overcloud_containers.yaml"
+  when: ci_branch in ['pike', 'queens', 'rocky']
+
+
+- name: Generate building script
+  template:
+    src: templates/build.sh.j2
+    dest: "{{ workspace }}/build_containers.sh"
+    mode: 0777
+    force: yes
+
+- name: Run image build
+  args:
+    chdir: '{{ workspace }}'
+  shell: set -o pipefail && bash build_containers.sh 2>&1 {{ timestamper_cmd }} > {{ workspace }}/build.log
+
