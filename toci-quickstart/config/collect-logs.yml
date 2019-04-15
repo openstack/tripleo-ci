@@ -106,6 +106,7 @@ artcl_collect_list:
   - /etc/mongo*
   - /etc/my.cnf*
   - /etc/my.cnf.d/
+  - /etc/named*
   - /etc/NetworkManager/
   - /etc/networks*
   - /etc/neutron/
