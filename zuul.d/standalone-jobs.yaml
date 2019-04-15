@@ -34,6 +34,8 @@
     vars:
       environment_type: standalone
       featureset: '052'
+      featureset_override:
+        validate_services: true
     irrelevant-files:
       - ^.*\.md$
       - ^.*\.rst$
@@ -556,6 +558,7 @@
       featureset: '052'
       standalone_ceph: true
       featureset_override:
+        validate_services: true
         standalone_environment_files:
           - 'environments/low-memory-usage.yaml'
           - 'environments/services/octavia.yaml'
@@ -577,6 +580,7 @@
       featureset: '060'
       standalone_ceph: true
       featureset_override:
+        validate_services: true
         standalone_container_cli: docker
         standalone_environment_files:
           - 'environments/low-memory-usage.yaml'
