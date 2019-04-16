@@ -159,8 +159,10 @@ else
 fi
 
 # Import gated external repo in oooq - starting with browbeat, tripleo-ha-utils, openstack-ansible-os_tempest,
-# ansible-config_template, ansible-role-python_venv_build
-for EXTERNAL_REPO in 'browbeat' 'tripleo-ha-utils' 'tripleo-quickstart-extras' 'openstack-ansible-os_tempest' 'ansible-config_template' 'ansible-role-python_venv_build'; do
+# ansible-config_template, ansible-role-python_venv_build, ansible-role-collect-logs
+EXTERNAL_REPOS="browbeat tripleo-ha-utils tripleo-quickstart-extras openstack-ansible-os_tempest \
+ansible-config_template ansible-role-python_venv_build ansible-role-collect-logs"
+for EXTERNAL_REPO in $EXTERNAL_REPOS; do
     if [[ -d $TRIPLEO_ROOT/$EXTERNAL_REPO ]]; then
         sed -i "s#git+https://opendev.org/openstack/$EXTERNAL_REPO#file://${TRIPLEO_ROOT}/$EXTERNAL_REPO#1" ${TRIPLEO_ROOT}/tripleo-quickstart/quickstart-extras-requirements.txt
     fi

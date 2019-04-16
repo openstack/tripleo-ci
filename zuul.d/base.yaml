@@ -35,6 +35,7 @@
       - opendev.org/openstack/openstack-ansible-os_tempest
       - opendev.org/openstack/ansible-role-python_venv_build
       - opendev.org/openstack/ansible-config_template
+      - opendev.org/openstack/ansible-role-collect-logs
     pre-run:
       - playbooks/nodepool-provider/pre.yaml
       - playbooks/openstack-zuul-jobs/legacy/pre.yaml
