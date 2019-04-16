@@ -107,6 +107,7 @@ artcl_collect_list:
   - /etc/my.cnf*
   - /etc/my.cnf.d/
   - /etc/named*
+  - /etc/named/
   - /etc/NetworkManager/
   - /etc/networks*
   - /etc/neutron/
@@ -258,6 +259,7 @@ artcl_collect_list:
   - /var/log/vitrage/
   - /var/log/watcher/
   - /var/log/zaqar/
+  - /var/named/
 
 # the above list was created from
 # https://raw.githubusercontent.com/openstack/puppet-openstack-integration/master/openstack_modules.txt
