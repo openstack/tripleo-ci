@@ -35,7 +35,7 @@
       environment_type: standalone
       featureset: '052'
       featureset_override:
-        validate_services: true
+        validate_services: false
     irrelevant-files:
       - ^.*\.md$
       - ^.*\.rst$
