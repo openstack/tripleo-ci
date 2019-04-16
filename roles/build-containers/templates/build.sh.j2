@@ -2,6 +2,8 @@
 source {{ workspace }}/venv_build/bin/activate
 TRIPLEO_COMMON_PATH="{{ openstack_git_root }}/tripleo-common"
 
+pip install -U decorator
+
 openstack overcloud container image build {{ container_config }}\
     --kolla-config-file {{ workspace }}/kolla-build.conf \
     {% if ci_branch != 'rocky' %}

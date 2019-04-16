@@ -1,6 +1,16 @@
 push_registry_port: 8787
 push_registry: "127.0.0.1:{{ push_registry_port }}"
 push_containers: "false"
+kolla_base: "{{ ansible_distribution|lower }}"
+kolla_base_image: "{{ kolla_base }}"
+# DO NOT define a default for kolla_base_tag,
+# this is here to notify of its availability as a parameter
+# Kolla sets the default kolla tag on its own based on dstro
+# and setting a different default breaks other distro dependent
+# default (like the package manager)
+#kolla_base_tag: latest
+kolla_base_pull: true
 use_buildah: false
 buildcontainers_override_repos: ""
 buildcontainers_rpm_setup_config: "http://172.17.0.1/delorean.repo,http://172.17.0.1/delorean-{{ ci_branch }}-testing.repo"
+openstack_repo_name: delorean

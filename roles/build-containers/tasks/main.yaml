@@ -24,11 +24,11 @@
     push_containers: "{{ push_containers | default(false) | bool }}"
     container_config: ""
 
-- name: Get contents of delorean repo baseurl for the version hash
+- name: Get contents of openstack repo baseurl for the version hash
   become: true
   shell: >
     set -o pipefail &&
-    cat /etc/yum.repos.d/delorean.repo |awk -F= '/baseurl/ {print $2}'
+    cat /etc/yum.repos.d/{{ openstack_repo_name }}.repo |awk -F= '/baseurl/ {print $2}'
   register: baseurl
 
 - name: Set version_hash fact
@@ -63,6 +63,7 @@
       - "file://{{ openstack_git_root }}/kolla"
       - "file://{{ openstack_git_root }}/tripleo-common"
       - "file://{{ openstack_git_root }}/python-tripleoclient"
+      - decorator
     virtualenv: "{{ workspace }}/venv_build"
     virtualenv_python: "{{ virtualenv_python[ansible_pkg_mgr] }}"
     virtualenv_site_packages: true

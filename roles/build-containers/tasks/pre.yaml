@@ -68,10 +68,10 @@
         name: httpd
         state: started
 
-    - name: Fetch delorean repos
+    - name: Fetch delorean repos if present
       shell: |
           set -ex
-          cp /etc/yum.repos.d/delorean* /var/www/html/
+          find /etc/yum.repos.d/ -name delorean\* | xargs -I {} cp {} /var/www/html/
 
     - name: Add http iptables rules from containers
       command: iptables -I openstack-INPUT 1 -p tcp --dport 80 -s 172.17.0.0/16 -j ACCEPT
