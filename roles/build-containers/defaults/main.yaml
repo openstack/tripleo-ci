@@ -2,3 +2,4 @@ push_registry: "127.0.0.1:8787"
 push_containers: "false"
 use_buildah: false
 buildcontainers_override_repos: ""
+buildcontainers_rpm_setup_config: "http://172.17.0.1/delorean.repo,http://172.17.0.1/delorean-{{ ci_branch }}-testing.repo"

@@ -5,7 +5,7 @@ registry={{ push_registry }}
 tag={{ version_hash }}
 template_override={{ openstack_git_root }}/tripleo-common/container-images/tripleo_kolla_template_overrides.j2
 # we use the repos off the main host as they will already have the correct mirror info in them
-rpm_setup_config=http://172.17.0.1/delorean.repo,http://172.17.0.1/delorean-{{ ci_branch }}-testing.repo
+rpm_setup_config="{{ buildcontainers_rpm_setup_config }}"
 push={{ push_containers }}
 namespace=tripleo{{ ci_branch }}
 debug=True
