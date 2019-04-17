@@ -157,6 +157,28 @@
         - build
         - standalone
 
+- job:
+    name: tripleo-ci-base-standalone-upgrade
+    abstract: true
+    description: |
+        Base abstract job for standalone upgrade TripleO CI zuulv3 jobs
+    parent: tripleo-ci-base
+    nodeset: single-centos-7-node
+    vars:
+      undercloud: 127.0.0.2
+      environment_infra: osinfra
+      environment_type: standalone
+      common_featureset: featureset-multinode-common.yml
+      playbooks:
+        - quickstart.yml
+        - multinode-standalone.yml
+        - multinode-standalone-upgrade.yml
+      tags:
+        - build
+        - standalone
+      extra_tags:
+        - standalone-upgrade
+
 # Please do not add files: to tripleo-build-containers-base otherwise the periodic job wont run
 # See https://storyboard.openstack.org/#!/story/2005040
 - job:
