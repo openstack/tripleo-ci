@@ -38,7 +38,7 @@
     name: tripleo-ci-fedora-28-standalone
     parent: tripleo-ci-base-standalone
     nodeset: single-fedora-28-node
-    voting: false
+    voting: true
     branches: ^(?!stable/(newton|ocata|pike|queens|rocky)).*$
     vars:
       environment_type: standalone

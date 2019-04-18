@@ -25,6 +25,7 @@
       jobs:
         - tripleo-ci-centos-7-containers-multinode
         - tripleo-ci-centos-7-standalone
+        - tripleo-ci-fedora-28-standalone
         - tripleo-ci-centos-7-scenario000-multinode-oooq-container-updates
 
 - project-template:
@@ -61,6 +62,7 @@
       jobs:
         - tripleo-ci-centos-7-containers-multinode
         - tripleo-ci-centos-7-standalone
+        - tripleo-ci-fedora-28-standalone
         - tripleo-ci-centos-7-standalone-os-tempest
         - tripleo-ci-centos-7-scenario000-multinode-oooq-container-updates
 
