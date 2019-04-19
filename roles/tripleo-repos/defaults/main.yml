@@ -1,6 +1,6 @@
 ---
 # defaults file for tripleo-repos
-tripleo_repos_repository: "git+https://git.openstack.org/openstack/tripleo-repos"
+tripleo_repos_repository: "git+https://opendev.org/openstack/tripleo-repos"
 workspace: "{{ ansible_user_dir }}"
 centos_mirror_host: "http://mirror.centos.org"
 fedora_mirror_host: "https://mirrors.fedoraproject.org"

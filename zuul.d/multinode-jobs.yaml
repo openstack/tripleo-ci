@@ -247,7 +247,7 @@
       nodes: 1ctlr
       featureset: '037'
       # Note (dmsimard): This enforces a minimum TTL for DNS records, see
-      # https://review.openstack.org/#/c/523178/ for context
+      # https://review.opendev.org/#/c/523178/ for context
       unbound_cache_min_ttl: 900
       extra_tags:
         - overcloud-update

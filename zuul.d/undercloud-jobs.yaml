@@ -50,7 +50,7 @@
     nodeset: single-centos-7-node
     branches: ^(?!stable/(newton|ocata|pike|queens)).*$
     # TODO(rlandy) make it voting when we confirm
-    # https://review.openstack.org/#/c/611800/
+    # https://review.opendev.org/#/c/611800/
     # is working as expected.
     voting: false
     vars:

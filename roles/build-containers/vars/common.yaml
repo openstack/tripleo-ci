@@ -1,7 +1,7 @@
 workspace: "{{ ansible_user_dir }}/workspace"
-openstack_git_root: "{{ ansible_user_dir }}/src/git.openstack.org/openstack"
+openstack_git_root: "{{ ansible_user_dir }}/src/opendev.org/openstack"
 
-# https://review.openstack.org/#/c/624838/
+# https://review.opendev.org/#/c/624838/
 kolla_f28_patch: 624838
 
 virtualenv_python:

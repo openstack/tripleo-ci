@@ -23,17 +23,17 @@
     timeout: 4200
     nodeset: single-centos-7-node
     required-projects:
-      - git.openstack.org/openstack/diskimage-builder
-      - git.openstack.org/openstack/heat-agents
-      - git.openstack.org/openstack/instack-undercloud
-      - git.openstack.org/openstack/ironic
-      - git.openstack.org/openstack/ironic-python-agent
-      - git.openstack.org/openstack/python-tripleoclient
-      - git.openstack.org/openstack/tripleo-common
-      - git.openstack.org/openstack/tripleo-image-elements
-      - git.openstack.org/openstack/tripleo-puppet-elements
-      - git.openstack.org/openstack/tripleo-repos
-      - git.openstack.org/openstack/requirements
+      - opendev.org/openstack/diskimage-builder
+      - opendev.org/openstack/heat-agents
+      - opendev.org/openstack/instack-undercloud
+      - opendev.org/openstack/ironic
+      - opendev.org/openstack/ironic-python-agent
+      - opendev.org/openstack/python-tripleoclient
+      - opendev.org/openstack/tripleo-common
+      - opendev.org/openstack/tripleo-image-elements
+      - opendev.org/openstack/tripleo-puppet-elements
+      - opendev.org/openstack/tripleo-repos
+      - opendev.org/openstack/requirements
     vars:
       tripleo_image_type: ironic-python-agent
       tripleo_image_os: centos7
@@ -50,15 +50,15 @@
     timeout: 4200
     nodeset: single-centos-7-node
     required-projects:
-      - git.openstack.org/openstack/diskimage-builder
-      - git.openstack.org/openstack/heat-agents
-      - git.openstack.org/openstack/instack-undercloud
-      - git.openstack.org/openstack/python-tripleoclient
-      - git.openstack.org/openstack/requirements
-      - git.openstack.org/openstack/tripleo-common
-      - git.openstack.org/openstack/tripleo-image-elements
-      - git.openstack.org/openstack/tripleo-puppet-elements
-      - git.openstack.org/openstack/tripleo-repos
+      - opendev.org/openstack/diskimage-builder
+      - opendev.org/openstack/heat-agents
+      - opendev.org/openstack/instack-undercloud
+      - opendev.org/openstack/python-tripleoclient
+      - opendev.org/openstack/requirements
+      - opendev.org/openstack/tripleo-common
+      - opendev.org/openstack/tripleo-image-elements
+      - opendev.org/openstack/tripleo-puppet-elements
+      - opendev.org/openstack/tripleo-repos
     vars:
       tripleo_image_type: overcloud-full
       tripleo_image_os: centos7
@@ -74,15 +74,15 @@
     timeout: 4200
     nodeset: single-centos-7-node
     required-projects:
-      - git.openstack.org/openstack/diskimage-builder
-      - git.openstack.org/openstack/heat-agents
-      - git.openstack.org/openstack/instack-undercloud
-      - git.openstack.org/openstack/python-tripleoclient
-      - git.openstack.org/openstack/tripleo-common
-      - git.openstack.org/openstack/tripleo-image-elements
-      - git.openstack.org/openstack/tripleo-puppet-elements
-      - git.openstack.org/openstack/tripleo-repos
-      - git.openstack.org/openstack/requirements
+      - opendev.org/openstack/diskimage-builder
+      - opendev.org/openstack/heat-agents
+      - opendev.org/openstack/instack-undercloud
+      - opendev.org/openstack/python-tripleoclient
+      - opendev.org/openstack/tripleo-common
+      - opendev.org/openstack/tripleo-image-elements
+      - opendev.org/openstack/tripleo-puppet-elements
+      - opendev.org/openstack/tripleo-repos
+      - opendev.org/openstack/requirements
     vars:
       tripleo_image_type: overcloud-hardened-full
       tripleo_image_os: centos7
