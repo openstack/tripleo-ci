@@ -24,19 +24,6 @@
     mode: u=rwX,g=rX,o=rX
     recurse: yes
 
-- name: Copy tripleo-ci to openstack namespace dir
-  shell:
-    cmd: |
-        set -e
-        set -x
-        # we still need all the repos under the same root directory, but instead of using
-        # zuul-cloner, use the wrapped commands directly
-        # reflink is an safer alternative to hardlinking which could fail
-        cp -dR --reflink=auto /home/zuul/src/opendev.org/openstack/tripleo-ci .
-    executable: /bin/bash
-    chdir: '{{ tripleo_root }}'
-  environment: '{{ zuul | zuul_legacy_vars }}'
-
 - name: "set zull_dump"
   set_fact:
     zuul_dump: "{{ {'zuul': zuul} }}"
