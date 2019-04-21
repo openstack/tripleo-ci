@@ -1,13 +1,13 @@
 Exec { path => [ "/bin/", "/sbin/" ] }
 
 vcsrepo {"/opt/stack/openstack-virtual-baremetal":
-    source => "https://git.openstack.org/openstack/openstack-virtual-baremetal.git",
+    source => "https://opendev.org/openstack/openstack-virtual-baremetal.git",
     provider => git,
     ensure => latest,
 }
 
 vcsrepo {"/opt/stack/tripleo-ci":
-    source => "https://git.openstack.org/openstack-infra/tripleo-ci",
+    source => "https://opendev.org/openstack/tripleo-ci",
     provider => git,
     ensure => latest,
 }

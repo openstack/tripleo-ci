@@ -15,7 +15,7 @@ Role Variables
      - Default Value
      - Description
    * - `tripleo_repos_repository`
-     - `git+https://git.openstack.org/openstack/tripleo-repos`
+     - `git+https://opendev.org/openstack/tripleo-repos`
      - Git repository to pip install tripleo-repos from
    * - `workspace`
      - `ansible_user_dir`

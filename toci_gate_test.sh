@@ -253,13 +253,13 @@ if [[ -d $TRIPLEO_ROOT/tripleo-upgrade ]]; then
 else
     # Otherwise, if not importing it, oooq will fail when loading
     # tripleo-upgrade role in the playbook.
-    echo "git+https://git.openstack.org/openstack/tripleo-upgrade.git@${ZUUL_BRANCH}#egg=tripleo-upgrade" >> ${TRIPLEO_ROOT}/tripleo-quickstart/quickstart-extras-requirements.txt
+    echo "git+https://opendev.org/openstack/tripleo-upgrade.git@${ZUUL_BRANCH}#egg=tripleo-upgrade" >> ${TRIPLEO_ROOT}/tripleo-quickstart/quickstart-extras-requirements.txt
 fi
 
 # Import gated external repo in oooq
 for EXTERNAL_REPO in 'browbeat' 'tripleo-ha-utils' 'tripleo-quickstart-extras'; do
     if [[ -d $TRIPLEO_ROOT/$EXTERNAL_REPO ]]; then
-        sed -i "s#git+https://git.openstack.org/openstack/$EXTERNAL_REPO#file://${TRIPLEO_ROOT}/$EXTERNAL_REPO#1" ${TRIPLEO_ROOT}/tripleo-quickstart/quickstart-extras-requirements.txt
+        sed -i "s#git+https://opendev.org/openstack/$EXTERNAL_REPO#file://${TRIPLEO_ROOT}/$EXTERNAL_REPO#1" ${TRIPLEO_ROOT}/tripleo-quickstart/quickstart-extras-requirements.txt
     fi
 done
 

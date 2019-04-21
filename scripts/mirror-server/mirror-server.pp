@@ -8,7 +8,7 @@ package{"python34": }
 exec{"setenforce  0":}
 
 vcsrepo {"/opt/stack/tripleo-ci":
-    source => "https://git.openstack.org/openstack-infra/tripleo-ci",
+    source => "https://opendev.org/openstack/tripleo-ci",
     provider => git,
     ensure => latest,
 }

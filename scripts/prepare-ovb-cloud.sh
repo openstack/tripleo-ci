@@ -23,7 +23,7 @@ glance image-create --progress --name 'CentOS-7-x86_64-GenericCloud' --is-public
 
 glance image-show 'ipxe-boot' || \
 glance image-create --name ipxe-boot --is-public true --disk-format qcow2 --property os_shutdown_timeout=5 --container-format bare \
-    --copy-from https://git.openstack.org/cgit/openstack/openstack-virtual-baremetal/plain/ipxe/ipxe-boot.qcow2
+    --copy-from https://opendev.org/openstack/openstack-virtual-baremetal/raw/branch/master/ipxe/ipxe-boot.qcow2
 
 # Create a pool of floating IP's
 neutron net-show public || neutron net-create public --router:external=True

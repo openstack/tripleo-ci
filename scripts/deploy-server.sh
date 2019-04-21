@@ -18,7 +18,7 @@ fi
 
 CIREPO=/opt/stack/tripleo-ci
 mkdir -p $CIREPO
-git clone https://git.openstack.org/openstack-infra/tripleo-ci $CIREPO
+git clone https://opendev.org/openstack/tripleo-ci $CIREPO
 
 if [ -f $CIREPO/scripts/$(hostname)/$(hostname).sh ] ; then
     bash $CIREPO/scripts/$(hostname)/$(hostname).sh

@@ -41,13 +41,13 @@
     set -euxo pipefail
     git config --global user.email "zuul@openstack.org"
     git config --global user.name "Zuul"
-    git remote add upstream https://opendev.org/openstack/kolla
-    git ls-remote https://opendev.org/openstack/kolla | \
+    git remote add upstream https://review.opendev.org/openstack/kolla
+    git ls-remote https://review.opendev.org/openstack/kolla | \
       grep -E refs/changes/[[:digit:]]+/{{ kolla_f28_patch }}/ | \
       awk '{print $2}' | \
       sort -t / -k 5 -g -r | \
       head -1 | \
-      xargs -I{} git fetch https://opendev.org/openstack/kolla {} && \
+      xargs -I{} git fetch https://review.opendev.org/openstack/kolla {} && \
       git checkout -b f28 FETCH_HEAD && \
       git pull --rebase upstream master
 

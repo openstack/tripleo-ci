@@ -1,7 +1,7 @@
 Exec { path => [ "/bin/", "/sbin/" ] }
 
 vcsrepo {"/opt/stack/tripleo-ci":
-    source => "https://git.openstack.org/openstack-infra/tripleo-ci",
+    source => "https://opendev.org/openstack/tripleo-ci",
     provider => git,
     ensure => latest,
 }

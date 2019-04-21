@@ -20,7 +20,7 @@ Tools to help run CI jobs for TripleO. Includes things like:
 * Helper `getthelogs` script to download important job logs locally.
   Then you may want to inspect the logs for known errors and contribute
   discovered search patterns as the
-  `elastic-recheck queries <https://git.openstack.org/cgit/openstack-infra/elastic-recheck/tree/queries>`_.
+  `elastic-recheck queries <https://opendev.org/opendev/elastic-recheck/src/branch/master/queries>`_.
 
 
 OpenStack Infrastructure is deploying multiple jobs with different scenarios.
@@ -146,7 +146,7 @@ Service testing matrix
 ----------------------
 
 The CI testing matrix for all scenarios is defined in
-`tripleo-heat-templates <https://git.openstack.org/cgit/openstack/tripleo-heat-templates/tree/README.rst>`_.
+`tripleo-heat-templates <https://opendev.org/openstack/tripleo-heat-templates/src/branch/master/README.rst>`_.
 This matrix describes the services that will run in each environment.
 
 Feature testing matrix

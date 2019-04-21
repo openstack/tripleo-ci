@@ -466,7 +466,7 @@ function delorean_build {
 
         # Clone the repo if it doesn't yet exist
         if [ ! -d $TRIPLEO_ROOT/$PROJ ]; then
-            git clone https://git.openstack.org/openstack/$PROJ.git $TRIPLEO_ROOT/$PROJ
+            git clone https://opendev.org/openstack/$PROJ.git $TRIPLEO_ROOT/$PROJ
             if [ ! -z "$REVIEW_RELEASE" ]; then
                 pushd $TRIPLEO_ROOT/$PROJ
                 git checkout -b stable/$REVIEW_RELEASE origin/stable/$REVIEW_RELEASE
@@ -1186,7 +1186,7 @@ function clone {
     if [ ! -d $TRIPLEO_ROOT/$(basename $repo) ]; then
         echo "$repo not found at $TRIPLEO_ROOT/$repo, git cloning."
         pushd $TRIPLEO_ROOT
-        git clone https://git.openstack.org/$repo
+        git clone https://opendev.org/$repo
         popd
     else
         echo "$repo found at $TRIPLEO_ROOT/$repo, nothing to do."

@@ -54,7 +54,7 @@ function tapper {
         sudo yum install -y git screen
         sudo mkdir -p /opt/stack/new
         sudo chown centos /opt/stack/new
-        git clone https://git.openstack.org/openstack-infra/tripleo-ci /opt/stack/new/tripleo-ci
+        git clone https://opendev.org/openstack/tripleo-ci /opt/stack/new/tripleo-ci
         cd /opt/stack/new/tripleo-ci
         DISTRIBUTION=CentOS DISTRIBUTION_MAJOR_VERSION=7 OVERRIDE_ZUUL_BRANCH= ZUUL_BRANCH=master WORKSPACE=/tmp TOCI_JOBTYPE=nonha DEVSTACK_GATE_TIMEOUT=180 ./toci_gate_test.sh
         exit 0
