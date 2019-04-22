@@ -16,7 +16,7 @@ sudo yum erase -y epel-release || :
 
 # Copied from toci_gate_test.sh...need to apply this fix on subnodes as well
 # TODO(pabelanger): Why is python-requests installed from pip?
-# TODO(amoralej): remove after https://review.openstack.org/#/c/468872/ is merged
+# TODO(amoralej): remove after https://review.opendev.org/#/c/468872/ is merged
 sudo pip uninstall certifi -y || true
 sudo pip uninstall urllib3 -y || true
 sudo pip uninstall requests -y || true

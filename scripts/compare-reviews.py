@@ -10,7 +10,7 @@ import requests
 from colorama import Fore
 from colorama import init
 
-GERRIT_DETAIL_API = "https://review.openstack.org/changes/{}/detail"
+GERRIT_DETAIL_API = "https://review.opendev.org/changes/{}/detail"
 GERRIT_USER_NAME = "zuul"
 ZUUL_PIPELINE = "check"
 

@@ -52,7 +52,7 @@ def get_gerrit_reviews(project, status="open", branch="master", limit="30"):
     status_query = ''
     if status:
         status_query = 'status: %s' % status
-    cmd = 'ssh review.openstack.org -p29418 gerrit' \
+    cmd = 'ssh review.opendev.org -p29418 gerrit' \
           ' query "%s project: %s branch: %s" --comments' \
           ' --format JSON limit: %s --patch-sets --current-patch-set'\
           % (status_query, project, branch, limit)
@@ -148,7 +148,7 @@ def gen_html(data, html_file, table_file, stats_hours, job_names, options):
                 color = COLORS.get(ci_result['status'], "#666666")
                 result_types.add(ci_result['status'])
                 job_columns += '<font color="%s">' % color
-                gerrit_href = 'https://review.openstack.org/#/c/%s/%s"' % (
+                gerrit_href = 'https://review.opendev.org/#/c/%s/%s"' % (
                     result['url'].split('/')[-1], result['patchset']
                 )
                 job_columns += '<a STYLE="color : %s" href="%s">%s,%s</a>' % \

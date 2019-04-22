@@ -54,7 +54,7 @@ function cherrypick {
     fi
 
     pushd $TRIPLEO_ROOT/$PROJ_NAME
-    git fetch https://review.openstack.org/openstack/$PROJ_NAME "$REFSPEC"
+    git fetch https://review.opendev.org/openstack/$PROJ_NAME "$REFSPEC"
     # Abort on fail so  we're not left in a conflict state
     git cherry-pick FETCH_HEAD || git cherry-pick --abort
     popd

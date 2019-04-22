@@ -18,7 +18,7 @@ sudo yum erase -y epel-release || :
 # TODO(pabelanger): Why is python-requests installed from pip?
 # Reinstall python-requests if it was already installed, otherwise it will be
 # installed later when other packages are installed.
-# TODO(amoralej): remove after https://review.openstack.org/#/c/468872/ is merged
+# TODO(amoralej): remove after https://review.opendev.org/#/c/468872/ is merged
 sudo pip uninstall certifi -y || true
 sudo pip uninstall urllib3 -y || true
 sudo pip uninstall requests -y || true

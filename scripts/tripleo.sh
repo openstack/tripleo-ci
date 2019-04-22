@@ -384,7 +384,7 @@ function delorean_setup {
         sudo yum install -y python-virtualenv
     fi
 
-    # Workaround until https://review.openstack.org/#/c/311734/ is merged and a new image is built
+    # Workaround until https://review.opendev.org/#/c/311734/ is merged and a new image is built
     sudo yum install -y libffi-devel openssl-devel
 
     # Add the current user to the mock group
