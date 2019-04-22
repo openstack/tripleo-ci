@@ -13,6 +13,7 @@
       - tripleo-multinode-experimental
       - tripleo-standalone-scenarios-full
       - tripleo-undercloud-jobs
+      - tripleo-periodic
     check:
       jobs:
         - openstack-tox-linters
