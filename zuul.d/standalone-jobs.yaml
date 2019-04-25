@@ -63,7 +63,7 @@
     parent: tripleo-ci-base-standalone
     nodeset: single-centos-7-node
     voting: false
-    branches: ^(?!stable/(newton|ocata|pike|queens|rocky)).*$
+    branches: ^(?!stable/(newton|ocata|pike|queens|rocky|stein)).*
     vars:
       featureset: '056'
       playbooks:
@@ -86,6 +86,19 @@
       - ^Puppetfile.*$
       - tox.ini
       # like parent but with requirements.txt and setup.py removed
+
+- job:
+    name: tripleo-ci-centos-7-standalone-upgrade-stein
+    parent: tripleo-ci-centos-7-standalone-upgrade
+    voting: true
+    branches: ^(?!stable/(newton|ocata|pike|queens|rocky)).*
+    override-checkout: 'stable/stein'
+    vars:
+       branch_override: 'stable/stein'
+       featureset_override:
+         test_black_regex:
+           - tempest.api.compute.security_groups.test_security_groups.SecurityGroupsTestJSON.test_list_security_groups_by_server
+           - tempest.api.compute.security_groups.test_security_groups.SecurityGroupsTestJSON.test_server_security_groups
 
 - project-template:
     name: tripleo-standalone-scenarios-full
@@ -310,6 +323,11 @@
               - roles/prepare-node/.*
               - roles/ceph-loop-device/.* # scen1/4 ceph
         - tripleo-ci-centos-7-standalone-rocky
+        - tripleo-ci-centos-7-standalone-upgrade
+        - tripleo-ci-centos-7-standalone-upgrade-stein
+        - tripleo-ci-centos-7-standalone
+        - tripleo-ci-fedora-28-standalone
+
     gate:
       queue: tripleo
       jobs:
@@ -460,6 +478,10 @@
               # python-tripleoclient
               - ^tripleoclient/heat_launcher.*$
               - ^tripleoclient/v1/tripleo_(deploy|config|upgrade).*$
+
+        - tripleo-ci-centos-7-standalone-upgrade-stein
+        - tripleo-ci-centos-7-standalone
+        - tripleo-ci-fedora-28-standalone
 
 
 - job:

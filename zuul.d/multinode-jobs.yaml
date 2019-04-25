@@ -19,6 +19,7 @@
         - tripleo-ci-centos-7-standalone
         - tripleo-ci-fedora-28-standalone
         - tripleo-ci-centos-7-standalone-upgrade
+        - tripleo-ci-centos-7-standalone-upgrade-stein
 
     gate:
       queue: tripleo
@@ -27,6 +28,7 @@
         - tripleo-ci-centos-7-standalone
         - tripleo-ci-fedora-28-standalone
         - tripleo-ci-centos-7-scenario000-multinode-oooq-container-updates
+        - tripleo-ci-centos-7-standalone-upgrade-stein
 
 - project-template:
     name: tripleo-multinode-baremetal-full
@@ -51,6 +53,7 @@
         - tripleo-ci-centos-7-standalone
         - tripleo-ci-fedora-28-standalone
         - tripleo-ci-centos-7-standalone-upgrade
+        - tripleo-ci-centos-7-standalone-upgrade-stein
         - tripleo-ci-centos-7-scenario001-standalone
         - tripleo-ci-centos-7-scenario002-standalone
         - tripleo-ci-centos-7-scenario003-standalone
@@ -65,6 +68,7 @@
         - tripleo-ci-fedora-28-standalone
         - tripleo-ci-centos-7-standalone-os-tempest
         - tripleo-ci-centos-7-scenario000-multinode-oooq-container-updates
+        - tripleo-ci-centos-7-standalone-upgrade-stein
 
 - project-template:
     name: tripleo-multinode-experimental
