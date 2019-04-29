@@ -522,17 +522,18 @@
     vars:
       featureset: '052'
       featureset_override:
+        run_tempest: false
         standalone_environment_files:
           - 'environments/low-memory-usage.yaml'
           - 'ci/environments/scenario003-standalone.yaml'
-        tempest_whitelist:
+        tempest_services:
+          - mistral
+          - sahara
+        tempest_test_whitelist:
           - 'tempest.scenario.test_network_basic_ops.TestNetworkBasicOps.test_network_basic_ops'
           - 'sahara_tempest_plugin.tests.api.test_data_sources.DataSourceTest'
           - 'mistral_tempest_tests.tests.api.v2.test_actions.ActionTestsV2'
-        tempest_plugins:
-          - python-sahara-tests-tempest
-          - python-mistral-tests-tempest
-        test_white_regex: ""
+        use_os_tempest: true
 
 - job:
     name: tripleo-ci-centos-7-scenario004-standalone
