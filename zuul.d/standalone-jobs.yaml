@@ -496,20 +496,22 @@
     vars:
       featureset: '052'
       featureset_override:
+        run_tempest: false
         standalone_environment_files:
           - 'environments/low-memory-usage.yaml'
           - 'ci/environments/scenario002-standalone.yaml'
-        tempest_whitelist:
+        tempest_services:
+          - barbican
+          - ceilometer
+          - aodh
+        tempest_tempest_conf_overrides:
+          auth.tempest_roles: "'Member, creator'"
+          telemetry.alarm_granularity: '60'
+        tempest_test_whitelist:
           - 'tempest.api.object_storage.test_object_services.ObjectTest'
           - 'barbican_tempest_plugin.tests.scenario.test_volume_encryption.VolumeEncryptionTest'
           - 'telemetry_tempest_plugin.scenario.test_telemetry_integration.TestTelemetryIntegration'
-        tempest_plugins:
-          - python-telemetry-tests-tempest
-          - python-barbican-tests-tempest
-        tempest_extra_config:
-          auth.tempest_roles: "'Member, creator'"
-          telemetry.alarm_granularity: '60'
-        test_white_regex: ""
+        use_os_tempest: true
 
 - job:
     name: tripleo-ci-centos-7-scenario003-standalone
