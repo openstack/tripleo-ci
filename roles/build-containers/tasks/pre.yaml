@@ -53,7 +53,7 @@
             section: 'registries.insecure'
             option: registries
             value:
-              - localhost:8787
+              - "localhost:{{ push_registry_port }}"
 
 - name: Setup repo web service
   become: true

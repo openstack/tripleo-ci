@@ -1,4 +1,5 @@
-push_registry: "127.0.0.1:8787"
+push_registry_port: 8787
+push_registry: "127.0.0.1:{{ push_registry_port }}"
 push_containers: "false"
 use_buildah: false
 buildcontainers_override_repos: ""
