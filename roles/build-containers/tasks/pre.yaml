@@ -35,8 +35,8 @@
       shell: |
         ansible-playbook docker-playbook.yaml --extra-vars "container_registry_deployment_user={{ ansible_user }}"
 
-    - name: Reset connection because of group changes for current user
-      meta: reset_connection
+    - include_tasks: reset_connection.yaml
+      when: not use_buildah | default(false) | bool
 
     - name: Prepare Buildah
       become: true

@@ -1,0 +1,3 @@
+---
+- name: Reset connection because of group changes for current user
+  meta: reset_connection
