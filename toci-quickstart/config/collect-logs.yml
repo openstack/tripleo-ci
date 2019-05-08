@@ -250,6 +250,7 @@ artcl_collect_list:
   - /var/log/sahara/
   - /var/log/sensu/
   - /var/log/setup-ipa-client.log
+  - /var/log/setup-ipa-client-ansible.log
   - /var/log/sssd/
   - /var/log/swift/
   - /var/log/tacker/
