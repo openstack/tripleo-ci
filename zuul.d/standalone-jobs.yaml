@@ -60,20 +60,12 @@
 
 - job:
     name: tripleo-ci-centos-7-standalone-upgrade
-    parent: tripleo-ci-base-standalone
+    parent: tripleo-ci-base-standalone-upgrade
     nodeset: single-centos-7-node
     voting: false
     branches: ^(?!stable/(newton|ocata|pike|queens|rocky|stein)).*
     vars:
       featureset: '056'
-      playbooks:
-        - quickstart.yml
-        - multinode-standalone.yml
-        - multinode-standalone-upgrade.yml
-      tags:
-        - standalone
-      extra_tags:
-        - standalone-upgrade
     irrelevant-files:
       - ^.*\.md$
       - ^.*\.rst$
