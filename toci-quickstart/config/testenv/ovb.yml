@@ -56,8 +56,8 @@ floating_ip_cidr: >-
   {%- else %}192.168.24.0/24
   {%- endif %}
 tempest_test_image_path: /opt/cache/files/cirros-0.3.5-x86_64-disk.img
-overcloud_image_url: http://192.168.103.253/builds-{{ release }}/current-tripleo/overcloud-full.tar
-ipa_image_url: http://192.168.103.253/builds-{{ release }}/current-tripleo/ipa_images.tar
+overcloud_image_url: http://images.rdoproject.org/{{ release }}/rdo_trunk/{{ dlrn_hash|default(dlrn_hash_tag) }}/overcloud-full.tar
+ipa_image_url: http://images.rdoproject.org/{{ release }}/rdo_trunk/{{ dlrn_hash|default(dlrn_hash_tag) }}/ironic-python-agent.tar
 
 # We don't need to cleanup TripleO CI
 tempest_track_resources: false
