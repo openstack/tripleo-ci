@@ -87,10 +87,6 @@
     override-checkout: 'stable/stein'
     vars:
        branch_override: 'stable/stein'
-       featureset_override:
-         test_black_regex:
-           - tempest.api.compute.security_groups.test_security_groups.SecurityGroupsTestJSON.test_list_security_groups_by_server
-           - tempest.api.compute.security_groups.test_security_groups.SecurityGroupsTestJSON.test_server_security_groups
 
 - project-template:
     name: tripleo-standalone-scenarios-full
