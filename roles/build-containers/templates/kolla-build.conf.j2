@@ -1,5 +1,9 @@
 [DEFAULT]
-base={{ ansible_distribution|lower }}
+base={{ kolla_base }}
+base_image={{ kolla_base_image }}
+{% if kolla_base_tag is defined %}
+base_tag={{ kolla_base_tag }}
+{% endif %}
 type=binary
 registry={{ push_registry }}
 tag={{ version_hash }}
@@ -7,5 +11,6 @@ template_override={{ openstack_git_root }}/tripleo-common/container-images/tripl
 # we use the repos off the main host as they will already have the correct mirror info in them
 rpm_setup_config="{{ buildcontainers_rpm_setup_config }}"
 push={{ push_containers }}
+pull={{ kolla_base_pull }}
 namespace=tripleo{{ ci_branch }}
 debug=True

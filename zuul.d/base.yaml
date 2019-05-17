@@ -182,13 +182,11 @@
 # Please do not add files: to tripleo-build-containers-base otherwise the periodic job wont run
 # See https://storyboard.openstack.org/#!/story/2005040
 - job:
-    name: tripleo-build-containers-base
+    name: tripleo-build-containers-base-noreposetup
     abstract: true
     description: |
         Base abstract job for standalone TripleO CI build-containers jobs
     parent: tripleo-ci-base-singlenode
-    pre-run:
-      - playbooks/tripleo-buildcontainers/pre.yaml
     run: playbooks/tripleo-buildcontainers/run.yaml
     post-run: playbooks/tripleo-buildcontainers/post.yaml
     timeout: 7200
@@ -200,6 +198,15 @@
       - opendev.org/openstack/requirements
       - opendev.org/openstack/tripleo-common
       - opendev.org/openstack/tripleo-repos
+
+- job:
+    name: tripleo-build-containers-base
+    abstract: true
+    description: |
+        Base abstract job for standalone TripleO CI build-containers jobs running repo setup
+    parent: tripleo-build-containers-base-noreposetup
+    pre-run:
+      - playbooks/tripleo-buildcontainers/pre.yaml
 
 - job:
     # Has file filters in order to be used with non-periodic triggers due to:
