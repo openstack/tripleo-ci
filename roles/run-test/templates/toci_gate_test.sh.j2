@@ -20,7 +20,6 @@ if [ -f /etc/nodepool/provider ] ; then
     source /etc/ci/mirror_info.sh
 
     {% if rhcloud -%}
-    source $(dirname $0)/scripts/{{ rhcloud }}.env
     # In order to save space remove the cached git repositories, at this point in
     # CI the ones we are interested in have been cloned to /opt/stack/new. We
     # can also remove some distro images cached on the images.

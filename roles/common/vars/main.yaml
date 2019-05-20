@@ -31,6 +31,8 @@ rhcloud: >-
   rdocloud
   {%- elif nodepool_provider == 'vexxhost-rdo-ca-ymq-1' -%}
   vexxhost
+  {%- elif nodepool_provider == 'tripleo-ci' -%}
+  internal
   {%- endif -%}
 
 nodes_file: >-
