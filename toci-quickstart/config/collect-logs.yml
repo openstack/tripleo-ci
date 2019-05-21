@@ -197,6 +197,7 @@ artcl_collect_list:
   - /var/log/unbound.log
   - /var/log/yum.log
   - /var/log/dnf.log
+  - /var/log/cloud-init*.log
   - /var/log/aodh/
   - /var/log/audit/
   - /var/log/barbican/
