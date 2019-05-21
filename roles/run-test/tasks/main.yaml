@@ -25,6 +25,7 @@
         - 'tempest_run_concurrency'
         - 'validate_ha_overcloud'
         - 'validate_services'
+        - 'tempest_test_image_path'
     fail:
       msg: "ERROR: {{ item }} is not overridable."
     when: item not in "{{ allowed_overrides }}"
