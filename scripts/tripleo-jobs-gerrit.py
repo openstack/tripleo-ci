@@ -35,7 +35,6 @@ DEFAULT_PROJECTS = [
     'openstack/tripleo-ansible',
     'openstack/tripleo-repos',
     'openstack/tripleo-upgrade',
-    'openstack/tripleo-ui',
     'openstack/tripleo-quickstart',
     'openstack/tripleo-quickstart-extras',
     'openstack/tripleo-ha-utils',

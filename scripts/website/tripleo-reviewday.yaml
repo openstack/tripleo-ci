@@ -28,8 +28,6 @@ projects:
   - name: puppet-tripleo
     launchpad_project: tripleo
   - name: puppet-pacemaker
-  - name: tempest-tripleo-ui
-    launchpad_project: tripleo
   - name: tripleo-common-tempest-plugin
     launchpad_project: tripleo
   - name: tripleo-ipsec
@@ -37,8 +35,6 @@ projects:
   - name: tripleo-quickstart
     launchpad_project: tripleo
   - name: tripleo-quickstart-extras
-    launchpad_project: tripleo
-  - name: tripleo-ui
     launchpad_project: tripleo
   - name: tripleo-upgrade
     launchpad_project: tripleo

@@ -1389,20 +1389,6 @@ function multinode_setup {
     log "Multinode Setup - DONE".
 }
 
-function ui_sanity_check {
-    if [ -f "/etc/httpd/conf.d/25-tripleo-ui.conf" ]; then
-        if [ "$UNDERCLOUD_SSL" = 1 ]; then
-            UI_URL=https://192.168.24.2
-        else
-            UI_URL=http://192.168.24.1:3000
-        fi
-        if ! curl $UI_URL 2>/dev/null | grep -q 'TripleO'; then
-            log "ERROR: TripleO UI front page is not loading."
-            exit 1
-        fi
-    fi
-}
-
 function undercloud_sanity_check {
     set -x
     stackrc_check
