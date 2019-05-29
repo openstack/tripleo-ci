@@ -10,7 +10,7 @@
 
 - name: Setup docker registry
   block:
-    - name: Install ansible
+    - name: Install ansible to run docker-playbook.yaml
       become: true
       package:
         name: ansible
@@ -34,6 +34,12 @@
         chdir: '{{ workspace }}'
       shell: |
         ansible-playbook docker-playbook.yaml --extra-vars "container_registry_deployment_user={{ ansible_user }}"
+
+    - name: Remove ansible
+      become: true
+      package:
+        name: ansible
+        state: absent
 
     - include_tasks: reset_connection.yaml
       when: not use_buildah | default(false) | bool
