@@ -61,6 +61,9 @@
               - ^playbooks/tripleo-ci/.*$
         - tripleo-ci-centos-7-standalone-upgrade-stein:
             branches: master
+        - tripleo-ci-centos-7-containers-undercloud-minion:
+            files:
+                - ^zuul.d/multinode-jobs.yaml$
 
     gate:
       queue: tripleo
