@@ -118,7 +118,7 @@
     check:
       jobs:
         - tripleo-ci-centos-7-scenario001-standalone:
-            files:
+            files: &scen1_files
               # tripleo-common
               - ^container-images/.*$
               - tripleo_common/image/kolla_builder.py
@@ -164,8 +164,11 @@
               - roles/common/.*
               - roles/prepare-node/.*
               - roles/ceph-loop-device/.* # scen1/4 ceph
+              # python-tripleoclient
+              - ^tripleoclient/heat_launcher.*$
+              - ^tripleoclient/v1/tripleo_(deploy|config|upgrade).*$
         - tripleo-ci-centos-7-scenario002-standalone:
-            files:
+            files: &scen2_files
               # tripleo-common
               - ^container-images/.*$
               - tripleo_common/image/kolla_builder.py
@@ -209,8 +212,11 @@
               - roles/run-test/.*
               - roles/prepare-node/.*
               - roles/common/.*
+              # python-tripleoclient
+              - ^tripleoclient/heat_launcher.*$
+              - ^tripleoclient/v1/tripleo_(deploy|config|upgrade).*$
         - tripleo-ci-centos-7-scenario003-standalone:
-            files:
+            files: &scen3_files
               # tripleo-common
               - ^container-images/.*$
               - tripleo_common/image/kolla_builder.py
@@ -241,8 +247,11 @@
               - roles/run-test/.*
               - roles/common/.*
               - roles/prepare-node/.*
+              # python-tripleoclient
+              - ^tripleoclient/heat_launcher.*$
+              - ^tripleoclient/v1/tripleo_(deploy|config|upgrade).*$
         - tripleo-ci-centos-7-scenario004-standalone:
-            files:
+            files: &scen4_files
               # tripleo-common
               - workbooks/ceph-ansible.yaml
               - ^container-images/.*$
@@ -274,6 +283,9 @@
               - roles/common/.*
               - roles/prepare-node/.*
               - roles/ceph-loop-device/.* # scen1/4 ceph
+              # python-tripleoclient
+              - ^tripleoclient/heat_launcher.*$
+              - ^tripleoclient/v1/tripleo_(deploy|config|upgrade).*$
         - tripleo-ci-centos-7-scenario010-standalone:
             files:
               # tripleo-common
@@ -306,6 +318,9 @@
               - ^network/endpoints/.*$
               - ^common/.*$
               - zuul.d/*
+              # python-tripleoclient
+              - ^tripleoclient/heat_launcher.*$
+              - ^tripleoclient/v1/tripleo_(deploy|config|upgrade).*$
         - tripleo-ci-centos-7-scenario012-standalone:
             files:
               # tripleo-common
@@ -335,6 +350,9 @@
               - roles/common/.*
               - roles/prepare-node/.*
               - roles/ceph-loop-device/.* # scen1/4 ceph
+              # python-tripleoclient
+              - ^tripleoclient/heat_launcher.*$
+              - ^tripleoclient/v1/tripleo_(deploy|config|upgrade).*$
         - tripleo-ci-centos-7-standalone-rocky
         - tripleo-ci-centos-7-standalone-upgrade
         - tripleo-ci-centos-7-standalone-upgrade-stein
@@ -345,152 +363,13 @@
       queue: tripleo
       jobs:
         - tripleo-ci-centos-7-scenario001-standalone:
-            files:
-              # tripleo-common
-              - ^container-images/.*$
-              - tripleo_common/image/kolla_builder.py
-              - workbooks/ceph-ansible.yaml
-              - tripleo_common/actions/ansible.py
-              # tripleo-heat-templates
-              - ^((docker|puppet)/services|deployment)/.*aodh.*$
-              - ^((docker|puppet)/services|deployment)/.*ceilometer.*$
-              - ^((docker|puppet)/services|deployment)/.*ceph.*$
-              - ^((docker|puppet)/services|deployment)/.*cinder.*$
-              - ^((docker|puppet)/services|deployment)/.*glance.*$
-              - ^((docker|puppet)/services|deployment)/.*gnocchi.*$
-              - ^((docker|puppet)/services|deployment)/.*logging.*$
-              - ^((docker|puppet)/services|deployment)/.*metrics.*$
-              - ^((docker|puppet)/services|deployment)/.*monitoring.*$
-              - ^((docker|puppet)/services|deployment)/.*panko.*$
-              - ci/environments/scenario001-standalone.yaml
-              - ^environments\/.*.yaml
-              - ^deployed-server/.*$
-              - ^network/endpoints/.*$
-              - ^common/.*$
-              - zuul.d/*
-              # tripleo-quickstart
-              - config/general_config/featureset052.yml
-              # puppet-tripleo
-              - ^manifests/haproxy.*$
-              - ^manifests/profile/(base|pacemaker)/aodh.*$
-              - ^manifests/profile/(base|pacemaker)/ceilometer.*$
-              - ^manifests/profile/(base|pacemaker)/cinder.*$
-              - ^manifests/profile/(base|pacemaker)/glance.*$
-              - ^manifests/profile/(base|pacemaker)/gnocchi.*$
-              - ^manifests/profile/(base|pacemaker)/logging.*$
-              - ^manifests/profile/(base|pacemaker)/metrics.*$
-              - ^manifests/profile/(base|pacemaker)/monitoring.*$
-              - ^manifests/profile/(base|pacemaker)/panko.*$
-              - zuul.d/layout.yaml
-              # tripleo-quickstart-extras
-              - roles/standalone/.*
-              # python-tripleoclient
-              - ^tripleoclient/heat_launcher.*$
-              - ^tripleoclient/v1/tripleo_(deploy|config|upgrade).*$
-
+            files: *scen1_files
         - tripleo-ci-centos-7-scenario002-standalone:
-            files:
-              # tripleo-common
-              - ^container-images/.*$
-              - tripleo_common/image/kolla_builder.py
-              - workbooks/ceph-ansible.yaml
-              - tripleo_common/actions/ansible.py
-              # tripleo-heat-templates
-              - ^((docker|puppet)/services|deployment)/.*aodh.*$
-              - ^((docker|puppet)/services|deployment)/.*barbican.*$
-              - ^((docker|puppet)/services|deployment)/.*ceilometer.*$
-              - ^((docker|puppet)/services|deployment)/.*cinder.*$
-              - ^((docker|puppet)/services|deployment)/.*ec2-api.*$
-              - ^((docker|puppet)/services|deployment)/.*glance.*$
-              - ^((docker|puppet)/services|deployment)/.*gnocchi.*$
-              - ^((docker|puppet)/services|deployment)/.*panko.*$
-              - ^((docker|puppet)/services|deployment)/.*swift.*$
-              - ^((docker|puppet)/services|deployment)/.*zaqar.*$
-              - ci/environments/scenario002-standalone.yaml
-              - ^environments\/.*.yaml
-              - ^deployed-server/.*$
-              - ^network/endpoints/.*$
-              - ^common/.*$
-              - zuul.d/*
-              # tripleo-quickstart
-              - config/general_config/featureset052.yml
-              # puppet-tripleo
-              - ^manifests/profile/(base|pacemaker)/aodh.*$
-              - ^manifests/profile/(base|pacemaker)/barbican.*$
-              - ^manifests/profile/(base|pacemaker)/ceilometer.*$
-              - ^manifests/profile/(base|pacemaker)/cinder.*$
-              - ^manifests/profile/(base|pacemaker)/glance.*$
-              - ^manifests/profile/(base|pacemaker)/gnocchi.*$
-              - ^manifests/profile/(base|pacemaker)/nova/ec2.*$
-              - ^manifests/profile/(base|pacemaker)/panko.*$
-              - ^manifests/profile/(base|pacemaker)/swift.*$
-              - ^manifests/profile/(base|pacemaker)/zaqar.*$
-              # tripleo-quickstart-extras
-              - roles/standalone/.*
-              # python-tripleoclient
-              - ^tripleoclient/heat_launcher.*$
-              - ^tripleoclient/v1/tripleo_(deploy|config|upgrade).*$
-
+            files: *scen2_files
         - tripleo-ci-centos-7-scenario003-standalone:
-            files:
-              # tripleo-common
-              - ^container-images/.*$
-              - tripleo_common/image/kolla_builder.py
-              # tripleo-heat-templates
-              - ^((docker|puppet)/services|deployment)/.*designate.*$
-              - ^((docker|puppet)/services|deployment)/.*glance.*$
-              - ^((docker|puppet)/services|deployment)/.*mistral.*$
-              - ^((docker|puppet)/services|deployment)/.*nova.*$
-              - ^((docker|puppet)/services|deployment)/.*sahara.*$
-              - ci/environments/scenario003-standalone.yaml
-              - ^environments\/.*.yaml
-              - ^deployed-server/.*$
-              - ^network/endpoints/.*$
-              - ^common/.*$
-              - zuul.d/*
-              # tripleo-quickstart
-              - config/general_config/featureset052.yml
-              # puppet-tripleo
-              - ^manifests/haproxy.*$
-              - ^manifests/profile/(base|pacemaker)/glance.*$
-              - ^manifests/profile/(base|pacemaker)/mistral.*$
-              - ^manifests/profile/(base|pacemaker)/sahara.*$
-              - ^manifests/profile/(base|pacemaker)/designate.*$
-              # tripleo-quickstart-extras
-              - roles/standalone/.*
-              # python-tripleoclient
-              - ^tripleoclient/heat_launcher.*$
-              - ^tripleoclient/v1/tripleo_(deploy|config|upgrade).*$
-
+            files: *scen3_files
         - tripleo-ci-centos-7-scenario004-standalone:
-            files:
-              # tripleo-common
-              - workbooks/ceph-ansible.yaml
-              - ^container-images/.*$
-              - tripleo_common/actions/ansible.py
-              - tripleo_common/image/kolla_builder.py
-              - zuul.d/layout.yaml
-              # tripleo-heat-templates
-              - ^(docker/services|deployment)/ceph.*$
-              - ^(docker/services|deployment)/glance.*$
-              - ^(docker/services|deployment)/manila.*$
-              - ci/environments/scenario004-standalone.yaml
-              - ^environments\/.*.yaml
-              - ^deployed-server/.*$
-              - ^network/endpoints/.*$
-              - ^common/.*$
-              - zuul.d/*
-              # tripleo-quickstart
-              - config/general_config/featureset052.yml
-              # puppet-tripleo
-              - ^manifests/haproxy.*$
-              - ^manifests/profile/(base|pacemaker)/glance.*$
-              - ^manifests/profile/(base|pacemaker)/manila.*$
-              # tripleo-quickstart-extras
-              - roles/standalone/.*
-              # python-tripleoclient
-              - ^tripleoclient/heat_launcher.*$
-              - ^tripleoclient/v1/tripleo_(deploy|config|upgrade).*$
+            files: *scen4_files
 
         - tripleo-ci-centos-7-standalone-upgrade-stein
         - tripleo-ci-centos-7-standalone
