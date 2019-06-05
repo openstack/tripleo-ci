@@ -32,9 +32,12 @@
       - opendev.org/openstack/tripleo-ha-utils
       - name: opendev.org/openstack/openstack-virtual-baremetal
         override-checkout: stable/1.0
-      - opendev.org/openstack/openstack-ansible-os_tempest
-      - opendev.org/openstack/ansible-role-python_venv_build
-      - opendev.org/openstack/ansible-config_template
+      - name: opendev.org/openstack/openstack-ansible-os_tempest
+        override-checkout: master
+      - name: opendev.org/openstack/ansible-role-python_venv_build
+        override-checkout: master
+      - name: opendev.org/openstack/ansible-config_template
+        override-checkout: master
       - opendev.org/openstack/ansible-role-collect-logs
     pre-run:
       - playbooks/nodepool-provider/pre.yaml
