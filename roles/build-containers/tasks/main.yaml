@@ -31,9 +31,11 @@
     cat /etc/yum.repos.d/{{ openstack_repo_name }}.repo |awk -F= '/baseurl/ {print $2}'
   register: baseurl
 
-- name: Set version_hash fact
+- name: Set version_hash and arch_tag facts
   set_fact:
     version_hash: "{{ baseurl.stdout.split('/')[-1] }}"
+    # NOTE(mjturek): Push old style tag for x86_64 first to maintain compatibility.
+    arch_tag: "{{ '_' + ansible_architecture if ansible_architecture != 'x86_64' else ''}}"
 
 - name: grab kolla patch f28
   when: ansible_pkg_mgr == "dnf" and ansible_distribution|lower  == "fedora"
@@ -177,3 +179,22 @@
   when:
     - ansible_distribution|lower  == "redhat"
 
+- name: Retrieve list of built x86_64 images, retag, and push
+  when:
+    - ansible_architecture == "x86_64"
+    - push_containers | bool
+  block:
+    - name: Retrieve built images
+      command: "awk '{ print $1 }' {{ workspace }}/containers-successfully-built.log"
+      register: built_images
+    - name: Disable HTTPS and certificates to access registry (buildah)
+      set_fact:
+        container_cli_opt: '--tls-verify=false'
+      when: use_buildah | bool
+    - name: Tag images
+      vars:
+        image: "{{ item }}"
+      include: tag.yaml
+      static: no
+      with_items: "{{ built_images.stdout_lines }}"
+  become: true
