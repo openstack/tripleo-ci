@@ -3,7 +3,7 @@
 # Zuul layout for TripleO Build Containers jobs.
 
 - project-template:
-    name: tripleo-build-containers-jobs
+    name: tripleo-ci-build-containers-jobs
     check:
       jobs:
         - tripleo-build-containers-centos-7
@@ -19,6 +19,40 @@
         - tripleo-build-containers-centos-7-rocky
         - tripleo-build-containers-centos-7-buildah
         - tripleo-build-containers-centos-7-buildah-stein
+
+- project-template:
+    name: tripleo-build-containers-jobs
+    check:
+      jobs:
+        - tripleo-build-containers-centos-7
+        - tripleo-build-containers-centos-7-buildah
+    gate:
+      queue: tripleo
+      jobs:
+        - tripleo-build-containers-centos-7
+        - tripleo-build-containers-centos-7-buildah
+
+- project-template:
+    name: tripleo-build-containers-jobs-stein
+    check:
+      jobs:
+        - tripleo-build-containers-centos-7-stein
+        - tripleo-build-containers-centos-7-buildah-stein
+    gate:
+      queue: tripleo
+      jobs:
+        - tripleo-build-containers-centos-7-stein
+        - tripleo-build-containers-centos-7-buildah-stein
+
+- project-template:
+    name: tripleo-build-containers-jobs-rocky
+    check:
+      jobs:
+        - tripleo-build-containers-centos-7-rocky
+    gate:
+      queue: tripleo
+      jobs:
+        - tripleo-build-containers-centos-7-rocky
 
 - job:
     name: tripleo-build-containers-centos-7
