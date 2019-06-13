@@ -54,9 +54,6 @@
         - tripleo-ci-centos-7-scenario007-multinode-oooq-container:
             files:
               - ^playbooks/tripleo-ci/.*$
-        - tripleo-ci-centos-7-scenario008-multinode-oooq-container:
-            files:
-              - ^playbooks/tripleo-ci/.*$
         - tripleo-ci-centos-7-scenario009-multinode-oooq-container:
             files:
               - ^playbooks/tripleo-ci/.*$
