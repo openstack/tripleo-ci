@@ -55,6 +55,7 @@
       - ^releasenotes/.*$
       - ^requirements.txt$
       - ^test-requirements.txt$
+      - ^lower-constraints.txt$
       - ^spec/.*$
       - ^Puppetfile.*$
       - tox.ini
