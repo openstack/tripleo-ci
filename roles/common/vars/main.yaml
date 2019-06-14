@@ -4,6 +4,7 @@ tripleo_ci_dir: "{{ ansible_user_dir }}/{{ zuul.projects['opendev.org/openstack/
 tripleo_quickstart_dir: "{{ ansible_user_dir }}/{{ zuul.projects['opendev.org/openstack/tripleo-quickstart'].src_dir }}"
 vxlan_vars: "-e toci_vxlan_networking='false' -e vxlan_networking='false'"
 extra_vars: ""
+role_vars: ""
 job_featureset_file: >-
   {% if featureset is defined -%}
   {{ tripleo_quickstart_dir }}/config/general_config/featureset{{ featureset }}.yml{% endif -%}
