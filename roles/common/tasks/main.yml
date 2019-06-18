@@ -3,13 +3,3 @@
 - name: Include the vars to be available for the playbook
   include_vars:
     dir: vars
-
-# Workaround for https://launchpad.net/bugs/1807703 safe to remove only once
-# fetch-zuul-cloner is no longer part of zuul base job.
-- name: apply o-w workaround on src to avoid failure to load ansible.cfg
-  file:
-    path: "{{ ansible_user_dir }}/src"
-    state: directory
-    recurse: yes
-    mode: o-w
-  become: yes
