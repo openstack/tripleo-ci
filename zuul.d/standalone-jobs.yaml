@@ -63,7 +63,7 @@
     name: tripleo-ci-fedora-28-standalone
     parent: tripleo-ci-base-standalone
     nodeset: single-fedora-28-node
-    voting: true
+    voting: false
     branches: ^(?!stable/(newton|ocata|pike|queens|rocky)).*$
     vars:
       environment_type: standalone
@@ -494,7 +494,6 @@
 
         - tripleo-ci-centos-7-standalone-upgrade-stein
         - tripleo-ci-centos-7-standalone
-        - tripleo-ci-fedora-28-standalone
 
         - tripleo-ci-centos-7-scenario010-standalone:
             files:
