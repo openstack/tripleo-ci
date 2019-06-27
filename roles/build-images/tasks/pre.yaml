@@ -1,0 +1,28 @@
+---
+- name: Include common buildimage vars
+  include_vars:
+    file: "common.yaml"
+
+# get python_v fact used with vars/common.yaml to get
+# python2 or python3 packages in below tasks
+- name: Get python_v fact for py2 or py3 common vars
+  include_tasks: check_set_py3.yaml
+
+- name: Install pip and virtualenv
+  become: true
+  package:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - "{{ python_version[python_v] }}-pip"
+    - "{{ python_version[python_v] }}-virtualenv"
+
+- name: pip install tripleo itemsd
+  become: true
+  pip:
+    name:
+      - "file://{{ openstack_git_root }}/diskimage-builder"
+      - "file://{{ openstack_git_root }}/{{ python_version[python_v] }}-tripleoclient"
+      - "file://{{ openstack_git_root }}/tripleo-common"
+    state: present
+    virtualenv: "{{ workspace }}/venv"

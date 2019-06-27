@@ -1,0 +1,22 @@
+---
+- name: Include common buildimage vars
+  include_vars:
+    file: "common.yaml"
+
+# The python_v fact is used with vars/common.yaml to set the right
+# overcloud-images file in the build-images.sh.j2 template
+- name: Get python_v fact for py2 or py3 common vars
+  include_tasks: check_set_py3.yaml
+
+- name: Generate build-images.sh script
+  template:
+    src: templates/build-images.sh.j2
+    dest: "{{ workspace }}/build_images.sh"
+    mode: 0777
+    force: yes
+
+- name: Run build-images.sh
+  args:
+    chdir: '{{ workspace }}'
+  shell: bash build_images.sh > {{ workspace }}/build.log 2> build-err.log
+  changed_when: true

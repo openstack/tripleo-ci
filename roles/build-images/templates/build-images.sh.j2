@@ -1,0 +1,46 @@
+set -x
+source {{ workspace }}/venv/bin/activate
+TRIPLEO_COMMON_PATH="{{ openstack_git_root }}/tripleo-common"
+
+ELEMENTS="{{ openstack_git_root }}/tripleo-puppet-elements/elements:"
+ELEMENTS+="{{ openstack_git_root }}/tripleo-image-elements/elements:"
+ELEMENTS+="{{ openstack_git_root }}/heat-agents"
+
+if [ -d "{{ openstack_git_root }}/instack-undercloud/elements" ]; then
+  ELEMENTS="{{ openstack_git_root }}/instack-undercloud/elements:${ELEMENTS}"
+fi
+
+# the tripleo_image_type is set and passed from the ci job definition
+if [ "{{ tripleo_image_type }}" == "overcloud-hardened-full" ]; then
+  CONFIG_FILES="--config-file \
+    $TRIPLEO_COMMON_PATH/image-yaml/overcloud-hardened-images.yaml \
+    --config-file $TRIPLEO_COMMON_PATH/image-yaml/overcloud-hardened-images-{{ tripleo_image_os }}.yaml"
+else
+  # base_image_config in vars/common.yaml, python_v set in build-images role
+  # to set either overcloud-images.yaml or overcloud-images-python3.yaml
+  CONFIG_FILES="--config-file \
+    $TRIPLEO_COMMON_PATH/image-yaml/{{ base_image_config[python_v] }} \
+    --config-file $TRIPLEO_COMMON_PATH/image-yaml/overcloud-images-{{ tripleo_image_os }}.yaml"
+fi
+
+{% if dib_rhel_image is defined %}
+
+# this is only set in rhel8 jobs dib_rhel_image -> DIB_LOCAL_IMAGE
+export DIB_LOCAL_IMAGE={{ dib_rhel_image }}
+
+{% endif %}
+
+{% if dib_node_dist is defined %}
+
+export NODE_DIST={{ dib_node_dist }}
+
+{% endif %}
+
+export ELEMENTS_PATH=$ELEMENTS
+export DIB_YUM_REPO_CONF="/etc/yum.repos.d/delorean*"
+
+openstack overcloud image build --image-name {{ tripleo_image_type }} $CONFIG_FILES > {{ workspace }}/build.log 2> {{ workspace }}/build-err.log
+RESULT=$?
+
+mv *.log {{ workspace }}/logs/
+exit $RESULT

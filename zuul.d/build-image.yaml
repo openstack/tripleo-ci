@@ -18,8 +18,9 @@
 - job:
     name: tripleo-buildimage-ironic-python-agent-centos-7
     parent: tripleo-ci-base-singlenode
-    run: playbooks/tripleo-buildimage/run-v3.yaml
-    post-run: playbooks/tripleo-buildimage/post.yaml
+    pre-run: playbooks/tripleo-buildimages/pre.yaml
+    run: playbooks/tripleo-buildimages/run-v3.yaml
+    post-run: playbooks/tripleo-buildimages/post.yaml
     timeout: 4200
     nodeset: single-centos-7-node
     required-projects:
@@ -45,8 +46,9 @@
 - job:
     name: tripleo-buildimage-overcloud-full-centos-7
     parent: tripleo-ci-base-singlenode
-    run: playbooks/tripleo-buildimage/run-v3.yaml
-    post-run: playbooks/tripleo-buildimage/post.yaml
+    pre-run: playbooks/tripleo-buildimages/pre.yaml
+    run: playbooks/tripleo-buildimages/run-v3.yaml
+    post-run: playbooks/tripleo-buildimages/post.yaml
     timeout: 4200
     nodeset: single-centos-7-node
     required-projects:
@@ -69,8 +71,9 @@
 - job:
     name: tripleo-buildimage-overcloud-hardened-full-centos-7
     parent: tripleo-ci-base-singlenode
-    run: playbooks/tripleo-buildimage/run-v3.yaml
-    post-run: playbooks/tripleo-buildimage/post.yaml
+    pre-run: playbooks/tripleo-buildimages/pre.yaml
+    run: playbooks/tripleo-buildimages/run-v3.yaml
+    post-run: playbooks/tripleo-buildimages/post.yaml
     timeout: 4200
     nodeset: single-centos-7-node
     required-projects:

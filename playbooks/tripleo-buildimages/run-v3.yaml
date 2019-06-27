@@ -1,0 +1,5 @@
+- hosts: all
+  tasks:
+  - name: Run image build using the build-images role
+    include_role:
+      name: build-images
