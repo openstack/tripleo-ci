@@ -17,24 +17,7 @@
 
 - job:
     name: tripleo-buildimage-ironic-python-agent-centos-7
-    parent: tripleo-ci-base-singlenode
-    pre-run: playbooks/tripleo-buildimages/pre.yaml
-    run: playbooks/tripleo-buildimages/run-v3.yaml
-    post-run: playbooks/tripleo-buildimages/post.yaml
-    timeout: 4200
-    nodeset: single-centos-7-node
-    required-projects:
-      - opendev.org/openstack/diskimage-builder
-      - opendev.org/openstack/heat-agents
-      - opendev.org/openstack/instack-undercloud
-      - opendev.org/openstack/ironic
-      - opendev.org/openstack/ironic-python-agent
-      - opendev.org/openstack/python-tripleoclient
-      - opendev.org/openstack/tripleo-common
-      - opendev.org/openstack/tripleo-image-elements
-      - opendev.org/openstack/tripleo-puppet-elements
-      - opendev.org/openstack/tripleo-repos
-      - opendev.org/openstack/requirements
+    parent: tripleo-build-images-base
     vars:
       tripleo_image_type: ironic-python-agent
       tripleo_image_os: centos7
@@ -45,22 +28,7 @@
 
 - job:
     name: tripleo-buildimage-overcloud-full-centos-7
-    parent: tripleo-ci-base-singlenode
-    pre-run: playbooks/tripleo-buildimages/pre.yaml
-    run: playbooks/tripleo-buildimages/run-v3.yaml
-    post-run: playbooks/tripleo-buildimages/post.yaml
-    timeout: 4200
-    nodeset: single-centos-7-node
-    required-projects:
-      - opendev.org/openstack/diskimage-builder
-      - opendev.org/openstack/heat-agents
-      - opendev.org/openstack/instack-undercloud
-      - opendev.org/openstack/python-tripleoclient
-      - opendev.org/openstack/requirements
-      - opendev.org/openstack/tripleo-common
-      - opendev.org/openstack/tripleo-image-elements
-      - opendev.org/openstack/tripleo-puppet-elements
-      - opendev.org/openstack/tripleo-repos
+    parent: tripleo-build-images-base
     vars:
       tripleo_image_type: overcloud-full
       tripleo_image_os: centos7
@@ -70,22 +38,7 @@
 
 - job:
     name: tripleo-buildimage-overcloud-hardened-full-centos-7
-    parent: tripleo-ci-base-singlenode
-    pre-run: playbooks/tripleo-buildimages/pre.yaml
-    run: playbooks/tripleo-buildimages/run-v3.yaml
-    post-run: playbooks/tripleo-buildimages/post.yaml
-    timeout: 4200
-    nodeset: single-centos-7-node
-    required-projects:
-      - opendev.org/openstack/diskimage-builder
-      - opendev.org/openstack/heat-agents
-      - opendev.org/openstack/instack-undercloud
-      - opendev.org/openstack/python-tripleoclient
-      - opendev.org/openstack/tripleo-common
-      - opendev.org/openstack/tripleo-image-elements
-      - opendev.org/openstack/tripleo-puppet-elements
-      - opendev.org/openstack/tripleo-repos
-      - opendev.org/openstack/requirements
+    parent: tripleo-build-images-base
     vars:
       tripleo_image_type: overcloud-hardened-full
       tripleo_image_os: centos7
