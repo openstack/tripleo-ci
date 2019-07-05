@@ -35,8 +35,8 @@
   set_fact:
     version_hash: "{{ baseurl.stdout.split('/')[-1] }}"
 
-- name: grab kolla patch if needed
-  when: ansible_pkg_mgr == "dnf"
+- name: grab kolla patch f28
+  when: ansible_pkg_mgr == "dnf" and ansible_distribution|lower  == "fedora"
   shell: |
     set -euxo pipefail
     git config --global user.email "zuul@openstack.org"
@@ -56,6 +56,29 @@
     warn: false
   register: result
   changed_when: "'nothing to commit, working directory clean' not in result.stdout_lines"
+
+- name: grab kolla patch rhel8
+  when: ansible_pkg_mgr == "dnf" and ansible_distribution|lower  == "redhat"
+  shell: |
+    set -euxo pipefail
+    git config --global user.email "zuul@openstack.org"
+    git config --global user.name "Zuul"
+    git remote add upstream https://review.opendev.org/openstack/kolla
+    git ls-remote https://review.opendev.org/openstack/kolla | \
+      grep -E refs/changes/[[:digit:]]+/{{ kolla_rhel8_patch }}/ | \
+      awk '{print $2}' | \
+      sort -t / -k 5 -g -r | \
+      head -1 | \
+      xargs -I{} git fetch https://review.opendev.org/openstack/kolla {} && \
+      git checkout -b rhel8 FETCH_HEAD && \
+      git pull --rebase upstream {{ branch_override|default('master') }}
+
+  args:
+    chdir: "{{ openstack_git_root }}/kolla"
+    warn: false
+  register: result
+  changed_when: "'nothing to commit, working directory clean' not in result.stdout_lines"
+
 
 - name: pip install kolla
   pip:
@@ -81,6 +104,43 @@
     container_config: "--config-file $TRIPLEO_COMMON_PATH/container-images/overcloud_containers.yaml"
   when: ci_branch in ['pike', 'queens', 'rocky']
 
+- name: build base rhel container
+  block:
+    - name: create docker-build dir
+      file:
+        path: /tmp/base-build
+        state: directory
+
+    - name: create docker-build repos dir
+      file:
+        path: /tmp/base-build/repos
+        state: directory
+
+    - name: Move delorean repos to base build
+      become: true
+      shell:
+        cmd: |
+          cp /etc/yum.repos.d/delorean* /tmp/base-build/repos/
+          chown -R {{ ansible_user }}: /tmp/base-build/repos/*
+      changed_when: true
+
+    - name: render dockerfile
+      template:
+        src: templates/Dockerfile.j2
+        dest: /tmp/base-build/Dockerfile
+
+    - name: create base container with repos from rhel container
+      shell:
+        cmd: |
+          set -x
+          sudo buildah --debug bud -t {{ kolla_base_image }}:{{ kolla_base_tag }} . \
+                  2>&1 {{ timestamper_cmd }} > {{ workspace }}/build-rhel-base.log
+      args:
+        chdir: /tmp/base-build
+  when:
+    - ansible_distribution|lower  == "redhat"
+    - kolla_base_image is defined
+    - kolla_base_tag is defined
 
 - name: Generate building script
   template:
@@ -89,8 +149,18 @@
     mode: 0777
     force: yes
 
-- name: Run image build
+- name: Run image build as ansible user
   args:
     chdir: '{{ workspace }}'
   shell: set -o pipefail && bash build_containers.sh 2>&1 {{ timestamper_cmd }} > {{ workspace }}/build.log
+  when:
+    - ansible_distribution|lower != "redhat"
+
+- name: Run image build as root
+  args:
+    chdir: '{{ workspace }}'
+  shell: set -o pipefail && bash build_containers.sh 2>&1 {{ timestamper_cmd }} > {{ workspace }}/build.log
+  become: true
+  when:
+    - ansible_distribution|lower  == "redhat"
 
