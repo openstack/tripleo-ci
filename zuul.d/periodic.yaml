@@ -2,13 +2,5 @@
     name: tripleo-periodic
     periodic:
       jobs:
-        - tripleo-ci-centos-7-containers-multinode:
-            branches:
-              - master
-              - stable/stein
-              - stable/rocky
-              - stable/queens
-        - tripleo-ci-centos-7-scenario001-standalone:
-            branches:
-              - master
-              - stable/stein
+        - tripleo-ci-centos-7-containers-multinode
+        - tripleo-ci-centos-7-scenario001-standalone
