@@ -31,14 +31,13 @@
         - openstack-tox-py35:
             <<: *files
         - tripleo-buildimage-overcloud-full-centos-7:
-            files:
-              - ^playbooks/tripleo-buildimage/.*$
+            files: &build_images_files
+              - ^playbooks/tripleo-buildimages/.*$
+              - ^roles/oooci-build-images/.*$
         - tripleo-buildimage-ironic-python-agent-centos-7:
-            files:
-              - ^playbooks/tripleo-buildimage/.*$
+            files: *build_images_files
         - tripleo-buildimage-overcloud-hardened-full-centos-7:
-            files:
-              - ^playbooks/tripleo-buildimage/.*$
+            files: *build_images_files
         - tripleo-ci-centos-7-scenario001-multinode-oooq-container:
             files:
               - ^playbooks/tripleo-ci/.*$
@@ -80,7 +79,6 @@
             files:
               - ^scripts/emit_releases_file/.*$
         - tripleo-buildimage-overcloud-full-centos-7:
-            files:
-              - ^playbooks/tripleo-buildimage/.*$
+            files: *build_images_files
         - tripleo-ci-centos-7-standalone-upgrade-stein:
             branches: master

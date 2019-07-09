@@ -8,5 +8,5 @@
   tasks:
     - name: Import pre tasks from build-images role
       include_role:
-        name: build-images
+        name: oooci-build-images
         tasks_from: pre

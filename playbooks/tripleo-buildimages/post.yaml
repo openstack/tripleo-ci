@@ -2,5 +2,5 @@
   tasks:
     - name: Run build-images role post tasks (collect logs)
       include_role:
-        name: build-images
+        name: oooci-build-images
         tasks_from: post
