@@ -14,10 +14,10 @@
       - tripleo-standalone-scenarios-full
       - tripleo-undercloud-jobs
       - tripleo-periodic
-      - openstack-tox-molecule
     check:
       jobs:
         - openstack-tox-linters
+        - tripleo-tox-molecule
         - openstack-tox-py27: &files
             success-url: "tox/reports.html"
             failure-url: "tox/reports.html"
@@ -66,6 +66,7 @@
         # Don't put a files section on the linters job, otherwise no
         # jobs might be defined and nothing can merge in this repo.
         - openstack-tox-linters
+        - tripleo-tox-molecule
         - openstack-tox-py27:
             files:
               - ^scripts/emit_releases_file/.*$

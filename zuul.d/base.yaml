@@ -244,3 +244,22 @@
       - ^tripleo_repos/.*$
       # python-tripleoclient
       - ^tripleoclient/v1/container.*$
+
+- job:
+    name: tripleo-tox-molecule
+    # should `parent: openstack-tox-molecule` but we cannot because
+    # rdo zuul cannot load jobs from openstack-zuul-jobs.
+    # https://opendev.org/openstack/openstack-zuul-jobs/src/branch/master/zuul.d/jobs.yaml#L206
+    # https://github.com/rdo-infra/review.rdoproject.org-config/blob/master/zuul/rdo.yaml#L942-L943
+    description: |
+      TripleO own version of openstack-tox-molecule which adds
+      required-projects. These are used in order to allow testing change
+      requests with Depends-On, like below
+      openstack/tripleo-ci/roles/tripleo-repos -> openstack/tripleo-repos
+    parent: tox-molecule
+    success-url: "tox/reports.html"
+    failure-url: "tox/reports.html"
+    vars:
+      bindep_profile: test molecule
+    required-projects:
+      - opendev.org/openstack/tripleo-repos
