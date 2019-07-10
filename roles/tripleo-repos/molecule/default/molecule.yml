@@ -1,19 +1,22 @@
 ---
+# The MOLECULE_ vars used here are not officialy endorsed by molecule, but we
+# hope a future version will add implicit support for them.
 driver:
   name: docker
 log: true
 platforms:
 
-  - name: centos7-master
-    hostname: centos7-master
-    image: centos:7
+  - name: ${MOLECULE_PLATFORM:-centos7}
+    hostname: ${MOLECULE_PLATFORM:-centos7}
+    image: ${MOLECULE_IMAGE:-centos:7}
     dockerfile: ../Dockerfile.j2
     pkg_extras: python-setuptools
     easy_install: [pip]
     environment: &env
       http_proxy: "{{ lookup('env', 'http_proxy') }}"
       https_proxy: "{{ lookup('env', 'https_proxy') }}"
-
+    registry:
+      url: ${MOLECULE_CONTAINER_REGISTRY_URL:-docker.io}
   - name: fedora28-master
     hostname: fedora28-master
     image: fedora:28
@@ -26,7 +29,6 @@ provisioner:
   name: ansible
   env:
     ANSIBLE_STDOUT_CALLBACK: yaml
-    ANSIBLE_VERBOSITY: "2"
 scenario:
   test_sequence:
     - destroy
