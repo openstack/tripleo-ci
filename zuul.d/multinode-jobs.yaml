@@ -191,6 +191,12 @@
             irrelevant-files: *multinode_ignored
         - tripleo-ci-centos-7-containers-multinode-queens:
             irrelevant-files: *multinode_ignored
+    periodic:
+      jobs:
+        - tripleo-ci-centos-7-containers-multinode-train
+        - tripleo-ci-centos-7-containers-multinode-stein
+        - tripleo-ci-centos-7-containers-multinode-rocky
+        - tripleo-ci-centos-7-containers-multinode-queens
 
 - job:
     name: tripleo-ci-centos-7-containers-multinode
