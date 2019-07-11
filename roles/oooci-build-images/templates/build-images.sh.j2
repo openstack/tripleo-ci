@@ -23,10 +23,10 @@ else
     --config-file $TRIPLEO_COMMON_PATH/image-yaml/overcloud-images-{{ tripleo_image_os }}.yaml"
 fi
 
-{% if dib_rhel_image is defined %}
+{% if dib_local_image is defined %}
 
 # this is only set in rhel8 jobs dib_rhel_image -> DIB_LOCAL_IMAGE
-export DIB_LOCAL_IMAGE={{ dib_rhel_image }}
+export DIB_LOCAL_IMAGE={{ dib_local_image }}
 
 {% endif %}
 
@@ -36,8 +36,23 @@ export NODE_DIST={{ dib_node_dist }}
 
 {% endif %}
 
-export ELEMENTS_PATH=$ELEMENTS
+{% if dib_release is defined %}
+
+export DIB_RELEASE={{ dib_release }}
+
+{% endif %}
+
+{% if dib_yum_repo_conf is defined %}
+
+export DIB_YUM_REPO_CONF={{ dib_yum_repo_conf }}
+
+{% else %}
+
 export DIB_YUM_REPO_CONF="/etc/yum.repos.d/delorean*"
+
+{% endif %}
+
+export ELEMENTS_PATH=$ELEMENTS
 
 openstack overcloud image build --image-name {{ tripleo_image_type }} $CONFIG_FILES > {{ workspace }}/build.log 2> {{ workspace }}/build-err.log
 RESULT=$?
