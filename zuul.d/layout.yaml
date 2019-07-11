@@ -60,6 +60,9 @@
         - tripleo-ci-centos-7-scenario012-multinode-oooq-container:
             files:
               - ^playbooks/tripleo-ci/.*$
+        - tripleo-ci-centos-7-standalone-upgrade-stein:
+            branches: master
+
     gate:
       queue: tripleo
       jobs:
@@ -79,3 +82,5 @@
         - tripleo-buildimage-overcloud-full-centos-7:
             files:
               - ^playbooks/tripleo-buildimage/.*$
+        - tripleo-ci-centos-7-standalone-upgrade-stein:
+            branches: master

@@ -108,7 +108,7 @@
     name: tripleo-ci-centos-7-standalone-upgrade-stein
     parent: tripleo-ci-centos-7-standalone-upgrade
     voting: true
-    branches: ^(?!stable/(newton|ocata|pike|queens|rocky)).*
+    branches: ^(stable/(rocky|stein)).*
     override-checkout: 'stable/stein'
     vars:
        branch_override: 'stable/stein'
