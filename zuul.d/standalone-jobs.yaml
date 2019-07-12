@@ -528,6 +528,15 @@
               - ^common/.*$
               - zuul.d/*
 
+    periodic:
+      jobs:
+        - tripleo-ci-centos-7-scenario001-standalone
+        - tripleo-ci-centos-7-scenario002-standalone
+        - tripleo-ci-centos-7-scenario003-standalone
+        - tripleo-ci-centos-7-scenario004-standalone
+        - tripleo-ci-centos-7-scenario010-standalone
+        - tripleo-ci-centos-7-standalone-upgrade-stein
+        - tripleo-ci-centos-7-standalone
 
 - job:
     name: tripleo-ci-centos-7-scenario001-standalone
