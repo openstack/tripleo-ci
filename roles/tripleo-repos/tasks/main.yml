@@ -65,7 +65,7 @@
     fi
     {% if ansible_distribution | lower == 'fedora' %}
     DISTRO_MIRROR_HOST=${DISTRO_MIRROR_HOST:-"{{ fedora_mirror_host }}"}
-    {% else %}
+    {% elif ansible_distribution | lower == 'centos' %}
     DISTRO_MIRROR_HOST=${DISTRO_MIRROR_HOST:-"{{ centos_mirror_host }}"}
     {% endif %}
     RDO_MIRROR_HOST=${NODEPOOL_RDO_PROXY:-"{{ rdo_mirror_host }}"}
@@ -78,9 +78,13 @@
         REPO=current
     fi
 
+    if [ ! -z "$DISTRO_MIRROR_HOST" ]; then
+        MIRROR='--mirror $DISTRO_MIRROR_HOST'
+    fi
+
     tripleo-repos \
       -b "{{ ci_branch | default('master') }}" \
-      --mirror $DISTRO_MIRROR_HOST \
+      $MIRROR \
       --rdo-mirror $RDO_MIRROR_HOST $REPO
   register: result
   changed_when: "'Installed:' in result.stdout_lines"
