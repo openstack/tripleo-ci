@@ -92,11 +92,6 @@
     vars:
       nodes: 1ctlr
       featureset: '010'
-      featureset_override:
-        run_tempest: false
-        tempest_test_whitelist:
-          - 'tempest.scenario.test_network_basic_ops.TestNetworkBasicOps'
-        use_os_tempest: true
       playbooks:
         - multinode.yml
 
