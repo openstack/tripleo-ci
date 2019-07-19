@@ -10,6 +10,9 @@ kolla_f28_patch: >-
  624838
  {%- endif %}
 
+# https://review.opendev.org/#/c/669471 - rhel8 kolla support
+kolla_rhel8_patch: 669471
+
 virtualenv_python:
   yum: python
   dnf: python3

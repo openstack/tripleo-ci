@@ -4,8 +4,20 @@ TRIPLEO_COMMON_PATH="{{ openstack_git_root }}/tripleo-common"
 
 pip install -U decorator
 
+### list containers to build
 openstack overcloud container image build {{ container_config }}\
     --kolla-config-file {{ workspace }}/kolla-build.conf \
+    {% if ci_branch != 'rocky' %}
+    {% for item in exclude_containers[ansible_pkg_mgr] %}
+        --exclude {{ item }} \
+    {% endfor %}
+    {% endif %}
+    --list-images > containers-to-build-full.log 2>&1
+egrep "^- " containers-to-build-full.log | awk '{ print $2 }' > containers-expected-to-build.log
+
+
+### build
+openstack overcloud container image build {{ container_config }}\
     {% if ci_branch != 'rocky' %}
     {% for item in exclude_containers[ansible_pkg_mgr] %}
         --exclude {{ item }} \
@@ -14,3 +26,53 @@ openstack overcloud container image build {{ container_config }}\
     {% if use_buildah is defined and use_buildah %}
         --use-buildah \
     {% endif %}
+    --kolla-config-file {{ workspace }}/kolla-build.conf
+RETCODE=$?
+
+echo "================= COMPLETE ===================="
+
+logs=$(find /tmp/kolla-* -iname "*.log")
+for l in $logs; do
+  printf "\n\n\n"
+  printf "\n[ $l ]" >> containers-consolidated-builds.log
+  printf "\n===========================================================\n" >> containers-consolidated-builds.log
+  cat $l >> containers-consolidated-builds.log
+  printf "\n......................................................[EOF]" >> containers-consolidated-builds.log
+done
+
+### grep errors in all build logs
+egrep "^Error:|No match" /tmp/kolla-*/docker -R > containers-build-errors.log 2>&1
+
+### actual built containers
+sudo podman images | grep tripleo{{ ci_branch }}/{{ kolla_base }}-binary > containers-successfully-built.log
+
+### not built (failed)
+for i in `cat containers-expected-to-build.log`; do
+  grep "$i" containers-successfully-built.log || echo "$i" >> containers-failed-to-build.log
+done
+
+EXPECTED=$( wc -l containers-expected-to-build.log | awk '{ print $1 }' )
+BUILT=$( wc -l containers-successfully-built.log | awk '{ print $1 }' )
+
+printf "\n\n"
+printf "\n============= SUMMARY ==============="
+printf "\nExpected................... $EXPECTED"
+printf "\nBuilt...................... $BUILT"
+printf "\n====================================="
+printf "\n\n"
+printf "\nReturn code: [ $RETCODE ]"
+printf "\n\n"
+
+if [ -s "build-errors.log" ]; then
+  printf "\nWarning: Errors found during container builds. See build-errors.log."
+fi
+
+if [ "$BUILT" -l "$EXPECTED" ]; then
+  printf "\nFAILURE: I'm sorry. One or more containers failed to build :("
+  exit 1
+fi
+
+printf "\nSUCCESS: Congratulations! All containers have been built :)"
+
+exit 0
+

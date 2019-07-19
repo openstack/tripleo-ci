@@ -9,6 +9,7 @@
     state: directory
 
 - name: Setup docker registry
+  when: ansible_distribution|lower != 'redhat'
   block:
     - name: Install ansible to run docker-playbook.yaml
       become: true
@@ -63,6 +64,7 @@
 
 - name: Setup repo web service
   become: true
+  when: ansible_distribution|lower != 'redhat'
   block:
     - name: Install apache
       package:
