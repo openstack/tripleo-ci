@@ -79,7 +79,7 @@
     fi
 
     if [ ! -z "$DISTRO_MIRROR_HOST" ]; then
-        MIRROR='--mirror $DISTRO_MIRROR_HOST'
+        MIRROR="--mirror $DISTRO_MIRROR_HOST"
     fi
 
     tripleo-repos \
