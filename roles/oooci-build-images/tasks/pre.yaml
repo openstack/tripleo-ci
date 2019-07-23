@@ -17,12 +17,12 @@
     - "{{ python_version[python_v] }}-pip"
     - "{{ python_version[python_v] }}-virtualenv"
 
-- name: pip install tripleo itemsd
+- name: pip install tripleo items
   become: true
   pip:
     name:
       - "file://{{ openstack_git_root }}/diskimage-builder"
-      - "file://{{ openstack_git_root }}/{{ python_version[python_v] }}-tripleoclient"
+      - "file://{{ openstack_git_root }}/python-tripleoclient"
       - "file://{{ openstack_git_root }}/tripleo-common"
     state: present
     virtualenv: "{{ workspace }}/venv"
