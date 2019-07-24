@@ -17,8 +17,10 @@ featureset_conf: >-
   --extra-vars @{{ tripleo_quickstart_dir }}/config/general_config/{{ common_featureset }} {% endif -%}
   --extra-vars @{{ job_featureset_file }}
 
+# "force_non_periodic" - will force job to run as check job, no matter which pipeline it runs
+# "force_periodic" - will force job to run as periodic (in terms of TripleO CI), no matter which pipeline it runs
 periodic: >-
-  {% if 'periodic' in zuul.pipeline -%}
+  {% if ('periodic' in zuul.pipeline and not force_non_periodic|default(false)|bool) or (force_periodic|default(false)|bool) -%}
   true
   {%- else -%}
   false
