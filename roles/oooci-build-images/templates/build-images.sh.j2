@@ -57,5 +57,4 @@ export ELEMENTS_PATH=$ELEMENTS
 openstack overcloud image build --image-name {{ tripleo_image_type }} $CONFIG_FILES > {{ workspace }}/build.log 2> {{ workspace }}/build-err.log
 RESULT=$?
 
-mv *.log {{ workspace }}/logs/
 exit $RESULT

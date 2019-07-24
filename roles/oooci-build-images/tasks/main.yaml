@@ -18,5 +18,5 @@
 - name: Run build-images.sh
   args:
     chdir: '{{ workspace }}'
-  shell: bash build_images.sh > {{ workspace }}/build.log 2> build-err.log
+  shell: bash build_images.sh > {{ workspace }}/logs/script_build.log 2> {{ workspace }}/logs/script_build-err.log
   changed_when: true
