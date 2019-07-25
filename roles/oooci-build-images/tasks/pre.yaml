@@ -17,6 +17,24 @@
     - "{{ python_version[python_v] }}-pip"
     - "{{ python_version[python_v] }}-virtualenv"
 
+- when: python_v == "py3"
+  block:
+
+    - name: Install python3-devel with provides pathfix.py
+      package:
+        name: python3-devel
+        state: present
+      become: true
+
+    - name: Create a script that fixes shebang for python3
+      template:
+        src: pathfix_repos.sh.j2
+        dest: "{{ workspace }}/pathfix_repos.sh"
+        mode: u=rwx
+
+    - name: Fix shebang path for python3
+      shell: bash {{ workspace }}/pathfix_repos.sh
+
 - name: pip install tripleo items
   become: true
   pip:
