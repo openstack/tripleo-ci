@@ -20,7 +20,7 @@
 - name: Use dd and losetup to create the loop devices
   become: true
   shell: |
-    dd if=/dev/zero of={{ item.0 }} bs=1 count=0 seek=7G
+    dd if=/dev/zero of={{ item.0 }} bs=1 count=0 seek=14G
     losetup {{ item.1 }} {{ item.0 }}
     lsblk
   changed_when: true
@@ -35,6 +35,6 @@
     vgcreate {{ ceph_logical_volume_group }} {{ ceph_loop_device }}
     lvcreate -n {{ ceph_logical_volume_wal }} -l 375 {{ ceph_logical_volume_group }}
     lvcreate -n {{ ceph_logical_volume_db }} -l 375 {{ ceph_logical_volume_group }}
-    lvcreate -n {{ ceph_logical_volume_data }} -l 1041 {{ ceph_logical_volume_group }}
+    lvcreate -n {{ ceph_logical_volume_data }} -l 2041 {{ ceph_logical_volume_group }}
     lvs
   changed_when: true
