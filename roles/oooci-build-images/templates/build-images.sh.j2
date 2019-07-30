@@ -44,7 +44,7 @@ export DIB_RELEASE={{ dib_release }}
 
 {% if dib_yum_repo_conf is defined %}
 
-export DIB_YUM_REPO_CONF={{ dib_yum_repo_conf }}
+export DIB_YUM_REPO_CONF='{{ dib_yum_repo_conf }}'
 
 {% else %}
 
