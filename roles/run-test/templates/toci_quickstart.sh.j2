@@ -56,6 +56,7 @@ QUICKSTART_COLLECTLOGS_CMD="$LOCAL_WORKING_DIR/bin/ansible-playbook \
     --extra-vars @{{ tripleo_root }}/tripleo-ci/toci-quickstart/config/collect-logs.yml \
     --extra-vars artcl_collect_dir=$LOGS_DIR \
     --extra-vars @{{ workspace }}/logs/zuul-variables.yaml \
+    --extra-vars @{{ workspace }}/logs/hostvars-variables.yaml \
     --tags all \
 "
 
@@ -136,6 +137,7 @@ for playbook in {{ " ".join(playbooks) }}; do
         $DEFAULT_ARGS \
         $LOCAL_WORKING_DIR/playbooks/$playbook ${PLAYBOOKS_ARGS[$playbook]:-}" \
         --extra-vars @{{ workspace }}/logs/zuul-variables.yaml \
+        --extra-vars @{{ workspace }}/logs/hostvars-variables.yaml \
         | sed  's/--/\n--/g' \
         | tee -a $LOGS_DIR/playbook_executions.log
     echo "# --------------------------------------- " \
@@ -159,6 +161,7 @@ done
             {{ vxlan_vars }} \
             $DEFAULT_ARGS \
             --extra-vars @{{ workspace }}/logs/zuul-variables.yaml \
+            --extra-vars @{{ workspace }}/logs/hostvars-variables.yaml \
                 $LOCAL_WORKING_DIR/playbooks/$playbook ${PLAYBOOKS_ARGS[$playbook]:-} \
                 2>&1 | tee -a $LOGS_DIR/quickstart_install.log && exit_value=0 || exit_value=$?
 
