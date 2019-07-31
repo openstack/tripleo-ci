@@ -14,11 +14,18 @@ workers_args: >-
     -e {{ overcloud_templates_path }}/environments/low-memory-usage.yaml
     -e {{ tripleo_root }}/tripleo-ci/test-environments/worker-config.yaml
     -e {{ overcloud_templates_path }}/environments/debug.yaml
-overcloud_image_url: http://images.rdoproject.org/{{ release }}/rdo_trunk/{{ dlrn_hash|default(dlrn_hash_tag) }}/overcloud-full.tar
-ipa_image_url: http://images.rdoproject.org/{{ release }}/rdo_trunk/{{ dlrn_hash|default(dlrn_hash_tag) }}/ironic-python-agent.tar
-
-# Container settings are set in release files
-
+overcloud_image_url: >-
+  {% if ansible_distribution == 'RedHat' and ansible_distribution_major_version >= '8' -%}
+  http://38.145.34.141/rcm-guest/images/redhat8/master/rdo_trunk/tripleo-ci-testing/overcloud-full.tar
+  {%- else -%}
+  http://images.rdoproject.org/{{ release }}/rdo_trunk/{{ dlrn_hash|default(dlrn_hash_tag) }}/overcloud-full.tar
+  {%- endif %}
+ipa_image_url: >-
+  {% if ansible_distribution == 'RedHat' and ansible_distribution_major_version >= '8' -%}
+  http://38.145.34.141/rcm-guest/images/redhat8/master/rdo_trunk/tripleo-ci-testing/ironic-python-agent.tar
+  {%- else -%}
+  http://images.rdoproject.org/{{ release }}/rdo_trunk/{{ dlrn_hash|default(dlrn_hash_tag) }}/ironic-python-agent.tar
+  {%- endif %}
 # Use cirros cached image
 tempest_test_image_path: /opt/cache/files/cirros-0.3.5-x86_64-disk.img
 
