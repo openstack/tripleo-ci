@@ -96,6 +96,20 @@
         - multinode.yml
 
 - job:
+    name: tripleo-ci-centos-7-containers-undercloud-minion
+    parent: tripleo-ci-base-multinode
+    branches: ^(?!stable/(ocata|pike|queens|rocky|stein)).*$
+    voting: false
+    vars:
+      nodes: 1minion
+      featureset: '061'
+      playbooks:
+        - multinode-minion.yml
+      extra_tags:
+        - undercloud-minion-setup
+        - undercloud-minion-deploy
+
+- job:
     name: tripleo-ci-centos-7-containers-multinode-stein
     parent: tripleo-ci-base-multinode
     timeout: 10800
