@@ -36,7 +36,7 @@ for l in $logs; do
   printf "\n\n\n"
   printf "\n[ $l ]" >> containers-consolidated-builds.log
   printf "\n===========================================================\n" >> containers-consolidated-builds.log
-  cat $l >> containers-consolidated-builds.log
+  sudo cat $l >> containers-consolidated-builds.log
   printf "\n......................................................[EOF]" >> containers-consolidated-builds.log
 done
 
@@ -44,7 +44,7 @@ done
 egrep "^Error:|No match" /tmp/kolla-*/docker -R > containers-build-errors.log 2>&1
 
 ### actual built containers
-sudo podman images | grep tripleo{{ ci_branch }}/{{ kolla_base }}-binary > containers-successfully-built.log
+sudo {{ container_cli }} images | grep tripleo{{ ci_branch }}/{{ kolla_base }}-binary > containers-successfully-built.log
 
 ### not built (failed)
 for i in `cat containers-expected-to-build.log`; do
@@ -67,12 +67,10 @@ if [ -s "build-errors.log" ]; then
   printf "\nWarning: Errors found during container builds. See build-errors.log."
 fi
 
-if [ "$BUILT" -l "$EXPECTED" ]; then
+if [ $RETCODE -eq 0 ]; then
+  printf "\nSUCCESS: Congratulations! All containers have been built :)"
+  exit 0
+else
   printf "\nFAILURE: I'm sorry. One or more containers failed to build :("
   exit 1
 fi
-
-printf "\nSUCCESS: Congratulations! All containers have been built :)"
-
-exit 0
-

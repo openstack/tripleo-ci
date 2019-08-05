@@ -99,6 +99,10 @@
     mode: 0644
     force: yes
 
+- name: Set container cli
+  set_fact:
+    container_cli: "{% if use_buildah|bool %}buildah{% else %}docker{% endif %}"
+
 - name: Set config-file
   set_fact:
     container_config: "--config-file $TRIPLEO_COMMON_PATH/container-images/overcloud_containers.yaml"
