@@ -77,4 +77,6 @@ undercloud_workers: 1
 # https://bugs.launchpad.net/tripleo/+bug/1797526
 step_introspect_debug: true
 # Remove ContainerCli once this scenario is tested on CentOS8
-overcloud_container_cli: docker
+overcloud_container_cli: >-
+  {%- if ansible_distribution == "RedHat" and ansible_distribution_major_version|int >= 8 %}podman
+  {%- else %}docker{% endif -%}
