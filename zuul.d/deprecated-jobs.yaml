@@ -4,6 +4,14 @@
 # It contains all the deprecated jobs that should be removed from Zuul.
 
 - job:
+    name: tripleo-ci-deprecated-standalone
+    description: |
+      Deprecated TripleO Job
+      Job no longer supported that should be removed from Zuul config.
+    parent: tripleo-ci-base-standalone
+    pre-run: playbooks/deprecated/pre.yaml
+
+- job:
     name: tripleo-ci-deprecated
     description: |
       Deprecated TripleO Job
@@ -90,3 +98,28 @@
     vars:
       nodes: 1ctlr
       featureset: '033'
+
+# fedora
+- job:
+    name: tripleo-ci-fedora-28-standalone
+    parent: tripleo-ci-deprecated-standalone
+    nodeset: single-fedora-28-node
+    voting: false
+    branches: ^(?!stable/(newton|ocata|pike|queens|rocky)).*$
+    vars:
+      environment_type: standalone
+      featureset: '052'
+      featureset_override:
+        validate_services: false
+    irrelevant-files:
+      - ^.*\.md$
+      - ^.*\.rst$
+      - ^doc/.*$
+      - ^etc/.*$
+      - ^metadata.json$
+      - ^releasenotes/.*$
+      - ^test-requirements.txt$
+      - ^spec/.*$
+      - ^Puppetfile.*$
+      - tox.ini
+      # like parent but with requirements.txt and setup.py removed
