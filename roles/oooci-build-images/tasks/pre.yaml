@@ -3,6 +3,21 @@
   include_vars:
     file: "common.yaml"
 
+- when: rhel_image_source is defined
+  block:
+    - name: Set dib_local_image and other facts used by tripleo-ci build-image role build template
+      set_fact:
+        dib_local_image: "{{ workspace }}/{{ rhel_image_source | urlsplit('path') | basename }}"
+        dib_node_dist: "rhel"
+        dib_release: "8"
+        dib_yum_repo_conf: " /etc/yum.repos.d/delorean.repo /etc/yum.repos.d/osp15-deps.repo /etc/yum.repos.d/rh-cloud.repo "
+        cacheable: true
+
+    - name: Download rhel source image
+      get_url:
+        url: "{{ rhel_image_source }}"
+        dest: "{{ dib_local_image }}"
+
 # get python_v fact used with vars/common.yaml to get
 # python2 or python3 packages in below tasks
 - name: Get python_v fact for py2 or py3 common vars
