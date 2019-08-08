@@ -341,7 +341,7 @@
               - ^tripleoclient/heat_launcher.*$
               - ^tripleoclient/v1/tripleo_(deploy|config|upgrade).*$
         - tripleo-ci-centos-7-scenario007-standalone:
-            files:
+            files: &scen7_files
               # tripleo-common
               - workbooks/ceph-ansible.yaml
               - ^container-images/.*$
@@ -376,6 +376,8 @@
             files: *scen3_files
         - tripleo-ci-centos-7-scenario004-standalone:
             files: *scen4_files
+        - tripleo-ci-centos-7-scenario007-standalone:
+            files: *scen7_files
 
         - tripleo-ci-centos-7-standalone-upgrade-stein
         - tripleo-ci-centos-7-standalone-upgrade-train
@@ -544,7 +546,7 @@
 
 - job:
     name: tripleo-ci-centos-7-scenario007-standalone
-    voting: false
+    voting: true
     parent: tripleo-ci-base-standalone
     nodeset: single-centos-7-node
     branches: ^(?!stable/(newton|ocata|pike|queens|rocky|stein|train)).*$
