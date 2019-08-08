@@ -43,7 +43,8 @@ artcl_collect_list:
   - /home/{{ undercloud_user }}/undercloud-install-*
   - /home/{{ undercloud_user }}/browbeat/log/*
   - /home/{{ undercloud_user }}/.config/
-  - /tmp/ansible-mistral-action*/
+  - /tmp/ansible-*/
+  - /tmp/ansible-*
   - /etc/ansible/
   - /etc/aodh/
   - /etc/autofs*
