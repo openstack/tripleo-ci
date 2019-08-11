@@ -19,6 +19,7 @@ virtualenv_python:
 
 exclude_containers:
   dnf:
+    - collectd
     - fluentd
     - opendaylight
     - skydive-agent
