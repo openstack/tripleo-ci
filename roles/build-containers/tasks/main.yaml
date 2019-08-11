@@ -70,8 +70,17 @@
       sort -t / -k 5 -g -r | \
       head -1 | \
       xargs -I{} git fetch https://review.opendev.org/openstack/kolla {} && \
-      git checkout -b rhel8 FETCH_HEAD && \
-      git pull --rebase upstream {{ branch_override|default('master') }}
+      git checkout -b rhel8 FETCH_HEAD
+    # Look for Kolla changes running in check queue and if present then
+    # set the git_rebase branch as kolla change as are already clonned and
+    # can be grabbed from zuul.ref var otherwise use master.
+    git_rebase_branch={{ branch_override|default('master') }}
+    {% if zuul.ref is defined and zuul.pipeline in ['check', 'openstack-check'] %}
+        if git ls-remote https://review.opendev.org/openstack/kolla | grep -q {{ zuul.ref }} ; then
+            git_rebase_branch={{ zuul.ref }}
+        fi
+    {% endif %}
+    git pull --rebase upstream $git_rebase_branch
 
   args:
     chdir: "{{ openstack_git_root }}/kolla"
