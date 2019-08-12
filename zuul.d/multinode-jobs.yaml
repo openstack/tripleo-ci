@@ -76,6 +76,9 @@
         - tripleo-ci-centos-7-scenario010-multinode-oooq-container
         - tripleo-ci-centos-7-scenario011-multinode-oooq-container
 
+# NOTE(rfolco): tripleo-multinode-branchful should be used in ci repos only
+# Check where this template is used across openstack repos with the url below:
+# http://codesearch.openstack.org/?q=tripleo-multinode-branchful
 - project-template:
     name: tripleo-multinode-branchful
     check:
@@ -84,6 +87,11 @@
         - tripleo-ci-centos-7-containers-multinode-rocky
         - tripleo-ci-centos-7-containers-multinode-queens
         - tripleo-ci-centos-7-containers-multinode-pike
+    gate:
+      jobs:
+        - tripleo-ci-centos-7-containers-multinode-stein
+        - tripleo-ci-centos-7-containers-multinode-rocky
+        - tripleo-ci-centos-7-containers-multinode-queens
 
 - job:
     name: tripleo-ci-centos-7-containers-multinode
@@ -113,7 +121,7 @@
     name: tripleo-ci-centos-7-containers-multinode-stein
     parent: tripleo-ci-base-multinode
     timeout: 10800
-    voting: false
+    voting: true
     branches: master
     override-checkout: 'stable/stein'
     vars:
@@ -127,7 +135,7 @@
     name: tripleo-ci-centos-7-containers-multinode-rocky
     parent: tripleo-ci-base-multinode
     timeout: 10800
-    voting: false
+    voting: true
     branches: master
     override-checkout: 'stable/rocky'
     vars:
@@ -141,6 +149,7 @@
 - job:
     name: tripleo-ci-centos-7-containers-multinode-queens
     parent: tripleo-ci-base-multinode
+    voting: true
     branches: master
     override-checkout: 'stable/queens'
     vars:
