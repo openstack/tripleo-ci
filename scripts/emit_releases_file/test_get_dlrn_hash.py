@@ -30,7 +30,7 @@ def test_get_dlrn_hash_ok(mock_get, mock_logging):
     repo_url = ('https://trunk.rdoproject.org/centos7-%s/%s/delorean.repo' %
                 (release, hash_name))
     assert get_dlrn_hash(release, hash_name) == dlrn_hash
-    mock_get.assert_called_once_with(repo_url, timeout=4)
+    mock_get.assert_called_once_with(repo_url, timeout=8)
     mock_log_info.assert_called_once_with("Got DLRN hash: {} for the named "
                                           "hash: {} on the {} "
                                           "release".format(dlrn_hash,
@@ -58,12 +58,12 @@ def test_null_response_raises_runtimeerror(mock_get, mock_logging):
     mock_get.return_value = None
     with pytest.raises(RuntimeError):
         get_dlrn_hash(release, hash_name)
-    mock_get.assert_called_with(repo_url, timeout=4)
-    assert mock_get.call_count == 10
+    mock_get.assert_called_with(repo_url, timeout=8)
+    assert mock_get.call_count == 20
     mock_log_info.assert_not_called()
-    mock_log_warning.assert_called_with("Attempt 10 of 10 to get DLRN hash "
+    mock_log_warning.assert_called_with("Attempt 20 of 20 to get DLRN hash "
                                         "failed to get a response.")
-    assert mock_log_warning.call_count == 10
+    assert mock_log_warning.call_count == 20
     mock_log_exception.assert_not_called()
 
 
@@ -95,14 +95,14 @@ def test_get_dlrn_hash_500_then_200(mock_get, mock_logging):
     repo_url = ('https://trunk.rdoproject.org/centos7-%s/%s/delorean.repo' %
                 (release, hash_name))
     mock_get.side_effect = [mock_response_bad, mock_response_ok]
-    assert get_dlrn_hash(release, hash_name, retries=10) == dlrn_hash
-    mock_get.assert_called_with(repo_url, timeout=4)
+    assert get_dlrn_hash(release, hash_name, retries=20) == dlrn_hash
+    mock_get.assert_called_with(repo_url, timeout=8)
     mock_log_info.assert_called_once_with("Got DLRN hash: {} for the named "
                                           "hash: {} on the {} "
                                           "release".format(dlrn_hash,
                                                            hash_name,
                                                            release))
-    mock_log_warning.assert_called_once_with("Attempt 1 of 10 to get DLRN "
+    mock_log_warning.assert_called_once_with("Attempt 1 of 20 to get DLRN "
                                              "hash returned status code 500.")
     mock_log_exception.assert_not_called()
 
@@ -125,14 +125,14 @@ def test_get_dlrn_hash_timeout(mock_get, mock_logging):
     mock_get_exception = Exception("We need more power!")
     mock_get.side_effect = mock_get_exception
     with pytest.raises(RuntimeError):
-        get_dlrn_hash(release, hash_name, retries=10)
-    mock_get.assert_called_with(repo_url, timeout=4)
+        get_dlrn_hash(release, hash_name, retries=20)
+    mock_get.assert_called_with(repo_url, timeout=8)
     mock_log_info.assert_not_called()
-    mock_log_warning.assert_called_with("Attempt 10 of 10 to get DLRN hash "
+    mock_log_warning.assert_called_with("Attempt 20 of 20 to get DLRN hash "
                                         "threw an exception.")
-    assert mock_log_warning.call_count == 10
+    assert mock_log_warning.call_count == 20
     mock_log_exception.assert_called_with(mock_get_exception)
-    assert mock_log_exception.call_count == 10
+    assert mock_log_exception.call_count == 20
 
 
 @mock.patch('logging.getLogger')
@@ -155,10 +155,10 @@ def test_get_dlrn_hash_500_10_times(mock_get, mock_logging):
                 (release, hash_name))
     mock_get.return_value = mock_response
     with pytest.raises(RuntimeError):
-        get_dlrn_hash(release, hash_name, retries=10)
-    mock_get.assert_called_with(repo_url, timeout=4)
+        get_dlrn_hash(release, hash_name, retries=20)
+    mock_get.assert_called_with(repo_url, timeout=8)
     mock_log_info.assert_not_called()
-    mock_log_warning.assert_called_with("Attempt 10 of 10 to get DLRN hash "
+    mock_log_warning.assert_called_with("Attempt 20 of 20 to get DLRN hash "
                                         "returned status code 500.")
-    assert mock_log_warning.call_count == 10
+    assert mock_log_warning.call_count == 20
     mock_log_exception.assert_not_called()

@@ -80,7 +80,7 @@ def load_featureset_file(featureset_file):
     return featureset
 
 
-def get_dlrn_hash(release, hash_name, retries=10, timeout=4):
+def get_dlrn_hash(release, hash_name, retries=20, timeout=8):
     """Get the dlrn hash for the release and hash name
 
     Retrieves the delorean.repo for the provided release and hash name, e.g.
