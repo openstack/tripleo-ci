@@ -145,6 +145,7 @@
               # tripleo-quickstart
               - config/general_config/featureset052.yml
               # puppet-tripleo
+              - ^manifests/certmonger/ceph.*$ # ceph dashboard
               - ^manifests/haproxy.*$
               - ^manifests/profile/(base|pacemaker)/aodh.*$
               - ^manifests/profile/(base|pacemaker)/ceilometer.*$
@@ -275,6 +276,7 @@
               - ^manifests/haproxy.*$
               - ^manifests/profile/(base|pacemaker)/glance.*$
               - ^manifests/profile/(base|pacemaker)/manila.*$
+              - ^manifests/profile/(base|pacemaker)/ceph.*$ # ceph_nfs / ganesha
               # tripleo-quickstart-extras
               - roles/standalone/.*
               - roles/validate-tempest/.*
