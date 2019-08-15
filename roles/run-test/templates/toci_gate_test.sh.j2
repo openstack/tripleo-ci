@@ -74,15 +74,6 @@ export RELEASES_SCRIPT_LOGFILE=$WORKSPACE/logs/emit_releases_file.log
 case {{ environment_type | default('standalone') }} in
     ovb)
         OVB=1
-        METADATA_FILENAME='/mnt/config/openstack/latest/meta_data.json'
-        if sudo test -f $METADATA_FILENAME; then
-            METADATA=$(sudo cat /mnt/config/openstack/latest/meta_data.json)
-            set +x
-            UCINSTANCEID=$(echo $METADATA | python -c 'import json, sys; print json.load(sys.stdin)["uuid"]')
-            set -x
-        else
-            UCINSTANCEID=$(http_proxy= curl http://169.254.169.254/openstack/2015-10-15/meta_data.json | python -c 'import json, sys; print json.load(sys.stdin)["uuid"]')
-        fi
     ;;
     multinode)
         SUBNODES_SSH_KEY=/etc/nodepool/id_rsa
