@@ -18,7 +18,6 @@
         - tripleo-ci-centos-7-scenario000-multinode-oooq-container-upgrades
         - tripleo-ci-centos-7-standalone
         - tripleo-ci-centos-7-standalone-rocky
-        - tripleo-ci-fedora-28-standalone
         - tripleo-ci-centos-7-standalone-upgrade
         - tripleo-ci-centos-7-standalone-upgrade-stein
 
@@ -50,7 +49,6 @@
         - tripleo-ci-centos-7-scenario000-multinode-oooq-container-updates
         - tripleo-ci-centos-7-scenario000-multinode-oooq-container-upgrades
         - tripleo-ci-centos-7-standalone
-        - tripleo-ci-fedora-28-standalone
         - tripleo-ci-centos-7-standalone-upgrade
         - tripleo-ci-centos-7-standalone-upgrade-stein
         - tripleo-ci-centos-7-scenario001-standalone
