@@ -33,6 +33,15 @@
     content: "{{ zuul_dump|to_nice_yaml }}"
     dest: "{{ workspace }}/logs/zuul-variables.yaml"
 
+- name: Dump hostvars with job variables
+  set_fact:
+    local_hostvars: "{{ {'job': hostvars[inventory_hostname]} }}"
+
+- name: Dump hostvars on the host to pass it to inner ansible
+  copy:
+    content: "{{ local_hostvars|to_nice_yaml }}"
+    dest: "{{ workspace }}/logs/hostvars-variables.yaml"
+
 - name: Remove package exclusions from package manager
   become: true
   ini_file:
