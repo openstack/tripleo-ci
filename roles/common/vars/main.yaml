@@ -4,7 +4,9 @@ tripleo_ci_dir: "{{ ansible_user_dir }}/{{ zuul.projects['opendev.org/openstack/
 tripleo_quickstart_dir: "{{ ansible_user_dir }}/{{ zuul.projects['opendev.org/openstack/tripleo-quickstart'].src_dir }}"
 vxlan_vars: "-e toci_vxlan_networking='false' -e vxlan_networking='false'"
 extra_vars: ""
-job_featureset_file: "{{ tripleo_quickstart_dir }}/config/general_config/featureset{{ featureset }}.yml"
+job_featureset_file: >-
+  {% if featureset is defined -%}
+  {{ tripleo_quickstart_dir }}/config/general_config/featureset{{ featureset }}.yml{% endif -%}
 skip_tags_list: >-
   {% if environment_type == 'baremetal' -%}
   tripleo-validations
@@ -15,7 +17,7 @@ skip_tags_list: >-
 featureset_conf: >-
   {% if common_featureset is defined -%}
   --extra-vars @{{ tripleo_quickstart_dir }}/config/general_config/{{ common_featureset }} {% endif -%}
-  --extra-vars @{{ job_featureset_file }}
+  {% if job_featureset_file != '' -%}--extra-vars @{{ job_featureset_file }}{% endif -%}
 
 # "force_non_periodic" - will force job to run as check job, no matter which pipeline it runs
 # "force_periodic" - will force job to run as periodic (in terms of TripleO CI), no matter which pipeline it runs

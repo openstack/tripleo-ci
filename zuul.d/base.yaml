@@ -232,8 +232,11 @@
       - ^docker/.*$
       - kolla.*$
       # tripleo-ci
+      - ^playbooks/.*$
       - ^(playbooks|roles)/tripleo-buildcontainers/.*$
       - ^roles/build-containers/.*$
+      - ^roles/prepare-node/.*$
+      - ^roles/common/.*$
       - ^(playbooks|roles)/tripleo-repos/.*$
       - ^zuul.d/build-containers.yaml$
       - ^zuul.d/base.yaml$
