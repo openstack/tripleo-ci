@@ -90,8 +90,9 @@ def get_dlrn_hash(release, hash_name, retries=20, timeout=8):
     """
     logger = logging.getLogger('emit-releases')
     full_hash_pattern = re.compile('[a-z,0-9]{40}_[a-z,0-9]{8}')
-    repo_url = ('https://trunk.rdoproject.org/centos7-%s/%s/delorean.repo' %
-                (release, hash_name))
+    rdo_url = os.getenv('NODEPOOL_RDO_PROXY', 'https://trunk.rdoproject.org')
+    repo_url = ('%s/centos7-%s/%s/delorean.repo' %
+                (rdo_url, release, hash_name))
     for retry_num in range(retries):
         repo_file = None
         try:
