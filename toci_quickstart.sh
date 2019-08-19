@@ -171,7 +171,7 @@ else
 
     ## LOGS COLLECTION RUN (if applicable)
     if [[ "${NODEPOOL_PROVIDER:-''}" == "rdo-cloud"* ]] || \
-       [[ "${NODEPOOL_PROVIDER:-''}" == "vexxhost-rdo-ca-ymq-1" ]] ; then
+       [[ "${NODEPOOL_PROVIDER:-''}" == "vexxhost-nodepool-tripleo" ]] ; then
         if [[ "$TOCI_JOBTYPE" =~ "ovb" ]]; then
             bash $LOGS_DIR/collect_logs.sh
             # rename script to not to run it in multinode jobs

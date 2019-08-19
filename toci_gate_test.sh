@@ -23,7 +23,7 @@ if [ -f /etc/nodepool/provider ] ; then
     export RHCLOUD=''
     if [[ ${NODEPOOL_PROVIDER:-''} == 'rdo-cloud'* ]]; then
         RHCLOUD='rdocloud'
-    elif [ ${NODEPOOL_PROVIDER:-''} == 'vexxhost-rdo-ca-ymq-1' ]; then
+    elif [ ${NODEPOOL_PROVIDER:-''} == 'vexxhost-nodepool-tripleo' ]; then
         RHCLOUD='vexxhost'
     fi
 

@@ -5,7 +5,6 @@
 # https://github.com/openstack-infra/tripleo-ci/blob/master/scripts/te-broker/create-env#L47
 cloudenv: "vexxhost"
 custom_nameserver:
-    - 199.204.44.24
     - 1.1.1.1
     - 1.0.0.1
 external_net: 'public'

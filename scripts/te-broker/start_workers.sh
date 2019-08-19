@@ -7,7 +7,7 @@ BASEPATH=$(realpath $(dirname $0)/../..)
 ENVFILE=$BASEPATH/scripts/rh1.env
 if [[ $NODEPOOL_PROVIDER == "rdo-cloud-tripleo" ]]; then
     ENVFILE=$BASEPATH/scripts/rdocloud.env
-elif [[ $NODEPOOL_PROVIDER == "vexxhost-rdo-ca-ymq-1" ]]; then
+elif [[ $NODEPOOL_PROVIDER == "vexxhost-nodepool-tripleo" ]]; then
     ENVFILE=$BASEPATH/scripts/vexxhost.env
 fi
 
