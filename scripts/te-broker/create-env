@@ -44,7 +44,7 @@ sed -i -e "s/key_name:.*/key_name: ${KEY_NAME}/" $ENVFILE
 sed -i -e "s/node_count:.*/node_count: ${NODECOUNT}/" $ENVFILE
 sed -i -e "s/provision_net_shared:.*/provision_net_shared: true/" $ENVFILE
 sed -i -e "s/public_net_shared:.*/public_net_shared: true/" $ENVFILE
-if [[ $NODEPOOL_PROVIDER == "rdo-cloud-tripleo" ]] || [[ $NODEPOOL_PROVIDER == "vexxhost-rdo-ca-ymq-1" ]]; then
+if [[ $NODEPOOL_PROVIDER == "rdo-cloud-tripleo" ]] || [[ $NODEPOOL_PROVIDER == "vexxhost-nodepool-tripleo" ]]; then
     sed -i -e "s/provision_net_shared:.*/provision_net_shared: false/" $ENVFILE
     sed -i -e "s/public_net_shared:.*/public_net_shared: false/" $ENVFILE
     sed -i -e "s/bmc_flavor:.*/bmc_flavor: ${BMC_FLAVOR}/" $ENVFILE
