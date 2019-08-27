@@ -98,3 +98,15 @@
     vars:
       nodes: 1ctlr
       featureset: '033'
+
+- job:
+    name: tripleo-ci-centos-7-containers-multinode-pike
+    parent: tripleo-ci-deprecated
+    branches: master
+    override-checkout: 'stable/pike'
+    vars:
+      branch_override: 'stable/pike'
+      nodes: 1ctlr
+      featureset: '010'
+      playbooks:
+        - multinode.yml
