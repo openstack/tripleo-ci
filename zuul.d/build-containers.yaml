@@ -80,6 +80,7 @@
     description: |
       container build job (buildah cli/backend)
     parent: tripleo-build-containers-centos-7
+    voting: false
     vars:
       use_buildah: true
 
