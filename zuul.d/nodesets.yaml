@@ -18,18 +18,6 @@
           - secondary
 
 - nodeset:
-    name: single-fedora-28-node
-    nodes:
-      - name: primary
-        label: fedora-28
-    groups:
-      - name: switch
-        nodes:
-          - primary
-      - name: peers
-        nodes: []
-
-- nodeset:
     name: single-centos-7-node
     nodes:
       - name: primary
