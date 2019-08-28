@@ -405,13 +405,27 @@
 
     periodic:
       jobs:
-        - tripleo-ci-centos-7-scenario001-standalone
-        - tripleo-ci-centos-7-scenario002-standalone
-        - tripleo-ci-centos-7-scenario003-standalone
-        - tripleo-ci-centos-7-scenario004-standalone
-        - tripleo-ci-centos-7-scenario010-standalone
-        - tripleo-ci-centos-7-standalone-upgrade-stein
-        - tripleo-ci-centos-7-standalone
+        - tripleo-ci-centos-7-scenario001-standalone:
+            vars:
+              force_non_periodic: true
+        - tripleo-ci-centos-7-scenario002-standalone:
+            vars:
+              force_non_periodic: true
+        - tripleo-ci-centos-7-scenario003-standalone:
+            vars:
+              force_non_periodic: true
+        - tripleo-ci-centos-7-scenario004-standalone:
+            vars:
+              force_non_periodic: true
+        - tripleo-ci-centos-7-scenario010-standalone:
+            vars:
+              force_non_periodic: true
+        - tripleo-ci-centos-7-standalone-upgrade-stein:
+            vars:
+              force_non_periodic: true
+        - tripleo-ci-centos-7-standalone:
+            vars:
+              force_non_periodic: true
 
 - job:
     name: tripleo-ci-centos-7-scenario001-standalone
