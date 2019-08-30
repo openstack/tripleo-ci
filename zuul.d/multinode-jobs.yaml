@@ -26,7 +26,6 @@
       jobs:
         - tripleo-ci-centos-7-containers-multinode
         - tripleo-ci-centos-7-standalone
-        - tripleo-ci-centos-7-scenario000-multinode-oooq-container-updates
         - tripleo-ci-centos-7-standalone-upgrade-stein
 
 - project-template:
@@ -63,7 +62,6 @@
         - tripleo-ci-centos-7-containers-multinode
         - tripleo-ci-centos-7-standalone
         - tripleo-ci-centos-7-standalone-os-tempest
-        - tripleo-ci-centos-7-scenario000-multinode-oooq-container-updates
         - tripleo-ci-centos-7-standalone-upgrade-stein
 
 - project-template:
@@ -264,7 +262,8 @@
     description: |
       Basic tripleo update job, this is not an upgrade job.
     parent: tripleo-ci-base-multinode
-    voting: true
+    # until https://review.opendev.org/#/c/678695/ is merged
+    voting: false
     branches: ^(?!stable/(newton|ocata|pike|queens)).*$
     vars:
       nodes: 1ctlr
