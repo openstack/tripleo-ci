@@ -17,13 +17,6 @@ platforms:
       https_proxy: "{{ lookup('env', 'https_proxy') }}"
     registry:
       url: ${MOLECULE_CONTAINER_REGISTRY_URL:-docker.io}
-  - name: fedora28-master
-    hostname: fedora28-master
-    image: fedora:28
-    dockerfile: ../Dockerfile.j2
-    pkg_extras: python*-setuptools
-    environment:
-      <<: *env
 
 provisioner:
   name: ansible
