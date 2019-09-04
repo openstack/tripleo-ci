@@ -84,7 +84,6 @@
         - tripleo-ci-centos-7-containers-multinode-stein
         - tripleo-ci-centos-7-containers-multinode-rocky
         - tripleo-ci-centos-7-containers-multinode-queens
-        - tripleo-ci-centos-7-containers-multinode-pike
     gate:
       jobs:
         - tripleo-ci-centos-7-containers-multinode-stein
@@ -152,19 +151,6 @@
     override-checkout: 'stable/queens'
     vars:
       branch_override: 'stable/queens'
-      nodes: 1ctlr
-      featureset: '010'
-      playbooks:
-        - multinode.yml
-
-
-- job:
-    name: tripleo-ci-centos-7-containers-multinode-pike
-    parent: tripleo-ci-base-multinode
-    branches: master
-    override-checkout: 'stable/pike'
-    vars:
-      branch_override: 'stable/pike'
       nodes: 1ctlr
       featureset: '010'
       playbooks:
