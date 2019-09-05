@@ -99,6 +99,8 @@
     abstract: true
     description: |
         Base abstract job for OVB TripleO CI zuulv3 jobs
+    # min version to use
+    ansible-version: 2.8
     parent: tripleo-ci-base
     nodeset: single-centos-7-node
     vars:
