@@ -8,7 +8,7 @@ custom_nameserver:
     - 1.1.1.1
     - 1.0.0.1
 external_net: 'public'
-ntp_server: 'pool.ntp.org'
+ntp_server: '0.pool.ntp.org,1.pool.ntp.org,2.pool.ntp.org,3.pool.ntp.org'
 workers_args: >-
     -e {{ overcloud_templates_path }}/environments/low-memory-usage.yaml
     -e {{ tripleo_root }}/tripleo-ci/test-environments/worker-config.yaml
