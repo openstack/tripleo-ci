@@ -6,7 +6,7 @@ base_tag={{ kolla_base_tag }}
 {% endif %}
 type=binary
 registry={{ push_registry }}
-tag={{ version_hash }}
+tag={{ version_hash }}{{ arch_tag }}
 template_override={{ openstack_git_root }}/tripleo-common/container-images/tripleo_kolla_template_overrides.j2
 # we use the repos off the main host as they will already have the correct mirror info in them
 rpm_setup_config="{{ buildcontainers_rpm_setup_config }}"

@@ -1,0 +1,10 @@
+---
+# Tag and push in the same task for the sake of doing less tasks
+- name: "Tag w/ arch suffix and push image: {{ image }}"
+  command: >
+    {{ cmd }}
+  with_items:
+    - "{{ container_cli }} tag {{ image }}:{{ version_hash }} {{ image }}:{{ version_hash }}_{{ ansible_architecture }}"
+    - "{{ container_cli }} push {{ container_cli_opt }} {{ image }}:{{ version_hash }}_{{ ansible_architecture }}"
+  loop_control:
+    loop_var: "cmd"
