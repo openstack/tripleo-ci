@@ -280,3 +280,4 @@ artcl_exclude_list:
   - /home/{{ undercloud_user }}/tempest/.stackviz
   - /home/{{ undercloud_user }}/tempest/tempest.*
   - /home/{{ undercloud_user }}/tempest/etc/*.sample
+  - /home/{{ undercloud_user }}/.tobiko/cache/
