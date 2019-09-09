@@ -164,14 +164,14 @@
     mode: 0777
     force: yes
 
-- name: Run image build as ansible user
+- name: "Run image build as ansible user > {{ workspace }}/build.log"
   args:
     chdir: '{{ workspace }}'
   shell: set -o pipefail && bash build_containers.sh 2>&1 {{ timestamper_cmd }} > {{ workspace }}/build.log
   when:
     - ansible_distribution|lower != "redhat"
 
-- name: Run image build as root
+- name: "Run image build as root > {{ workspace }}/build.log"
   args:
     chdir: '{{ workspace }}'
   shell: set -o pipefail && bash build_containers.sh 2>&1 {{ timestamper_cmd }} > {{ workspace }}/build.log
