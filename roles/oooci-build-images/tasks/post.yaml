@@ -14,19 +14,16 @@
       - --exclude=*
       - --prune-empty-dirs
 
-- name: Copy files from {{ ansible_user_dir }}/workspace/ on node
-  no_log: true
+- name: Copy files from /etc/yum.repos.d/ on node
   synchronize:
-    src: '{{ ansible_user_dir }}/workspace/'
+    src: '/etc/yum.repos.d'
     dest: '{{ zuul.executor.log_root }}'
     mode: pull
     copy_links: true
     verify_host: true
     rsync_opts:
-      - --include=/etc/yum.repos.d/
-      - --include=*/
+      - --include=/**
       - --exclude=*
-      - --prune-empty-dirs
 
 - name: Copy files from {{ ansible_user_dir }}/workspace/ on node
   no_log: true
