@@ -55,7 +55,7 @@
   - name: Include some extra for generating toci scripts
     set_fact:
       extra_vars: "--extra-vars @{{ tripleo_root }}/tripleo-ci/featureset-override.yaml"
-  when: featureset_override is defined
+  when: featureset_override is defined and featureset_override|bool
 
 - name: render toci_gate_test script
   template:
