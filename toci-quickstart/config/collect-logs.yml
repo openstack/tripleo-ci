@@ -278,6 +278,6 @@ artcl_exclude_list:
   - /var/log/extra/lsof*
   - /home/{{ undercloud_user }}/tempest/etc/cirros*
   - /home/{{ undercloud_user }}/tempest/.stackviz
-  - /home/{{ undercloud_user }}/tempest/tempest.*
+  - /home/{{ undercloud_user }}/tempest/.stestr
   - /home/{{ undercloud_user }}/tempest/etc/*.sample
   - /home/{{ undercloud_user }}/.tobiko/cache/
