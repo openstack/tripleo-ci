@@ -598,7 +598,6 @@
       standalone_ceph: true
       featureset_override:
         validate_services: false
-        standalone_container_cli: docker
         standalone_environment_files:
           - 'environments/low-memory-usage.yaml'
           - 'ci/environments/scenario012-standalone.yaml'
