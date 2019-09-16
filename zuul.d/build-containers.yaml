@@ -58,7 +58,7 @@
     name: tripleo-build-containers-centos-7
     parent: tripleo-build-containers-base-with-files
     nodeset: single-centos-7-node
-    branches: ^(?!stable/(pike|queens|rocky)).*$
+    branches: ^(?!stable/(pike|queens)).*$
     voting: true
 
 - job:
