@@ -39,7 +39,7 @@
     /(\/logs\/|\/etc\/)[^ \/\.]+\.gz$/ { rename($0) }';
 
 - name: Copy files from {{ ansible_user_dir }}/workspace/ on node
-  #no_log: true
+  no_log: true
   synchronize:
     src: '{{ ansible_user_dir }}/workspace/'
     dest: '{{ zuul.executor.log_root }}'
