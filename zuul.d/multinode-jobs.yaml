@@ -12,22 +12,82 @@
     name: tripleo-multinode-container-minimal
     check:
       jobs:
-        - tripleo-ci-centos-7-containers-multinode
-        - tripleo-ci-centos-7-undercloud-containers
-        - tripleo-ci-centos-7-scenario000-multinode-oooq-container-updates
-        - tripleo-ci-centos-7-scenario000-multinode-oooq-container-upgrades
-        - tripleo-ci-centos-7-standalone
-        - tripleo-ci-centos-7-standalone-rocky
-        - tripleo-ci-centos-7-standalone-upgrade
-        - tripleo-ci-centos-7-standalone-upgrade-stein
+        - tripleo-ci-centos-7-containers-multinode:
+            irrelevant-files: &multinode_ignored
+              - ^.*\.md$
+              - ^.*\.rst$
+              - ^doc/.*$
+              - ^docs/.*$
+              - ^etc/.*$
+              - ^metadata.json$
+              - ^releasenotes/.*$
+              - ^test-requirements.txt$
+              - ^spec/.*$
+              - ^Puppetfile.*$
+              - tox.ini
+              - ^roles/build-containers/.*$
+              - ^roles/oooci-build-images/.*$
+              - ^playbooks/deprecated/.*$
+              - ^playbooks/tripleo-buildcontainers/.*$
+              - ^playbooks/tripleo-buildimages/.*$
+        - tripleo-ci-centos-7-undercloud-containers:
+            irrelevant-files:
+              - ^.*\.md$
+              - ^.*\.rst$
+              - ^doc/.*$
+              - ^docs/.*$
+              - ^etc/.*$
+              - ^metadata.json$
+              - ^releasenotes/.*$
+              - ^test-requirements.txt$
+              - ^spec/.*$
+              - ^Puppetfile.*$
+              - tox.ini
+              - ^roles/build-containers/.*$
+              - ^roles/oooci-build-images/.*$
+              - ^playbooks/deprecated/.*$
+              - ^playbooks/tripleo-buildcontainers/.*$
+              - ^playbooks/tripleo-buildimages/.*$
+        - tripleo-ci-centos-7-scenario000-multinode-oooq-container-updates:
+            irrelevant-files: *multinode_ignored
+        - tripleo-ci-centos-7-scenario000-multinode-oooq-container-upgrades:
+            irrelevant-files: *multinode_ignored
+        - tripleo-ci-centos-7-standalone:
+            irrelevant-files: &standalone_ignored
+              - ^.*\.md$
+              - ^.*\.rst$
+              - ^doc/.*$
+              - ^docs/.*$
+              - ^etc/.*$
+              - ^metadata.json$
+              - ^releasenotes/.*$
+              - ^test-requirements.txt$
+              - ^spec/.*$
+              - ^Puppetfile.*$
+              - tox.ini
+              - ^roles/build-containers/.*$
+              - ^roles/oooci-build-images/.*$
+              - ^playbooks/deprecated/.*$
+              - ^playbooks/tripleo-buildcontainers/.*$
+              - ^playbooks/tripleo-buildimages/.*$
+        - tripleo-ci-centos-7-standalone-rocky:
+            irrelevant-files: *standalone_ignored
+        - tripleo-ci-centos-7-standalone-upgrade:
+            irrelevant-files: *standalone_ignored
+        - tripleo-ci-centos-7-standalone-upgrade-stein:
+            irrelevant-files: *standalone_ignored
 
     gate:
       queue: tripleo
       jobs:
-        - tripleo-ci-centos-7-containers-multinode
-        - tripleo-ci-centos-7-standalone
-        - tripleo-ci-centos-7-scenario000-multinode-oooq-container-updates
-        - tripleo-ci-centos-7-standalone-upgrade-stein
+        - tripleo-ci-centos-7-containers-multinode:
+            irrelevant-files: *multinode_ignored
+        - tripleo-ci-centos-7-standalone:
+            irrelevant-files: *standalone_ignored
+        - tripleo-ci-centos-7-scenario000-multinode-oooq-container-updates:
+            irrelevant-files: *multinode_ignored
+        - tripleo-ci-centos-7-standalone-upgrade-stein:
+            irrelevant-files: *standalone_ignored
 
 - project-template:
     name: tripleo-multinode-baremetal-full
@@ -38,33 +98,56 @@
     name: tripleo-multinode-container-full
     check:
       jobs:
-        - tripleo-ci-centos-7-containers-multinode
-        - tripleo-ci-centos-7-undercloud-containers
-        - tripleo-ci-centos-7-scenario001-multinode-oooq-container
-        - tripleo-ci-centos-7-scenario002-multinode-oooq-container
-        - tripleo-ci-centos-7-scenario003-multinode-oooq-container
-        - tripleo-ci-centos-7-scenario004-multinode-oooq-container
-        - tripleo-ci-centos-7-scenario007-multinode-oooq-container
-        - tripleo-ci-centos-7-scenario012-multinode-oooq-container
-        - tripleo-ci-centos-7-scenario000-multinode-oooq-container-updates
-        - tripleo-ci-centos-7-scenario000-multinode-oooq-container-upgrades
-        - tripleo-ci-centos-7-standalone
-        - tripleo-ci-centos-7-standalone-upgrade
-        - tripleo-ci-centos-7-standalone-upgrade-stein
-        - tripleo-ci-centos-7-scenario001-standalone
-        - tripleo-ci-centos-7-scenario002-standalone
-        - tripleo-ci-centos-7-scenario003-standalone
-        - tripleo-ci-centos-7-scenario004-standalone
-        - tripleo-ci-centos-7-standalone-os-tempest
+        - tripleo-ci-centos-7-containers-multinode:
+            irrelevant-files: *multinode_ignored
+        - tripleo-ci-centos-7-undercloud-containers:
+            irrelevant-files: *multinode_ignored
+        - tripleo-ci-centos-7-scenario001-multinode-oooq-container:
+            irrelevant-files: *multinode_ignored
+        - tripleo-ci-centos-7-scenario002-multinode-oooq-container:
+            irrelevant-files: *multinode_ignored
+        - tripleo-ci-centos-7-scenario003-multinode-oooq-container:
+            irrelevant-files: *multinode_ignored
+        - tripleo-ci-centos-7-scenario004-multinode-oooq-container:
+            irrelevant-files: *multinode_ignored
+        - tripleo-ci-centos-7-scenario007-multinode-oooq-container:
+            irrelevant-files: *multinode_ignored
+        - tripleo-ci-centos-7-scenario012-multinode-oooq-container:
+            irrelevant-files: *multinode_ignored
+        - tripleo-ci-centos-7-scenario000-multinode-oooq-container-updates:
+            irrelevant-files: *multinode_ignored
+        - tripleo-ci-centos-7-scenario000-multinode-oooq-container-upgrades:
+            irrelevant-files: *multinode_ignored
+        - tripleo-ci-centos-7-standalone:
+            irrelevant-files: *standalone_ignored
+        - tripleo-ci-centos-7-standalone-upgrade:
+            irrelevant-files: *standalone_ignored
+        - tripleo-ci-centos-7-standalone-upgrade-stein:
+            irrelevant-files: *standalone_ignored
+        - tripleo-ci-centos-7-scenario001-standalone:
+            irrelevant-files: *standalone_ignored
+        - tripleo-ci-centos-7-scenario002-standalone:
+            irrelevant-files: *standalone_ignored
+        - tripleo-ci-centos-7-scenario003-standalone:
+            irrelevant-files: *standalone_ignored
+        - tripleo-ci-centos-7-scenario004-standalone:
+            irrelevant-files: *standalone_ignored
+        - tripleo-ci-centos-7-standalone-os-tempest:
+            irrelevant-files: *standalone_ignored
 
     gate:
       queue: tripleo
       jobs:
-        - tripleo-ci-centos-7-containers-multinode
-        - tripleo-ci-centos-7-standalone
-        - tripleo-ci-centos-7-standalone-os-tempest
-        - tripleo-ci-centos-7-scenario000-multinode-oooq-container-updates
-        - tripleo-ci-centos-7-standalone-upgrade-stein
+        - tripleo-ci-centos-7-containers-multinode:
+            irrelevant-files: *multinode_ignored
+        - tripleo-ci-centos-7-standalone:
+            irrelevant-files: *standalone_ignored
+        - tripleo-ci-centos-7-standalone-os-tempest:
+            irrelevant-files: *standalone_ignored
+        - tripleo-ci-centos-7-scenario000-multinode-oooq-container-updates:
+            irrelevant-files: *multinode_ignored
+        - tripleo-ci-centos-7-standalone-upgrade-stein:
+            irrelevant-files: *standalone_ignored
 
 - project-template:
     name: tripleo-multinode-experimental
@@ -81,14 +164,20 @@
     name: tripleo-multinode-branchful
     check:
       jobs:
-        - tripleo-ci-centos-7-containers-multinode-stein
-        - tripleo-ci-centos-7-containers-multinode-rocky
-        - tripleo-ci-centos-7-containers-multinode-queens
+        - tripleo-ci-centos-7-containers-multinode-stein:
+            irrelevant-files: *multinode_ignored
+        - tripleo-ci-centos-7-containers-multinode-rocky:
+            irrelevant-files: *multinode_ignored
+        - tripleo-ci-centos-7-containers-multinode-queens:
+            irrelevant-files: *multinode_ignored
     gate:
       jobs:
-        - tripleo-ci-centos-7-containers-multinode-stein
-        - tripleo-ci-centos-7-containers-multinode-rocky
-        - tripleo-ci-centos-7-containers-multinode-queens
+        - tripleo-ci-centos-7-containers-multinode-stein:
+            irrelevant-files: *multinode_ignored
+        - tripleo-ci-centos-7-containers-multinode-rocky:
+            irrelevant-files: *multinode_ignored
+        - tripleo-ci-centos-7-containers-multinode-queens:
+            irrelevant-files: *multinode_ignored
 
 - job:
     name: tripleo-ci-centos-7-containers-multinode
