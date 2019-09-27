@@ -31,9 +31,9 @@ periodic: >-
 nodepool_provider: "{{ hostvars[inventory_hostname].nodepool.provider }}"
 
 rhcloud: >-
-  {%- if nodepool_provider in ['rdo-cloud-tripleo', 'rdo-cloud'] -%}
+  {%- if 'rdo-cloud' in nodepool_provider -%}
   rdocloud
-  {%- elif nodepool_provider == 'vexxhost-nodepool-tripleo' -%}
+  {%- elif 'vexxhost' in nodepool_provider -%}
   vexxhost
   {%- elif nodepool_provider == 'tripleo-ci' and environment_type == 'ovb' -%}
   internal
