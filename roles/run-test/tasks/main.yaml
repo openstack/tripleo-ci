@@ -28,6 +28,7 @@
         - 'tempest_test_image_path'
         - 'to_build'
         - 'tempest_private_net_provider_type'
+        - 'tempest_cloud_name'
     fail:
       msg: "ERROR: {{ item }} is not overridable."
     when: item not in "{{ allowed_overrides }}"
