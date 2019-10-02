@@ -370,39 +370,6 @@
         - tripleo-ci-centos-7-standalone-upgrade-stein
         - tripleo-ci-centos-7-standalone
 
-        - tripleo-ci-centos-7-scenario010-standalone:
-            files:
-              # tripleo-common
-              - workbooks/octavia_post.yaml
-              - playbooks/octavia-files.yaml
-              - playbooks/roles/octavia.*$
-              - playbooks/roles/common/.*$
-              - ^container-images/.*$
-              - tripleo_common/actions/ansible.py
-              - tripleo_common/image/kolla_builder.py
-              - zuul.d/layout.yaml
-              # tripleo-quickstart
-              - config/general_config/featureset052.yml
-              # puppet-tripleo
-              - ^manifests/profile/base/octavia.*$
-              # tripleo-quickstart-extras
-              - roles/standalone/.*
-              - roles/validate-tempest/.*
-              # tripleo-ci
-              - roles/run-test/.*
-              - roles/common/.*
-              - roles/prepare-node/.*
-              # tripleo-heat-templates
-              # TODO(beagles): octavia testing touches neutron, glance and nova.
-              # It may be sensible to expand this list after it has proven itself.
-              - ^(docker/services|deployment)/octavia.*$
-              - ci/environments/scenario010-standalone.yaml
-              - ^environments\services/octavia.*.yaml
-              - ^deployed-server/.*$
-              - ^network/endpoints/.*$
-              - ^common/.*$
-              - zuul.d/*
-
     periodic:
       jobs:
         - tripleo-ci-centos-7-scenario001-standalone:
@@ -550,7 +517,7 @@
 
 - job:
     name: tripleo-ci-centos-7-scenario010-standalone
-    voting: true
+    voting: false
     parent: tripleo-ci-base-standalone
     nodeset: single-centos-7-node
     branches: ^(?!stable/(newton|ocata|pike|queens|rocky)).*$
