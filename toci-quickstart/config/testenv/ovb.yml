@@ -90,3 +90,6 @@ overcloud_container_cli: >-
   {%- if ansible_distribution == "RedHat" and ansible_distribution_major_version|int >= 8 %}podman
   {%- else %}docker{% endif -%}
 ara_generate_html: false
+
+# overrides default timeout of 90min
+deploy_timeout: 120
