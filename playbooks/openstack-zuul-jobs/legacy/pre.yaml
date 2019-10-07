@@ -1,6 +1,18 @@
 - hosts: all
+  gather_facts: no
   tasks:
+    - name: Set IP addresses for the nodes missing private IPs
+      set_fact:
+        nodepool_ip: "{{ nodepool.public_ipv4 }}"
+      when: not (nodepool.private_ipv4 | ipv4)
 
+    - name: Set IP addresses for the nodes without private IPs (a fallback)
+      set_fact:
+        nodepool_ip: "{{ nodepool.private_ipv4 | default(nodepool.public_ipv4) }}"
+      when: nodepool_ip is not defined
+
+- hosts: all
+  tasks:
     - name: Create nodepool directory
       file:
         path: /etc/nodepool
@@ -26,7 +38,7 @@
     - name: Populate nodepool sub_nodes_private file
       lineinfile:
         path: /etc/nodepool/sub_nodes_private
-        line: "{{ hostvars[item]['nodepool']['private_ipv4'] }}"
+        line: "{{ hostvars[item]['nodepool_ip'] }}"
         insertafter: EOF
       with_items: "{{ groups['subnodes'] }}"
       when: groups['subnodes'] is defined
@@ -34,13 +46,13 @@
     - name: Create nodepool primary file
       copy:
         dest: /etc/nodepool/primary_node_private
-        content: "{{ hostvars['primary']['nodepool']['private_ipv4'] }}"
+        content: "{{ hostvars['primary']['nodepool_ip'] }}"
       when: hostvars['primary'] is defined
 
     - name: Create nodepool node_private for this node
       copy:
         dest: /etc/nodepool/node_private
-        content: "{{ nodepool.private_ipv4 }}"
+        content: "{{ nodepool_ip }}"
 
     - name: Copy ssh keys to nodepool directory
       command: "cp .ssh/{{ item }} /etc/nodepool/{{ item }}"
