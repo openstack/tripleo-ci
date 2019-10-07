@@ -57,6 +57,8 @@
             files:
               - ^playbooks/tripleo-ci/.*$
         - tripleo-ci-centos-7-standalone-upgrade-stein:
+            branches: stable/train
+        - tripleo-ci-centos-7-standalone-upgrade-train:
             branches: master
         - tripleo-ci-centos-7-containers-undercloud-minion:
             files:
@@ -80,5 +82,7 @@
               - ^scripts/emit_releases_file/.*$
         - tripleo-buildimage-overcloud-full-centos-7:
             files: *build_images_files
-        - tripleo-ci-centos-7-standalone-upgrade-stein:
+        - tripleo-ci-centos-7-standalone-upgrade-train:
             branches: master
+        - tripleo-ci-centos-7-standalone-upgrade-stein:
+            branches: stable/train

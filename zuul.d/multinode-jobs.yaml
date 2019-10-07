@@ -76,6 +76,9 @@
             irrelevant-files: *standalone_ignored
         - tripleo-ci-centos-7-standalone-upgrade-stein:
             irrelevant-files: *standalone_ignored
+        - tripleo-ci-centos-7-standalone-upgrade-train:
+            irrelevant-files: *standalone_ignored
+
 
     gate:
       queue: tripleo
@@ -87,6 +90,8 @@
         - tripleo-ci-centos-7-scenario000-multinode-oooq-container-updates:
             irrelevant-files: *multinode_ignored
         - tripleo-ci-centos-7-standalone-upgrade-stein:
+            irrelevant-files: *standalone_ignored
+        - tripleo-ci-centos-7-standalone-upgrade-train:
             irrelevant-files: *standalone_ignored
 
 - project-template:
@@ -124,6 +129,8 @@
             irrelevant-files: *standalone_ignored
         - tripleo-ci-centos-7-standalone-upgrade-stein:
             irrelevant-files: *standalone_ignored
+        - tripleo-ci-centos-7-standalone-upgrade-train:
+            irrelevant-files: *standalone_ignored
         - tripleo-ci-centos-7-scenario001-standalone:
             irrelevant-files: *standalone_ignored
         - tripleo-ci-centos-7-scenario002-standalone:
@@ -148,6 +155,8 @@
             irrelevant-files: *multinode_ignored
         - tripleo-ci-centos-7-standalone-upgrade-stein:
             irrelevant-files: *standalone_ignored
+        - tripleo-ci-centos-7-standalone-upgrade-train:
+            irrelevant-files: *standalone_ignored
 
 - project-template:
     name: tripleo-multinode-experimental
@@ -164,6 +173,8 @@
     name: tripleo-multinode-branchful
     check:
       jobs:
+        - tripleo-ci-centos-7-containers-multinode-train:
+            irrelevant-files: *multinode_ignored
         - tripleo-ci-centos-7-containers-multinode-stein:
             irrelevant-files: *multinode_ignored
         - tripleo-ci-centos-7-containers-multinode-rocky:
@@ -172,6 +183,8 @@
             irrelevant-files: *multinode_ignored
     gate:
       jobs:
+        - tripleo-ci-centos-7-containers-multinode-train:
+            irrelevant-files: *multinode_ignored
         - tripleo-ci-centos-7-containers-multinode-stein:
             irrelevant-files: *multinode_ignored
         - tripleo-ci-centos-7-containers-multinode-rocky:
@@ -192,7 +205,7 @@
 - job:
     name: tripleo-ci-centos-7-containers-undercloud-minion
     parent: tripleo-ci-base-multinode
-    branches: ^(?!stable/(ocata|pike|queens|rocky|stein)).*$
+    branches: ^(?!stable/(ocata|pike|queens|rocky|stein|train)).*$
     voting: false
     vars:
       nodes: 1minion
@@ -202,6 +215,20 @@
       extra_tags:
         - undercloud-minion-setup
         - undercloud-minion-deploy
+
+- job:
+    name: tripleo-ci-centos-7-containers-multinode-train
+    parent: tripleo-ci-base-multinode
+    timeout: 10800
+    voting: true
+    branches: master
+    override-checkout: 'stable/train'
+    vars:
+      branch_override: 'stable/train'
+      nodes: 1ctlr
+      featureset: '010'
+      playbooks:
+        - multinode.yml
 
 - job:
     name: tripleo-ci-centos-7-containers-multinode-stein
@@ -320,7 +347,7 @@
     name: tripleo-ci-centos-7-scenario009-multinode-oooq-container
     parent: tripleo-ci-base-multinode
     voting: false
-    branches: ^(stable/(queens|rocky|stein)).*$
+    branches: ^(stable/(queens|rocky|stein|train)).*$
     vars:
       nodes: 1ctlr
       featureset: '033'
@@ -329,7 +356,7 @@
     name: tripleo-ci-centos-7-scenario010-multinode-oooq-container
     parent: tripleo-ci-base-multinode
     voting: false
-    branches: ^(stable/(queens|rocky|stein)).*$
+    branches: ^(stable/(queens|rocky|stein|train)).*$
     vars:
       nodes: 1ctlr
       featureset: '038'
@@ -364,7 +391,7 @@
     name: tripleo-ci-centos-7-scenario012-multinode-oooq-container
     parent: tripleo-ci-base-multinode
     voting: false
-    branches: ^(?!stable/(newton|ocata|pike|queens|rocky|stein)).*$
+    branches: ^(?!stable/(newton|ocata|pike|queens|rocky|stein|train)).*$
     vars:
       nodes: 1ctlr
       featureset: '054'
