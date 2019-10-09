@@ -182,7 +182,8 @@
 - name: Retrieve list of built x86_64 images, retag, and push
   when:
     - ansible_architecture == "x86_64"
-    - push_containers | bool
+    - push_containers | bool or
+      push_containers_podman | default(false) | bool
   block:
     - name: Retrieve built images
       command: "awk '{ print $1 }' {{ workspace }}/containers-successfully-built.log"
