@@ -15,6 +15,7 @@ artcl_collect_list:
   - /var/lib/neutron/
   - /var/lib/tripleo-config/
   - /var/lib/unbound/unbound.log
+  - /var/lib/certmonger/
   - /home/{{ undercloud_user }}/.instack/install-undercloud.log
   - /home/{{ undercloud_user }}/.config/openstack/
   - /home/{{ undercloud_user }}/stackrc
