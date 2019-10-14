@@ -33,7 +33,8 @@ if [ -f /etc/nodepool/provider ] ; then
         # In order to save space remove the cached git repositories, at this point in
         # CI the ones we are interested in have been cloned to /opt/stack/new. We
         # can also remove some distro images cached on the images.
-        sudo rm -rf /opt/git
+        # rm -rf spawns a separate process for each file, lets use find -delete
+        sudo find /opt/git -delete
     fi
 fi
 
