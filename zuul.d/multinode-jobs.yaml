@@ -329,7 +329,7 @@
     name: tripleo-ci-centos-7-scenario010-multinode-oooq-container
     parent: tripleo-ci-base-multinode
     voting: false
-    branches: ^(?!stable/(newton|ocata|pike)).*$
+    branches: ^(stable/(queens|rocky|stein)).*$
     vars:
       nodes: 1ctlr
       featureset: '038'
