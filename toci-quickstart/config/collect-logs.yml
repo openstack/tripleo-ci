@@ -282,3 +282,4 @@ artcl_exclude_list:
   - /home/{{ undercloud_user }}/tempest/.stestr
   - /home/{{ undercloud_user }}/tempest/etc/*.sample
   - /home/{{ undercloud_user }}/.tobiko/cache/
+  - /home/{{ undercloud_user }}/instackenv.json
