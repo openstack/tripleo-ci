@@ -10,7 +10,7 @@
         dib_local_image: "{{ workspace }}/{{ rhel_image_source | urlsplit('path') | basename }}"
         dib_node_dist: "rhel"
         dib_release: "8"
-        dib_yum_repo_conf: " /etc/yum.repos.d/delorean.repo /etc/yum.repos.d/osp15-deps.repo /etc/yum.repos.d/rh-cloud.repo "
+        dib_yum_repo_conf: " /etc/yum.repos.d/delorean.repo /etc/yum.repos.d/rhel8-{{ release|default('master') }}-deps.repo /etc/yum.repos.d/rh-cloud.repo "
         cacheable: true
 
     - name: Download rhel source image
