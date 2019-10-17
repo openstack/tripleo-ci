@@ -1,7 +1,7 @@
 ---
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v2.2.3
+    rev: v2.3.0
     hooks:
       - id: trailing-whitespace
       - id: mixed-line-ending
@@ -10,11 +10,9 @@ repos:
       - id: check-merge-conflict
       - id: debug-statements
       - id: flake8
-        additional_dependencies:
-          - hacking<1.2.0,>=1.1.0
       - id: check-yaml
         files: .*\.(yaml|yml)$
-  # commented to allow progressive enablement in smaller patches
+  # commented to allow progressive adoption in smaller patches
   # - repo: https://github.com/adrienverge/yamllint.git
   #   rev: v1.13.0
   #   hooks:
@@ -23,7 +21,7 @@ repos:
   #       types: [file, yaml]
   #       entry: yamllint --strict -f parsable
   - repo: https://github.com/ansible/ansible-lint
-    rev: v4.1.0a0
+    rev: v4.1.1a0
     hooks:
       - id: ansible-lint
         files: \.(yaml|yml)$
