@@ -64,7 +64,7 @@
     parent: tripleo-ci-base-standalone-upgrade
     nodeset: single-centos-7-node
     voting: false
-    branches: ^(?!stable/(newton|ocata|pike|queens|rocky|stein)).*
+    branches: ^(?!stable/(newton|ocata|pike|queens|rocky|stein|train)).*
     vars:
       featureset: '056'
     irrelevant-files:
@@ -88,6 +88,15 @@
     override-checkout: 'stable/stein'
     vars:
        branch_override: 'stable/stein'
+
+- job:
+    name: tripleo-ci-centos-7-standalone-upgrade-train
+    parent: tripleo-ci-centos-7-standalone-upgrade
+    voting: true
+    branches: ^(stable/(stein|train)).*
+    override-checkout: 'stable/train'
+    vars:
+       branch_override: 'stable/train'
 
 - project-template:
     name: tripleo-standalone-scenarios-full
@@ -353,6 +362,7 @@
         - tripleo-ci-centos-7-standalone-rocky
         - tripleo-ci-centos-7-standalone-upgrade
         - tripleo-ci-centos-7-standalone-upgrade-stein
+        - tripleo-ci-centos-7-standalone-upgrade-train
         - tripleo-ci-centos-7-standalone
 
     gate:
@@ -368,6 +378,7 @@
             files: *scen4_files
 
         - tripleo-ci-centos-7-standalone-upgrade-stein
+        - tripleo-ci-centos-7-standalone-upgrade-train
         - tripleo-ci-centos-7-standalone
 
         - tripleo-ci-centos-7-scenario010-standalone:
@@ -421,6 +432,9 @@
             vars:
               force_non_periodic: true
         - tripleo-ci-centos-7-standalone-upgrade-stein:
+            vars:
+              force_non_periodic: true
+        - tripleo-ci-centos-7-standalone-upgrade-train:
             vars:
               force_non_periodic: true
         - tripleo-ci-centos-7-standalone:
@@ -533,7 +547,7 @@
     voting: false
     parent: tripleo-ci-base-standalone
     nodeset: single-centos-7-node
-    branches: ^(?!stable/(newton|ocata|pike|queens|rocky|stein)).*$
+    branches: ^(?!stable/(newton|ocata|pike|queens|rocky|stein|train)).*$
     vars:
       featureset: '052'
       featureset_override:
@@ -576,7 +590,7 @@
     voting: false
     parent: tripleo-ci-base-standalone
     nodeset: single-centos-7-node
-    branches: ^(?!stable/(newton|ocata|pike|queens|rocky|stein)).*$
+    branches: ^(?!stable/(newton|ocata|pike|queens|rocky|stein|train)).*$
     vars:
       featureset: '060'
       standalone_ceph: true

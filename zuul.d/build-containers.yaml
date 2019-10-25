@@ -7,18 +7,22 @@
     check:
       jobs:
         - tripleo-build-containers-centos-7
+        - tripleo-build-containers-centos-7-train
         - tripleo-build-containers-centos-7-stein
         - tripleo-build-containers-centos-7-rocky
         - tripleo-build-containers-centos-7-buildah
+        - tripleo-build-containers-centos-7-buildah-train
         - tripleo-build-containers-centos-7-buildah-stein
     gate:
       queue: tripleo
       jobs:
         - tripleo-build-containers-centos-7
+        - tripleo-build-containers-centos-7-train
         - tripleo-build-containers-centos-7-stein
         - tripleo-build-containers-centos-7-rocky
         - tripleo-build-containers-centos-7-buildah
         - tripleo-build-containers-centos-7-buildah-stein
+        - tripleo-build-containers-centos-7-buildah-train
 
 - project-template:
     name: tripleo-build-containers-jobs
@@ -31,6 +35,18 @@
       jobs:
         - tripleo-build-containers-centos-7
         - tripleo-build-containers-centos-7-buildah
+
+- project-template:
+    name: tripleo-build-containers-jobs-train
+    check:
+      jobs:
+        - tripleo-build-containers-centos-7-train
+        - tripleo-build-containers-centos-7-buildah-train
+    gate:
+      queue: tripleo
+      jobs:
+        - tripleo-build-containers-centos-7-train
+        - tripleo-build-containers-centos-7-buildah-train
 
 - project-template:
     name: tripleo-build-containers-jobs-stein
@@ -62,6 +78,13 @@
     voting: true
 
 - job:
+    name: tripleo-build-containers-centos-7-train
+    parent: tripleo-build-containers-centos-7
+    override-checkout: stable/train
+    vars:
+      branch_override: stable/train
+
+- job:
     name: tripleo-build-containers-centos-7-stein
     parent: tripleo-build-containers-centos-7
     override-checkout: stable/stein
@@ -82,6 +105,13 @@
     parent: tripleo-build-containers-centos-7
     vars:
       use_buildah: true
+
+- job:
+    name: tripleo-build-containers-centos-7-buildah-train
+    parent: tripleo-build-containers-centos-7-buildah
+    override-checkout: stable/train
+    vars:
+      branch_override: stable/train
 
 - job:
     name: tripleo-build-containers-centos-7-buildah-stein
