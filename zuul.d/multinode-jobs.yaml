@@ -117,8 +117,6 @@
             irrelevant-files: *multinode_ignored
         - tripleo-ci-centos-7-scenario007-multinode-oooq-container:
             irrelevant-files: *multinode_ignored
-        - tripleo-ci-centos-7-scenario012-multinode-oooq-container:
-            irrelevant-files: *multinode_ignored
         - tripleo-ci-centos-7-scenario000-multinode-oooq-container-updates:
             irrelevant-files: *multinode_ignored
         - tripleo-ci-centos-7-scenario000-multinode-oooq-container-upgrades:
@@ -391,16 +389,6 @@
     vars:
       nodes: 1ctlr
       featureset: '044'
-
-# NOTE(rfolco): scen012 should run on master only until it gets stable
-- job:
-    name: tripleo-ci-centos-7-scenario012-multinode-oooq-container
-    parent: tripleo-ci-base-multinode
-    voting: false
-    branches: ^(?!stable/(newton|ocata|pike|queens|rocky|stein|train)).*$
-    vars:
-      nodes: 1ctlr
-      featureset: '054'
 
 # The upgrades from Ocata to Pike needs to run
 # from an uncontainerized to a containerized
