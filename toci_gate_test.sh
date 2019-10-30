@@ -18,7 +18,9 @@ if [ -f /etc/nodepool/provider ] ; then
     source /etc/nodepool/provider
 
     # source variables common across all the scripts.
-    source /etc/ci/mirror_info.sh
+    if [ -e /etc/ci/mirror_info.sh ]; then
+        source /etc/ci/mirror_info.sh
+    fi
 
     export RHCLOUD=''
     if [[ ${NODEPOOL_PROVIDER:-''} == 'rdo-cloud'* ]]; then
