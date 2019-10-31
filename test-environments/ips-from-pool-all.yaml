@@ -82,4 +82,3 @@ parameter_defaults:
     - 172.18.0.248
     storage_mgmt:
     - 172.19.0.248
-

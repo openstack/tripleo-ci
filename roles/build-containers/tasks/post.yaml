@@ -27,6 +27,7 @@
     gzip -r "{{ workspace }}/logs"  "{{ workspace }}/conf" "{{ workspace }}/etc"
     chmod -R a+r "{{ workspace }}"
     chown -R {{ ansible_user }}: "{{ workspace }}"
+  changed_when: true
 
 - name: Rename compressed text based files to end with txt.gz extension
   become: true
@@ -37,6 +38,7 @@
     { new=orig; sub(/\.gz$/, ".txt.gz", new); system("mv " orig " " new) }
     /\.(conf|ini|json|sh|log|yaml|yml|repo|cfg|j2|py)\.gz$/ { rename($0) }
     /(\/logs\/|\/etc\/)[^ \/\.]+\.gz$/ { rename($0) }';
+  changed_when: true
 
 - name: Copy files from {{ ansible_user_dir }}/workspace/ on node
   no_log: true

@@ -14,4 +14,3 @@ neutron subnet-delete private_subnet
 neutron net-delete private
 neutron subnet-delete public_subnet
 neutron net-delete public
-

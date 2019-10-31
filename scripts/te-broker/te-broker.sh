@@ -11,4 +11,3 @@ BASEPATH=$(realpath $(dirname $0))
 
 cp $BASEPATH/geard.service /lib/systemd/system/geard.service
 cp $BASEPATH/te_workers.service /lib/systemd/system/te_workers.service
-

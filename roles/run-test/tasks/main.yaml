@@ -31,7 +31,7 @@
         - 'tempest_cloud_name'
     fail:
       msg: "ERROR: {{ item }} is not overridable."
-    when: item not in "{{ allowed_overrides }}"
+    when: item not in allowed_overrides
     with_items: "{{ featureset_override }}"
   - name: Generate standalone_custom_env_files from standalone_environment_files
     set_fact:
@@ -46,7 +46,7 @@
     when: featureset_override['standalone_environment_files'] is defined
   - include_role:
       name: ceph-loop-device
-    when: "{{ standalone_ceph|default(false) }}"
+    when: standalone_ceph is defined and standalone_ceph
   - name: Generate featureset overriding file
     template:
       src: templates/featureset-override.j2
@@ -102,7 +102,8 @@
     force: yes
   when: ready_releases_file is defined
 
-- shell:
+- name: run toci_gate_test.sh
+  shell:
     cmd: |
       set -e
       set -x
@@ -139,3 +140,4 @@
     executable: /bin/bash
     chdir: '{{ tripleo_root }}'
   environment: '{{ zuul | zuul_legacy_vars }}'
+  changed_when: true

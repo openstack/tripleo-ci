@@ -51,7 +51,7 @@
         mode: u=rwx
 
     - name: Fix shebang path for python3
-      shell: bash {{ workspace }}/pathfix_repos.sh
+      command: bash {{ workspace }}/pathfix_repos.sh
 
 - name: pip install tripleo items
   become: true

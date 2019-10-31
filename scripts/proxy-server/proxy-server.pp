@@ -19,4 +19,3 @@ service {"squid":
     ensure => "running",
     enable => true,
 }
-
