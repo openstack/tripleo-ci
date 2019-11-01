@@ -274,7 +274,7 @@
               - ^tripleoclient/heat_launcher.*$
               - ^tripleoclient/v1/tripleo_(deploy|config|upgrade).*$
         - tripleo-ci-centos-7-scenario010-standalone:
-            files:
+            files: &scen10_files
               # tripleo-common
               - workbooks/octavia_post.yaml
               - playbooks/octavia-files.yaml
@@ -308,6 +308,10 @@
               # python-tripleoclient
               - ^tripleoclient/heat_launcher.*$
               - ^tripleoclient/v1/tripleo_(deploy|config|upgrade).*$
+
+        - tripleo-ci-centos-7-scenario010-ovn-provider-standalone:
+            files: *scen10_files
+
         - tripleo-ci-centos-7-scenario012-standalone:
             files:
               # tripleo-common
@@ -384,37 +388,7 @@
         - tripleo-ci-centos-7-standalone
 
         - tripleo-ci-centos-7-scenario010-standalone:
-            files:
-              # tripleo-common
-              - workbooks/octavia_post.yaml
-              - playbooks/octavia-files.yaml
-              - playbooks/roles/octavia.*$
-              - playbooks/roles/common/.*$
-              - ^container-images/.*$
-              - tripleo_common/actions/ansible.py
-              - tripleo_common/image/kolla_builder.py
-              - zuul.d/layout.yaml
-              # tripleo-quickstart
-              - config/general_config/featureset052.yml
-              # puppet-tripleo
-              - ^manifests/profile/base/octavia.*$
-              # tripleo-quickstart-extras
-              - roles/standalone/.*
-              - roles/validate-tempest/.*
-              # tripleo-ci
-              - roles/run-test/.*
-              - roles/common/.*
-              - roles/prepare-node/.*
-              # tripleo-heat-templates
-              # TODO(beagles): octavia testing touches neutron, glance and nova.
-              # It may be sensible to expand this list after it has proven itself.
-              - ^(docker/services|deployment)/octavia.*$
-              - ci/environments/scenario010-standalone.yaml
-              - ^environments\services/octavia.*.yaml
-              - ^deployed-server/.*$
-              - ^network/endpoints/.*$
-              - ^common/.*$
-              - zuul.d/*
+            files: *scen10_files
 
     periodic:
       jobs:
@@ -583,6 +557,40 @@
         standalone_environment_files:
           - 'environments/low-memory-usage.yaml'
           - 'ci/environments/scenario010-standalone.yaml'
+
+- job:
+    name: tripleo-ci-centos-7-scenario010-ovn-provider-standalone
+    voting: false
+    parent: tripleo-ci-base-standalone
+    nodeset: single-centos-7-node
+    branches: ^(?!stable/(newton|ocata|pike|queens|rocky)).*$
+    vars:
+      tags:
+        - build
+        - standalone
+        - octavia
+      featureset: '062'
+      standalone_ceph: true
+      tempest_workers: 1
+      featureset_override:
+        validate_services: true
+        tempest_extra_config:
+          load_balancer.provider: 'ovn'
+          load_balancer.member_role: '"Member"'
+          load_balancer.test_with_ipv6: false
+          load_balancer.test_reuse_connection: false
+          load_balancer.load_balancing_algorithm: 'SOURCE_IP_PORT'
+          load_balancer.test_flavors: false
+          loadbalancer-feature-enabled.health_monitor_enabled: false
+          loadbalancer-feature-enabled.pool_algorithms_enabled: false
+          loadbalancer-feature-enabled.l7_protocol_enabled: false
+          loadbalancer-feature-enabled.l4_protocol: 'TCP'
+          loadbalancer-feature-enabled.session_persistence_enabled: false
+        standalone_environment_files:
+          - 'environments/low-memory-usage.yaml'
+          - 'ci/environments/scenario010-standalone.yaml'
+        tempest_whitelist:
+          - octavia_tempest_plugin.tests.scenario.v2.test_traffic_ops.TrafficOperationsScenarioTest.test_basic_traffic
 
 # NOTE(rfolco): scen012 should run on master only until it gets stable
 - job:
