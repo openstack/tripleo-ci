@@ -569,20 +569,18 @@
     nodeset: single-centos-7-node
     branches: ^(?!stable/(newton|ocata|pike|queens|rocky)).*$
     vars:
-      featureset: '052'
+      tags:
+        - build
+        - standalone
+        - octavia
+      featureset: '062'
       standalone_ceph: true
+      tempest_workers: 1
       featureset_override:
         validate_services: true
         standalone_environment_files:
           - 'environments/low-memory-usage.yaml'
-          - 'environments/services/octavia.yaml'
           - 'ci/environments/scenario010-standalone.yaml'
-        # TODO(beagles): we need to be able to obtain amphora image in order to run tests.
-        run_tempest: false
-        tempest_whitelist: []
-        tempest_plugins:
-          - python2-octavia-tests-tempest
-        test_white_regex: ''
 
 # NOTE(rfolco): scen012 should run on master only until it gets stable
 - job:

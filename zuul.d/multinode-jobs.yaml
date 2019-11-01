@@ -364,6 +364,8 @@
     vars:
       nodes: 1ctlr
       featureset: '038'
+      extra_tags:
+        - octavia
 
 - job:
     name: tripleo-ci-centos-7-scenario000-multinode-oooq-container-updates
