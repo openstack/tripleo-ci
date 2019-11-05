@@ -1,6 +1,7 @@
 #!/bin/bash -eux
 source {{ workspace }}/venv_build/bin/activate
 TRIPLEO_COMMON_PATH="{{ openstack_git_root }}/tripleo-common"
+TRIPLEO_CI_PATH="{{ openstack_git_root }}/tripleo-ci"
 
 pip install -U decorator
 
