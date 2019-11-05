@@ -1,0 +1,72 @@
+---
+# TRIPLEO-CI environment settings
+cloudenv: "vexxhost"
+undercloud_user: "{{ lookup('env','USER') }}"
+non_root_user: "{{ undercloud_user }}"
+extra_args: >
+    -e {{ tripleo_root }}/tripleo-ci/test-environments/worker-config.yaml
+    -e /usr/share/openstack-tripleo-heat-templates/environments/debug.yaml
+    --overcloud-ssh-user {{ undercloud_user }}
+# ara install and config
+undercloud_ansible_cfg: false
+
+toci_vxlan_networking: true
+toci_vxlan_networking_multinode: true
+vxlan_mtu: 1350
+hostname_correction: true # workaround restriction on toci images
+
+mtu: "{{ vxlan_mtu }}"
+undercloud_local_mtu: "{{ mtu }}"
+minion_local_mtu: "{{ mtu }}"
+overcloud_neutron_global_physnet_mtu: "{{ mtu }}"
+
+ceph_use_fqdn: true
+
+# environment settings, not TRIPLEO-CI specific
+undercloud_local_interface: "br-ex" # related to osinfra network configuration
+minion_local_interface: "br-ex" # related to osinfra network configuration
+flavor_args: ""
+undercloud_conf_extras: "net_config_override = /opt/stack/new/tripleo-ci/undercloud-configs/net-config-multinode.json.template"
+generate_pingtest_subunit: true
+# Images settings
+image_cache_dir_cleanup: true
+# user home (working_dir default) is the base dir for all images operations
+# if it's changed, nothing will work
+build_image_isolated: false
+build_undercloud: false
+
+# We don't need to cleanup TripleO CI
+tempest_track_resources: false
+
+# Use cirros cached image
+tempest_test_image_path: /opt/cache/files/cirros-0.3.5-x86_64-disk.img
+
+# Container update settings
+update_containers: >-
+  {% if containerized_overcloud|bool or containerized_undercloud|bool -%}
+  true
+  {%- endif -%}
+
+# Tempestmail settings
+tempestmail_log_server: http://logs.rdoproject.org
+
+#build-test packages
+artg_repos_dir: "{{ tripleo_root }}"
+
+# disable disk cleaning before starting installation
+undercloud_clean_nodes: false
+# InfluxDB module settings
+influxdb_only_successful_tasks: true
+influxdb_measurement: job
+influxdb_url: https://influxdb.review.rdoproject.org
+influxdb_port: 8086
+influxdb_user: tripleo_ci
+influxdb_password:
+influxdb_dbname: tripleo_ci
+influxdb_data_file_path: "{{ artcl_collect_dir }}/influxdb_data"
+influxdb_create_data_file: true
+
+# Browbeat settings
+cloud_name: vexxhost
+elastic_host: browbeat.test.com
+grafana_host: browbeat.test.com
