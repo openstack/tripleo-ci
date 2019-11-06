@@ -52,6 +52,8 @@ export DIB_YUM_REPO_CONF="/etc/yum.repos.d/delorean*"
 
 {% endif %}
 
+export DIB_DEBUG_TRACE=1
+
 export ELEMENTS_PATH=$ELEMENTS
 
 openstack overcloud image build --image-name {{ tripleo_image_type }} $CONFIG_FILES > {{ workspace }}/build.log 2> {{ workspace }}/build-err.log
