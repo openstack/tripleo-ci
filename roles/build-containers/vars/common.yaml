@@ -11,7 +11,9 @@ kolla_f28_patch: >-
  {%- endif %}
 
 # https://review.opendev.org/#/c/669471 - rhel8 kolla support
-kolla_rhel8_patch: 669471
+kolla_rhel8_patch:
+  master: 669471
+  "stable/train": 693159
 
 virtualenv_python:
   yum: python

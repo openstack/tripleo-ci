@@ -67,7 +67,7 @@
     git config --global user.name "Zuul"
     git remote add upstream https://review.opendev.org/openstack/kolla
     git ls-remote https://review.opendev.org/openstack/kolla | \
-      grep -E refs/changes/[[:digit:]]+/{{ kolla_rhel8_patch }}/ | \
+      grep -E refs/changes/[[:digit:]]+/{{ kolla_rhel8_patch[branch_override|default('master')] }}/ | \
       awk '{print $2}' | \
       sort -t / -k 5 -g -r | \
       head -1 | \
@@ -77,10 +77,12 @@
     # set the git_rebase branch as kolla change as are already clonned and
     # can be grabbed from zuul.ref var otherwise use master.
     git_rebase_branch={{ branch_override|default('master') }}
-    {% if zuul.ref is defined and zuul.pipeline in ['check', 'openstack-check'] %}
-        if git ls-remote https://review.opendev.org/openstack/kolla | grep -q {{ zuul.ref }} ; then
+    {% if zuul.ref is defined and zuul.ref and zuul.pipeline in ['check', 'openstack-check'] %}
+      found=$(git ls-remote https://review.opendev.org/openstack/kolla | grep {{ zuul.ref }} || true);
+      echo $found;
+      if [[ -n "$found" ]] ; then
             git_rebase_branch={{ zuul.ref }}
-        fi
+      fi
     {% endif %}
     git pull --rebase upstream $git_rebase_branch
 
