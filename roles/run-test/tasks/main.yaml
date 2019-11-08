@@ -58,6 +58,16 @@
       extra_vars: "--extra-vars @{{ tripleo_root }}/tripleo-ci/featureset-override.yaml"
   when: featureset_override is defined and featureset_override
 
+- name: Generate role variable file
+  template:
+    src: templates/role-vars.j2
+    dest: "{{ workspace }}/logs/role-vars.yaml"
+    mode: 0755
+    force: yes
+- name: Include role variables to be passed to quickstart
+  set_fact:
+    role_vars: "--extra-vars @{{ workspace }}/logs/role-vars.yaml"
+
 - name: render toci_gate_test script
   template:
     src: templates/toci_gate_test.sh.j2

@@ -30,6 +30,9 @@ if [[ -z $STABLE_RELEASE ]]; then
     if [[ $OVERRIDE_ZUUL_BRANCH =~ ^stable/ ]]; then
         export STABLE_RELEASE=${OVERRIDE_ZUUL_BRANCH#stable/}
     fi
+    if [[ $OVERRIDE_ZUUL_BRANCH =~ ^cloudsig/ ]]; then
+        export STABLE_RELEASE=${OVERRIDE_ZUUL_BRANCH}
+    fi
 fi
 
 # if we still don't have an stable branch, check if that

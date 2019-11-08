@@ -24,18 +24,28 @@
     push_containers: "{{ push_containers | default(false) | bool }}"
     container_config: ""
 
+- name: Set arch_tag fact
+  set_fact:
+    # NOTE(mjturek): Push old style tag for x86_64 first to maintain compatibility.
+    arch_tag: "{{ '_' + ansible_architecture if ansible_architecture != 'x86_64' else ''}}"
+
 - name: Get contents of openstack repo baseurl for the version hash
   become: true
   shell: >
     set -o pipefail &&
     cat /etc/yum.repos.d/{{ openstack_repo_name }}.repo |awk -F= '/baseurl/ {print $2}'
   register: baseurl
+  when: buildcontainers_version_hash is not defined
 
-- name: Set version_hash and arch_tag facts
+- name: Set version_hash fact
   set_fact:
     version_hash: "{{ baseurl.stdout.split('/')[-1] }}"
-    # NOTE(mjturek): Push old style tag for x86_64 first to maintain compatibility.
-    arch_tag: "{{ '_' + ansible_architecture if ansible_architecture != 'x86_64' else ''}}"
+  when: buildcontainers_version_hash is not defined
+
+- name: Set version_hash fact if buildcontainers_version_hash is defined
+  set_fact:
+    version_hash: "{{ buildcontainers_version_hash }}"
+  when: buildcontainers_version_hash is defined
 
 - name: grab kolla patch f28
   when: ansible_pkg_mgr == "dnf" and ansible_distribution|lower  == "fedora"

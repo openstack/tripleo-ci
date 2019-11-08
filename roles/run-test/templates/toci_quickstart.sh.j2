@@ -51,6 +51,7 @@ QUICKSTART_COLLECTLOGS_CMD="$LOCAL_WORKING_DIR/bin/ansible-playbook \
     $QUICKSTART_DEFAULT_RELEASE_ARG \
     {{ featureset_conf }} \
     {{ env_vars }} \
+    {{ role_vars }} \
     {{ extra_vars }} \
     $DEFAULT_ARGS \
     --extra-vars @{{ tripleo_root }}/tripleo-ci/toci-quickstart/config/collect-logs.yml \
@@ -132,6 +133,7 @@ for playbook in {{ " ".join(playbooks) }}; do
         {{ nodes_args }} \
         {{ featureset_conf }} \
         {{ env_vars }} \
+        {{ role_vars }} \
         {{ extra_vars }} \
         {{ vxlan_vars }} \
         $DEFAULT_ARGS \
@@ -157,6 +159,7 @@ done
             {{ nodes_args }} \
             {{ featureset_conf }} \
             {{ env_vars }} \
+            {{ role_vars }} \
             {{ extra_vars }} \
             {{ vxlan_vars }} \
             $DEFAULT_ARGS \
