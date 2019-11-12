@@ -25,4 +25,3 @@ service{"geard":
     ensure => "running",
     enable => true,
 }
-

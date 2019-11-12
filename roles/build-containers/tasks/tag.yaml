@@ -8,3 +8,4 @@
     - "{{ container_cli }} push {{ container_cli_opt }} {{ image }}:{{ version_hash }}_{{ ansible_architecture }}"
   loop_control:
     loop_var: "cmd"
+  changed_when: true
