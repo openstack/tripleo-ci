@@ -1,8 +1,4 @@
 ---
-- name: Include common vars
-  include_vars:
-    dir: "vars"
-
 - name: Set branch for building containers check jobs
   set_fact:
     ci_branch: "{{ zuul.branch | replace('stable/','') }}"

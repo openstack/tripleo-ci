@@ -1,8 +1,4 @@
 ---
-- name: Include common buildimage vars
-  include_vars:
-    file: "common.yaml"
-
 - when: rhel_image_source is defined
   block:
     - name: Set dib_local_image and other facts used by tripleo-ci build-image role build template
