@@ -246,6 +246,7 @@
       - ^zuul.d/base.yaml$
       # tripleo-common
       - ^container-images/.*$
+      - ^healthcheck/.*$
       - ^tripleo_common/image/.*$
       # tripleo-repos
       - ^tripleo_repos/.*$
