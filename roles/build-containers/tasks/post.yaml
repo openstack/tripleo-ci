@@ -1,8 +1,4 @@
 ---
-- name: Include common vars
-  include_vars:
-    dir: "vars"
-
 - name: Grab job artifacts
   become: true
   args:
