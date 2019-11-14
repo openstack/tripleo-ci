@@ -15,3 +15,6 @@ buildcontainers_override_repos: ""
 buildcontainers_rpm_setup_config: "http://172.17.0.1/delorean.repo,http://172.17.0.1/delorean-{{ ci_branch }}-testing.repo"
 openstack_repo_name: delorean
 container_cli_opt: ""
+# component_ci_containers used by component-ci jobs to build e.g. nova only
+# used together with component_ci_configs in vars/main
+component_ci_containers: ""
