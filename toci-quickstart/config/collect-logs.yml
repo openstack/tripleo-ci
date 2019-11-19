@@ -197,6 +197,7 @@ artcl_collect_list:
   - /etc/yum.conf
   - /etc/yum.repos.d/
   - /etc/zaqar/
+  - /tmp/tripleo-container-image-prepare-ansible.log
   - /var/log/atop*
   - /var/log/dmesg.txt
   - /var/log/host_info.txt
@@ -267,6 +268,7 @@ artcl_collect_list:
   - /var/log/tacker/
   - /var/log/tempest/
   - /var/log/tripleo-container-image-prepare.log
+  - /var/log/tripleo-container-image-prepare-ansible.log
   - /var/log/trove/
   - /var/log/vitrage/
   - /var/log/watcher/
