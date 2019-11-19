@@ -146,6 +146,7 @@ artcl_collect_list:
   - /etc/python/
   - /etc/qemu-kvm/
   - /etc/qpid-dispatch/
+  - /etc/rear/
   - /etc/rabbitmq/
   - /etc/radvd.conf
   - /etc/redhat-lsb/
