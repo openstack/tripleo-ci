@@ -16,7 +16,7 @@ skip_tags_list: >-
   {%- endif -%}
 
 featureset_conf: >-
-  {% if common_featureset is defined -%}
+  {% if common_featureset is defined and common_featureset -%}
   --extra-vars @{{ tripleo_quickstart_dir }}/config/general_config/{{ common_featureset }} {% endif -%}
   {% if job_featureset_file != '' -%}--extra-vars @{{ job_featureset_file }}{% endif -%}
 
