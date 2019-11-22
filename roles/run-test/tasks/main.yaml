@@ -29,6 +29,7 @@
         - 'to_build'
         - 'tempest_private_net_provider_type'
         - 'tempest_cloud_name'
+        - 'undercloud_enable_paunch'
     fail:
       msg: "ERROR: {{ item }} is not overridable."
     when: item not in allowed_overrides
