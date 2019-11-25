@@ -549,7 +549,7 @@
     voting: true
     parent: tripleo-ci-base-standalone
     nodeset: single-centos-7-node
-    branches: ^(?!stable/(newton|ocata|pike|queens|rocky|stein|train)).*$
+    branches: ^(?!stable/(newton|ocata|pike|queens|rocky|stein)).*$
     vars:
       featureset: '052'
       featureset_override:
