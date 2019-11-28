@@ -4,7 +4,8 @@ TRIPLEO_COMMON_PATH="{{ openstack_git_root }}/tripleo-common"
 
 ELEMENTS="{{ openstack_git_root }}/tripleo-puppet-elements/elements:"
 ELEMENTS+="{{ openstack_git_root }}/tripleo-image-elements/elements:"
-ELEMENTS+="{{ openstack_git_root }}/heat-agents"
+ELEMENTS+="{{ openstack_git_root }}/heat-agents:"
+ELEMENTS+="{{ openstack_git_root }}/ironic-python-agent-builder/dib/"
 
 if [ -d "{{ openstack_git_root }}/instack-undercloud/elements" ]; then
   ELEMENTS="{{ openstack_git_root }}/instack-undercloud/elements:${ELEMENTS}"
