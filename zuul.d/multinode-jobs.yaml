@@ -107,6 +107,8 @@
             irrelevant-files: *multinode_ignored
         - tripleo-ci-centos-7-undercloud-containers:
             irrelevant-files: *multinode_ignored
+        - tripleo-ci-centos-7-containers-undercloud-minion:
+            irrelevant-files: *multinode_ignored
         - tripleo-ci-centos-7-scenario001-multinode-oooq-container:
             irrelevant-files: *multinode_ignored
         - tripleo-ci-centos-7-scenario002-multinode-oooq-container:
@@ -144,6 +146,8 @@
       queue: tripleo
       jobs:
         - tripleo-ci-centos-7-containers-multinode:
+            irrelevant-files: *multinode_ignored
+        - tripleo-ci-centos-7-containers-undercloud-minion:
             irrelevant-files: *multinode_ignored
         - tripleo-ci-centos-7-standalone:
             irrelevant-files: *standalone_ignored
@@ -210,7 +214,6 @@
     name: tripleo-ci-centos-7-containers-undercloud-minion
     parent: tripleo-ci-base-multinode
     branches: ^(?!stable/(ocata|pike|queens|rocky|stein|train)).*$
-    voting: false
     vars:
       nodes: 1minion
       featureset: '061'
