@@ -121,6 +121,7 @@
               - ^((docker|puppet)/services|deployment)/.*monitoring.*$
               - ^((docker|puppet)/services|deployment)/.*panko.*$
               - ^((docker|puppet)/services|deployment)/database/redis.*$
+              - deployment/ovn/.*
               - ci/environments/scenario001-standalone.yaml
               - ^environments\/.*.yaml
               - ^deployed-server/.*$
@@ -172,6 +173,7 @@
               - ^((docker|puppet)/services|deployment)/.*swift.*$
               - ^((docker|puppet)/services|deployment)/.*zaqar.*$
               - ^((docker|puppet)/services|deployment)/database/redis.*$
+              - deployment/ovn/.*
               - ci/environments/scenario002-standalone.yaml
               - ^environments\/.*.yaml
               - ^deployed-server/.*$
@@ -212,6 +214,7 @@
               - ^((docker|puppet)/services|deployment)/.*mistral.*$
               - ^((docker|puppet)/services|deployment)/.*nova.*$
               - ^((docker|puppet)/services|deployment)/.*sahara.*$
+              - deployment/ovn/.*
               - ci/environments/scenario003-standalone.yaml
               - ^environments\/.*.yaml
               - ^deployed-server/.*$
@@ -249,6 +252,7 @@
               - ^(docker/services|deployment)/glance.*$
               - ^(docker/services|deployment)/manila.*$
               - ^((docker|puppet)/services|deployment)/database/mysql.*$
+              - deployment/ovn/.*
               - ci/environments/scenario004-standalone.yaml
               - ^environments\/.*.yaml
               - ^deployed-server/.*$
