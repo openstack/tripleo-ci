@@ -30,6 +30,8 @@
             irrelevant-files: *undercloud_ignored
         - tripleo-ci-centos-7-undercloud-containers:
             irrelevant-files: *undercloud_ignored
+        - tripleo-ci-centos-7-containers-undercloud-minion:
+            irrelevant-files: *undercloud_ignored
         - tripleo-ci-centos-7-containerized-undercloud-upgrades:
             irrelevant-files: *undercloud_ignored
     gate:
@@ -38,6 +40,8 @@
         - tripleo-ci-centos-7-undercloud-oooq:
             irrelevant-files: *undercloud_ignored
         - tripleo-ci-centos-7-undercloud-containers:
+            irrelevant-files: *undercloud_ignored
+        - tripleo-ci-centos-7-containers-undercloud-minion:
             irrelevant-files: *undercloud_ignored
 
 - job:
