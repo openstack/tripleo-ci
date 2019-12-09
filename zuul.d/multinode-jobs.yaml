@@ -139,8 +139,6 @@
             irrelevant-files: *standalone_ignored
         - tripleo-ci-centos-7-scenario004-standalone:
             irrelevant-files: *standalone_ignored
-        - tripleo-ci-centos-7-standalone-os-tempest:
-            irrelevant-files: *standalone_ignored
 
     gate:
       queue: tripleo
@@ -150,8 +148,6 @@
         - tripleo-ci-centos-7-containers-undercloud-minion:
             irrelevant-files: *multinode_ignored
         - tripleo-ci-centos-7-standalone:
-            irrelevant-files: *standalone_ignored
-        - tripleo-ci-centos-7-standalone-os-tempest:
             irrelevant-files: *standalone_ignored
         - tripleo-ci-centos-7-scenario000-multinode-oooq-container-updates:
             irrelevant-files: *multinode_ignored
