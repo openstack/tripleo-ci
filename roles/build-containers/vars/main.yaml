@@ -1,15 +1,6 @@
 workspace: "{{ ansible_user_dir }}/workspace"
 openstack_git_root: "{{ ansible_user_dir }}/src/opendev.org/openstack"
 
-# https://review.opendev.org/#/c/663409 - patch on stable/stein
-# https://review.opendev.org/#/c/624838/ - patch on master
-kolla_f28_patch: >-
- {% if release == "stein" -%}
- 663409
- {%- else -%}
- 624838
- {%- endif %}
-
 # https://review.opendev.org/#/c/669471 - rhel8 kolla support
 kolla_rhel8_patch:
   master: 669471
