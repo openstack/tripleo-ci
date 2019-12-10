@@ -1,0 +1,3 @@
+container_images:
+- imagename: docker.io/tripleomaster/centos-binary-keystone:current-tripleo
+  image_source: kolla

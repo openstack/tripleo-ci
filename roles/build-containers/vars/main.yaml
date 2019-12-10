@@ -38,3 +38,4 @@ timestamper_cmd: >-
 # used with component_ci_service in defaults/main by component-ci jobs
 component_ci_configs:
   compute: "$TRIPLEO_CI_PATH/roles/build-containers/templates/component_ci/compute_overcloud_containers.yaml"
+  keystone: "$TRIPLEO_CI_PATH/roles/build-containers/templates/component_ci/keystone_overcloud_containers.yaml"
