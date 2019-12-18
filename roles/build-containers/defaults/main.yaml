@@ -13,6 +13,7 @@ kolla_base_pull: true
 use_buildah: false
 buildcontainers_override_repos: ""
 buildcontainers_rpm_setup_config: "http://172.17.0.1/delorean.repo,http://172.17.0.1/delorean-{{ ci_branch }}-testing.repo"
+buildcontainers_venv: true
 openstack_repo_name: delorean
 container_cli_opt: ""
 # component_ci_containers used by component-ci jobs to build e.g. nova only
