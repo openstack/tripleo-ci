@@ -109,6 +109,7 @@ $QUICKSTART_VENV_CMD
 OOOQ_DIR=$TRIPLEO_ROOT/tripleo-quickstart/
 export OPT_WORKDIR=$LOCAL_WORKING_DIR
 export ANSIBLE_CONFIG=$OOOQ_DIR/ansible.cfg
+export ANSIBLE_COLLECTIONS_PATH="$OPT_WORKDIR/share/ansible/collections:~/.ansible/collections:/usr/share/ansible/collections"
 export ARA_DATABASE="sqlite:///${LOCAL_WORKING_DIR}/ara.sqlite"
 export VIRTUAL_ENV_DISABLE_PROMPT=1
 # Workaround for virtualenv issue https://github.com/pypa/virtualenv/issues/1029
