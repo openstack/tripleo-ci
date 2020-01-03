@@ -29,6 +29,7 @@
       - opendev.org/openstack/tripleo-ci
       - opendev.org/openstack/tripleo-quickstart
       - opendev.org/openstack/tripleo-quickstart-extras
+      - opendev.org/openstack/tripleo-operator-ansible
       - opendev.org/openstack/tripleo-upgrade
       - opendev.org/x/browbeat
       - opendev.org/openstack/tripleo-ha-utils
