@@ -178,4 +178,6 @@ done
 {% endif %}
 
 echo 'Quickstart completed.'
-exit $exit_value
+{% if force_job_failure|default(false) %}echo "Quickstart completed with exit code $exit_value but forcing failure with exit 1"
+exit 1{% else %}
+exit $exit_value{% endif %}
