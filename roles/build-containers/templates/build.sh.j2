@@ -1,9 +1,10 @@
 #!/bin/bash -eux
+{% if buildcontainers_venv is defined and buildcontainers_venv %}
 source {{ workspace }}/venv_build/bin/activate
+pip install -U decorator
+{% endif %}
 TRIPLEO_COMMON_PATH="{{ openstack_git_root }}/tripleo-common"
 TRIPLEO_CI_PATH="{{ openstack_git_root }}/tripleo-ci"
-
-pip install -U decorator
 
 ### list containers to build
 openstack overcloud container image build {{ container_config }}\

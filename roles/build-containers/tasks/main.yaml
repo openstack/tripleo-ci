@@ -77,16 +77,11 @@
   changed_when: "'nothing to commit, working directory clean' not in result.stdout_lines"
 
 
-- name: pip install kolla
-  pip:
-    name:
-      - "file://{{ openstack_git_root }}/kolla"
-      - "file://{{ openstack_git_root }}/tripleo-common"
-      - "file://{{ openstack_git_root }}/python-tripleoclient"
-      - decorator
-    virtualenv: "{{ workspace }}/venv_build"
-    virtualenv_python: "{{ virtualenv_python[ansible_pkg_mgr] }}"
-    virtualenv_site_packages: true
+- include_tasks: venv_setup.yml
+  when: buildcontainers_venv is defined and buildcontainers_venv
+
+- include_tasks: package_setup.yml
+  when: buildcontainers_venv is defined and not buildcontainers_venv
 
 # TODO(aschultz): make the kolla-build branch aware
 - name: Generate kolla-build.conf

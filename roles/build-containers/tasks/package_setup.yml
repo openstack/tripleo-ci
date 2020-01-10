@@ -1,0 +1,10 @@
+- name: install kolla and tripleoclient from package
+  become: true
+  package:
+    name:
+      - "openstack-kolla"
+      - "python*-tripleoclient"
+
+- name: set template override
+  set_fact:
+     kolla_override_path: "/usr/share/openstack-tripleo-common-containers/container-images/tripleo_kolla_template_overrides.j2"
