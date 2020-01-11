@@ -484,6 +484,8 @@
         tempest_test_whitelist:
           - 'tempest.api.object_storage.test_object_services.ObjectTest'
           - 'barbican_tempest_plugin.tests.scenario.test_volume_encryption.VolumeEncryptionTest'
+          - 'barbican_tempest_plugin.tests.scenario.test_image_signing.ImageSigningSnapshotTest'
+          - 'barbican_tempest_plugin.tests.scenario.test_image_signing.ImageSigningTest.test_signed_image_upload_and_boot'
           - 'telemetry_tempest_plugin.scenario.test_telemetry_integration.TestTelemetryIntegration'
         use_os_tempest: true
 
