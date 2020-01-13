@@ -56,7 +56,7 @@
       - ^etc/.*$
       - ^metadata.json$
       - ^releasenotes/.*$
-      - ^requirements.txt$
+      # do not put requirements.txt here, as it can have a huge impact
       - ^test-requirements.txt$
       - ^lower-constraints.txt$
       - ^spec/.*$
