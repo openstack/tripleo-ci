@@ -52,7 +52,7 @@
     parent: tripleo-ci-base-standalone-upgrade
     nodeset: single-centos-7-node
     voting: false
-    branches: ^(?!stable/(newton|ocata|pike|queens|rocky|stein|train)).*
+    branches: ^(?!stable/(newton|ocata|pike|queens)).*
     vars:
       featureset: '056'
     irrelevant-files:
