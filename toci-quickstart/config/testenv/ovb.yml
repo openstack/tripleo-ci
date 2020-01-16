@@ -93,3 +93,6 @@ ara_generate_html: false
 
 # overrides default timeout of 90min
 deploy_timeout: 120
+
+# OVB logs are far too big not to be compressed
+artcl_gzip: true
