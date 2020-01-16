@@ -52,10 +52,10 @@
     parent: tripleo-ci-base-standalone-upgrade
     nodeset: single-centos-7-node
     voting: false
-    branches: ^(?!stable/(newton|ocata|pike|queens)).*
+    branches: ^master$
     vars:
       featureset: '056'
-    irrelevant-files:
+    irrelevant-files: &upgrade_irrelevant
       - ^.*\.md$
       - ^.*\.rst$
       - ^doc/.*$
@@ -70,21 +70,25 @@
 
 - job:
     name: tripleo-ci-centos-7-standalone-upgrade-stein
-    parent: tripleo-ci-centos-7-standalone-upgrade
+    parent: tripleo-ci-base-standalone-upgrade
     voting: true
-    branches: ^(stable/stein).*
+    branches: ^stable/stein$
     override-checkout: 'stable/stein'
     vars:
-       branch_override: 'stable/stein'
+      featureset: '056'
+      branch_override: 'stable/stein'
+    irrelevant-files: *upgrade_irrelevant
 
 - job:
     name: tripleo-ci-centos-7-standalone-upgrade-train
-    parent: tripleo-ci-centos-7-standalone-upgrade
+    parent: tripleo-ci-base-standalone-upgrade
     voting: false
-    branches: ^(stable/train).*
+    branches: ^stable/train$
     override-checkout: 'stable/train'
     vars:
-       branch_override: 'stable/train'
+      featureset: '056'
+      branch_override: 'stable/train'
+    irrelevant-files: *upgrade_irrelevant
 
 - project-template:
     name: tripleo-standalone-scenarios-full
