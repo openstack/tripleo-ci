@@ -38,7 +38,7 @@ nova console-log bmc-${ENVNUM} | tail -n 100 | awk -v envnum="$ENVNUM" '$0=envnu
 
 # Save all the consoles in the stack to a dedicated directory, stripping out ANSI color codes.
 for server in $(openstack server list -f value -c Name | grep baremetal-${ENVNUM}) bmc-$ENVNUM ; do
-    openstack console log show $server | sed 's/\[[0-9;]*[a-zA-Z]//g' | gzip > $CONSOLE_LOG_PATH/$server-console.log.gz || true
+    openstack console log show $server | sed 's/\[[0-9;]*[a-zA-Z]//g' > $CONSOLE_LOG_PATH/$server-console.log || true
 done
 
 

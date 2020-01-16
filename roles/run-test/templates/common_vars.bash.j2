@@ -54,4 +54,4 @@ SSH_OPTIONS='-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogL
 
 # NOTE(pabelanger): this logic should be inverted to only include what developers need, not exclude things on the filesystem.
 TARCMD="sudo XZ_OPT=-3 tar -cJf - --exclude=var/log/journal --exclude=udev/hwdb.bin --exclude=etc/puppet/modules --exclude=etc/project-config --exclude=etc/services --exclude=selinux/targeted --exclude=etc/services --exclude=etc/pki /var/log /etc"
-JLOGCMD="sudo journalctl --output short-precise | gzip -c | sudo dd of=/var/log/journal-text.txt.gz"
+JLOGCMD="sudo journalctl --output short-precise | sudo dd of=/var/log/journal-text.txt"

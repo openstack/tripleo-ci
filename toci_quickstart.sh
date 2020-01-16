@@ -185,15 +185,13 @@ fi
 
 popd
 
-sudo unbound-control dump_cache > /tmp/dns_cache.txt
-sudo chown ${USER}: /tmp/dns_cache.txt
-cat /tmp/dns_cache.txt | gzip - > $LOGS_DIR/dns_cache.txt.gz
+sudo unbound-control dump_cache > $LOGS_DIR/dns_cache.txt
 
 if [[ "$PERIODIC" == 1 && -e $WORKSPACE/hash_info.sh ]] ; then
     echo export JOB_EXIT_VALUE=$exit_value >> $WORKSPACE/hash_info.sh
 fi
 
 mkdir -p $LOGS_DIR/quickstart_files
-find $LOCAL_WORKING_DIR -maxdepth 1 -type f -not -name "*sqlite" | while read i; do gzip -cf $i > $LOGS_DIR/quickstart_files/$(basename $i).txt.gz; done
+find $LOCAL_WORKING_DIR -maxdepth 1 -type f -not -name "*sqlite" | while read i; do cp -l $i $LOGS_DIR/quickstart_files/$(basename $i); done
 echo 'Quickstart completed.'
 exit $exit_value

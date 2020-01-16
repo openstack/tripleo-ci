@@ -98,12 +98,10 @@ source $LOCAL_WORKING_DIR/bin/activate
 set -u
 source $OOOQ_DIR/ansible_ssh_env.sh
 
-sudo unbound-control dump_cache > /tmp/dns_cache.txt
-sudo chown {{ ansible_user_id }}: /tmp/dns_cache.txt
-cat /tmp/dns_cache.txt | gzip - > $LOGS_DIR/dns_cache.txt.gz
+sudo unbound-control dump_cache > $LOGS_DIR/dns_cache.txt
 
 mkdir -p $LOGS_DIR/quickstart_files
-find $LOCAL_WORKING_DIR -maxdepth 1 -type f -not -name "*sqlite" | while read i; do gzip -cf \$i > $LOGS_DIR/quickstart_files/\$(basename \$i).txt.gz; done
+find $LOCAL_WORKING_DIR -maxdepth 1 -type f -not -name "*sqlite" | while read i; do cp -l \$i $LOGS_DIR/quickstart_files/\$(basename \$i); done
 
 $QUICKSTART_COLLECTLOGS_CMD  > $LOGS_DIR/quickstart_collect_logs.log || \
     echo "WARNING: quickstart collect-logs failed, check quickstart_collectlogs.log for details"
