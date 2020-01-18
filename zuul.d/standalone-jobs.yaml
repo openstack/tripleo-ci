@@ -72,7 +72,7 @@
     name: tripleo-ci-centos-7-standalone-upgrade-stein
     parent: tripleo-ci-centos-7-standalone-upgrade
     voting: true
-    branches: ^(stable/(rocky|stein)).*
+    branches: ^(stable/stein).*
     override-checkout: 'stable/stein'
     vars:
        branch_override: 'stable/stein'
@@ -80,8 +80,8 @@
 - job:
     name: tripleo-ci-centos-7-standalone-upgrade-train
     parent: tripleo-ci-centos-7-standalone-upgrade
-    voting: true
-    branches: ^(stable/(stein|train)).*
+    voting: false
+    branches: ^(stable/train).*
     override-checkout: 'stable/train'
     vars:
        branch_override: 'stable/train'
