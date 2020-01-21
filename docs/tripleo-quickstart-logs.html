@@ -31,6 +31,7 @@
 </style>
 <h1>Links to common log files</h1>
 <ul>
+
 <li><a href='undercloud/var/log/extra/errors.txt.txt.gz'>undercloud/var/log/extra/errors.txt.txt.gz</a>
 - the concatenation of all the errors on any node in a single file</li>
 <li><a href='undercloud/home/zuul/'>undercloud/home/zuul/</a>
@@ -39,14 +40,16 @@
 - the system logs for each container</li>
 <li><a href='undercloud/var/log/extra/podman/'>undercloud/var/log/extra/podman/</a>
 - the podman container setup configuration and setup logs</li>
+<li><a href='undercloud/var/log/extra/docker/'>undercloud/var/log/extra/docker/</a>
+- the docker container setup configuration and setup logs</li>
+<li><a href='delorean_logs'>delorean_logs</a>
+- the source code change built into rpm and the build logs are here</li>
 <li><a href='undercloud/var/log/config-data/'>undercloud/var/log/config-data/</a>
 - the configuration files for each openstack service</li>
 <li><a href='undercloud/etc/puppet/hieradata/'>undercloud/etc/puppet/hieradata/</a>
 - the hieradata of the deployment, service-configs, net and vip info</li>
-<li><a href='undercloud/var/log/extra/docker/'>undercloud/var/log/extra/docker/</a>
-- the docker container setup configuration and setup logs</li>
 <li><a href='undercloud/var/log/tripleo-container-image-prepare.log.txt.gz'>undercloud/var/log/tripleo-container-image-prepare.log.txt.gz</a>
-- the undercloud container download and provision log </li>
+- the container download, container update and provision log </li>
 <li><a href='undercloud/var/log/tempest/'>undercloud/var/log/tempest/</a>
 - Tempest run results logs </li>
 <li><a href='undercloud/home/zuul/tempest/etc/'>undercloud/home/zuul/tempest/etc/</a>
@@ -60,6 +63,8 @@ directories will also exist in these logs.</li>
 <li><a href='undercloud/var/log/extra/'>undercloud/var/log/extra/</a> -
 extra system details like package list, and cpu info gathered from the
 undercloud</li>
+<li><a href='undercloud/var/log/extra/rpm-list'>undercloud/var/log/extra/rpm-list</a>
+- rpms installed to the undercloud, container rpms can be found in extra/<podman|docker>/containers/$container/info.log</li>
 <li><a href='undercloud/var/lib/mistral'>undercloud/var/lib/mistral</a>
 - output of all ansible used by config-download to drive the overcloud deployment</li>
 <li><a href='stackviz/#/testrepository.subunit'>stackviz</a> - stackviz tempest test results</li>
@@ -68,53 +73,61 @@ undercloud</li>
 
 <button class="collapsible">How to recreate this job</button>
 <div class="content">
-<p> Please refer to the <a href="README-reproducer-quickstart.html">recreation
+<p> Please refer to the <a href="README-reproducer.html">recreation
  instructions</a>
+</p>
+</div>
+
+<button class="collapsible">Additional logs for OVB jobs, a.k.a openstack virtual baremetal</button>
+<div class="content">
+<p>
+    Note: These logs are only available in jobs that use OVB.
+<ul>
+<li>
+<a href='https://openstack-virtual-baremetal.readthedocs.io/en/latest/'>OpenStack Virtual Baremetal Documentation</a>
+</li>
+<li><a href='baremetal_0-console.log'>baremetal boot log</a>
+- all the overcloud nodes should have boot logs associated e.g. baremetal_1, baremetal_2 etc.</li>
+<li><a href='bmc-console.log'>baremetal controller log, a.k.a BMC</a></li>
+<li><a href='overcloud-controller-0'>logs collected from overcloud-controller-[0-2] node</a></li>
+<li><a href='overcloud-novacompute-0'>logs collected from the overcloud-novacompute-[0-1] node</a></li>
+
 </p>
 </div>
 
 <button class="collapsible">How to figure out what went wrong?</button>
 <div class="content">
-<p>Check the console log and search for <b>PLAY RECAP</b>. There are sometimes
-multiple ansible runs in a job, usually the last one is the relevant.
-If no <b>PLAY RECAP</b> text is found that usually means an infra failure
-before Quickstart could even start. Try rechecking or asking on <i>#tripleo</i>
-if there's an ongoing infra issue.</p>
 
-<p>Look for a line above the <b>PLAY RECAP</b> that starts with
-"<b>fatal:</b>". If no such line is found, try searching for other PLAY RECAP
-lines or other error outputs.</p>
+<p> Check the base directory for a file called <b>*failure_reason*</b> for
+automatic failure detection. If no known error has been found the file will
+be named "No_failure_reason_found".
 
-<p>If this "fatal" line contains the execution of a shell script and redirects
-to a log, check which machine that task ran on. Look under that node's
-directory in the logs to find the file.</p>
+<p>Most of the undercloud and overcloud deployment log files can
+be found in <a href='undercloud/home/zuul'>undercloud/home/zuul</a>
 
-<p>Example output:<br/>
-<br/><code>
-fatal: [<b>undercloud</b>]: FAILED! => {"changed": true, "cmd": "set -o pipefail &&
-/home/zuul/<b>overcloud-prep-images.sh</b> 2>&1 | awk '{ print
-strftime(\"%Y-%m-%d %H:%M:%S |\"), $0; fflush(); }' >
-/home/stack/<b>overcloud_prep_images.log</b>", "failed": true, "rc": 1}<br/>
-<br/>
-PLAY RECAP *********************************************************************<br/>
-</code></p>
-
-<p>In this case the <code>overcloud-prep-images.sh</code> script failed, which
-is redirected to <code>/home/zuul/overcloud_prep_images.log
-</code> on the undercloud.</p>
-
-<b>Deployment errors can be found in:</b>
+<b>tracebacks and other errors are collected in the following log per node:</b>
 <ul>
 <li><a href='undercloud/var/log/extra/errors.txt.txt.gz'>undercloud/var/log/extra/errors.txt.txt.gz</a>
 - the concatenation of all the errors on any node in a single file</li>
 </ul>
 
-<p>If this is a different Ansible error, that could mean either an infra
-problem (often has <b>UNREACHABLE</b> in the line) or a bug in Quickstart. Ask
-on <i>#tripleo</i> to get help or open a bug on
+<p>Next check the console log and search for <b>PLAY RECAP</b>. There are sometimes
+multiple ansible runs in a job, usually the last one is the relevant.
+<br>If no <b>PLAY RECAP</b> text is found that usually means an infra failure
+before Quickstart could even start.
+<br>
+If this is a different Ansible error, that could mean either an infra
+problem (often has <b>UNREACHABLE</b> in the line) or a bug in Quickstart.
+</p>
+
+<p>
+Ask on <i>#tripleo</i> to get help or open a bug on
 <a href='https://bugs.launchpad.net/tripleo/+filebug'>Launchpad</a>. Add the
 "ci" tag if it's a CI issue and "quickstart" if you suspect that the bug is in
 Quickstart itself.</p>
+
+Finally try rechecking or asking on <i>#tripleo</i>
+</p>
 </div>
 
 <button class="collapsible">Variables used in the job run</button>
@@ -130,6 +143,44 @@ Quickstart itself.</p>
 to run the playbooks</li>
 </ul>
 </div>
+
+<button class="collapsible">Additional tools to help</button>
+<div class="content">
+<p> Upstream OpenStack Health, Elastic Search and Kibana
+</p>
+<ul>
+<li><a href='http://status.openstack.org/elastic-recheck/'>http://status.openstack.org/elastic-recheck/</a>
+- A tool to track the impact of known bugs in OpenStack CI</li>
+<li><a href='http://logstash.openstack.org/#/dashboard/file/logstash.json'>http://logstash.openstack.org</a>
+- filter in details in the log files from OpenStack CI</li>
+<li><a href='http://status.openstack.org/openstack-health/#/?searchProject=tripleo'>OpenStack Health</a>
+- upstream job results by project</li>
+</ul>
+
+<p> Tools that will help you spot a trend in TripleO CI
+</p>
+<ul>
+<li><a href='http://dashboard-ci.tripleo.org/d/jobs/jobs-exploration?orgId=1&var-influxdb_filter=job_name%7C%3D%7Ctripleo-ci-centos-7-containers-multinode'>Job Exploration</a>
+- check the job history across upstream clouds</li>
+<li><a href='http://zuul.openstack.org/builds?job_name=tripleo-ci-centos-7-containers-multinode%09'>zuul job filter</a>
+- zuul's job filter per job</li>
+<li><a href='http://cistatus.tripleo.org/'>http://cistatus.tripleo.org</a>
+- Overall check job status</li>
+<li><a href='http://cistatus.tripleo.org/gates/'>http://cistatus.tripleo.org/gates/</a>
+- Overall gate job status</li>
+</ul>
+<p>
+Tools to compare one job to another.
+<ul>
+<li><a href='https://github.com/sshnaidm/jcomparison'>jcomparison</a>
+- A tool to compare results from one job to another</li>
+<li><a href='https://pypi.org/project/logreduce/'>log reduce</a>
+- A tool that uses AI features to reduce the noise in logs and present only what is needed for debug</li>
+</ul>
+</p>
+</div>
+
+
 
 <button class="collapsible">Dry run option</button>
 <div class="content">
