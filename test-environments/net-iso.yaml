@@ -1,6 +1,0 @@
----
-parameter_defaults:
-  ControlPlaneSubnetCidr: "24"
-  ControlPlaneDefaultRoute: 192.168.24.1
-  EC2MetadataIp: 192.168.24.1
-  DnsServers: ["8.8.8.8", "8.8.4.4"]

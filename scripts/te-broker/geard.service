@@ -1,5 +1,0 @@
-[Unit]
-Description=Geard deamon
-
-[Service]
-ExecStart=/bin/geard -d --keepalive --keepalive-idle 1200 --keepalive-interval 60 --keepalive-count 10

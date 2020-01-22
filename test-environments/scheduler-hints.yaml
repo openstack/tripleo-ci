@@ -1,6 +1,0 @@
----
-parameter_defaults:
-  ControllerSchedulerHints:
-    'capabilities:node': 'controller-%index%'
-  NovaComputeSchedulerHints:
-    'capabilities:node': 'compute-%index%'
