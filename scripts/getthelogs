@@ -1,0 +1,77 @@
+#!/bin/bash
+set -eu -o pipefail
+
+function usage {
+    echo "Helper script for downloading tripleo-ci jobs logs"
+    echo
+    echo "Example:"
+    echo "getthelogs http://logs.openstack.org/00/123456/7/check/gate-tripleo-ci-foo/d3adbeef"
+    echo
+    echo "Downloads the logs and starts a shell from the logs root directory"
+}
+
+function finish {
+    rc=${rc:-$?}
+    trap - EXIT
+    cd $TDIR/../
+    echo "Download job exited ${rc}"
+    PS1="JOBLOGS ]\$  " bash --noprofile --norc
+}
+
+function get_dirs {
+    local drop="\b(etc|ara|ara_oooq|docs|build|stackviz|sudoers.d|config-data|extra)\b"
+    local directories=""
+    directories=$(curl -s "$1" 2> /dev/null | grep -E "\[DIR" | grep -vE "${drop}" | sed -e "s,.*href=\"\([^\"]*\)\".*,${1}\1,g")
+    if [ -n "$directories" ]; then
+        for d in $directories; do
+            directories="$directories $(get_dirs $d/)"
+        done
+        echo $directories
+    else
+        echo ""
+    fi
+    return 0
+}
+
+[[ "${1:--}" =~ ^\s+?- ]] && (usage; exit 1)
+type -p wget 2>&1 >/dev/null || ( echo "Please install a wget tool!"; exit 127 )
+trap finish EXIT SIGINT SIGTERM
+
+WORKERS=6
+BASEURL=${1%/}
+SC=$(dirname $BASEURL | grep -o \/ | wc -w)
+if [[ $BASEURL =~ 'logs.rdoproject' && SC -le 9 ]] ||\
+   [[ $BASEURL =~ 'logs.rdoproject.org/openstack-periodic' && SC -le 5 ]]; then
+    console="$BASEURL/console.txt.gz"
+elif [[ ! $(basename $BASEURL) == 'logs' && SC -le 7 ]]; then
+    console="$BASEURL/job-output.txt.gz"
+    BASEURL=${BASEURL}/logs
+else
+    console=''
+fi
+TDIR=${BASEURL##*http://}
+TDIR=${TDIR##*https://}
+TDIR=/tmp/${TDIR}
+mkdir -p $TDIR
+cd /tmp
+
+echo "Target dir for download: $TDIR"
+echo Will download logs from the following URLs:
+list_to_get="$console $(get_dirs $BASEURL/)"
+for d in $list_to_get; do
+    echo $d
+done
+
+rm -f wget-jobs.txt
+for d in $list_to_get; do
+    args="\"-nv -nc --no-use-server-timestamps \
+    --accept-regex='\.txt\.gz$|messages$' \
+    --reject='index.html*' \
+    --recursive -l 10 --domains logs.openstack.org,logs.rdoproject.org \
+    --no-parent \
+    -erobots=off --wait 0.25 ${d}\""
+    echo "${args}" >> wget-jobs.txt
+done
+
+cat wget-jobs.txt | sed -n '{p;p}' | shuf > wget-jobs-shuf.txt
+cat wget-jobs-shuf.txt  | xargs -r -n1 -P ${WORKERS} -I{} sh -c "wget {}"
