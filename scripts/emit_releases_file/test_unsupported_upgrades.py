@@ -2,12 +2,10 @@ from emit_releases_file import compose_releases_dictionary
 import pytest
 
 
-@pytest.mark.parametrize('featureset', [{
-    'mixed_upgrade': True,
-    'overcloud_upgrade': True
-}, {
-    'undercloud_upgrade': True
-}])
+@pytest.mark.parametrize(
+    'featureset',
+    [{'mixed_upgrade': True, 'overcloud_upgrade': True}, {'undercloud_upgrade': True}],
+)
 def test_upgrade_to_newton_is_unsupported(featureset):
     stable_release = 'newton'
     upgrade_from = False
@@ -38,8 +36,7 @@ def test_undercloud_upgrades_from_newton_to_ocata_are_unsupported():
         compose_releases_dictionary(stable_release, featureset, upgrade_from)
 
 
-@pytest.mark.parametrize('upgrade_type',
-                         ['ffu_overcloud_upgrade', 'overcloud_upgrade'])
+@pytest.mark.parametrize('upgrade_type', ['ffu_overcloud_upgrade', 'overcloud_upgrade'])
 def test_overcloud_upgrades_has_to_be_mixed(upgrade_type):
     featureset = {
         upgrade_type: True,
@@ -50,9 +47,9 @@ def test_overcloud_upgrades_has_to_be_mixed(upgrade_type):
         compose_releases_dictionary(stable_release, featureset, upgrade_from)
 
 
-@pytest.mark.parametrize('stable_release',
-                         ['ocata', 'pike', 'newton',
-                          'rocky', 'stein', 'master'])
+@pytest.mark.parametrize(
+    'stable_release', ['ocata', 'pike', 'newton', 'rocky', 'stein', 'master']
+)
 def test_ffu_overcloud_upgrade_only_supported_from_newton(stable_release):
     featureset = {
         'mixed_upgrade': True,
@@ -63,8 +60,9 @@ def test_ffu_overcloud_upgrade_only_supported_from_newton(stable_release):
         compose_releases_dictionary(stable_release, featureset, upgrade_from)
 
 
-@pytest.mark.parametrize('stable_release',
-                         ['newton', 'ocata', 'pike', 'queens', 'rocky'])
+@pytest.mark.parametrize(
+    'stable_release', ['newton', 'ocata', 'pike', 'queens', 'rocky']
+)
 def test_standalone_upgrade_only_supported_from_stein(stable_release):
     featureset = {
         'standalone_upgrade': True,

@@ -20,6 +20,7 @@ docker_skip = False
 docker_reason = ''
 try:
     import docker
+
     client = docker.from_env(timeout=5)
     if not client.ping():
         raise Exception("Failed to ping docker server.")
@@ -36,8 +37,9 @@ def pytest_generate_tests(metafunc):
             role_path = os.path.abspath('./roles/%s' % role)
             for _, dirnames, _ in os.walk(role_path + '/molecule'):
                 for scenario in dirnames:
-                    if os.path.isfile('%s/molecule/%s/molecule.yml' %
-                                      (role_path, scenario)):
+                    if os.path.isfile(
+                        '%s/molecule/%s/molecule.yml' % (role_path, scenario)
+                    ):
                         matches.append([role_path, scenario])
     metafunc.parametrize('testdata', matches)
 
@@ -46,6 +48,6 @@ def pytest_generate_tests(metafunc):
 def test_molecule(testdata):
     cwd, scenario = testdata
     cmd = ['python', '-m', 'molecule', 'test', '-s', scenario]
-    print("running: %s (from %s)" % (" " .join(cmd), cwd))
+    print("running: %s (from %s)" % (" ".join(cmd), cwd))
     r = subprocess.call(cmd, cwd=cwd)
     assert r == 0

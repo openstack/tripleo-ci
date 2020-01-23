@@ -30,20 +30,18 @@ def process_events(all_events, events):
         # Older clients return timestamps in the first format, newer ones
         # append a Z.  This way we can handle both formats.
         try:
-            strptime = time.strptime(event['event_time'],
-                                     '%Y-%m-%dT%H:%M:%S')
+            strptime = time.strptime(event['event_time'], '%Y-%m-%dT%H:%M:%S')
         except ValueError:
-            strptime = time.strptime(event['event_time'],
-                                     '%Y-%m-%dT%H:%M:%SZ')
+            strptime = time.strptime(event['event_time'], '%Y-%m-%dT%H:%M:%SZ')
         etime = time.mktime(strptime)
         if name in events:
             if status == 'CREATE_IN_PROGRESS':
                 times[name] = {'start': etime, 'elapsed': None}
             elif status == 'CREATE_COMPLETE' or status == 'CREATE_FAILED':
                 times[name]['elapsed'] = etime - times[name]['start']
-    for name, data in sorted(times.items(),
-                             key=lambda x: x[1]['elapsed'],
-                             reverse=True):
+    for name, data in sorted(
+        times.items(), key=lambda x: x[1]['elapsed'], reverse=True
+    ):
         elapsed = 'Still in progress'
         if times[name]['elapsed'] is not None:
             elapsed = times[name]['elapsed']

@@ -14,7 +14,7 @@ else:
 
 
 def test_empty_releases_dictionary_fails():
-    assert (not write_releases_dictionary_to_bash({}, ""))
+    assert not write_releases_dictionary_to_bash({}, "")
 
 
 @pytest.fixture
@@ -37,44 +37,44 @@ def releases_dictionary():
     }
 
 
-@pytest.mark.parametrize('deleted_key', [
-    'undercloud_install_release',
-    'undercloud_install_hash',
-    'undercloud_target_release',
-    'undercloud_target_hash',
-    'overcloud_deploy_release',
-    'overcloud_deploy_hash',
-    'overcloud_target_release',
-    'overcloud_target_hash',
-    'standalone_deploy_release',
-    'standalone_deploy_newest_hash',
-    'standalone_deploy_hash',
-    'standalone_target_release',
-    'standalone_target_newest_hash',
-    'standalone_target_hash',
-])
+@pytest.mark.parametrize(
+    'deleted_key',
+    [
+        'undercloud_install_release',
+        'undercloud_install_hash',
+        'undercloud_target_release',
+        'undercloud_target_hash',
+        'overcloud_deploy_release',
+        'overcloud_deploy_hash',
+        'overcloud_target_release',
+        'overcloud_target_hash',
+        'standalone_deploy_release',
+        'standalone_deploy_newest_hash',
+        'standalone_deploy_hash',
+        'standalone_target_release',
+        'standalone_target_newest_hash',
+        'standalone_target_hash',
+    ],
+)
 def test_missing_key_fails(releases_dictionary, deleted_key):
     wrong_releases_dictionary = releases_dictionary.pop(deleted_key)
-    assert (not write_releases_dictionary_to_bash(wrong_releases_dictionary,
-                                                  ""))
+    assert not write_releases_dictionary_to_bash(wrong_releases_dictionary, "")
 
 
 @mock.patch(BUILTINS_OPEN, new_callable=mock_open)
 def test_open_exception_fails(mock, releases_dictionary):
     bash_script = '/foo/bar.sh'
     mock.side_effect = IOError
-    assert (not write_releases_dictionary_to_bash(releases_dictionary,
-                                                  bash_script))
+    assert not write_releases_dictionary_to_bash(releases_dictionary, bash_script)
 
 
 @mock.patch(BUILTINS_OPEN, new_callable=mock_open)
 def test_output_is_sourceable(mock, releases_dictionary):
     bash_script = '/foo/bar.sh'
-    assert (write_releases_dictionary_to_bash(releases_dictionary,
-                                              bash_script))
+    assert write_releases_dictionary_to_bash(releases_dictionary, bash_script)
     mock.assert_called_once_with(bash_script, 'w')
     handle = mock()
     args, _ = handle.write.call_args
     written_content = args[0]
     # TODO(Llorente): check environment variables
-    assert (0 == os.system(written_content))
+    assert 0 == os.system(written_content)

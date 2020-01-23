@@ -53,7 +53,8 @@ def get_last_jobs(change):
         sanitized_content = "\n".join(response.content.split("\n")[1:])
         detail = json.loads(sanitized_content)
         zuul_messages = [
-            message for message in detail['messages']
+            message
+            for message in detail['messages']
             if message['author']['username'] == GERRIT_USER_NAME
             and "({} pipeline)".format(ZUUL_PIPELINE) in message['message']
         ]
@@ -62,8 +63,9 @@ def get_last_jobs(change):
             patchset = "Patch Set {}".format(patchset)
             filtered = [m for m in zuul_messages if patchset in m['message']]
             if len(filtered) == 0:
-                raise RuntimeError("{} not found for review {}".format(
-                    patchset, change))
+                raise RuntimeError(
+                    "{} not found for review {}".format(patchset, change)
+                )
             last_message = filtered[0]
         else:
             last_message = zuul_messages[-1]
@@ -97,18 +99,15 @@ def is_equal(lho_jobs, rho_jobs, file_path):
     rho_files = download(rho_jobs, file_path)
     print(">>>>>>> Comparing {}".format(file_path))
     if lho_files != rho_files:
-        diffkeys = [
-            k for k in lho_files
-            if lho_files[k] != rho_files.get(k, None)
-        ]
+        diffkeys = [k for k in lho_files if lho_files[k] != rho_files.get(k, None)]
         print("{} are different at the following jobs:".format(file_path))
         for key in diffkeys:
             print(Fore.BLUE + key)
             print(Fore.BLUE + lho + ": " + lho_jobs[key])
             print(Fore.BLUE + rho + ": " + rho_jobs[key])
             for line in difflib.unified_diff(
-                    lho_files[key].splitlines(),
-                    rho_files.get(key, '').splitlines()):
+                lho_files[key].splitlines(), rho_files.get(key, '').splitlines()
+            ):
                 print(colors.get(line[0], Fore.BLACK) + line)
         return False
     print("{} files are the same".format(file_path))
@@ -117,22 +116,24 @@ def is_equal(lho_jobs, rho_jobs, file_path):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
-        description='Compares files at logs.o.o from two reviews')
+        description='Compares files at logs.o.o from two reviews'
+    )
 
     parser.add_argument(
         'reviews',
         metavar='review',
         nargs=2,
         help='left-side and right-side review numbers to compare it can'
-        'include the specific patchset, examples:610491 or 610491/1')
+        'include the specific patchset, examples:610491 or 610491/1',
+    )
 
     parser.add_argument(
         '--files',
         type=str,
-        default='playbook_executions.log,reproducer-quickstart.sh,'
-                'collect_logs.sh',
+        default='playbook_executions.log,reproducer-quickstart.sh,' 'collect_logs.sh',
         help='Comma separated list of files to compare at logs.o.o '
-             '(default: %(default)s)')
+        '(default: %(default)s)',
+    )
 
     args = parser.parse_args()
 

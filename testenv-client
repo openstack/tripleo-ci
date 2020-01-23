@@ -32,8 +32,7 @@ import uuid
 
 import gear
 
-logging.basicConfig(
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger('testenv-client')
 logger.setLevel(logging.INFO)
 
@@ -65,8 +64,10 @@ class TestCallback(object):
         if time_waiting > 90:
             logger.warn('%.1f seconds waiting for a worker.' % (time_waiting))
 
-        if "Couldn't retrieve env" in job.arguments or \
-                "Failed creating OVB stack" in job.arguments:
+        if (
+            "Couldn't retrieve env" in job.arguments
+            or "Failed creating OVB stack" in job.arguments
+        ):
             logger.error(job.arguments)
             self.rv = 2
             job.sendWorkComplete("")
@@ -126,7 +127,9 @@ def add_servers(client, servers):
 
 def main(args=sys.argv[1:]):
     parser = argparse.ArgumentParser(
-        description=(textwrap.dedent("""
+        description=(
+            textwrap.dedent(
+                """
             Starts up a gearman worker and then calls the job "lockenv" over
             gearman, then waits for the worker to be called, once the worker
             is called it will place the provided data in a datafile (indicated
@@ -136,49 +139,74 @@ def main(args=sys.argv[1:]):
             worker is holding a test environment in a locked state e.g. to
             simply output the data provided one could run the command:
               $ echo 'cat $TE_DATAFILE' | %s -- bash
-            """ % sys.argv[0])),
-        formatter_class=argparse.RawTextHelpFormatter
+            """
+                % sys.argv[0]
+            )
+        ),
+        formatter_class=argparse.RawTextHelpFormatter,
     )
-    parser.add_argument('command', nargs="+",
-                        help='A command to run once the test env is locked')
-    parser.add_argument('--geard', '-b', default='127.0.0.1:4730',
-                        help='A comma separated list of gearman brokers to '
-                             'connect to.')
-    parser.add_argument('--jobnum', '-n', default=uuid.uuid4().hex,
-                        help='A unique identifier identifing this job.')
-    parser.add_argument('--timeout', '-t', default='10800',
-                        help='Set a timeout, after which the command will '
-                             'be killed.')
-    parser.add_argument('--envsize', default="2",
-                        help='Number of baremetal nodes to request')
-    parser.add_argument('--compute-envsize', default='0',
-                        help='Number of compute baremetal nodes to request. '
-                             'When this is set to a value > 0, the primary '
-                             'nodes will be tagged with the controller '
-                             'profile and the extra nodes with compute.  The '
-                             'compute nodes will be a smaller flavor in order '
-                             'to use less resources.')
-    parser.add_argument('--ucinstance',
-                        help='uuid for the undercloud instance (where an '
-                             'interface on the provisioning net is attached')
-    parser.add_argument('--create-undercloud', action='store_true',
-                        help='deploy the undercloud node.')
-    parser.add_argument('--ssh-key', default='',
-                        help='ssh key for the ovb nodes to be deployed.')
-    parser.add_argument('--net-iso',
-                        default="multi-nic",
-                        choices=['none', 'multi-nic', 'public-bond'],
-                        help='"none" requests an environment without network '
-                             'isolation, "multi-nic" requests one with a '
-                             'basic multiple nic configuration, and '
-                             '"public-bond" requests one like "multi-nic" '
-                             'but with two public nics for use with bonded '
-                             'nic-configs.')
-    parser.add_argument('--extra-nodes', default='0',
-                        help='Number of extra undercloud-like nodes to '
-                             'request')
-    parser.add_argument('--debug', '-d', action='store_true',
-                        help='Set to debug mode.')
+    parser.add_argument(
+        'command', nargs="+", help='A command to run once the test env is locked'
+    )
+    parser.add_argument(
+        '--geard',
+        '-b',
+        default='127.0.0.1:4730',
+        help='A comma separated list of gearman brokers to ' 'connect to.',
+    )
+    parser.add_argument(
+        '--jobnum',
+        '-n',
+        default=uuid.uuid4().hex,
+        help='A unique identifier identifing this job.',
+    )
+    parser.add_argument(
+        '--timeout',
+        '-t',
+        default='10800',
+        help='Set a timeout, after which the command will ' 'be killed.',
+    )
+    parser.add_argument(
+        '--envsize', default="2", help='Number of baremetal nodes to request'
+    )
+    parser.add_argument(
+        '--compute-envsize',
+        default='0',
+        help='Number of compute baremetal nodes to request. '
+        'When this is set to a value > 0, the primary '
+        'nodes will be tagged with the controller '
+        'profile and the extra nodes with compute.  The '
+        'compute nodes will be a smaller flavor in order '
+        'to use less resources.',
+    )
+    parser.add_argument(
+        '--ucinstance',
+        help='uuid for the undercloud instance (where an '
+        'interface on the provisioning net is attached',
+    )
+    parser.add_argument(
+        '--create-undercloud', action='store_true', help='deploy the undercloud node.'
+    )
+    parser.add_argument(
+        '--ssh-key', default='', help='ssh key for the ovb nodes to be deployed.'
+    )
+    parser.add_argument(
+        '--net-iso',
+        default="multi-nic",
+        choices=['none', 'multi-nic', 'public-bond'],
+        help='"none" requests an environment without network '
+        'isolation, "multi-nic" requests one with a '
+        'basic multiple nic configuration, and '
+        '"public-bond" requests one like "multi-nic" '
+        'but with two public nics for use with bonded '
+        'nic-configs.',
+    )
+    parser.add_argument(
+        '--extra-nodes',
+        default='0',
+        help='Number of extra undercloud-like nodes to ' 'request',
+    )
+    parser.add_argument('--debug', '-d', action='store_true', help='Set to debug mode.')
     opts = parser.parse_args(args)
     if opts.debug:
         logger.setLevel(logging.DEBUG)
@@ -191,8 +219,10 @@ def main(args=sys.argv[1:]):
     add_servers(client, opts.geard)
     client.waitForServer()
 
-    job_identifier = '%s: %s' % (os.environ.get('ZUUL_CHANGE', 'No change'),
-                                 os.environ['TOCI_JOBTYPE'])
+    job_identifier = '%s: %s' % (
+        os.environ.get('ZUUL_CHANGE', 'No change'),
+        os.environ['TOCI_JOBTYPE'],
+    )
     job_params = {
         "callback_name": callback_name,
         "timeout": opts.timeout,
@@ -222,8 +252,10 @@ def main(args=sys.argv[1:]):
     # completes we kill this process and all its children, to immediately
     # stop the running job
     if cb.rv is None:
-        logger.error("The command hasn't completed but the testenv worker has "
-                     "released the environment. Killing all processes.")
+        logger.error(
+            "The command hasn't completed but the testenv worker has "
+            "released the environment. Killing all processes."
+        )
         subprocess.call(["sudo", "kill", "-9", "-%d" % os.getpgrp()])
     logger.debug("Exiting with status : %d", cb.rv)
     return cb.rv
