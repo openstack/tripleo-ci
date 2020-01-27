@@ -71,9 +71,6 @@
         - openstack-tox-py35:
             files:
               - ^scripts/emit_releases_file/.*$
-        - openstack-tox-pep8:
-            files:
-              - ^scripts/emit_releases_file/.*$
         - tripleo-buildimage-overcloud-full-centos-7:
             files: *build_images_files
         - tripleo-ci-centos-7-standalone-upgrade-train:

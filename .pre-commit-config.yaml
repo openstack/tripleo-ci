@@ -10,9 +10,12 @@ repos:
       - id: check-executables-have-shebangs
       - id: check-merge-conflict
       - id: debug-statements
-      - id: flake8
       - id: check-yaml
         files: .*\.(yaml|yml)$
+  - repo: https://gitlab.com/pycqa/flake8
+    rev: '3.7.9'
+    hooks:
+      - id: flake8
   # commented to allow progressive adoption in smaller patches
   # - repo: https://github.com/adrienverge/yamllint.git
   #   rev: v1.18.0

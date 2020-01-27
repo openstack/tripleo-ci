@@ -337,28 +337,32 @@ if __name__ == '__main__':
     default_output_file = '{}.out'.format(os.path.basename(__file__))
 
     parser = argparse.ArgumentParser(
-             formatter_class=argparse.RawTextHelpFormatter,
-             description='Get a dictionary of releases from a release '
-                         'and a featureset file.')
-    parser.add_argument('--stable-release',
-                        choices=RELEASES,
-                        required=True,
-                        help='Release that the change being tested is from.\n'
-                             'All other releases are calculated from this\n'
-                             'basis.')
-    parser.add_argument('--featureset-file',
-                        required=True,
-                        help='Featureset file which will be introspected to\n'
-                             'infer what type of upgrade is being performed\n'
-                             '(if any).')
-    parser.add_argument('--output-file', default=default_output_file,
-                        help='Output file containing dictionary of releases\n'
-                             'for the provided featureset and release.\n'
-                             '(default: %(default)s)')
-    parser.add_argument('--log-file', default=default_log_file,
-                        help='log file to print debug information from\n'
-                             'running the script.\n'
-                             '(default: %(default)s)')
+        formatter_class=argparse.RawTextHelpFormatter,
+        description='Get a dictionary of releases from a release '
+                    'and a featureset file.')
+    parser.add_argument(
+        '--stable-release',
+        choices=RELEASES,
+        required=True,
+        help='Release that the change being tested is from.\n'
+             'All other releases are calculated from this\n'
+             'basis.')
+    parser.add_argument(
+        '--featureset-file',
+        required=True,
+        help='Featureset file which will be introspected to\n'
+             'infer what type of upgrade is being performed\n'
+             '(if any).')
+    parser.add_argument(
+        '--output-file', default=default_output_file,
+        help='Output file containing dictionary of releases\n'
+             'for the provided featureset and release.\n'
+             '(default: %(default)s)')
+    parser.add_argument(
+        '--log-file', default=default_log_file,
+        help='log file to print debug information from\n'
+             'running the script.\n'
+             '(default: %(default)s)')
     parser.add_argument('--upgrade-from', action='store_false',
                         help='Upgrade FROM the change under test instead\n'
                              'of the default of upgrading TO the change\n'

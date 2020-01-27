@@ -173,9 +173,9 @@ def gen_html(data, html_file, table_file, stats_hours, job_names, options):
         fp.write("</tr>")
     fp.write("<table>")
     fp.write("<p>Query parameters:</p>")
-    fp.write("Branch: "+options.b+"<br/>")
-    fp.write("Status: "+options.s+"<br/>")
-    fp.write("Limit: "+options.l)
+    fp.write("Branch: " + options.b + "<br/>")
+    fp.write("Status: " + options.s + "<br/>")
+    fp.write("Limit: " + options.l)
 
     total = passed_jobs + partial_jobs + failed_jobs
     fp.write("<p>Overall</p>")
@@ -183,17 +183,17 @@ def gen_html(data, html_file, table_file, stats_hours, job_names, options):
         passed_jobs,
         total,
         float(passed_jobs) / float(total) * 100
-        ))
+    ))
     fp.write("Partial Failures: %d/%d (%d %%)<br/>" % (
         partial_jobs,
         total,
         float(partial_jobs) / float(total) * 100
-        ))
+    ))
     fp.write("Complete Failures: %d/%d (%d %%)<br/>" % (
         failed_jobs,
         total,
         float(failed_jobs) / float(total) * 100
-        ))
+    ))
 
     fp.close()
 
@@ -244,9 +244,8 @@ def main(args=sys.argv[1:]):
                 'patchset': patchset,
                 'project': re.sub(r'.*/', '', review['project']),
                 'branch': review['branch'],
-                })
-            results[key].setdefault(
-                                    'ci_results', {}).update(ci_results)
+            })
+            results[key].setdefault('ci_results', {}).update(ci_results)
 
     gen_html(results, opts.o, "%s-table" % opts.o, 24, job_names, opts)
 
