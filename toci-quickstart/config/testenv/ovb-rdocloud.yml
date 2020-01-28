@@ -63,3 +63,6 @@ grafana_host: browbeat.test.com
 # Ironic debug
 # https://bugs.launchpad.net/tripleo/+bug/1797526
 step_introspect_debug: true
+
+# Ensure logs are gzipped
+artcl_gzip: true
