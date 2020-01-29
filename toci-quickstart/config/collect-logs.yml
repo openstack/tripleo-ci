@@ -1,7 +1,9 @@
 ---
 # Collect logs settings
 
-artcl_gzip: true
+# that is used upstream, do not enable gzip there or we would not be able
+# to load the files in the browser.
+artcl_gzip: false
 artcl_txt_rename: true
 artcl_publish: true
 artcl_rsync_logs: false
