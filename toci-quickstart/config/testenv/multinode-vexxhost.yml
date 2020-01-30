@@ -70,3 +70,4 @@ influxdb_create_data_file: true
 cloud_name: vexxhost
 elastic_host: browbeat.test.com
 grafana_host: browbeat.test.com
+artcl_gzip: true

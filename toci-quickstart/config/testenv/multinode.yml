@@ -68,3 +68,4 @@ run_tripleo_validations_setup: false
 ara_generate_html: true
 # run atop with interval (-i) of 180 seconds instead of default 10
 atop_command: atop -i 180 -R -w /var/log/atop.bin
+artcl_gzip: false

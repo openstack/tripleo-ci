@@ -1,7 +1,6 @@
 ---
 # Collect logs settings
 
-artcl_gzip: true
 artcl_txt_rename: true
 artcl_publish: true
 artcl_rsync_logs: false
