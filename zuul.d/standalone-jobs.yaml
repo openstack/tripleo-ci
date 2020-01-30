@@ -547,7 +547,7 @@
       standalone_ceph: true
       tempest_workers: 1
       featureset_override:
-        validate_services: true
+        validate_services: false
         standalone_environment_files:
           - 'environments/low-memory-usage.yaml'
           - 'ci/environments/scenario010-standalone.yaml'
@@ -567,7 +567,7 @@
       standalone_ceph: true
       tempest_workers: 1
       featureset_override:
-        validate_services: true
+        validate_services: false
         tempest_extra_config:
           load_balancer.provider: 'ovn'
           load_balancer.member_role: '"Member"'
@@ -597,7 +597,7 @@
       featureset: '060'
       standalone_ceph: true
       featureset_override:
-        validate_services: true
+        validate_services: false
         standalone_container_cli: docker
         standalone_environment_files:
           - 'environments/low-memory-usage.yaml'
