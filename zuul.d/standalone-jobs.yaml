@@ -419,7 +419,6 @@
       featureset: '052'
       standalone_ceph: true
       featureset_override:
-        run_tempest: false
         standalone_environment_files:
           - 'environments/low-memory-usage.yaml'
           - 'ci/environments/scenario001-standalone.yaml'
@@ -433,7 +432,6 @@
           - 'tempest.scenario.test_volume_boot_pattern.TestVolumeBootPattern.test_volume_boot_pattern'
           - 'tempest.scenario.test_snapshot_pattern.TestSnapshotPattern.test_snapshot_pattern'
           - 'telemetry_tempest_plugin.scenario.test_telemetry_integration.TestTelemetryIntegration'
-        use_os_tempest: true
 
 - job:
     name: tripleo-ci-centos-7-scenario002-standalone
@@ -444,7 +442,6 @@
     vars:
       featureset: '052'
       featureset_override:
-        run_tempest: false
         standalone_environment_files:
           - 'environments/low-memory-usage.yaml'
           - 'ci/environments/scenario002-standalone.yaml'
@@ -461,7 +458,6 @@
           - 'barbican_tempest_plugin.tests.scenario.test_image_signing.ImageSigningSnapshotTest'
           - 'barbican_tempest_plugin.tests.scenario.test_image_signing.ImageSigningTest.test_signed_image_upload_and_boot'
           - 'telemetry_tempest_plugin.scenario.test_telemetry_integration.TestTelemetryIntegration'
-        use_os_tempest: true
 
 - job:
     name: tripleo-ci-centos-7-scenario003-standalone
@@ -472,7 +468,6 @@
     vars:
       featureset: '052'
       featureset_override:
-        run_tempest: false
         standalone_environment_files:
           - 'environments/low-memory-usage.yaml'
           - 'ci/environments/scenario003-standalone.yaml'
@@ -483,7 +478,6 @@
           - 'tempest.scenario.test_network_basic_ops.TestNetworkBasicOps.test_network_basic_ops'
           - 'sahara_tempest_plugin.tests.api.test_data_sources.DataSourceTest'
           - 'mistral_tempest_tests.tests.api.v2.test_actions.ActionTestsV2'
-        use_os_tempest: true
 
 - job:
     name: tripleo-ci-centos-7-scenario004-standalone
@@ -495,7 +489,6 @@
       featureset: '052'
       standalone_ceph: true
       featureset_override:
-        run_tempest: false
         standalone_container_cli: docker
         standalone_environment_files:
           - 'environments/low-memory-usage.yaml'
@@ -510,7 +503,6 @@
         tempest_test_whitelist:
           - 'tempest.scenario.test_network_basic_ops.TestNetworkBasicOps.test_network_basic_ops'
           - 'manila_tempest_tests.tests.api.test_shares.SharesCephFSTest.test_create_get_delete_share'
-        use_os_tempest: true
 
 - job:
     name: tripleo-ci-centos-7-scenario007-standalone
@@ -622,7 +614,6 @@
     vars:
       featureset: '052'
       featureset_override:
-        run_tempest: false
         use_os_tempest: true
         tempest_tempest_conf_overrides:
           auth.use_dynamic_credentials: true
