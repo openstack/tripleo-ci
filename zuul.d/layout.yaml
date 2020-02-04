@@ -18,18 +18,16 @@
       jobs:
         - openstack-tox-linters
         - tripleo-tox-molecule
-        - openstack-tox-py27: &files
+        - openstack-tox-py35:
             success-url: "tox/reports.html"
             failure-url: "tox/reports.html"
-            files:
+            files: &py_files
               - ^bindep.txt$
               - ^requirements.txt$
               - ^scripts/emit_releases_file/.*$
               - ^setup.cfg$
               - ^setup.py$
               - ^tox.ini$
-        - openstack-tox-py35:
-            <<: *files
         - tripleo-buildimage-overcloud-full-centos-7:
             files: &build_images_files
               - ^playbooks/tripleo-buildimages/.*$
@@ -65,12 +63,8 @@
         # jobs might be defined and nothing can merge in this repo.
         - openstack-tox-linters
         - tripleo-tox-molecule
-        - openstack-tox-py27:
-            files:
-              - ^scripts/emit_releases_file/.*$
         - openstack-tox-py35:
-            files:
-              - ^scripts/emit_releases_file/.*$
+            files: *py_files
         - tripleo-buildimage-overcloud-full-centos-7:
             files: *build_images_files
         - tripleo-ci-centos-7-standalone-upgrade-train:
