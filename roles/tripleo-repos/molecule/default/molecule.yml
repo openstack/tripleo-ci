@@ -28,5 +28,3 @@ scenario:
     - create
     - converge
     - destroy
-lint:
-  enabled: false
