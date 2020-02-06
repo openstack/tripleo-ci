@@ -15,6 +15,7 @@ artcl_collect_list:
   - /var/lib/tripleo-config/
   - /var/lib/unbound/unbound.log
   - /var/lib/certmonger/
+  - /var/lib/pki/
   - /home/{{ undercloud_user }}/.instack/install-undercloud.log
   - /home/{{ undercloud_user }}/.config/openstack/
   - /home/{{ undercloud_user }}/stackrc
@@ -237,6 +238,7 @@ artcl_collect_list:
   - /var/log/horizon/
   - /var/log/httpd/
   - /var/log/ipaclient-install.log
+  - /var/log/ipaserver-install.log
   - /var/log/ironic/
   - /var/log/ironic-inspector/
   - /var/log/krb5*.log

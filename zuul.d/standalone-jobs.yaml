@@ -804,6 +804,7 @@
         standalone_environment_files:
           - 'environments/low-memory-usage.yaml'
           - 'ci/environments/scenario010-standalone.yaml'
+
 - job:
     name: tripleo-ci-centos-8-scenario010-ovn-provider-standalone
     voting: false
@@ -836,3 +837,31 @@
           - 'ci/environments/scenario010-standalone.yaml'
         tempest_whitelist:
           - octavia_tempest_plugin.tests.scenario.v2.test_traffic_ops.TrafficOperationsScenarioTest.test_basic_traffic
+
+- job:
+    name: tripleo-ci-centos-8-standalone-on-multinode-ipa
+    parent: tripleo-ci-base-standalone-centos-8
+    voting: false
+    nodeset: two-centos-8-nodes
+    branches: ^(?!stable/(newton|ocata|pike|queens|rocky|stein|train)).*$
+    required-projects:
+      - opendev.org/x/tripleo-ipa
+      - opendev.org/openstack/tripleo-ansible
+    roles:
+      - zuul: opendev.org/x/tripleo-ipa
+      - zuul: opendev.org/openstack/tripleo-ansible
+    vars:
+      featureset: '052'
+      enable_tls: true
+      playbooks:
+        - quickstart.yml
+        - multinode-standalone-ipa.yml
+        - multinode-standalone.yml
+      featureset_override:
+        standalone_environment_files:
+          - environments/ssl/tls-everywhere-endpoints-dns.yaml
+          - environments/services/haproxy-public-tls-certmonger.yaml
+          - environments/ssl/enable-internal-tls.yaml
+          - ci/environments/standalone-ipa.yaml
+        tempest_tempest_conf_overrides:
+          service-clients.http_timeout: '120'
