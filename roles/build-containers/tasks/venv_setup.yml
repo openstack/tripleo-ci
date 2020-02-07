@@ -9,7 +9,7 @@
     extra_args: "-c {{ openstack_git_root }}/requirements/upper-constraints.txt"
     requirements: "{{ openstack_git_root }}/{{ item }}/requirements.txt"
     virtualenv: "{{ workspace }}/venv_build"
-    virtualenv_python: "{{ virtualenv_python[ansible_pkg_mgr] }}"
+    virtualenv_python: "{{ virtualenv_python[ansible_distribution_major_version|int] }}"
   with_items:
     - kolla
     - tripleo-common
@@ -23,7 +23,7 @@
       - "file://{{ openstack_git_root }}/python-tripleoclient"
       - decorator
     virtualenv: "{{ workspace }}/venv_build"
-    virtualenv_python: "{{ virtualenv_python[ansible_pkg_mgr] }}"
+    virtualenv_python: "{{ virtualenv_python[ansible_distribution_major_version|int] }}"
 
 - name: set template override
   set_fact:

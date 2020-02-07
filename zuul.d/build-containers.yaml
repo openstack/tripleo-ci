@@ -13,6 +13,7 @@
         - tripleo-build-containers-centos-7-buildah
         - tripleo-build-containers-centos-7-buildah-train
         - tripleo-build-containers-centos-7-buildah-stein
+        - tripleo-build-containers-centos-8
     gate:
       queue: tripleo
       jobs:
@@ -30,6 +31,7 @@
       jobs:
         - tripleo-build-containers-centos-7
         - tripleo-build-containers-centos-7-buildah
+        - tripleo-build-containers-centos-8
     gate:
       queue: tripleo
       jobs:
@@ -119,3 +121,26 @@
     override-checkout: stable/stein
     vars:
       branch_override: stable/stein
+
+- job:
+    name: tripleo-build-containers-centos-8
+    parent: tripleo-build-containers-base-with-files
+    nodeset: single-centos-8-node
+    branches: ^(?!stable/(pike|queens|rocky|stein|train)).*$
+    voting: false
+    required-projects:
+      - opendev.org/openstack/ansible-role-container-registry
+      - opendev.org/openstack/kolla
+      - opendev.org/openstack/python-tripleoclient
+      - opendev.org/openstack/requirements
+      - opendev.org/openstack/tripleo-common
+      - opendev.org/openstack/tripleo-repos
+    vars:
+      use_buildah: true
+      kolla_base: centos
+      kolla_base_pull: true
+      buildcontainers_override_repos: tripleo-ci-testing
+      kolla_base_image: centos
+      kolla_base_tag: 8
+      push_containers: false
+      push_containers_podman: false

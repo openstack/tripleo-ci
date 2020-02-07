@@ -18,6 +18,18 @@
           - secondary
 
 - nodeset:
+    name: single-centos-8-node
+    nodes:
+      - name: primary
+        label: centos-8
+    groups:
+      - name: switch
+        nodes:
+          - primary
+      - name: peers
+        nodes: []
+
+- nodeset:
     name: single-centos-7-node
     nodes:
       - name: primary
