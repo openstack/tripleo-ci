@@ -12,7 +12,7 @@ kolla_base_image: "{{ kolla_base }}"
 kolla_base_pull: true
 use_buildah: false
 buildcontainers_override_repos: ""
-buildcontainers_rpm_setup_config: "http://172.17.0.1/delorean.repo,http://172.17.0.1/delorean-{{ ci_branch }}-testing.repo"
+buildcontainers_rpm_setup_config: "http://{{ ansible_default_ipv4.address }}/delorean.repo,http://{{ ansible_default_ipv4.address }}/delorean-{{ ci_branch }}-testing.repo"
 buildcontainers_venv: true
 openstack_repo_name: delorean
 container_cli_opt: ""

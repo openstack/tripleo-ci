@@ -5,7 +5,9 @@
     state: directory
 
 - name: Setup docker registry
-  when: ansible_distribution|lower != 'redhat'
+  when:
+    - ansible_distribution|lower != 'redhat'
+    - ansible_distribution_major_version is version('8', '<')
   block:
     - name: Install ansible to run docker-playbook.yaml
       become: true
@@ -18,6 +20,13 @@
         path: '{{ workspace }}/container-registry'
         src: '{{ openstack_git_root }}/ansible-role-container-registry'
         state: link
+
+    - name: Set registry_deploy to true only when needed
+      set_fact:
+        registry_deploy: true
+      when:
+        - push_containers is defined and push_containers | bool
+        - "'127.0.0.1' in push_registry or push_registry.split(':')[0] in ansible_all_ipv4_addresses"
 
     - name: Configure docker registry
       template:
@@ -41,22 +50,22 @@
     - include_tasks: reset_connection.yaml
       when: not use_buildah | default(false) | bool
 
-    - name: Prepare Buildah
-      become: true
-      when: use_buildah | default(false) | bool
-      block:
-        - name: Install Buildah
-          package:
-            name: buildah
-            state: present
+- name: Prepare Buildah
+  become: true
+  when: use_buildah | default(false) | bool
+  block:
+    - name: Install Buildah
+      package:
+        name: buildah
+        state: present
 
-        - name: Configure insecure registry
-          ini_file:
-            path: /etc/containers/registries.conf
-            section: 'registries.insecure'
-            option: registries
-            value:
-              - "localhost:{{ push_registry_port }}"
+    - name: Configure insecure registry
+      ini_file:
+        path: /etc/containers/registries.conf
+        section: 'registries.insecure'
+        option: registries
+        value:
+          - "localhost:{{ push_registry_port }}"
 
 - name: Setup repo web service
   become: true
