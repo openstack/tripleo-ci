@@ -63,6 +63,7 @@
       - ^Puppetfile.*$
       - tox.ini
       - ^setup.*$
+      - ^vars/sova-patterns.yml
 
 - job:
     name: tripleo-ci-base-multinode
