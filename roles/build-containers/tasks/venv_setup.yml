@@ -1,3 +1,14 @@
+- name: Install deps from upper-constraints
+  pip:
+    extra_args: "-c {{ openstack_git_root }}/requirements/upper-constraints.txt"
+    requirements: "{{ openstack_git_root }}/{{ item }}/requirements.txt"
+    virtualenv: "{{ workspace }}/venv_build"
+    virtualenv_python: "{{ virtualenv_python[ansible_pkg_mgr] }}"
+  with_items:
+    - kolla
+    - tripleo-common
+    - python-tripleoclient
+
 - name: Installation from source
   pip:
     name:
@@ -7,7 +18,6 @@
       - decorator
     virtualenv: "{{ workspace }}/venv_build"
     virtualenv_python: "{{ virtualenv_python[ansible_pkg_mgr] }}"
-    virtualenv_site_packages: true
 
 - name: set template override
   set_fact:

@@ -201,6 +201,8 @@
     post-run: playbooks/tripleo-buildcontainers/post.yaml
     timeout: 7200
     voting: false
+    roles:
+      - zuul: opendev.org/openstack/ansible-role-container-registry
     required-projects:
       - opendev.org/openstack/ansible-role-container-registry
       - opendev.org/openstack/kolla

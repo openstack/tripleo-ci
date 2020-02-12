@@ -1,8 +1,0 @@
-- hosts: localhost
-  become: true
-  vars:
-    container_registry_docker_options: --log-driver=journald --signature-verification=false --iptables=true --live-restore
-    container_registry_port: "{{ push_registry_port }}"
-    container_registry_deploy_docker_distribution: "{{ registry_deploy | default(false) }}"
-  roles:
-    - container-registry
