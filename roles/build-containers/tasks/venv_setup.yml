@@ -1,3 +1,9 @@
+- name: https://bugs.launchpad.net/tripleo/+bug/1862941 install six>=1.14.0
+  pip:
+    name:
+      - six>=1.14.0
+    extra_args: --user
+
 - name: Install deps from upper-constraints
   pip:
     extra_args: "-c {{ openstack_git_root }}/requirements/upper-constraints.txt"
