@@ -58,13 +58,13 @@ floating_ip_cidr: >-
 tempest_test_image_path: /opt/cache/files/cirros-0.3.5-x86_64-disk.img
 overcloud_image_url: >-
   {% if ansible_distribution == 'RedHat' and ansible_distribution_major_version >= '8' -%}
-  http://38.145.34.141/rcm-guest/images/redhat8/{{ release }}/rdo_trunk/{{ dlrn_hash|default(dlrn_hash_tag) }}/overcloud-full.tar
+  https://images-vexxhost.rdoproject.org:4433/rcm-guest/images/redhat8/{{ release }}/rdo_trunk/{{ dlrn_hash|default(dlrn_hash_tag) }}/overcloud-full.tar
   {%- else -%}
   http://images.rdoproject.org/{{ release }}/rdo_trunk/{{ dlrn_hash|default(dlrn_hash_tag) }}/overcloud-full.tar
   {%- endif %}
 ipa_image_url: >-
   {% if ansible_distribution == 'RedHat' and ansible_distribution_major_version >= '8' -%}
-  http://38.145.34.141/rcm-guest/images/redhat8/{{ release }}/rdo_trunk/{{ dlrn_hash|default(dlrn_hash_tag) }}/ironic-python-agent.tar
+  https://images-vexxhost.rdoproject.org:4433/rcm-guest/images/redhat8/{{ release }}/rdo_trunk/{{ dlrn_hash|default(dlrn_hash_tag) }}/ironic-python-agent.tar
   {%- else -%}
   http://images.rdoproject.org/{{ release }}/rdo_trunk/{{ dlrn_hash|default(dlrn_hash_tag) }}/ironic-python-agent.tar
   {%- endif %}
