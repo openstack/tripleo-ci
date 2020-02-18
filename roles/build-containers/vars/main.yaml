@@ -11,15 +11,25 @@ virtualenv_python:
   8: python3
 
 exclude_containers:
-  dnf:
-    - fluentd
-    - opendaylight
-    - skydive-agent
-    - skydive-analyzer
-    - sensu-client
-    - sensu-base
-  yum:
-    - opendaylight
+  redhat:
+    8:
+      - fluentd
+      - opendaylight
+      - skydive-agent
+      - skydive-analyzer
+      - sensu-client
+      - sensu-base
+  centos:
+    7:
+      - opendaylight
+    8:
+      - fluentd
+      - opendaylight
+      - skydive-agent
+      - skydive-analyzer
+      - sensu-client
+      - sensu-base
+      - influxdb
   rocky:
     - grafana
 
