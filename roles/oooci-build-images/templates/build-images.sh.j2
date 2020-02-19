@@ -26,7 +26,7 @@ fi
 
 {% if dib_local_image is defined %}
 
-# this is only set in rhel8 jobs dib_rhel_image -> DIB_LOCAL_IMAGE
+# this is only set in rhel/centos-8 jobs dib_rhel_image -> DIB_LOCAL_IMAGE
 export DIB_LOCAL_IMAGE={{ dib_local_image }}
 
 {% endif %}
@@ -34,7 +34,8 @@ export DIB_LOCAL_IMAGE={{ dib_local_image }}
 {% if dib_node_dist is defined %}
 
 export NODE_DIST={{ dib_node_dist }}
-
+export DISTRO_NAME={{ dib_node_dist }}
+export DIB_PYTHON_VERSION=3
 {% endif %}
 
 {% if dib_release is defined %}
@@ -47,8 +48,11 @@ export DIB_RELEASE={{ dib_release }}
 
 export DIB_YUM_REPO_CONF='{{ dib_yum_repo_conf }}'
 
-{% else %}
+{% elif ansible_distribution == 'CentOS' and ansible_distribution_major_version is version(8, '>=') %}
 
+export DIB_YUM_REPO_CONF="/etc/yum.repos.d/delorean* /etc/yum.repos.d/tripleo-centos*"
+
+{% else %}
 export DIB_YUM_REPO_CONF="/etc/yum.repos.d/delorean*"
 
 {% endif %}
