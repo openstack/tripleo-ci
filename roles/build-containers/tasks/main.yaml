@@ -25,18 +25,43 @@
     # NOTE(mjturek): Push old style tag for x86_64 first to maintain compatibility.
     arch_tag: "{{ '_' + ansible_architecture if ansible_architecture != 'x86_64' else ''}}"
 
-- name: Get contents of openstack repo baseurl for the version hash
+- name: Check the contents of the openstack_repo_name repo
   become: true
   shell: >
     set -o pipefail &&
-    cat /etc/yum.repos.d/{{ openstack_repo_name }}.repo |awk -F= '/baseurl/ {print $2}'
-  register: baseurl
+    cat /etc/yum.repos.d/{{ openstack_repo_name }}.repo |grep -o 'baseurl=' |wc -l
+  register: number_baseurl_lines
   when: buildcontainers_version_hash is not defined
 
-- name: Set version_hash fact
-  set_fact:
-    version_hash: "{{ baseurl.stdout.split('/')[-1] }}"
-  when: buildcontainers_version_hash is not defined
+- name: Use baseurl if there is only one
+  when:
+    - buildcontainers_version_hash is not defined
+    - number_baseurl_lines.stdout|int == 1
+  block:
+    - name: Get contents of openstack repo baseurl for the version hash
+      become: true
+      shell: >
+        set -o pipefail &&
+        cat /etc/yum.repos.d/{{ openstack_repo_name }}.repo |awk -F= '/baseurl/ {print $2}'
+      register: baseurl
+
+    - name: Set version_hash fact
+      set_fact:
+        version_hash: "{{ baseurl.stdout.split('/')[-1] }}"
+
+- name: Use the md5sum if there is more than one baseurl line
+  when:
+    - buildcontainers_version_hash is not defined
+    - number_baseurl_lines.stdout|int > 1
+  block:
+    - name: Get contents of openstack repo baseurl for the version hash
+      become: true
+      shell: md5sum /etc/yum.repos.d/{{ openstack_repo_name }}.repo | awk '{print $1}'
+      register: md5sum_repo
+
+    - name: Set version_hash fact
+      set_fact:
+        version_hash: "{{ md5sum_repo.stdout }}"
 
 - name: Set version_hash fact if buildcontainers_version_hash is defined
   set_fact:
