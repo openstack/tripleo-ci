@@ -73,6 +73,13 @@
         - tripleo-build-containers-centos-7-rocky
 
 - job:
+    name: tripleo-build-containers-centos-7-base
+    parent: tripleo-build-containers-base-with-files
+    nodeset: single-centos-7-node
+    branches: ^(?!stable/(pike|queens)).*$
+    voting: true
+
+- job:
     name: tripleo-build-containers-centos-7
     parent: tripleo-build-containers-base-with-files
     nodeset: single-centos-7-node
@@ -81,21 +88,21 @@
 
 - job:
     name: tripleo-build-containers-centos-7-train
-    parent: tripleo-build-containers-centos-7
+    parent: tripleo-build-containers-centos-7-base
     override-checkout: stable/train
     vars:
       branch_override: stable/train
 
 - job:
     name: tripleo-build-containers-centos-7-stein
-    parent: tripleo-build-containers-centos-7
+    parent: tripleo-build-containers-centos-7-base
     override-checkout: stable/stein
     vars:
       branch_override: stable/stein
 
 - job:
     name: tripleo-build-containers-centos-7-rocky
-    parent: tripleo-build-containers-centos-7
+    parent: tripleo-build-containers-centos-7-base
     override-checkout: stable/rocky
     vars:
       branch_override: stable/rocky
@@ -110,17 +117,19 @@
 
 - job:
     name: tripleo-build-containers-centos-7-buildah-train
-    parent: tripleo-build-containers-centos-7-buildah
+    parent: tripleo-build-containers-centos-7-base
     override-checkout: stable/train
     vars:
       branch_override: stable/train
+      use_buildah: true
 
 - job:
     name: tripleo-build-containers-centos-7-buildah-stein
-    parent: tripleo-build-containers-centos-7-buildah
+    parent: tripleo-build-containers-centos-7-base
     override-checkout: stable/stein
     vars:
       branch_override: stable/stein
+      use_buildah: true
 
 - job:
     name: tripleo-build-containers-centos-8
