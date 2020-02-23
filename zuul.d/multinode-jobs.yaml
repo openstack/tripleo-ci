@@ -30,6 +30,7 @@
               - ^playbooks/deprecated/.*$
               - ^playbooks/tripleo-buildcontainers/.*$
               - ^playbooks/tripleo-buildimages/.*$
+              - ^vars/sova-patterns.yml$
         - tripleo-ci-centos-7-undercloud-containers:
             irrelevant-files:
               - ^.*\.md$
@@ -48,6 +49,7 @@
               - ^playbooks/deprecated/.*$
               - ^playbooks/tripleo-buildcontainers/.*$
               - ^playbooks/tripleo-buildimages/.*$
+              - ^vars/sova-patterns.yml$
         - tripleo-ci-centos-7-scenario000-multinode-oooq-container-updates:
             irrelevant-files: *multinode_ignored
         - tripleo-ci-centos-7-scenario000-multinode-oooq-container-upgrades:
@@ -70,6 +72,7 @@
               - ^playbooks/deprecated/.*$
               - ^playbooks/tripleo-buildcontainers/.*$
               - ^playbooks/tripleo-buildimages/.*$
+              - ^vars/sova-patterns.yml$
         - tripleo-ci-centos-7-standalone-rocky:
             irrelevant-files: *standalone_ignored
         - tripleo-ci-centos-7-standalone-upgrade:

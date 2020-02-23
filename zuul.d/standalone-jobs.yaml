@@ -21,6 +21,7 @@
       - ^spec/.*$
       - ^Puppetfile.*$
       - tox.ini
+      - ^vars/sova-patterns.yml$
       # like parent but with requirements.txt and setup.py removed
 
 # This job is rocky only!
@@ -46,6 +47,7 @@
       - ^spec/.*$
       - ^Puppetfile.*$
       - tox.ini
+      - ^vars/sova-patterns.yml$
 
 - job:
     name: tripleo-ci-centos-7-standalone-upgrade
@@ -66,6 +68,7 @@
       - ^spec/.*$
       - ^Puppetfile.*$
       - tox.ini
+      - ^vars/sova-patterns.yml$
       # like parent but with requirements.txt and setup.py removed
 
 - job:

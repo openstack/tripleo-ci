@@ -25,6 +25,7 @@
               - ^playbooks/deprecated/.*$
               - ^playbooks/tripleo-buildcontainers/.*$
               - ^playbooks/tripleo-buildimages/.*$
+              - ^vars/sova-patterns.yml$
 
         - tripleo-ci-centos-7-undercloud-upgrades:
             irrelevant-files: *undercloud_ignored
