@@ -26,6 +26,7 @@ artcl_collect_list:
   - /home/*/*.cfg
   - /home/*/*.y*ml*
   - /home/*/*.sh
+  - /home/*/delorean.repo.md5
   - /home/*/undercloud-ansible-*
   - /home/{{ undercloud_user }}/deploy-overcloudrc
   - /home/{{ undercloud_user }}/network-environment.yaml
