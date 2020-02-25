@@ -49,8 +49,17 @@
     - name: Fix shebang path for python3
       command: bash {{ workspace }}/pathfix_repos.sh
 
+- name: Install deps from upper-constraints
+  pip:
+    extra_args: "-c {{ openstack_git_root }}/requirements/upper-constraints.txt"
+    requirements: "{{ openstack_git_root }}/{{ item }}/requirements.txt"
+    virtualenv: "{{ workspace }}/venv"
+  with_items:
+    - diskimage-builder
+    - python-tripleoclient
+    - tripleo-common
+
 - name: pip install tripleo items
-  become: true
   pip:
     name:
       - "file://{{ openstack_git_root }}/diskimage-builder"
