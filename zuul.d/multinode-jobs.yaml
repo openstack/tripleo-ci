@@ -54,7 +54,7 @@
             irrelevant-files: *multinode_ignored
         - tripleo-ci-centos-7-scenario000-multinode-oooq-container-upgrades:
             irrelevant-files: *multinode_ignored
-        - tripleo-ci-centos-7-standalone:
+        - tripleo-ci-centos-8-standalone:
             irrelevant-files: &standalone_ignored
               - ^.*\.md$
               - ^.*\.rst$
@@ -73,6 +73,8 @@
               - ^playbooks/tripleo-buildcontainers/.*$
               - ^playbooks/tripleo-buildimages/.*$
               - ^vars/sova-patterns.yml$
+        - tripleo-ci-centos-7-standalone:
+            irrelevant-files: *standalone_ignored
         - tripleo-ci-centos-7-standalone-rocky:
             irrelevant-files: *standalone_ignored
         - tripleo-ci-centos-7-standalone-upgrade:
@@ -89,6 +91,8 @@
         - tripleo-ci-centos-7-containers-multinode:
             irrelevant-files: *multinode_ignored
         - tripleo-ci-centos-7-standalone:
+            irrelevant-files: *standalone_ignored
+        - tripleo-ci-centos-8-standalone:
             irrelevant-files: *standalone_ignored
         - tripleo-ci-centos-7-scenario000-multinode-oooq-container-updates:
             irrelevant-files: *multinode_ignored
@@ -142,6 +146,16 @@
             irrelevant-files: *standalone_ignored
         - tripleo-ci-centos-7-scenario004-standalone:
             irrelevant-files: *standalone_ignored
+        - tripleo-ci-centos-8-standalone:
+            irrelevant-files: *standalone_ignored
+        - tripleo-ci-centos-8-scenario001-standalone:
+            irrelevant-files: *standalone_ignored
+        - tripleo-ci-centos-8-scenario002-standalone:
+            irrelevant-files: *standalone_ignored
+        - tripleo-ci-centos-8-scenario003-standalone:
+            irrelevant-files: *standalone_ignored
+        - tripleo-ci-centos-8-scenario004-standalone:
+            irrelevant-files: *standalone_ignored
 
     gate:
       queue: tripleo
@@ -151,6 +165,8 @@
         - tripleo-ci-centos-7-containers-undercloud-minion:
             irrelevant-files: *multinode_ignored
         - tripleo-ci-centos-7-standalone:
+            irrelevant-files: *standalone_ignored
+        - tripleo-ci-centos-8-standalone:
             irrelevant-files: *standalone_ignored
         - tripleo-ci-centos-7-scenario000-multinode-oooq-container-updates:
             irrelevant-files: *multinode_ignored
