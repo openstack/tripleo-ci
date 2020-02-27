@@ -52,6 +52,8 @@ else
     sudo $(package_manager) install python2-setuptools python2-requests python-requests python-urllib3 PyYAML
 fi
 
+sudo $(python_cmd) -m pip install shyaml
+
 # Sets whether or not this job will upload images.
 export PERIODIC=0
 # Sets which repositories to use in the job
@@ -112,7 +114,7 @@ if [[ -f "$RELEASES_SCRIPT" ]] && [[ {{ featureset }} =~ 010|011|037|047|050|056
     if [[  -f "$RELEASES_FILE_OUTPUT" ]]; then
         echo "Importing ready releases.sh file - skipping releases.sh file generation."
     else
-        python $RELEASES_SCRIPT \
+        $(python_cmd) $RELEASES_SCRIPT \
             --stable-release ${STABLE_RELEASE:-"master"} \
             --featureset-file $TRIPLEO_ROOT/tripleo-quickstart/config/general_config/$(basename {{ job_featureset_file }}) \
             --output-file $RELEASES_FILE_OUTPUT \
