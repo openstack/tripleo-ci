@@ -12,7 +12,7 @@
     name: tripleo-multinode-container-minimal
     check:
       jobs:
-        - tripleo-ci-centos-7-containers-multinode:
+        - tripleo-ci-centos-8-containers-multinode:
             irrelevant-files: &multinode_ignored
               - ^.*\.md$
               - ^.*\.rst$
@@ -50,6 +50,8 @@
               - ^playbooks/tripleo-buildcontainers/.*$
               - ^playbooks/tripleo-buildimages/.*$
               - ^vars/sova-patterns.yml$
+        - tripleo-ci-centos-7-containers-multinode:
+             irrelevant-files: *multinode_ignored
         - tripleo-ci-centos-7-scenario000-multinode-oooq-container-updates:
             irrelevant-files: *multinode_ignored
         - tripleo-ci-centos-7-scenario000-multinode-oooq-container-upgrades:
@@ -90,6 +92,8 @@
       jobs:
         - tripleo-ci-centos-7-containers-multinode:
             irrelevant-files: *multinode_ignored
+        - tripleo-ci-centos-8-containers-multinode:
+            irrelevant-files: *multinode_ignored
         - tripleo-ci-centos-7-standalone:
             irrelevant-files: *standalone_ignored
         - tripleo-ci-centos-8-standalone:
@@ -110,6 +114,8 @@
     name: tripleo-multinode-container-full
     check:
       jobs:
+        - tripleo-ci-centos-8-containers-multinode:
+            irrelevant-files: *multinode_ignored
         - tripleo-ci-centos-7-containers-multinode:
             irrelevant-files: *multinode_ignored
         - tripleo-ci-centos-7-undercloud-containers:
@@ -161,6 +167,8 @@
       queue: tripleo
       jobs:
         - tripleo-ci-centos-7-containers-multinode:
+            irrelevant-files: *multinode_ignored
+        - tripleo-ci-centos-8-containers-multinode:
             irrelevant-files: *multinode_ignored
         - tripleo-ci-centos-7-containers-undercloud-minion:
             irrelevant-files: *multinode_ignored
@@ -218,7 +226,18 @@
 - job:
     name: tripleo-ci-centos-7-containers-multinode
     parent: tripleo-ci-base-multinode
-    branches: ^(?!stable/(newton|ocata)).*$
+    branches: ^(stable/(pike|queens|rocky|stein|train)).*$
+    vars:
+      nodes: 1ctlr
+      featureset: '010'
+      playbooks:
+        - multinode.yml
+
+- job:
+    name: tripleo-ci-centos-8-containers-multinode
+    parent: tripleo-ci-base-multinode-centos-8
+    branches: ^(?!stable/(newton|ocata|pike|queens|rocky|stein|train)).*$
+    voting: false
     vars:
       nodes: 1ctlr
       featureset: '010'
