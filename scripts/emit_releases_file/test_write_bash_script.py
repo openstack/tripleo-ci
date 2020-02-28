@@ -13,7 +13,7 @@ else:
     BUILTINS_OPEN = "builtins.open"
 
 
-def test_empty_relases_dictionary_fails():
+def test_empty_releases_dictionary_fails():
     assert (not write_releases_dictionary_to_bash({}, ""))
 
 

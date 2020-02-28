@@ -15,11 +15,12 @@ def hash_mock_setup():
     calls_args = []
 
     def _hash_mock_setup(get_hash_mock, calls):
-        get_hash_mock.side_effect = lambda r, h: calls[(r, h)]
+        get_hash_mock.side_effect = lambda r, h, t, s : calls[(r, h)]
 
         # Store the references to use them at tear down
         setup_mock.append(get_hash_mock)
-        calls_args.append([mock.call(*cargs) for cargs in calls])
+        calls_args.append([mock.call(cargs[0], cargs[1], 'centos', '7') for
+                           cargs in calls])
 
     yield _hash_mock_setup
 

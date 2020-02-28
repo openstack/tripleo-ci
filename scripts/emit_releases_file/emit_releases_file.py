@@ -81,19 +81,29 @@ def load_featureset_file(featureset_file):
     return featureset
 
 
-def get_dlrn_hash(release, hash_name, retries=20, timeout=8):
+def get_dlrn_hash(release, hash_name, distro_name='centos', distro_version='7',
+                  retries=20, timeout=8):
     """Get the dlrn hash for the release and hash name
 
     Retrieves the delorean.repo for the provided release and hash name, e.g.
     https://trunk.rdoproject.org/centos7-master/current/delorean.repo for
     master and current. The hash is taken from the repo file contents
     and returned.
+    :param distro_name: Distro name
+    :param distro_version: Distro version
     """
     logger = logging.getLogger('emit-releases')
     full_hash_pattern = re.compile('[a-z,0-9]{40}_[a-z,0-9]{8}')
     rdo_url = os.getenv('NODEPOOL_RDO_PROXY', 'https://trunk.rdoproject.org')
-    repo_url = ('%s/centos7-%s/%s/delorean.repo' %
-                (rdo_url, release, hash_name))
+    logger.error("distro %s version %s", distro_name, distro_version)
+    if distro_name == 'centos' and distro_version == '7':
+        repo_url = ('%s/centos7-%s/%s/delorean.repo' %
+                    (rdo_url, release, hash_name))
+    elif distro_name == 'centos' and distro_version == '8':
+        repo_url = ('%s/centos8-%s/%s/delorean.repo.md5' %
+                    (rdo_url, release, hash_name))
+    logger.debug("distro_name {} distro_version {} repo_url {}"
+                 "".format(distro_name, distro_version, repo_url))
     for retry_num in range(retries):
         repo_file = None
         try:
@@ -102,33 +112,37 @@ def get_dlrn_hash(release, hash_name, retries=20, timeout=8):
             logger.warning("Attempt {} of {} to get DLRN hash threw an "
                            "exception.".format(retry_num + 1, retries))
             logger.exception(e)
-            pass
-        else:
-            if repo_file is not None and repo_file.ok:
-                break
+            continue
+        if repo_file is not None and repo_file.ok:
+            if distro_name == 'centos' and distro_version == '7':
+                print(repo_file.text)
+                full_hash = full_hash_pattern.findall(repo_file.text)[0]
+            elif distro_name == 'centos' and distro_version == '8':
+                full_hash = repo_file.text
+            break
 
-            elif repo_file:
-                logger.warning("Attempt {} of {} to get DLRN hash returned "
-                               "status code {}.".format(retry_num + 1,
-                                                        retries,
-                                                        repo_file.status_code))
-            else:
-                logger.warning("Attempt {} of {} to get DLRN hash failed to "
-                               "get a response.".format(retry_num + 1,
-                                                        retries))
+        elif repo_file:
+            logger.warning("Attempt {} of {} to get DLRN hash returned "
+                           "status code {}.".format(retry_num + 1,
+                                                    retries,
+                                                    repo_file.status_code))
+        else:
+            logger.warning("Attempt {} of {} to get DLRN hash failed to "
+                           "get a response.".format(retry_num + 1,
+                                                    retries))
 
     if repo_file is None or not repo_file.ok:
         raise RuntimeError("Failed to retrieve repo file from {} after "
                            "{} retries".format(repo_url, retries))
 
-    full_hash = full_hash_pattern.findall(repo_file.text)
     logger.info("Got DLRN hash: {} for the named hash: {} on the {} "
-                "release".format(full_hash[0], hash_name, release))
-    return full_hash[0]
+                "release".format(full_hash, hash_name, release))
+    return full_hash
 
 
 def compose_releases_dictionary(stable_release, featureset, upgrade_from,
-                                is_periodic=False):
+                                is_periodic=False,
+                                distro_name='centos', distro_version='7'):
     """Compose the release dictionary for stable_release and featureset
 
     This contains the main logic determining the contents of the release file.
@@ -148,6 +162,8 @@ def compose_releases_dictionary(stable_release, featureset, upgrade_from,
     rocky).
       * Overcloud Update: stable_release is equal to target, but going from
         previous-current-tripleo to current hashes.
+    :param distro_name: Distro name
+    :param distro_version: Distro version
     """
     logger = logging.getLogger('emit-releases')
     if stable_release not in RELEASES:
@@ -186,13 +202,21 @@ def compose_releases_dictionary(stable_release, featureset, upgrade_from,
             "used in a fast forward upgrade. Current long-term support "
             "releases:  {}".format(stable_release, LONG_TERM_SUPPORT_RELEASES))
 
-    newest_hash = get_dlrn_hash(stable_release, NEWEST_HASH_NAME)
+    newest_hash = get_dlrn_hash(stable_release, NEWEST_HASH_NAME,
+                                distro_name,
+                                distro_version)
     if stable_release == 'newton':
-        current_hash = get_dlrn_hash(stable_release, NEWTON_HASH_NAME)
+        current_hash = get_dlrn_hash(stable_release, NEWTON_HASH_NAME,
+                                     distro_name,
+                                     distro_version)
     elif is_periodic:
-        current_hash = get_dlrn_hash(stable_release, PROMOTION_HASH_NAME)
+        current_hash = get_dlrn_hash(stable_release, PROMOTION_HASH_NAME,
+                                     distro_name,
+                                     distro_version)
     else:
-        current_hash = get_dlrn_hash(stable_release, CURRENT_HASH_NAME)
+        current_hash = get_dlrn_hash(stable_release, CURRENT_HASH_NAME,
+                                     distro_name,
+                                     distro_version)
 
     releases_dictionary = {
         'undercloud_install_release': stable_release,
@@ -216,9 +240,13 @@ def compose_releases_dictionary(stable_release, featureset, upgrade_from,
             logger.info('Doing an overcloud upgrade')
             deploy_release = get_relative_release(stable_release, -1)
             if deploy_release == 'newton':
-                deploy_hash = get_dlrn_hash(deploy_release, NEWTON_HASH_NAME)
+                deploy_hash = get_dlrn_hash(deploy_release, NEWTON_HASH_NAME,
+                                            distro_name,
+                                            distro_version)
             else:
-                deploy_hash = get_dlrn_hash(deploy_release, CURRENT_HASH_NAME)
+                deploy_hash = get_dlrn_hash(deploy_release, CURRENT_HASH_NAME,
+                                            distro_name,
+                                            distro_version)
             releases_dictionary['overcloud_deploy_release'] = deploy_release
             releases_dictionary['overcloud_deploy_hash'] = deploy_hash
 
@@ -226,24 +254,34 @@ def compose_releases_dictionary(stable_release, featureset, upgrade_from,
             logger.info('Doing an overcloud fast forward upgrade')
             deploy_release = get_relative_release(stable_release, -3)
             if deploy_release == 'newton':
-                deploy_hash = get_dlrn_hash(deploy_release, NEWTON_HASH_NAME)
+                deploy_hash = get_dlrn_hash(deploy_release, NEWTON_HASH_NAME,
+                                            distro_name,
+                                            distro_version)
             else:
-                deploy_hash = get_dlrn_hash(deploy_release, CURRENT_HASH_NAME)
+                deploy_hash = get_dlrn_hash(deploy_release, CURRENT_HASH_NAME,
+                                            distro_name,
+                                            distro_version)
             releases_dictionary['overcloud_deploy_release'] = deploy_release
             releases_dictionary['overcloud_deploy_hash'] = deploy_hash
 
     elif featureset.get('undercloud_upgrade'):
         logger.info('Doing an undercloud upgrade')
         install_release = get_relative_release(stable_release, -1)
-        install_hash = get_dlrn_hash(install_release, CURRENT_HASH_NAME)
+        install_hash = get_dlrn_hash(install_release, CURRENT_HASH_NAME,
+                                     distro_name,
+                                     distro_version)
         releases_dictionary['undercloud_install_release'] = install_release
         releases_dictionary['undercloud_install_hash'] = install_hash
 
     elif featureset.get('standalone_upgrade'):
         logger.info('Doing an standalone upgrade')
         install_release = get_relative_release(stable_release, -1)
-        install_hash = get_dlrn_hash(install_release, CURRENT_HASH_NAME)
-        install_newest_hash = get_dlrn_hash(install_release, NEWEST_HASH_NAME)
+        install_hash = get_dlrn_hash(install_release, CURRENT_HASH_NAME,
+                                     distro_name,
+                                     distro_version)
+        install_newest_hash = get_dlrn_hash(install_release, NEWEST_HASH_NAME,
+                                            distro_name,
+                                            distro_version)
         releases_dictionary['standalone_deploy_release'] = install_release
         releases_dictionary['standalone_deploy_newest_hash'] = \
             install_newest_hash
@@ -251,7 +289,9 @@ def compose_releases_dictionary(stable_release, featureset, upgrade_from,
 
     elif featureset.get('overcloud_update'):
         logger.info('Doing an overcloud update')
-        previous_hash = get_dlrn_hash(stable_release, PREVIOUS_HASH_NAME)
+        previous_hash = get_dlrn_hash(stable_release, PREVIOUS_HASH_NAME,
+                                      distro_name,
+                                      distro_version)
         releases_dictionary['overcloud_deploy_hash'] = previous_hash
 
     logger.debug("stable_release: %s, featureset: %s", stable_release,
@@ -348,6 +388,16 @@ if __name__ == '__main__':
              'All other releases are calculated from this\n'
              'basis.')
     parser.add_argument(
+        '--distro-name',
+        choices=['centos'],
+        required=True,
+        help='Distribution name')
+    parser.add_argument(
+        '--distro-version',
+        choices=['7', '8'],
+        required=True,
+        help='Distribution version')
+    parser.add_argument(
         '--featureset-file',
         required=True,
         help='Featureset file which will be introspected to\n'
@@ -381,7 +431,9 @@ if __name__ == '__main__':
     releases_dictionary = compose_releases_dictionary(args.stable_release,
                                                       featureset,
                                                       args.upgrade_from,
-                                                      args.is_periodic)
+                                                      args.is_periodic,
+                                                      args.distro_name,
+                                                      args.distro_version)
 
     releases_dictionary = shim_convert_old_release_names(releases_dictionary,
                                                          args.is_periodic)
