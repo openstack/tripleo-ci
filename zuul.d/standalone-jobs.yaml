@@ -7,7 +7,7 @@
     name: tripleo-ci-centos-7-standalone
     parent: tripleo-ci-base-standalone
     nodeset: single-centos-7-node
-    branches: ^(?!stable/(newton|ocata|pike|queens|rocky)).*$
+    branches: ^(stable/(stein|train)).*$
     vars:
       featureset: '052'
     irrelevant-files:
@@ -117,7 +117,7 @@
     name: tripleo-standalone-scenarios-full
     check:
       jobs:
-        - tripleo-ci-centos-7-scenario001-standalone:
+        - tripleo-ci-centos-8-scenario001-standalone:
             files: &scen1_files
               # tripleo-common
               - ^container-images/.*$
@@ -169,7 +169,7 @@
               # python-tripleoclient
               - ^tripleoclient/heat_launcher.*$
               - ^tripleoclient/v1/tripleo_(deploy|config|upgrade).*$
-        - tripleo-ci-centos-7-scenario002-standalone:
+        - tripleo-ci-centos-8-scenario002-standalone:
             files: &scen2_files
               # tripleo-common
               - ^container-images/.*$
@@ -218,7 +218,7 @@
               # python-tripleoclient
               - ^tripleoclient/heat_launcher.*$
               - ^tripleoclient/v1/tripleo_(deploy|config|upgrade).*$
-        - tripleo-ci-centos-7-scenario003-standalone:
+        - tripleo-ci-centos-8-scenario003-standalone:
             files: &scen3_files
               # tripleo-common
               - ^container-images/.*$
@@ -254,7 +254,7 @@
               # python-tripleoclient
               - ^tripleoclient/heat_launcher.*$
               - ^tripleoclient/v1/tripleo_(deploy|config|upgrade).*$
-        - tripleo-ci-centos-7-scenario004-standalone:
+        - tripleo-ci-centos-8-scenario004-standalone:
             files: &scen4_files
               # tripleo-common
               - workbooks/ceph-ansible.yaml
@@ -387,7 +387,16 @@
         - tripleo-ci-centos-7-standalone-upgrade
         - tripleo-ci-centos-7-standalone-upgrade-stein
         - tripleo-ci-centos-7-standalone-upgrade-train
+        - tripleo-ci-centos-8-standalone
         - tripleo-ci-centos-7-standalone
+        - tripleo-ci-centos-7-scenario001-standalone:
+            files: *scen1_files
+        - tripleo-ci-centos-7-scenario002-standalone:
+            files: *scen2_files
+        - tripleo-ci-centos-7-scenario003-standalone:
+            files: *scen3_files
+        - tripleo-ci-centos-7-scenario004-standalone:
+            files: *scen4_files
 
     gate:
       queue: tripleo
@@ -402,26 +411,31 @@
             files: *scen4_files
         - tripleo-ci-centos-7-scenario007-standalone:
             files: *scen7_files
+        - tripleo-ci-centos-8-scenario002-standalone:
+            files: *scen2_files
+        - tripleo-ci-centos-8-scenario003-standalone:
+            files: *scen3_files
 
         - tripleo-ci-centos-7-standalone-upgrade-stein
         - tripleo-ci-centos-7-standalone-upgrade-train
         - tripleo-ci-centos-7-standalone
+        - tripleo-ci-centos-8-standalone
 
         - tripleo-ci-centos-7-scenario010-standalone:
             files: *scen10_files
 
     periodic:
       jobs:
-        - tripleo-ci-centos-7-scenario001-standalone:
+        - tripleo-ci-centos-8-scenario001-standalone:
             vars:
               force_non_periodic: true
-        - tripleo-ci-centos-7-scenario002-standalone:
+        - tripleo-ci-centos-8-scenario002-standalone:
             vars:
               force_non_periodic: true
-        - tripleo-ci-centos-7-scenario003-standalone:
+        - tripleo-ci-centos-8-scenario003-standalone:
             vars:
               force_non_periodic: true
-        - tripleo-ci-centos-7-scenario004-standalone:
+        - tripleo-ci-centos-8-scenario004-standalone:
             vars:
               force_non_periodic: true
         - tripleo-ci-centos-7-scenario010-standalone:
@@ -433,7 +447,7 @@
         - tripleo-ci-centos-7-standalone-upgrade-train:
             vars:
               force_non_periodic: true
-        - tripleo-ci-centos-7-standalone:
+        - tripleo-ci-centos-8-standalone:
             vars:
               force_non_periodic: true
 
@@ -442,7 +456,7 @@
     voting: true
     parent: tripleo-ci-base-standalone
     nodeset: single-centos-7-node
-    branches: ^(?!stable/(newton|ocata|pike|queens|rocky)).*$
+    branches: ^(stable/(stein|train)).*$
     vars:
       featureset: '052'
       standalone_ceph: true
@@ -466,7 +480,7 @@
     voting: true
     parent: tripleo-ci-base-standalone
     nodeset: single-centos-7-node
-    branches: ^(?!stable/(newton|ocata|pike|queens|rocky)).*$
+    branches: ^(stable/(stein|train)).*$
     vars:
       featureset: '052'
       featureset_override:
@@ -495,7 +509,7 @@
     voting: true
     parent: tripleo-ci-base-standalone
     nodeset: single-centos-7-node
-    branches: ^(?!stable/(newton|ocata|pike|queens|rocky)).*$
+    branches: ^(stable/(stein|train)).*$
     vars:
       featureset: '052'
       featureset_override:
@@ -515,7 +529,7 @@
     voting: true
     parent: tripleo-ci-base-standalone
     nodeset: single-centos-7-node
-    branches: ^(?!stable/(newton|ocata|pike|queens|rocky)).*$
+    branches: ^(stable/(stein|train)).*$
     vars:
       featureset: '052'
       standalone_ceph: true
@@ -652,3 +666,101 @@
           - 'tempest.scenario.test_server_basic_ops'
           - 'tempest.api.volume.admin.test_multi_backend'
           - 'tempest.scenario.test_object_storage_basic_ops'
+
+# CentOS 8 Jobs
+- job:
+    name: tripleo-ci-centos-8-scenario001-standalone
+    voting: false
+    parent: tripleo-ci-base-standalone-centos-8
+    branches: ^(?!stable/(newton|ocata|pike|queens|rocky|stein|train)).*$
+    vars:
+      featureset: '052'
+      standalone_ceph: true
+      featureset_override:
+        standalone_environment_files:
+          - 'environments/low-memory-usage.yaml'
+          - 'ci/environments/scenario001-standalone.yaml'
+        tempest_services:
+          - aodh
+        tempest_run_concurrency: 1
+        tempest_tempest_conf_overrides:
+          'telemetry.alarm_granularity': '60'
+        tempest_test_whitelist:
+          - 'tempest.api.identity.v3'
+          - 'tempest.scenario.test_volume_boot_pattern.TestVolumeBootPattern.test_volume_boot_pattern'
+          - 'tempest.scenario.test_snapshot_pattern.TestSnapshotPattern.test_snapshot_pattern'
+          - 'telemetry_tempest_plugin.scenario.test_telemetry_integration.TestTelemetryIntegration'
+
+- job:
+    name: tripleo-ci-centos-8-scenario002-standalone
+    voting: true
+    parent: tripleo-ci-base-standalone-centos-8
+    branches: ^(?!stable/(newton|ocata|pike|queens|rocky|stein|train)).*$
+    vars:
+      featureset: '052'
+      featureset_override:
+        standalone_environment_files:
+          - 'environments/low-memory-usage.yaml'
+          - 'ci/environments/scenario002-standalone.yaml'
+        tempest_services:
+          - barbican
+          - ceilometer
+          - aodh
+        tempest_tempest_conf_overrides:
+          auth.tempest_roles: "'Member, creator'"
+          telemetry.alarm_granularity: '60'
+        tempest_extra_config:
+          auth.tempest_roles: "'Member, creator'"
+          telemetry.alarm_granularity: '60'
+        tempest_test_whitelist:
+          - 'tempest.api.object_storage.test_object_services.ObjectTest'
+          - 'barbican_tempest_plugin.tests.scenario.test_volume_encryption.VolumeEncryptionTest'
+          - 'barbican_tempest_plugin.tests.scenario.test_image_signing.ImageSigningSnapshotTest'
+          - 'barbican_tempest_plugin.tests.scenario.test_image_signing.ImageSigningTest.test_signed_image_upload_and_boot'
+          - 'telemetry_tempest_plugin.scenario.test_telemetry_integration.TestTelemetryIntegration'
+
+- job:
+    name: tripleo-ci-centos-8-scenario003-standalone
+    voting: true
+    parent: tripleo-ci-base-standalone-centos-8
+    nodeset: single-centos-8-node
+    branches: ^(?!stable/(newton|ocata|pike|queens|rocky|stein|train)).*$
+    vars:
+      featureset: '052'
+      featureset_override:
+        standalone_environment_files:
+          - 'environments/low-memory-usage.yaml'
+          - 'ci/environments/scenario003-standalone.yaml'
+        tempest_services:
+          - mistral
+          - sahara
+        tempest_test_whitelist:
+          - 'tempest.scenario.test_network_basic_ops.TestNetworkBasicOps.test_network_basic_ops'
+          - 'sahara_tempest_plugin.tests.api.test_data_sources.DataSourceTest'
+          - 'mistral_tempest_tests.tests.api.v2.test_actions.ActionTestsV2'
+
+- job:
+    name: tripleo-ci-centos-8-scenario004-standalone
+    voting: false
+    parent: tripleo-ci-base-standalone
+    nodeset: single-centos-8-node
+    branches: ^(?!stable/(newton|ocata|pike|queens|rocky|stein|train)).*$
+    vars:
+      featureset: '052'
+      standalone_ceph: true
+      featureset_override:
+        standalone_container_cli: podman
+        standalone_environment_files:
+          - 'environments/low-memory-usage.yaml'
+          - 'ci/environments/scenario004-standalone.yaml'
+          - 'environments/podman.yaml'
+        tempest_services:
+          - manila
+        tempest_tempest_conf_overrides:
+          'share.multitenancy_enabled': 'False'
+          'share.enable_protocols': 'cephfs'
+          'share.capability_snapshot_support': 'False'
+          'share.capability_create_share_from_snapshot_support': 'False'
+        tempest_test_whitelist:
+          - 'tempest.scenario.test_network_basic_ops.TestNetworkBasicOps.test_network_basic_ops'
+          - 'manila_tempest_tests.tests.api.test_shares.SharesCephFSTest.test_create_get_delete_share'
