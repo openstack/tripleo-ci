@@ -56,6 +56,8 @@
             irrelevant-files: *multinode_ignored
         - tripleo-ci-centos-7-scenario000-multinode-oooq-container-upgrades:
             irrelevant-files: *multinode_ignored
+        - tripleo-ci-centos-8-scenario000-multinode-oooq-container-updates:
+            irrelevant-files: *multinode_ignored
         - tripleo-ci-centos-8-standalone:
             irrelevant-files: &standalone_ignored
               - ^.*\.md$
@@ -100,6 +102,8 @@
             irrelevant-files: *standalone_ignored
         - tripleo-ci-centos-7-scenario000-multinode-oooq-container-updates:
             irrelevant-files: *multinode_ignored
+        - tripleo-ci-centos-8-scenario000-multinode-oooq-container-updates:
+            irrelevant-files: *multinode_ignored
         - tripleo-ci-centos-7-standalone-upgrade-stein:
             irrelevant-files: *standalone_ignored
         - tripleo-ci-centos-7-standalone-upgrade-train:
@@ -135,6 +139,8 @@
         - tripleo-ci-centos-7-scenario000-multinode-oooq-container-updates:
             irrelevant-files: *multinode_ignored
         - tripleo-ci-centos-7-scenario000-multinode-oooq-container-upgrades:
+            irrelevant-files: *multinode_ignored
+        - tripleo-ci-centos-8-scenario000-multinode-oooq-container-updates:
             irrelevant-files: *multinode_ignored
         - tripleo-ci-centos-7-standalone:
             irrelevant-files: *standalone_ignored
@@ -223,10 +229,12 @@
         - tripleo-ci-centos-7-containers-multinode-rocky
         - tripleo-ci-centos-7-containers-multinode-queens
 
+## CentOS 8 jobs
 - job:
-    name: tripleo-ci-centos-7-containers-multinode
-    parent: tripleo-ci-base-multinode
-    branches: ^(stable/(pike|queens|rocky|stein|train)).*$
+    name: tripleo-ci-centos-8-containers-multinode
+    parent: tripleo-ci-base-multinode-centos-8
+    branches: ^(?!stable/(newton|ocata|pike|queens|rocky|stein|train)).*$
+    voting: false
     vars:
       nodes: 1ctlr
       featureset: '010'
@@ -234,10 +242,26 @@
         - multinode.yml
 
 - job:
-    name: tripleo-ci-centos-8-containers-multinode
+    name: tripleo-ci-centos-8-scenario000-multinode-oooq-container-updates
+    description: |
+      Basic tripleo update job for centos-8, this is not an upgrade job.
     parent: tripleo-ci-base-multinode-centos-8
+    voting: false
     branches: ^(?!stable/(newton|ocata|pike|queens|rocky|stein|train)).*$
-    voting: true
+    vars:
+      nodes: 1ctlr
+      featureset: '037'
+      # Note (dmsimard): This enforces a minimum TTL for DNS records, see
+      # https://review.opendev.org/#/c/523178/ for context
+      unbound_cache_min_ttl: 900
+      extra_tags:
+        - overcloud-update
+
+## CentOS 7 jobs
+- job:
+    name: tripleo-ci-centos-7-containers-multinode
+    parent: tripleo-ci-base-multinode
+    branches: ^(stable/(pike|queens|rocky|stein|train)).*$
     vars:
       nodes: 1ctlr
       featureset: '010'
@@ -424,7 +448,7 @@
       Basic tripleo update job, this is not an upgrade job.
     parent: tripleo-ci-base-multinode
     voting: true
-    branches: ^(?!stable/(newton|ocata|pike|queens)).*$
+    branches: ^(stable/(rocky|stein|train)).*$
     vars:
       nodes: 1ctlr
       featureset: '037'
