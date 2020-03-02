@@ -31,6 +31,8 @@
             irrelevant-files: *undercloud_ignored
         - tripleo-ci-centos-7-undercloud-containers:
             irrelevant-files: *undercloud_ignored
+        - tripleo-ci-centos-8-undercloud-containers:
+            irrelevant-files: *undercloud_ignored
         - tripleo-ci-centos-7-containers-undercloud-minion:
             irrelevant-files: *undercloud_ignored
         - tripleo-ci-centos-7-containerized-undercloud-upgrades:
@@ -42,6 +44,8 @@
             irrelevant-files: *undercloud_ignored
         - tripleo-ci-centos-7-undercloud-containers:
             irrelevant-files: *undercloud_ignored
+        - tripleo-ci-centos-8-undercloud-containers:
+            irrelevant-files: *undercloud_ignored
         - tripleo-ci-centos-7-containers-undercloud-minion:
             irrelevant-files: *undercloud_ignored
 
@@ -49,7 +53,15 @@
     name: tripleo-ci-centos-7-undercloud-containers
     parent: tripleo-ci-base-singlenode
     nodeset: single-centos-7-node
-    branches: ^(?!stable/(newton|ocata|pike|queens)).*$
+    branches: ^(stable/(rocky|stein|train)).*$
+    vars:
+      featureset: '027'
+
+- job:
+    name: tripleo-ci-centos-8-undercloud-containers
+    parent: tripleo-ci-base-singlenode-centos-8
+    branches: ^(?!stable/(newton|ocata|pike|queens|rocky|stein|train)).*$
+    voting: false
     vars:
       featureset: '027'
 
