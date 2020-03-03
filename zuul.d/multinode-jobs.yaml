@@ -120,7 +120,7 @@
             irrelevant-files: *multinode_ignored
         - tripleo-ci-centos-7-undercloud-containers:
             irrelevant-files: *multinode_ignored
-        - tripleo-ci-centos-7-containers-undercloud-minion:
+        - tripleo-ci-centos-8-containers-undercloud-minion:
             irrelevant-files: *multinode_ignored
         - tripleo-ci-centos-7-scenario001-multinode-oooq-container:
             irrelevant-files: *multinode_ignored
@@ -170,7 +170,7 @@
             irrelevant-files: *multinode_ignored
         - tripleo-ci-centos-8-containers-multinode:
             irrelevant-files: *multinode_ignored
-        - tripleo-ci-centos-7-containers-undercloud-minion:
+        - tripleo-ci-centos-8-containers-undercloud-minion:
             irrelevant-files: *multinode_ignored
         - tripleo-ci-centos-7-standalone:
             irrelevant-files: *standalone_ignored
@@ -256,6 +256,20 @@
       extra_tags:
         - undercloud-minion-setup
         - undercloud-minion-deploy
+
+- job:
+    name: tripleo-ci-centos-8-containers-undercloud-minion
+    parent: tripleo-ci-base-multinode-centos-8
+    branches: ^(?!stable/(newton|ocata|pike|queens|rocky|stein|train)).*$
+    vars:
+      nodes: 1minion
+      featureset: '061'
+      playbooks:
+        - multinode-minion.yml
+      extra_tags:
+        - undercloud-minion-setup
+        - undercloud-minion-deploy
+
 
 - job:
     name: tripleo-ci-centos-7-containers-multinode-train
