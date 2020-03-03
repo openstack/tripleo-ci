@@ -1,12 +1,12 @@
 ---
 - name: Set branch for building containers check jobs
   set_fact:
-    ci_branch: "{{ zuul.branch | replace('stable/','') }}"
+    ci_branch: "{{ zuul.branch | regex_replace('(stable|cloudsig)/', '') }}"
   when: zuul is defined
 
 - name: Set branch for building containers branchless
   set_fact:
-    ci_branch: "{{ branch_override | replace('stable/','') }}"
+    ci_branch: "{{ branch_override | regex_replace('(stable|cloudsig)/', '') }}"
   when: branch_override is defined
 
 - name: Set branch for building containers periodic
