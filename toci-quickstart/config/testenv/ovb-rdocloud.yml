@@ -15,14 +15,18 @@ workers_args: >-
     -e {{ tripleo_root }}/tripleo-ci/test-environments/worker-config.yaml
     -e {{ overcloud_templates_path }}/environments/debug.yaml
 overcloud_image_url: >-
-  {% if ansible_distribution == 'RedHat' and ansible_distribution_major_version >= '8' -%}
+  {% if ansible_distribution == 'RedHat' and ansible_distribution_major_version|int >= 8 -%}
   https://images.rdoproject.org:4433/rcm-guest/images/redhat8/{{ release }}/rdo_trunk/{{ dlrn_hash|default(dlrn_hash_tag) }}/overcloud-full.tar
+  {%- elif ansible_distribution_major_version|int >= 8-%}
+  https://images.rdoproject.org/centos8/{{ release }}/rdo_trunk/{{ dlrn_hash|default(dlrn_hash_tag) }}/overcloud-full.tar
   {%- else -%}
   http://images.rdoproject.org/{{ release }}/rdo_trunk/{{ dlrn_hash|default(dlrn_hash_tag) }}/overcloud-full.tar
   {%- endif %}
 ipa_image_url: >-
-  {% if ansible_distribution == 'RedHat' and ansible_distribution_major_version >= '8' -%}
+  {% if ansible_distribution == 'RedHat' and ansible_distribution_major_version|int >= 8 -%}
   https://images.rdoproject.org:4433/rcm-guest/images/redhat8/{{ release }}/rdo_trunk/{{ dlrn_hash|default(dlrn_hash_tag) }}/ironic-python-agent.tar
+  {%- elif ansible_distribution_major_version|int >= 8 -%}
+  https://images.rdoproject.org/centos8/{{ release }}/rdo_trunk/{{ dlrn_hash|default(dlrn_hash_tag) }}/ironic-python-agent.tar
   {%- else -%}
   http://images.rdoproject.org/{{ release }}/rdo_trunk/{{ dlrn_hash|default(dlrn_hash_tag) }}/ironic-python-agent.tar
   {%- endif %}
