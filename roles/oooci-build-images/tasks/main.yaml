@@ -17,7 +17,7 @@
   shell: bash build_images.sh > {{ workspace }}/logs/script_build.log 2> {{ workspace }}/logs/script_build-err.log
   changed_when: true
 
-- when: rhel_image_source is defined
+- when: tripleo_image_source is defined
   block:
     - name: check if overcloud images were built
       stat:

@@ -28,10 +28,16 @@
               - ^setup.cfg$
               - ^setup.py$
               - ^tox.ini$
-        - tripleo-buildimage-overcloud-full-centos-7:
+        - tripleo-buildimage-overcloud-full-centos-8:
             files: &build_images_files
               - ^playbooks/tripleo-buildimages/.*$
               - ^roles/oooci-build-images/.*$
+        - tripleo-buildimage-ironic-python-agent-centos-8:
+            files: *build_images_files
+        - tripleo-buildimage-overcloud-hardened-full-centos-8:
+            files: *build_images_files
+        - tripleo-buildimage-overcloud-full-centos-7:
+            files: *build_images_files
         - tripleo-buildimage-ironic-python-agent-centos-7:
             files: *build_images_files
         - tripleo-buildimage-overcloud-hardened-full-centos-7:
@@ -66,6 +72,8 @@
         - openstack-tox-py35:
             files: *py_files
         - tripleo-buildimage-overcloud-full-centos-7:
+            files: *build_images_files
+        - tripleo-buildimage-overcloud-full-centos-8:
             files: *build_images_files
         - tripleo-ci-centos-7-standalone-upgrade-train:
             branches: master

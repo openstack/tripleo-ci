@@ -1,20 +1,43 @@
 ---
-- when: rhel_image_source is defined
+# In order to make this role distro agnostic, it replaces
+# rhel_image_source with tripleo_image_source, will be removed
+# in future.
+
+- name: Set tripleo_image_source
+  set_fact:
+    tripleo_image_source: "{{ rhel_image_source }}"
+  when:
+    - rhel_image_source is defined
+    - ansible_distribution == 'RedHat'
+    - ansible_distribution_major_version is version(8, '>=')
+
+- when: tripleo_image_source is defined
   block:
-    - name: Set dib_local_image and other facts used by tripleo-ci build-image role build template
+    - name: Set dib related facts used by tripleo-ci build-image role build template
       set_fact:
-        dib_local_image: "{{ workspace }}/{{ rhel_image_source | urlsplit('path') | basename }}"
-        dib_node_dist: "rhel"
+        dib_local_image: "{{ workspace }}/{{ tripleo_image_source | urlsplit('path') | basename }}"
+        dib_node_dist: >-
+          {% if ansible_distribution == 'RedHat' and ansible_distribution_major_version is version(8, '>=') -%}
+          "rhel"
+          {%- else -%}
+          "centos"
+          {%- endif %}
         dib_release: "8"
         dib_yum_repo_conf: >-
           /etc/yum.repos.d/delorean.repo
+          {% if ansible_distribution == 'RedHat' and ansible_distribution_major_version is version(8, '>=') -%}
           /etc/yum.repos.d/delorean-rhel8-{{ release|default('master') }}-deps.repo
           /etc/yum.repos.d/rh-cloud.repo
+          {%- else -%}
+          /etc/yum.repos.d/delorean-{{ release|default('master') }}-testing.repo
+          /etc/yum.repos.d/tripleo-centos-powertools.repo
+          /etc/yum.repos.d/tripleo-centos-highavailability.repo
+          {%- endif %}
         cacheable: true
 
-    - name: Download rhel source image
+    - name: Download TripleO source image
       get_url:
-        url: "{{ rhel_image_source }}"
+        url: "{{ tripleo_image_source }}"
         dest: "{{ dib_local_image }}"
 
 # get python_v fact used with vars/common.yaml to get
@@ -22,7 +45,7 @@
 - name: Get python_v fact for py2 or py3 common vars
   include_tasks: check_set_py3.yaml
 
-- name: Install pip and virtualenv
+- name: Install pip pyyaml and virtualenv
   become: true
   package:
     name: "{{ item }}"
@@ -30,6 +53,7 @@
   loop:
     - "{{ python_version[python_v] }}-pip"
     - "{{ python_version[python_v] }}-virtualenv"
+    - "{{ python_version[python_v] }}-pyyaml"
 
 - when: python_v == "py3"
   block:

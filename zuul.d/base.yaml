@@ -565,6 +565,8 @@
     post-run: playbooks/tripleo-buildimages/post.yaml
     timeout: 4200
     nodeset: single-centos-8-node
+    vars:
+      tripleo_image_os: centos8
     required-projects:
       - opendev.org/openstack/diskimage-builder
       - opendev.org/openstack/heat-agents
