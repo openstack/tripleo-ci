@@ -7,6 +7,7 @@ cloudenv: "vexxhost"
 custom_nameserver:
     - 1.1.1.1
     - 1.0.0.1
+    - 38.102.83.187
 external_net: 'public'
 ntp_server: '0.pool.ntp.org,1.pool.ntp.org,2.pool.ntp.org,3.pool.ntp.org'
 workers_args: >-
@@ -29,8 +30,6 @@ ipa_image_url: >-
   {%- else -%}
   http://images.rdoproject.org/{{ release }}/rdo_trunk/{{ dlrn_hash|default(dlrn_hash_tag) }}/ironic-python-agent.tar
   {%- endif %}
-# Container settings are set in release files
-
 # Use cirros cached image
 tempest_test_image_path: /opt/cache/files/cirros-0.3.5-x86_64-disk.img
 tempest_tempest_conf_overrides:
@@ -69,3 +68,10 @@ influxdb_create_data_file: true
 cloud_name: vexxhost
 elastic_host: browbeat.test.com
 grafana_host: browbeat.test.com
+
+# Ironic debug
+# https://bugs.launchpad.net/tripleo/+bug/1797526
+step_introspect_debug: true
+
+# Ensure logs are gzipped
+artcl_gzip: true
