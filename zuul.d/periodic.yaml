@@ -2,9 +2,9 @@
     name: tripleo-periodic
     periodic:
       jobs:
-        - tripleo-ci-centos-7-containers-multinode:
+        - tripleo-ci-centos-8-containers-multinode:
             vars:
               force_non_periodic: true
-        - tripleo-ci-centos-7-scenario001-standalone:
+        - tripleo-ci-centos-8-scenario001-standalone:
             vars:
               force_non_periodic: true
