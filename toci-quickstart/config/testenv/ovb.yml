@@ -91,7 +91,7 @@ undercloud_workers: 1
 step_introspect_debug: true
 # Remove ContainerCli once this scenario is tested on CentOS8
 overcloud_container_cli: >-
-  {%- if ansible_distribution == "RedHat" and ansible_distribution_major_version|int >= 8 %}podman
+  {%- if ansible_distribution in ["RedHat", "CentOS"] and ansible_distribution_major_version|int >= 8 %}podman
   {%- else %}docker{% endif -%}
 ara_generate_html: false
 
