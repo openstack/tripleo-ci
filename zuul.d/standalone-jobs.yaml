@@ -420,6 +420,8 @@
             files: *scen2_files
         - tripleo-ci-centos-8-scenario003-standalone:
             files: *scen3_files
+        - tripleo-ci-centos-8-scenario004-standalone:
+            files: *scen4_files
 
         - tripleo-ci-centos-7-standalone-upgrade-stein
         - tripleo-ci-centos-7-standalone-upgrade-train
@@ -745,7 +747,7 @@
 
 - job:
     name: tripleo-ci-centos-8-scenario004-standalone
-    voting: false
+    voting: true
     parent: tripleo-ci-base-standalone-centos-8
     branches: ^(?!stable/(newton|ocata|pike|queens|rocky|stein|train)).*$
     vars:
