@@ -416,6 +416,8 @@
             files: *scen4_files
         - tripleo-ci-centos-7-scenario007-standalone:
             files: *scen7_files
+        - tripleo-ci-centos-8-scenario001-standalone:
+            files: *scen1_files
         - tripleo-ci-centos-8-scenario002-standalone:
             files: *scen2_files
         - tripleo-ci-centos-8-scenario003-standalone:
@@ -677,7 +679,7 @@
 # CentOS 8 Jobs
 - job:
     name: tripleo-ci-centos-8-scenario001-standalone
-    voting: false
+    voting: true
     parent: tripleo-ci-base-standalone-centos-8
     branches: ^(?!stable/(newton|ocata|pike|queens|rocky|stein|train)).*$
     vars:
