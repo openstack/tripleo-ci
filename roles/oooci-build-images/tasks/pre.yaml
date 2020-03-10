@@ -45,7 +45,7 @@
 - name: Get python_v fact for py2 or py3 common vars
   include_tasks: check_set_py3.yaml
 
-- name: Install pip pyyaml and virtualenv
+- name: Install pip and virtualenv
   become: true
   package:
     name: "{{ item }}"
@@ -53,10 +53,24 @@
   loop:
     - "{{ python_version[python_v] }}-pip"
     - "{{ python_version[python_v] }}-virtualenv"
-    - "{{ python_version[python_v] }}-pyyaml"
+
+- when: python_v == "py2"
+  block:
+
+    - name: Install PyYAML for python2
+      package:
+        name: PyYAML
+        state: present
+      become: true
 
 - when: python_v == "py3"
   block:
+
+    - name: Install PyYAML for python3
+      package:
+        name: python3-pyyaml
+        state: present
+      become: true
 
     - name: Install python3-devel with provides pathfix.py
       package:
