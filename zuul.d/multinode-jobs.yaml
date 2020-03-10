@@ -246,7 +246,7 @@
     description: |
       Basic tripleo update job for centos-8, this is not an upgrade job.
     parent: tripleo-ci-base-multinode-centos-8
-    voting: false
+    voting: true
     branches: ^(?!stable/(newton|ocata|pike|queens|rocky|stein|train)).*$
     vars:
       nodes: 1ctlr
