@@ -1,16 +1,4 @@
 ---
-# In order to make this role distro agnostic, it replaces
-# rhel_image_source with tripleo_image_source, will be removed
-# in future.
-
-- name: Set tripleo_image_source
-  set_fact:
-    tripleo_image_source: "{{ rhel_image_source }}"
-  when:
-    - rhel_image_source is defined
-    - ansible_distribution == 'RedHat'
-    - ansible_distribution_major_version is version(8, '>=')
-
 - when: tripleo_image_source is defined
   block:
     - name: Set dib related facts used by tripleo-ci build-image role build template
