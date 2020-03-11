@@ -234,7 +234,7 @@
     name: tripleo-ci-centos-8-containers-multinode
     parent: tripleo-ci-base-multinode-centos-8
     branches: ^(?!stable/(newton|ocata|pike|queens|rocky|stein|train)).*$
-    voting: false
+    voting: true
     vars:
       nodes: 1ctlr
       featureset: '010'
