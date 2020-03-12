@@ -271,7 +271,7 @@
 - job:
     name: tripleo-ci-centos-7-containers-undercloud-minion
     parent: tripleo-ci-base-multinode
-    branches: ^(?!stable/(ocata|pike|queens|rocky|stein|train)).*$
+    branches: ^stable/train$
     vars:
       nodes: 1minion
       featureset: '061'
