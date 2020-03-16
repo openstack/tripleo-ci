@@ -136,6 +136,8 @@
             irrelevant-files: *multinode_ignored
         - tripleo-ci-centos-7-scenario007-multinode-oooq-container:
             irrelevant-files: *multinode_ignored
+        - tripleo-ci-centos-8-scenario007-multinode-oooq-container:
+            irrelevant-files: *multinode_ignored
         - tripleo-ci-centos-7-scenario000-multinode-oooq-container-updates:
             irrelevant-files: *multinode_ignored
         - tripleo-ci-centos-7-scenario000-multinode-oooq-container-upgrades:
@@ -408,7 +410,16 @@
     name: tripleo-ci-centos-7-scenario007-multinode-oooq-container
     parent: tripleo-ci-base-multinode
     voting: false
-    branches: ^(?!stable/(newton|ocata|pike)).*$
+    branches: ^stable/(queens|rocky|stein|train).*$
+    vars:
+      nodes: 1ctlr
+      featureset: '030'
+
+- job:
+    name: tripleo-ci-centos-8-scenario007-multinode-oooq-container
+    parent: tripleo-ci-base-multinode-centos-8
+    voting: false
+    branches: ^(?!stable/(queens|stein|train)).*$
     vars:
       nodes: 1ctlr
       featureset: '030'
