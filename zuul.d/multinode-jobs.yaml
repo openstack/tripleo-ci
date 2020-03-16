@@ -372,14 +372,6 @@
       featureset: '017'
 
 - job:
-    name: tripleo-ci-centos-7-scenario002-multinode-oooq-container-refstack
-    parent: tripleo-ci-base-multinode
-    branches: ^(?!stable/(newton)).*$
-    vars:
-      nodes: 1ctlr
-      featureset: '055'
-
-- job:
     name: tripleo-ci-centos-7-scenario003-multinode-oooq-container
     parent: tripleo-ci-base-multinode
     branches: ^stable/(pike|queens|rocky).*$
@@ -401,7 +393,7 @@
     name: tripleo-ci-centos-7-scenario006-multinode-oooq-container
     parent: tripleo-ci-base-multinode
     voting: false
-    branches: ^(?!stable/(newton|ocata)).*$
+    branches: ^(stable/(queens|rocky|stein|train)).*$
     vars:
       nodes: 1ctlr
       featureset: '026'
@@ -419,7 +411,7 @@
     name: tripleo-ci-centos-8-scenario007-multinode-oooq-container
     parent: tripleo-ci-base-multinode-centos-8
     voting: false
-    branches: ^(?!stable/(queens|stein|train)).*$
+    branches: ^(?!stable/(queens|rocky|stein|train)).*$
     vars:
       nodes: 1ctlr
       featureset: '030'
@@ -428,7 +420,7 @@
     name: tripleo-ci-centos-7-scenario008-multinode-oooq-container
     parent: tripleo-ci-base-multinode
     voting: false
-    branches: ^(?!stable/(newton|ocata|pike)).*$
+    branches: ^(stable/(queens|rocky|stein|train)).*$
     vars:
       nodes: 1ctlr
       featureset: '031'
@@ -488,7 +480,7 @@
     name: tripleo-ci-centos-7-scenario000-multinode-oooq-container-upgrades
     parent: tripleo-ci-base-multinode
     voting: false
-    branches: ^(?!stable/(newton|ocata|pike)).*$
+    branches: ^(stable/(queens|rocky|stein|train)).*$
     vars:
       nodes: 1ctlr
       featureset: '051'

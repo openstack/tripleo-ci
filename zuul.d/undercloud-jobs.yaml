@@ -88,7 +88,7 @@
     name: tripleo-ci-centos-7-containerized-undercloud-upgrades
     parent: tripleo-ci-base-singlenode
     nodeset: single-centos-7-node
-    branches: ^(?!stable/(newton|ocata|pike|queens)).*$
+    branches: ^(stable/(rocky|stein|train)).*$
     # TODO(rlandy) make it voting when we confirm
     # https://review.opendev.org/#/c/611800/
     # is working as expected.
