@@ -390,11 +390,13 @@
     voting: false
     roles:
       - zuul: opendev.org/openstack/ansible-role-container-registry
+      - zuul: opendev.org/openstack/tripleo-ansible
     required-projects:
       - opendev.org/openstack/ansible-role-container-registry
       - opendev.org/openstack/kolla
       - opendev.org/openstack/python-tripleoclient
       - opendev.org/openstack/requirements
+      - opendev.org/openstack/tripleo-ansible
       - opendev.org/openstack/tripleo-common
       - opendev.org/openstack/tripleo-repos
 
@@ -410,11 +412,13 @@
     voting: false
     roles:
       - zuul: opendev.org/openstack/ansible-role-container-registry
+      - zuul: opendev.org/openstack/tripleo-ansible
     required-projects:
       - opendev.org/openstack/ansible-role-container-registry
       - opendev.org/openstack/kolla
       - opendev.org/openstack/python-tripleoclient
       - opendev.org/openstack/requirements
+      - opendev.org/openstack/tripleo-ansible
       - opendev.org/openstack/tripleo-common
       - opendev.org/openstack/tripleo-repos
 

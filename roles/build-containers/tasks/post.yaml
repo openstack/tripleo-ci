@@ -7,7 +7,9 @@
     set -x
     mkdir -p {{ workspace }}/conf/
     mkdir -p {{ workspace }}/logs/system
+    mkdir -p {{ workspace }}/logs/httpd_data
     mkdir -p {{ workspace }}/etc/docker
+    mkdir -p {{ workspace }}/etc/httpd
     mkdir -p {{ workspace }}/logs/buildah-builds
 
     mv *.conf {{ workspace }}/conf/
@@ -17,6 +19,8 @@
     mv /tmp/kolla-* {{ workspace }}/logs/buildah-builds/ || true
     rsync -var --no-links /var/log/ {{ workspace }}/logs/system/ || true
     rsync -var --no-links /etc/docker/ {{ workspace }}/etc/docker/ || true
+    rsync -var --no-links /etc/httpd/ {{ workspace }}/etc/httpd/ || true
+    rsync -var --no-links /var/www/html/ {{ workspace }}/logs/httpd_data/ || true
     rsync -var --no-links /etc/containers/ {{ workspace }}/etc/containers/ || true
     rsync -var --no-links --include 'yum.repos.d/***' --include 'yum.conf' --include 'dnf/***' --exclude='*' /etc/ {{ workspace }}/etc/ || true
 
