@@ -32,6 +32,8 @@ ipa_image_url: >-
   {%- endif %}
 # Use cirros cached image
 tempest_test_image_path: /opt/cache/files/cirros-0.3.5-x86_64-disk.img
+tempest_tempest_conf_overrides:
+  image.image_path: http://images.rdoproject.org/cirros/cirros-0.4.0-x86_64-disk.img
 
 # Container update settings
 update_containers: >-
