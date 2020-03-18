@@ -34,6 +34,8 @@ undercloud_undercloud_nameservers:
   - 127.0.0.1
   - 1.1.1.1
 tempest_test_image_path: /opt/cache/files/cirros-0.3.5-x86_64-disk.img
+tempest_tempest_conf_overrides:
+  image.image_path: http://images.rdoproject.org/cirros/cirros-0.4.0-x86_64-disk.img
 
 # We don't need to cleanup TripleO CI
 tempest_track_resources: false
