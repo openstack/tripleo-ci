@@ -68,6 +68,22 @@
     version_hash: "{{ buildcontainers_version_hash }}"
   when: buildcontainers_version_hash is defined
 
+# collectd tries to disable epel and epel-modular repository, which doesn't
+# exist, and so fail, this is just a dummy repository so the container won't
+# fail.
+- name: Add dummy epel and epel-module repository
+  become: true
+  when: ansible_pkg_mgr == "dnf" and ansible_distribution|lower  == "redhat"
+  yum_repository:
+    name: "{{ item }}"
+    description: Dummy epel repository
+    file: delorean_epel_dummy
+    baseurl: https://download.fedoraproject.org/pub/epel/$releasever/$basearch/
+    enabled: no
+  with_items:
+    - epel
+    - epel-modular
+
 - name: grab kolla patch rhel8
   when: ansible_pkg_mgr == "dnf" and ansible_distribution|lower  == "redhat"
   shell: |
