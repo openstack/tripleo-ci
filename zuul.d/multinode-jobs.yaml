@@ -207,22 +207,16 @@
     check:
       jobs:
         - tripleo-ci-centos-7-containers-multinode-train:
+            voting: false
             irrelevant-files: *multinode_ignored
         - tripleo-ci-centos-7-containers-multinode-stein:
+            voting: false
             irrelevant-files: *multinode_ignored
         - tripleo-ci-centos-7-containers-multinode-rocky:
+            voting: false
             irrelevant-files: *multinode_ignored
         - tripleo-ci-centos-7-containers-multinode-queens:
-            irrelevant-files: *multinode_ignored
-    gate:
-      jobs:
-        - tripleo-ci-centos-7-containers-multinode-train:
-            irrelevant-files: *multinode_ignored
-        - tripleo-ci-centos-7-containers-multinode-stein:
-            irrelevant-files: *multinode_ignored
-        - tripleo-ci-centos-7-containers-multinode-rocky:
-            irrelevant-files: *multinode_ignored
-        - tripleo-ci-centos-7-containers-multinode-queens:
+            voting: false
             irrelevant-files: *multinode_ignored
     periodic:
       jobs:
