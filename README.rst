@@ -70,8 +70,11 @@ Quickstart Framework
 
  ``toci_quickstart.sh`` consists of three parts, setup, invocationo and logs
  collection.
+
 For more information about feature sets and test matrix please see
+
 .. _Featureset Documentation: https://docs.openstack.org/developer/tripleo-quickstart/feature-configuration.html
+
 from quickstart documentation
 The new workflow uses the directory toci-quickstart/ to store TripleO ci specific
 configurations, roles or playbooks for the quickstart workflow
