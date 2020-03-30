@@ -1,10 +1,15 @@
+PyYAML
 ansi2html  # GPL (soft-dependency of pytest-html)
+docker>=3.7  # Apache
+mock
+molecule>=3.0.2  # MIT
+paramiko>=2.5.0  # LGPL (soft-dependency of docker that enables ssh protocol)
+pprint
+pre-commit>=1.10  # MIT License
 pytest  # MIT
 pytest-cov  # MIT
 pytest-html  # MPL 2.0
+pytest-molecule  # MIT
+pytest-plus  # MIT
 pytest-xdist  # MIT
-mock
 requests
-pprint
-pre-commit>=1.10  # MIT License
-PyYAML

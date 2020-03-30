@@ -17,7 +17,10 @@
     check:
       jobs:
         - openstack-tox-linters
-        - tripleo-tox-molecule
+        - tripleo-tox-molecule:
+            vars:
+              tox_environment:
+                PYTEST_REQPASS: 1
         - openstack-tox-py35:
             success-url: "tox/reports.html"
             failure-url: "tox/reports.html"
@@ -28,6 +31,10 @@
               - ^setup.cfg$
               - ^setup.py$
               - ^tox.ini$
+            vars:
+              tox_environment:
+                PYTEST_REQPASS: 84
+
         - tripleo-buildimage-overcloud-full-centos-8:
             files: &build_images_files
               - ^playbooks/tripleo-buildimages/.*$
