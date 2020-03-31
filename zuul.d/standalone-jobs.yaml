@@ -389,7 +389,6 @@
         - tripleo-ci-centos-7-scenario007-standalone:
             files: *scen7_files
         - tripleo-ci-centos-7-standalone-rocky
-        - tripleo-ci-centos-7-standalone-upgrade
         - tripleo-ci-centos-7-standalone-upgrade-stein
         - tripleo-ci-centos-7-standalone-upgrade-train
         - tripleo-ci-centos-8-standalone
