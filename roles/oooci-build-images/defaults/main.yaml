@@ -1,0 +1,38 @@
+tripleo_image_source: https://images.rdoproject.org/CentOS-8-x86_64-GenericCloud.qcow2
+workspace: "{{ ansible_user_dir }}/workspace"
+openstack_git_root: "{{ ansible_user_dir }}/src/opendev.org/openstack"
+python_version:
+  py2: python
+  py3: python3
+base_image_config:
+  py2: overcloud-images.yaml
+  py3: overcloud-images-python3.yaml
+tripleo_pip_projects:
+  - "file://{{ openstack_git_root }}/diskimage-builder"
+  - "file://{{ openstack_git_root }}/python-tripleoclient"
+  - "file://{{ openstack_git_root }}/tripleo-common"
+tripleo_common_path: "{{ openstack_git_root }}/tripleo-common"
+tripleo_elements_path:
+  - "{{ openstack_git_root }}/tripleo-puppet-elements/elements"
+  - "{{ openstack_git_root }}/tripleo-image-elements/elements"
+  - "{{ openstack_git_root }}/heat-agents"
+  - "{{ openstack_git_root }}/ironic-python-agent-builder/dib/"
+tripleo_shebang_path:
+  - "{{ openstack_git_root }}/tripleo-image-elements/elements/os-svc-install/bin/map-services-tripleo"
+  - "{{ openstack_git_root }}/diskimage-builder/diskimage_builder/lib/outfilter.py"
+  - "{{ openstack_git_root }}/diskimage-builder/diskimage_builder/elements/package-installs/bin/package-installs-squash"
+  - "{{ openstack_git_root }}/diskimage-builder/diskimage_builder/elements/svc-map/extra-data.d/10-merge-svc-map-files"
+  - "{{ openstack_git_root }}/diskimage-builder/diskimage_builder/elements/pypi/pre-install.d/04-configure-pypi-mirror"
+  - "{{ openstack_git_root }}/diskimage-builder/diskimage_builder/elements/deploy-targetcli/extra-data.d/module/targetcli-wrapper"
+dib_yum_repo_conf: >-
+  {% if ansible_distribution == 'RedHat' and ansible_distribution_major_version is version(8, '>=') -%}
+  {{ dib_yum_repo_conf_rhel }}
+  {%- else -%}
+  {{ dib_yum_repo_conf_centos }}
+  {%- endif %}
+dib_yum_repo_conf_centos:
+  - /etc/yum.repos.d/tripleo-centos*
+  - /etc/yum.repos.d/delorean*
+dib_yum_repo_conf_rhel:
+  - /etc/yum.repos.d/rh-cloud.repo
+  - /etc/yum.repos.d/delorean*
