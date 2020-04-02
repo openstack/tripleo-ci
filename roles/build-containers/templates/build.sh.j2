@@ -14,7 +14,7 @@ openstack overcloud container image build {{ container_config }}\
         --exclude {{ item }} \
     {% endfor %}
     {% endif %}
-    {% if ci_branch not in ['queens', 'rocky', 'stein', 'train'] %}
+    {% if ci_branch not in ['queens', 'rocky', 'stein'] %}
         --work-dir /tmp/kolla-builds \
     {% endif %}
     --list-images > containers-to-build-full.log 2>&1
@@ -31,7 +31,7 @@ openstack overcloud container image build {{ container_config }}\
     {% if use_buildah is defined and use_buildah %}
         --use-buildah \
     {% endif %}
-    {% if ci_branch not in ['queens', 'rocky', 'stein', 'train'] %}
+    {% if ci_branch not in ['queens', 'rocky', 'stein'] %}
         --work-dir /tmp/kolla-builds \
     {% endif %}
     --kolla-config-file {{ workspace }}/kolla-build.conf
