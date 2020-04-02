@@ -226,10 +226,18 @@
             irrelevant-files: *multinode_ignored
     periodic:
       jobs:
-        - tripleo-ci-centos-7-containers-multinode-train
-        - tripleo-ci-centos-7-containers-multinode-stein
-        - tripleo-ci-centos-7-containers-multinode-rocky
-        - tripleo-ci-centos-7-containers-multinode-queens
+        - tripleo-ci-centos-7-containers-multinode-train:
+            vars:
+              force_non_periodic: true
+        - tripleo-ci-centos-7-containers-multinode-stein:
+            vars:
+              force_non_periodic: true
+        - tripleo-ci-centos-7-containers-multinode-rocky:
+            vars:
+              force_non_periodic: true
+        - tripleo-ci-centos-7-containers-multinode-queens:
+            vars:
+              force_non_periodic: true
 
 ## CentOS 8 jobs
 - job:
