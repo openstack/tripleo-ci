@@ -81,8 +81,6 @@
             irrelevant-files: *standalone_ignored
         - tripleo-ci-centos-7-standalone-rocky:
             irrelevant-files: *standalone_ignored
-        - tripleo-ci-centos-7-standalone-upgrade:
-            irrelevant-files: *standalone_ignored
         - tripleo-ci-centos-7-standalone-upgrade-stein:
             irrelevant-files: *standalone_ignored
         - tripleo-ci-centos-7-standalone-upgrade-train:
@@ -145,8 +143,6 @@
         - tripleo-ci-centos-8-scenario000-multinode-oooq-container-updates:
             irrelevant-files: *multinode_ignored
         - tripleo-ci-centos-7-standalone:
-            irrelevant-files: *standalone_ignored
-        - tripleo-ci-centos-7-standalone-upgrade:
             irrelevant-files: *standalone_ignored
         - tripleo-ci-centos-7-standalone-upgrade-stein:
             irrelevant-files: *standalone_ignored
