@@ -376,6 +376,18 @@
       extra_tags:
         - standalone-upgrade
 
+- job:
+    name: tripleo-build-containers-base-noreposetup-rhel8
+    abstract: true
+    description: |
+        Base abstract job for rhel8 TripleO CI build-containers jobs
+        in particular no required-projects
+    parent: tripleo-ci-base-singlenode
+    run: playbooks/tripleo-buildcontainers/run.yaml
+    post-run: playbooks/tripleo-buildcontainers/post.yaml
+    timeout: 7200
+    voting: false
+
 # Please do not add files: to tripleo-build-containers-base otherwise the periodic job wont run
 # See https://storyboard.openstack.org/#!/story/2005040
 - job:

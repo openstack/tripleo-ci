@@ -3,8 +3,9 @@
 source {{ workspace }}/venv_build/bin/activate
 pip install -U decorator
 {% endif %}
-TRIPLEO_COMMON_PATH="{{ openstack_git_root }}/tripleo-common"
-TRIPLEO_CI_PATH="{{ openstack_git_root }}/tripleo-ci"
+TRIPLEO_COMMON_PATH="{{ openstack_git_root }}/{% if zuul_internal is defined %}openstack-{% endif %}tripleo-common"
+TRIPLEO_CI_PATH="{{ ansible_user_dir }}/src/opendev.org/openstack/tripleo-ci"
+
 
 ### list containers to build
 openstack overcloud container image build {{ container_config }}\
@@ -52,7 +53,7 @@ done
 egrep "^Error:|No match" /tmp/kolla-*/docker -R > containers-build-errors.log 2>&1
 
 ### actual built containers
-sudo {{ container_cli }} images | grep {{ kolla_base }}-binary > containers-successfully-built.log
+sudo {{ container_cli }} images | grep tripleo{% if osp_branch is defined %}{{ osp_branch }}{% else %}{{ ci_branch }}{% endif %}/{{ kolla_base }}-binary > containers-successfully-built.log
 
 ### not built (failed)
 for i in `cat containers-expected-to-build.log`; do

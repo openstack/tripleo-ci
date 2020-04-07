@@ -73,7 +73,9 @@
 # fail.
 - name: Add dummy epel and epel-module repository
   become: true
-  when: ansible_pkg_mgr == "dnf" and ansible_distribution|lower  == "redhat"
+  when:
+    - ansible_pkg_mgr == "dnf"
+    - ansible_distribution|lower  == "redhat"
   yum_repository:
     name: "{{ item }}"
     description: Dummy epel repository
@@ -85,7 +87,10 @@
     - epel-modular
 
 - name: grab kolla patch rhel8
-  when: ansible_pkg_mgr == "dnf" and ansible_distribution|lower  == "redhat"
+  when:
+    - ansible_pkg_mgr == "dnf"
+    - ansible_distribution|lower  == "redhat"
+    - zuul_internal is undefined
   shell: |
     set -euxo pipefail
     git config --global user.email "zuul@openstack.org"
@@ -162,13 +167,23 @@
       become: true
       shell:
         cmd: |
+          {% if zuul_internal is defined %}
+          cp /etc/yum.repos.d/* /tmp/base-build/repos/
+          {% else %}
           cp /etc/yum.repos.d/delorean* /tmp/base-build/repos/
+          {% endif %}
           chown -R {{ ansible_user }}: /tmp/base-build/repos/*
-      changed_when: true
 
-    - name: render dockerfile
+    - name: render dockerfile rhui
+      when: zuul_internal is undefined
       template:
-        src: templates/Dockerfile.j2
+        src: templates/Dockerfile_rhui.j2
+        dest: /tmp/base-build/Dockerfile
+
+    - name: render dockerfile zuul_internal
+      when: zuul_internal is defined
+      template:
+        src: templates/Dockerfile_redhat.j2
         dest: /tmp/base-build/Dockerfile
 
     - name: create base container with repos from rhel container
