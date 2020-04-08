@@ -118,7 +118,6 @@
     check:
       jobs:
         - tripleo-ci-centos-8-scenario001-standalone:
-            voting: false
             files: &scen1_files
               # tripleo-common
               - ^container-images/.*$
@@ -419,6 +418,8 @@
             files: *scen4_files
         - tripleo-ci-centos-7-scenario007-standalone:
             files: *scen7_files
+        - tripleo-ci-centos-8-scenario001-standalone:
+            files: *scen1_files
         - tripleo-ci-centos-8-scenario002-standalone:
             files: *scen2_files
         - tripleo-ci-centos-8-scenario003-standalone:
