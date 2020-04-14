@@ -52,7 +52,7 @@ done
 egrep "^Error:|No match" /tmp/kolla-*/docker -R > containers-build-errors.log 2>&1
 
 ### actual built containers
-sudo {{ container_cli }} images | grep tripleo{{ ci_branch }}/{{ kolla_base }}-binary > containers-successfully-built.log
+sudo {{ container_cli }} images | grep {{ kolla_base }}-binary > containers-successfully-built.log
 
 ### not built (failed)
 for i in `cat containers-expected-to-build.log`; do
