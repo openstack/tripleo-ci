@@ -1,7 +1,11 @@
 set -x
 source {{ workspace }}/venv/bin/activate
+TRIPLEO_COMMON_PATH="{{ openstack_git_root }}/tripleo-common"
 
-ELEMENTS="{{ tripleo_elements_path | join(':') }}"
+ELEMENTS="{{ openstack_git_root }}/tripleo-puppet-elements/elements:"
+ELEMENTS+="{{ openstack_git_root }}/tripleo-image-elements/elements:"
+ELEMENTS+="{{ openstack_git_root }}/heat-agents:"
+ELEMENTS+="{{ openstack_git_root }}/ironic-python-agent-builder/dib/"
 
 if [ -d "{{ openstack_git_root }}/instack-undercloud/elements" ]; then
   ELEMENTS="{{ openstack_git_root }}/instack-undercloud/elements:${ELEMENTS}"
@@ -10,14 +14,14 @@ fi
 # the tripleo_image_type is set and passed from the ci job definition
 if [ "{{ tripleo_image_type }}" == "overcloud-hardened-full" ]; then
   CONFIG_FILES="--config-file \
-    {{ tripleo_common_path }}/image-yaml/overcloud-hardened-images.yaml \
-    --config-file {{ tripleo_common_path }}/image-yaml/overcloud-hardened-images-{{ tripleo_image_os }}.yaml"
+    $TRIPLEO_COMMON_PATH/image-yaml/overcloud-hardened-images.yaml \
+    --config-file $TRIPLEO_COMMON_PATH/image-yaml/overcloud-hardened-images-{{ tripleo_image_os }}.yaml"
 else
   # base_image_config in vars/common.yaml, python_v set in build-images role
   # to set either overcloud-images.yaml or overcloud-images-python3.yaml
   CONFIG_FILES="--config-file \
-    {{ tripleo_common_path }}/image-yaml/{{ base_image_config[python_v] }} \
-    --config-file {{ tripleo_common_path }}/image-yaml/overcloud-images-{{ tripleo_image_os }}.yaml"
+    $TRIPLEO_COMMON_PATH/image-yaml/{{ base_image_config[python_v] }} \
+    --config-file $TRIPLEO_COMMON_PATH/image-yaml/overcloud-images-{{ tripleo_image_os }}.yaml"
 fi
 
 {% if dib_local_image is defined %}
@@ -42,10 +46,13 @@ export DIB_RELEASE={{ dib_release }}
 
 {% if dib_yum_repo_conf is defined %}
 
-export DIB_YUM_REPO_CONF='{{ dib_yum_repo_conf | join(" ") }}'
+export DIB_YUM_REPO_CONF='{{ dib_yum_repo_conf }}'
+
+{% elif ansible_distribution == 'CentOS' and ansible_distribution_major_version is version(8, '>=') %}
+
+export DIB_YUM_REPO_CONF="/etc/yum.repos.d/delorean* /etc/yum.repos.d/tripleo-centos*"
 
 {% else %}
-
 export DIB_YUM_REPO_CONF="/etc/yum.repos.d/delorean*"
 
 {% endif %}
