@@ -637,33 +637,6 @@
         tempest_whitelist:
           - octavia_tempest_plugin.tests.scenario.v2.test_traffic_ops.TrafficOperationsScenarioTest.test_basic_traffic
 
-# NOTE(rfolco): scen012 should run on master only until it gets stable
-- job:
-    name: tripleo-ci-centos-7-scenario012-standalone
-    voting: false
-    parent: tripleo-ci-base-standalone
-    nodeset: single-centos-7-node
-    branches: ^(?!stable/(newton|ocata|pike|queens|rocky|stein|train)).*$
-    vars:
-      featureset: '060'
-      standalone_ceph: true
-      featureset_override:
-        validate_services: false
-        standalone_environment_files:
-          - 'environments/low-memory-usage.yaml'
-          - 'ci/environments/scenario012-standalone.yaml'
-        tempest_plugins:
-          - python-ironic-tests-tempest
-        test_white_regex: ''
-        tempest_workers: 1
-        tempest_extra_config:
-          auth.create_isolated_networks: 'False'
-          validation.connect_method: 'fixed'
-          validation.network_for_ssh: 'provisioning'
-          baremetal.use_provision_network: 'True'
-        tempest_whitelist:
-          - 'ironic_tempest_plugin.tests.scenario.test_baremetal_multitenancy.BaremetalMultitenancy.test_baremetal_multitenancy'
-
 - job:
     name: tripleo-ci-centos-8-scenario012-standalone
     # Note(chkumar246): Marking it non-voting as it is broken from

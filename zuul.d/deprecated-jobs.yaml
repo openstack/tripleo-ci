@@ -110,3 +110,13 @@
       featureset: '010'
       playbooks:
         - multinode.yml
+
+- job:
+    name: tripleo-ci-centos-7-scenario012-standalone
+    voting: false
+    parent: tripleo-ci-base-standalone
+    nodeset: single-centos-7-node
+    branches: ^(?!stable/(newton|ocata|pike|queens|rocky|stein|train)).*$
+    vars:
+      featureset: '060'
+      standalone_ceph: true
