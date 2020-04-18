@@ -3,7 +3,14 @@
 # which fails in python3 hosts.
 # In packages it's fixed by adding pathfix.py tasks to spec files.
 # Add the same behavior here as we build from source, not packages.
-for python_file in "{{ tripleo_shebang_path | join(' ')}}"
+for python_file in "
+    {{ openstack_git_root }}/tripleo-image-elements/elements/os-svc-install/bin/map-services-tripleo
+    {{ openstack_git_root }}/diskimage-builder/diskimage_builder/lib/outfilter.py
+    {{ openstack_git_root }}/diskimage-builder/diskimage_builder/elements/package-installs/bin/package-installs-squash
+    {{ openstack_git_root }}/diskimage-builder/diskimage_builder/elements/svc-map/extra-data.d/10-merge-svc-map-files
+    {{ openstack_git_root }}/diskimage-builder/diskimage_builder/elements/pypi/pre-install.d/04-configure-pypi-mirror
+    {{ openstack_git_root }}/diskimage-builder/diskimage_builder/elements/deploy-targetcli/extra-data.d/module/targetcli-wrapper
+"
 do
     /usr/bin/pathfix.py -pni /usr/bin/python3 $python_file
 done
