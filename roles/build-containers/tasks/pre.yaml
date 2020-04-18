@@ -67,3 +67,28 @@
     - name: Add http iptables rules from containers
       command: iptables -I openstack-INPUT 1 -p tcp --dport 80 -s 172.17.0.0/16 -j ACCEPT
       become: true
+
+- name: Setup tripleo registry
+  when:
+    - ansible_distribution|lower != 'redhat'
+    - ansible_distribution_major_version is version('8', '>=')
+    - use_buildah | default(false) | bool
+  block:
+    - name: Enable ports for httpd
+      seport:
+        ports:
+          - '80'
+          - "{{ push_registry_port | string }}"
+        proto: tcp
+        setype: http_port_t
+        state: present
+    - name: Setup Listen on default port for serving repo files
+      copy:
+        dest: /etc/httpd/conf.d/repos.conf
+        content: "Listen 80"
+    - name: Configure tripleo registry
+      include_role:
+          name: tripleo_image_serve
+      vars:
+        tripleo_container_registry_port: "{{ push_registry_port | default('8787') }}"
+  become: true
