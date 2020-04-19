@@ -39,9 +39,13 @@
             files: &build_images_files
               - ^playbooks/tripleo-buildimages/.*$
               - ^roles/oooci-build-images/.*$
+              - zuul.d/layout.yaml
+              - zuul.d/build-image.yaml
         - tripleo-buildimage-ironic-python-agent-centos-8:
             files: *build_images_files
         - tripleo-buildimage-overcloud-hardened-full-centos-8:
+            files: *build_images_files
+        - tripleo-buildimage-overcloud-full-centos-7-train:
             files: *build_images_files
         - tripleo-buildimage-overcloud-full-centos-7:
             files: *build_images_files

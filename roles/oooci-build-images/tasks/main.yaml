@@ -1,8 +1,37 @@
 ---
+- name: Include OS specific variables
+  include_vars: centos-7.yaml
+  when:
+    - ansible_distribution == "CentOS"
+    - ansible_distribution_major_version == '7'
+
+- name: Make sure logs directory exists
+  file:
+    path: '{{ workspace }}/logs'
+    state: directory
+
+- name: Set dib related facts used by tripleo-ci build-image role build template
+  set_fact:
+    dib_local_image: "{{ workspace }}/{{ tripleo_image_source | urlsplit('path') | basename }}"
+    dib_node_dist: "{{ (ansible_distribution == 'RedHat') | ternary('rhel', 'centos') }}"
+    cacheable: true
+  when: tripleo_image_source is defined
+
+- name: Download TripleO source image
+  get_url:
+    url: "{{ tripleo_image_source }}"
+    dest: "{{ dib_local_image }}"
+
 # The python_v fact is used with vars/common.yaml to set the right
 # overcloud-images file in the build-images.sh.j2 template
 - name: Get python_v fact for py2 or py3 common vars
   include_tasks: check_set_py3.yaml
+
+- name: Install qemu-img for image build
+  package:
+    name: qemu-img
+    state: present
+  become: true
 
 - name: Generate build-images.sh script
   template:
