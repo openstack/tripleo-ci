@@ -86,9 +86,15 @@
       copy:
         dest: /etc/httpd/conf.d/repos.conf
         content: "Listen 80"
+    - name: set tripleo image serve role name for train
+      set_fact:
+        tripleo_image_serve_role: tripleo-image-serve
+      when:
+        (release is defined and release == 'train')
+         or (branch_override is defined and branch_override == 'stable/train')
     - name: Configure tripleo registry
       include_role:
-          name: tripleo_image_serve
+          name: "{{ tripleo_image_serve_role | default('tripleo_image_serve') }}"
       vars:
         tripleo_container_registry_port: "{{ push_registry_port | default('8787') }}"
   become: true
