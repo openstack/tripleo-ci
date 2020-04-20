@@ -39,3 +39,4 @@ dib_yum_repo_conf_rhel:
   - /etc/yum.repos.d/delorean*
 dib_release: "8"
 tripleo_image_os: centos8
+build_all_images: false

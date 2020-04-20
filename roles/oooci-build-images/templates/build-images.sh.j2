@@ -1,11 +1,23 @@
 set -x
-source {{ workspace }}/venv/bin/activate
 
+# Activate virtualenv only if exists
+if [ -d "{{ workspace }}/venv" ]; then
+  source {{ workspace }}/venv/bin/activate
+fi
+
+# When python-tripleoclient is installed via packages
+# elements_path are automatically setted.
+
+{% if to_build is not defined %}
 ELEMENTS="{{ tripleo_elements_path | join(':') }}"
 
 if [ -d "{{ openstack_git_root }}/instack-undercloud/elements" ]; then
   ELEMENTS="{{ openstack_git_root }}/instack-undercloud/elements:${ELEMENTS}"
 fi
+
+export ELEMENTS_PATH=$ELEMENTS
+
+{% endif %}
 
 # the tripleo_image_type is set and passed from the ci job definition
 if [ "{{ tripleo_image_type }}" == "overcloud-hardened-full" ]; then
@@ -51,9 +63,8 @@ export DIB_YUM_REPO_CONF="/etc/yum.repos.d/delorean*"
 
 export DIB_DEBUG_TRACE=1
 
-export ELEMENTS_PATH=$ELEMENTS
-
-openstack --debug overcloud image build --image-name {{ tripleo_image_type }} $CONFIG_FILES > {{ workspace }}/build.log 2> {{ workspace }}/build-err.log
+openstack --debug overcloud image build {% if not build_all_images|bool %}--image-name {{ tripleo_image_type }}{% endif %} \
+    $CONFIG_FILES > {{ workspace }}/build.log 2> {{ workspace }}/build-err.log
 RESULT=$?
 
 exit $RESULT
