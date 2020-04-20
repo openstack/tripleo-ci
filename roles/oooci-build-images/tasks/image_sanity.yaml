@@ -1,0 +1,47 @@
+---
+- name: Install libguestfs packages
+  package:
+    name:
+      - libvirt
+      - libvirt-daemon
+      - qemu-kvm-common
+      - qemu-kvm
+      - libvirt-daemon-kvm
+      - libvirt-daemon-driver-network
+      - libvirt-daemon-driver-qemu
+      - libguestfs-tools
+      - libguestfs-tools-c
+    state: present
+
+- name: Start libvirtd service
+  service:
+    name: libvirtd
+    state: started
+    enabled: true
+
+- name: Run sanity command on overcloud images
+  shell: |
+    virt-customize -vx --smp 2 -m 2048 -a overcloud-full.qcow2 --selinux-relabel --run-command '{{ image_sanity_command }}' > virt_customize.log
+    virt-copy-out -a overcloud-full.qcow2 {{  image_sanity_files | join(' ') }} {{ ansible_user_dir }}/workspace
+  args:
+    chdir: "{{ ansible_user_dir }}/workspace"
+  environment:
+    LIBGUESTFS_BACKEND_SETTINGS: force_tcg
+    LIBGUESTFS_BACKEND: direct
+  changed_when: true
+
+- name: Look for missing directories
+  shell: |
+    grep {{ item }} rpm_va.txt
+  args:
+    chdir: "{{ ansible_user_dir }}/workspace"
+  register: files_missing
+  changed_when: false
+  ignore_errors: True
+  loop: "{{ missing_dirs }}"
+
+- name: Fail if missing files found
+  assert:
+    that:
+      - "item['rc'] == 1"
+  loop: "{{ files_missing.results }}"

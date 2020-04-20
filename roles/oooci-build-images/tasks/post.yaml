@@ -10,6 +10,7 @@
     rsync_opts:
       - --include=/*.log
       - --include=/*.sh
+      - --include=/*.txt
       - --include=*/
       - --exclude=*
       - --prune-empty-dirs

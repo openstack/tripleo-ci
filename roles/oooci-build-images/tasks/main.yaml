@@ -103,3 +103,11 @@
               md5sum overcloud-full.tar > overcloud-full.tar.md5
           args:
             chdir: "{{ ansible_user_dir }}"
+
+- block:
+    - name: Run Image sanity on overcloud image
+      include_tasks: image_sanity.yaml
+  become: true
+  when:
+    - tripleo_image_type is search("overcloud-full")
+    - image_sanity | bool
