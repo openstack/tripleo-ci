@@ -8,10 +8,12 @@
       jobs:
         - tripleo-buildimage-overcloud-full-centos-7
         - tripleo-buildimage-overcloud-full-centos-8
+        - tripleo-buildimage-overcloud-full-centos-7-train
     gate:
       jobs:
         - tripleo-buildimage-overcloud-full-centos-7
         - tripleo-buildimage-overcloud-full-centos-8
+        - tripleo-buildimage-overcloud-full-centos-7-train
     experimental:
       jobs:
         - tripleo-buildimage-ironic-python-agent-centos-7
@@ -37,6 +39,18 @@
     branches: ^(?!stable/(newton|ocata|pike|queens|rocky|stein|train)).*$
     vars:
       tripleo_image_type: overcloud-full
+    irrelevant-files:
+      - ^.*\.rst$
+      - ^releasenotes/.*$
+
+- job:
+    name: tripleo-buildimage-overcloud-full-centos-7-train
+    parent: tripleo-build-images-base
+    override-checkout: 'stable/train'
+    vars:
+      tripleo_image_type: overcloud-full
+      tripleo_image_os: centos7
+      branch_override: stable/train
     irrelevant-files:
       - ^.*\.rst$
       - ^releasenotes/.*$
