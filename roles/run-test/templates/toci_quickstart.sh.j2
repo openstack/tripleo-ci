@@ -17,6 +17,7 @@ export DEFAULT_ARGS="--extra-vars local_working_dir=$LOCAL_WORKING_DIR \
     --inventory $LOCAL_WORKING_DIR/hosts \
     --extra-vars tripleo_root={{ tripleo_root }} \
     --extra-vars working_dir=$WORKING_DIR \
+    --extra-vars tripleo_generate_scripts=true \
     --skip-tags "{{ skip_tags_list }}" \
 "
 
