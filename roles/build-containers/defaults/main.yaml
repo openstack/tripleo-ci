@@ -19,3 +19,4 @@ container_cli_opt: ""
 # component_ci_containers used by component-ci jobs to build e.g. nova only
 # used together with component_ci_configs in vars/main
 component_ci_containers: ""
+openstack_git_root: "{{ ansible_user_dir }}/src/opendev.org/openstack"
