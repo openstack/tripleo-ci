@@ -7,8 +7,9 @@
     check:
       jobs:
         - tripleo-buildimage-overcloud-full-centos-7
-        - tripleo-buildimage-overcloud-full-centos-8
         - tripleo-buildimage-overcloud-full-centos-7-train
+        - tripleo-buildimage-overcloud-full-centos-8
+        - tripleo-buildimage-overcloud-full-centos-8-ussuri
         - tripleo-buildimage-ironic-python-agent-centos-8
     gate:
       jobs:
@@ -16,6 +17,7 @@
         - tripleo-buildimage-overcloud-full-centos-8
         - tripleo-buildimage-overcloud-full-centos-7-train
         - tripleo-buildimage-ironic-python-agent-centos-8
+        - tripleo-buildimage-overcloud-full-centos-8-ussuri
     experimental:
       jobs:
         - tripleo-buildimage-ironic-python-agent-centos-7
@@ -42,7 +44,7 @@
 - job:
     name: tripleo-buildimage-ironic-python-agent-centos-8
     parent: tripleo-build-images-base-centos-8
-    branches: ^(?!stable/(newton|ocata|pike|queens|rocky|stein|train)).*$
+    branches: ^(?!stable/(queens|rocky|stein|train)).*$
     vars:
       tripleo_image_type: ironic-python-agent
     irrelevant-files:
@@ -52,12 +54,50 @@
 - job:
     name: tripleo-buildimage-overcloud-full-centos-8
     parent: tripleo-build-images-base-centos-8
-    branches: ^(?!stable/(newton|ocata|pike|queens|rocky|stein|train)).*$
+    branches: ^(?!stable/(queens|rocky|stein|train)).*$
     vars:
       tripleo_image_type: overcloud-full
     irrelevant-files:
       - ^.*\.rst$
       - ^releasenotes/.*$
+
+- job:
+    name: tripleo-buildimage-overcloud-hardened-full-centos-8
+    parent: tripleo-build-images-base-centos-8
+    branches: ^(?!stable/(queens|rocky|stein|train)).*$
+    vars:
+      tripleo_image_type: overcloud-hardened-full
+    voting: false
+    irrelevant-files:
+      - ^.*\.rst$
+      - ^releasenotes/.*$
+
+# Branchful job to run on CI branchless repos which have master only
+- job:
+    name: tripleo-buildimage-ironic-python-agent-centos-8-ussuri
+    parent: tripleo-buildimage-ironic-python-agent-centos-8
+    branches: master
+    override-checkout: stable/ussuri
+    vars:
+      branch_override: stable/ussuri
+
+# Branchful job to run on CI branchless repos which have master only
+- job:
+    name: tripleo-buildimage-overcloud-full-centos-8-ussuri
+    parent: tripleo-buildimage-overcloud-full-centos-8
+    branches: master
+    override-checkout: stable/ussuri
+    vars:
+      branch_override: stable/ussuri
+
+# Branchful job to run on CI branchless repos which have master only
+- job:
+    name: tripleo-buildimage-overcloud-hardened-full-centos-8-ussuri
+    parent: tripleo-buildimage-overcloud-hardened-full-centos-8
+    branches: master
+    override-checkout: stable/ussuri
+    vars:
+      branch_override: stable/ussuri
 
 - job:
     name: tripleo-buildimage-overcloud-full-centos-7-train
@@ -67,17 +107,6 @@
       tripleo_image_type: overcloud-full
       tripleo_image_os: centos7
       branch_override: stable/train
-    irrelevant-files:
-      - ^.*\.rst$
-      - ^releasenotes/.*$
-
-- job:
-    name: tripleo-buildimage-overcloud-hardened-full-centos-8
-    parent: tripleo-build-images-base-centos-8
-    branches: ^(?!stable/(newton|ocata|pike|queens|rocky|stein|train)).*$
-    vars:
-      tripleo_image_type: overcloud-hardened-full
-    voting: false
     irrelevant-files:
       - ^.*\.rst$
       - ^releasenotes/.*$

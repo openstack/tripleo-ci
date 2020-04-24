@@ -45,6 +45,8 @@
             files: *build_images_files
         - tripleo-buildimage-overcloud-hardened-full-centos-8:
             files: *build_images_files
+        - tripleo-buildimage-overcloud-full-centos-8-ussuri:
+            files: *build_images_files
         - tripleo-buildimage-overcloud-full-centos-7-train:
             files: *build_images_files
         - tripleo-buildimage-overcloud-full-centos-7:
