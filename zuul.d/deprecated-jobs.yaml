@@ -120,3 +120,12 @@
     vars:
       featureset: '060'
       standalone_ceph: true
+
+- job:
+    name: tripleo-ci-centos-7-scenario009-multinode-oooq-container
+    parent: tripleo-ci-base-multinode
+    voting: false
+    branches: ^(stable/(queens|rocky|stein|train)).*$
+    vars:
+      nodes: 1ctlr
+      featureset: '033'
