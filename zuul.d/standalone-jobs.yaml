@@ -652,17 +652,6 @@
         standalone_environment_files:
           - 'environments/low-memory-usage.yaml'
           - 'ci/environments/scenario012-standalone.yaml'
-        tempest_plugins:
-          - python-ironic-tests-tempest
-        test_white_regex: ''
-        tempest_workers: 1
-        tempest_extra_config:
-          auth.create_isolated_networks: 'False'
-          validation.connect_method: 'fixed'
-          validation.network_for_ssh: 'provisioning'
-          baremetal.use_provision_network: 'True'
-        tempest_whitelist:
-          - 'ironic_tempest_plugin.tests.scenario.test_baremetal_multitenancy.BaremetalMultitenancy.test_baremetal_multitenancy'
 
 - job:
     name: tripleo-ci-centos-7-standalone-os-tempest
