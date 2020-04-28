@@ -15,6 +15,7 @@
     - kolla
     - tripleo-common
     - python-tripleoclient
+    - tripleo-ansible
 
 - name: Install deps from requirements
   when: zuul_internal is defined
@@ -26,6 +27,7 @@
     - kolla
     - openstack-tripleo-common
     - python-tripleoclient
+    - tripleo-ansible
 
 - name: Installation from source
   pip:
@@ -33,6 +35,7 @@
       - "file://{{ openstack_git_root }}/kolla"
       - "file://{{ openstack_git_root }}/{% if zuul_internal is defined %}openstack-{% endif %}tripleo-common"
       - "file://{{ openstack_git_root }}/python-tripleoclient"
+      - "file://{{ openstack_git_root }}/tripleo-ansible"
       - decorator
     virtualenv: "{{ workspace }}/venv_build"
     virtualenv_python: "{{ virtualenv_python[ansible_distribution_major_version|int] }}"

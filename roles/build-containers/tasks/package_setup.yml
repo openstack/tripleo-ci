@@ -1,9 +1,10 @@
-- name: install kolla and tripleoclient from package
+- name: install tripleo dependencies from package
   become: true
   package:
     name:
       - "openstack-kolla"
       - "python*-tripleoclient"
+      - "tripleo-ansible"
 
 - name: set template override
   set_fact:

@@ -6,8 +6,8 @@ pip install -U decorator
 TRIPLEO_COMMON_PATH="{{ openstack_git_root }}/{% if zuul_internal is defined %}openstack-{% endif %}tripleo-common"
 TRIPLEO_CI_PATH="{{ ansible_user_dir }}/src/opendev.org/openstack/tripleo-ci"
 
-
 ### list containers to build
+{% if use_kolla | default(true) %}
 openstack overcloud container image build {{ container_config }}\
     --kolla-config-file {{ workspace }}/kolla-build.conf \
     {% if ci_branch != 'rocky' %}
@@ -16,11 +16,10 @@ openstack overcloud container image build {{ container_config }}\
     {% endfor %}
     {% endif %}
     {% if ci_branch not in ['queens', 'rocky', 'stein'] %}
-        --work-dir /tmp/kolla-builds \
+        --work-dir /tmp/container-builds \
     {% endif %}
     --list-images > containers-to-build-full.log 2>&1
 egrep "^- " containers-to-build-full.log | awk '{ print $2 }' > containers-expected-to-build.log
-
 
 ### build
 openstack overcloud container image build {{ container_config }}\
@@ -33,31 +32,77 @@ openstack overcloud container image build {{ container_config }}\
         --use-buildah \
     {% endif %}
     {% if ci_branch not in ['queens', 'rocky', 'stein'] %}
-        --work-dir /tmp/kolla-builds \
+        --work-dir /tmp/container-builds \
     {% endif %}
     --kolla-config-file {{ workspace }}/kolla-build.conf
+{% else %}
+### build
+export TRIPLEO_CI_USR_PATH="${VIRTUAL_ENV:-/usr}"
+export TRIPLEO_ANSIBLE_WORKPATH="${TRIPLEO_CI_USR_PATH}/share/ansible"
+export ANSIBLE_ACTION_PLUGINS="${TRIPLEO_ANSIBLE_WORKPATH}/plugins/action"
+export ANSIBLE_CALLBACK_PLUGINS="${TRIPLEO_ANSIBLE_WORKPATH}/plugins/callback"
+export ANSIBLE_FILTER_PLUGINS="${TRIPLEO_ANSIBLE_WORKPATH}/plugins/filter"
+export ANSIBLE_LIBRARY="${TRIPLEO_ANSIBLE_WORKPATH}/plugins/modules"
+export ANSIBLE_MODULE_UTILS="${TRIPLEO_ANSIBLE_WORKPATH}/plugins/module_utils"
+export ANSIBLE_ROLES_PATH="${TRIPLEO_ANSIBLE_WORKPATH}/roles"
+
+if [[ "${TRIPLEO_CI_USR_PATH}" != '/usr' && -d "${TRIPLEO_CI_USR_PATH}/share/tripleo-common" ]]; then
+    # Check if the target directory exists and is not a symlink
+    if [[ -d "/usr/share/tripleo-common" && ! -L "/usr/share/tripleo-common" ]]; then
+        echo "Creating a backup of /usr/share/tripleo-common.bak"
+        sudo mv /usr/share/tripleo-common /usr/share/tripleo-common.bak
+    fi
+    # Link our venv'd tripleo-common files into the root path.
+    echo -e "Linking ${TRIPLEO_CI_USR_PATH}/share/tripleo-common to /usr/share/tripleo-common"
+    sudo ln -sf ${TRIPLEO_CI_USR_PATH}/share/tripleo-common /usr/share/tripleo-common
+fi
+
+openstack tripleo container image build \
+    {% if push_containers|bool %}
+    --push \
+    {% endif %}
+    --base ubi8 \
+    --config-file {{ openstack_git_root }}/tripleo-common/container-images/tripleo_containers.yaml \
+    --config-path {{ openstack_git_root }}/tripleo-common/container-images \
+    --work-dir /tmp/container-builds \
+    --debug 2> containers-build-errors.log
+{% endif %}
 RETCODE=$?
 
-echo "================= COMPLETE ===================="
+{% if use_kolla | default(true) %}
+### actual built containers
+sudo {{ container_cli }} images | grep {{ registry_namespace }}/{{ kolla_base }}-binary > containers-successfully-built.log
+### grep errors in all build logs
+egrep "^Error:|No match" /tmp/kolla-*/docker -R > containers-build-errors.log 2>&1
+egrep "^Error:|No match" /tmp/container-*/docker -R >> containers-build-errors.log 2>&1
+### not built (failed)
+for i in `cat containers-expected-to-build.log`; do
+  grep "$i" containers-successfully-built.log || echo "$i" >> containers-failed-to-build.log
+done
 
-logs=$(find /tmp/kolla-* -iname "*.log")
+{% else %}
+### actual built containers
+sudo {{ container_cli }} images | grep '{{ registry_namespace }}/openstack' > containers-successfully-built.log
+(python3 || python) <<EOC
+import yaml
+with open('{{ openstack_git_root }}/tripleo-common/container-images/tripleo_containers.yaml') as f:
+  x = yaml.safe_load(f)
+with open('containers-expected-to-build.log', 'w') as f:
+  for i in x['container_images']:
+    if i['image_source'] == 'tripleo':
+      f.write('{}\n'.format(i['imagename']))
+EOC
+
+{% endif %}
+
+echo "================= COMPLETE ===================="
+logs=$(find /tmp/container-* -iname "*.log")
 for l in $logs; do
   printf "\n\n\n"
   printf "\n[ $l ]" >> containers-consolidated-builds.log
   printf "\n===========================================================\n" >> containers-consolidated-builds.log
   sudo cat $l >> containers-consolidated-builds.log
   printf "\n......................................................[EOF]" >> containers-consolidated-builds.log
-done
-
-### grep errors in all build logs
-egrep "^Error:|No match" /tmp/kolla-*/docker -R > containers-build-errors.log 2>&1
-
-### actual built containers
-sudo {{ container_cli }} images | grep {{ registry_namespace }}/{{ kolla_base }}-binary > containers-successfully-built.log
-
-### not built (failed)
-for i in `cat containers-expected-to-build.log`; do
-  grep "$i" containers-successfully-built.log || echo "$i" >> containers-failed-to-build.log
 done
 
 EXPECTED=$( wc -l containers-expected-to-build.log | awk '{ print $1 }' )

@@ -162,3 +162,26 @@
     override-checkout: stable/ussuri
     vars:
       branch_override: stable/ussuri
+
+- job:
+    name: tripleo-build-containers-ubi-8
+    parent: tripleo-build-containers-base-with-files
+    nodeset: single-centos-8-node
+    branches: ^(?!stable/(pike|queens|rocky|stein|train)).*$
+    voting: false
+    roles:
+      - zuul: opendev.org/openstack/tripleo-ansible
+    required-projects:
+      - opendev.org/openstack/ansible-role-container-registry
+      - opendev.org/openstack/kolla
+      - opendev.org/openstack/python-tripleoclient
+      - opendev.org/openstack/requirements
+      - opendev.org/openstack/tripleo-ansible
+      - opendev.org/openstack/tripleo-common
+      - opendev.org/openstack/tripleo-repos
+    vars:
+      use_buildah: true
+      use_kolla: false
+      buildcontainers_override_repos: current-tripleo
+      push_containers: false
+      push_containers_podman: false

@@ -17,6 +17,7 @@
     check:
       jobs:
         - openstack-tox-linters
+        - tripleo-build-containers-ubi-8
         - tripleo-tox-molecule:
             vars:
               tox_environment:
