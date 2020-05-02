@@ -88,3 +88,12 @@
               - --include=*/
               - --exclude=*
               - --prune-empty-dirs
+
+    - name: Fail job when logs collection fail and it's critical
+      fail:
+        msg: "ERROR: Collect logs failed and job is configured to fail!"
+      when:
+        - collect_logs_path.stat.exists
+        - collect_logs_run.rc != 0
+        - fail_logs_collection|default(false)|bool
+        - zuul.pipeline|default('') != 'gate'
