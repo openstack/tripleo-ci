@@ -33,6 +33,15 @@
     state: present
   become: true
 
+- name: Install python-tripleoclient for Image build
+  package:
+    name: "python*-tripleoclient"
+    state: present
+  become: true
+  when:
+    - to_build is defined
+    - to_build | bool
+
 - name: Generate build-images.sh script
   template:
     src: templates/build-images.sh.j2
