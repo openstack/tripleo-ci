@@ -215,6 +215,7 @@ artcl_collect_list:
   - /var/log/aodh/
   - /var/log/audit/
   - /var/log/barbican/
+  - /var/log/bmlogs/
   - /var/log/ceilometer/
   - /var/log/ceph/
   - /var/log/cinder/
