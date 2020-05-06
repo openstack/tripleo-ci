@@ -20,3 +20,9 @@ container_cli_opt: ""
 # used together with component_ci_configs in vars/main
 component_ci_containers: ""
 openstack_git_root: "{{ ansible_user_dir }}/src/opendev.org/openstack"
+registry_namespace: >-
+  {% if osp_branch is defined -%}
+  tripleo{{ osp_branch }}
+  {%- else -%}
+  tripleo{{ ci_branch }}
+  {%- endif -%}

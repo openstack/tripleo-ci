@@ -12,9 +12,5 @@ template_override={{ kolla_override_path }}
 rpm_setup_config="{{ buildcontainers_rpm_setup_config }}"
 push={{ push_containers }}
 pull={{ kolla_base_pull }}
-{% if osp_branch is defined %}
-namespace=tripleo{{ osp_branch }}
-{% else %}
-namespace=tripleo{{ ci_branch }}
-{% endif %}
+namespace={{ registry_namespace }}
 debug=True
