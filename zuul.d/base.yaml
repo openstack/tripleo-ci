@@ -33,6 +33,7 @@
       - opendev.org/openstack/tripleo-upgrade
       - opendev.org/x/browbeat
       - opendev.org/openstack/tripleo-ha-utils
+      - opendev.org/openstack/openstack-tempest-skiplist
       - name: opendev.org/openstack/openstack-virtual-baremetal
         override-checkout: stable/1.0
       - name: opendev.org/openstack/openstack-ansible-os_tempest
@@ -96,6 +97,7 @@
       - opendev.org/openstack/tripleo-upgrade
       - opendev.org/x/browbeat
       - opendev.org/openstack/tripleo-ha-utils
+      - opendev.org/openstack/openstack-tempest-skiplist
       - name: opendev.org/openstack/openstack-virtual-baremetal
         override-checkout: stable/1.0
       - name: opendev.org/openstack/openstack-ansible-os_tempest
