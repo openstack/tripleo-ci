@@ -39,7 +39,17 @@ import requests
 import yaml
 
 # Define releases
-RELEASES = ['newton', 'ocata', 'pike', 'queens', 'rocky', 'stein', 'train', 'master']
+RELEASES = [
+    'newton',
+    'ocata',
+    'pike',
+    'queens',
+    'rocky',
+    'stein',
+    'train',
+    'ussuri',
+    'master',
+]
 # Define long term releases
 LONG_TERM_SUPPORT_RELEASES = ['queens']
 UNSUPPORTED_STANDALONE = ['newton', 'ocata', 'pike', 'queens', 'rocky']
