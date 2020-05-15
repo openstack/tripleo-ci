@@ -33,7 +33,6 @@
             irrelevant-files: *undercloud_ignored
         - tripleo-ci-centos-8-undercloud-containers:
             irrelevant-files: *undercloud_ignored
-            voting: false
         - tripleo-ci-centos-7-containers-undercloud-minion:
             irrelevant-files: *undercloud_ignored
         - tripleo-ci-centos-7-containerized-undercloud-upgrades:
@@ -44,6 +43,8 @@
         - tripleo-ci-centos-7-undercloud-oooq:
             irrelevant-files: *undercloud_ignored
         - tripleo-ci-centos-7-undercloud-containers:
+            irrelevant-files: *undercloud_ignored
+        - tripleo-ci-centos-8-undercloud-containers:
             irrelevant-files: *undercloud_ignored
         - tripleo-ci-centos-7-containers-undercloud-minion:
             irrelevant-files: *undercloud_ignored
