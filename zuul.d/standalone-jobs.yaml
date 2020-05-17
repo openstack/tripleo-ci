@@ -841,7 +841,7 @@
 - job:
     name: tripleo-ci-centos-8-standalone-on-multinode-ipa
     parent: tripleo-ci-base-standalone-centos-8
-    voting: false
+    voting: true
     nodeset: two-centos-8-nodes
     branches: ^(?!stable/(newton|ocata|pike|queens|rocky|stein|train)).*$
     required-projects:
