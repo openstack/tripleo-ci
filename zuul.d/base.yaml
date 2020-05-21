@@ -305,6 +305,10 @@
         Base abstract job for standalone TripleO CI centos-8 zuulv3 jobs
     parent: tripleo-ci-base-centos-8
     nodeset: single-centos-8-node
+    required-projects:
+      - opendev.org/openstack/tripleo-ansible
+    roles:
+      - zuul: opendev.org/openstack/tripleo-ansible
     vars:
       undercloud: 127.0.0.2
       environment_infra: osinfra

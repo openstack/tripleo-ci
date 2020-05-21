@@ -11,6 +11,8 @@ extra_args: >
 # ara install and config
 undercloud_ansible_cfg: false
 
+docker_registry_host: "{{ job.build_container_images|default(false)|bool | ternary('127.0.0.1:5001', 'docker.io') }}"
+
 toci_vxlan_networking: true
 toci_vxlan_networking_multinode: true
 vxlan_mtu: 1350

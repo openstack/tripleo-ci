@@ -30,6 +30,7 @@ artcl_collect_list:
   - /home/*/delorean.repo.md5
   - /home/*/undercloud-ansible-*
   - /home/{{ undercloud_user }}/config-download/
+  - /home/{{ undercloud_user }}/container-builds/
   - /home/{{ undercloud_user }}/deploy-overcloudrc
   - /home/{{ undercloud_user }}/network-environment.yaml
   - /home/{{ undercloud_user }}/workspace/ovb/*.y*ml
