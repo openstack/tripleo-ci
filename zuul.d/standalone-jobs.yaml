@@ -838,6 +838,39 @@
         tempest_whitelist:
           - octavia_tempest_plugin.tests.scenario.v2.test_traffic_ops.TrafficOperationsScenarioTest.test_basic_traffic
 
+- project-template:
+    name: tripleo-standalone-multinode-ipa
+    check:
+      jobs:
+        - tripleo-ci-centos-8-standalone-on-multinode-ipa:
+            files: &tls_ipa_files
+              # tripleo-quickstart-extras
+              - ^roles/.*multinode-ipa.*$
+              - ^roles/standalone.*$
+              - ^playbooks/multinode-standalone-ipa.yml.*$
+              # tripleo-heat-templates
+              - environments/ssl/tls-everywhere-endpoints-dns.yaml
+              - environments/services/haproxy-public-tls-certmonger.yaml
+              - environments/ssl/enable-internal-tls.yaml
+              - ci/environments/standalone-ipa.yaml
+              - deployment/ipa/ipaservices-baremetal-ansible.yaml
+              - deployment/apache/*
+              - deployment/ceph-ansible/*
+              - deployment/database/*
+              - deployment/etcd/*
+              - deployment/haproxy/*
+              - deployment/metrics/*
+              - deployment/neutron/*
+              - deployment/nova/*
+              - deployment/octavia/*
+              - deployment/ovn/*
+              - deployment/rabbitmq/*
+              - zuul.d/*
+    gate:
+      jobs:
+        - tripleo-ci-centos-8-standalone-on-multinode-ipa:
+            files: *tls_ipa_files
+
 - job:
     name: tripleo-ci-centos-8-standalone-on-multinode-ipa
     parent: tripleo-ci-base-standalone-centos-8
