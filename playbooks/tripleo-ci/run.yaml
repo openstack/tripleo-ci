@@ -47,8 +47,6 @@
           export BRANCH_OVERRIDE="{{ branch_override | default('default') }}"
           if [ "$BRANCH_OVERRIDE" != "default" ] ; then
               export OVERRIDE_ZUUL_BRANCH=$BRANCH_OVERRIDE
-              export UPPER_CONSTRAINTS_FILE=https://opendev.org/openstack/requirements/raw/branch/$BRANCH_OVERRIDE/upper-constraints.txt
-              export PIP_INSTALL_CONSTRAINT=https://opendev.org/openstack/requirements/raw/branch/$BRANCH_OVERRIDE/upper-constraints.txt
           fi
 
           export PYTHONUNBUFFERED=true

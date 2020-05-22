@@ -135,6 +135,10 @@
       export BRANCH_OVERRIDE="{{ branch_override | default('default') }}"
       if [ "$BRANCH_OVERRIDE" != "default" ] ; then
           export OVERRIDE_ZUUL_BRANCH=$BRANCH_OVERRIDE
+          if [[ $BRANCH_OVERRIDE =~ ^stable/ ]] ; then
+              export UPPER_CONSTRAINTS_FILE=https://releases.openstack.org/constraints/upper/${BRANCH_OVERRIDE#stable/}
+              export PIP_CONSTRAINT=https://releases.openstack.org/constraints/upper/${BRANCH_OVERRIDE#stable/}
+          fi
       fi
 
       export PYTHONUNBUFFERED=true
