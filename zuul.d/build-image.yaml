@@ -23,6 +23,21 @@
         - tripleo-buildimage-ironic-python-agent-centos-8
         - tripleo-buildimage-overcloud-hardened-full-centos-8
 
+- project-template:
+    name: tripleo-buildimage-jobs-centos-8
+    check:
+      jobs:
+        - tripleo-buildimage-overcloud-full-centos-8
+        - tripleo-buildimage-ironic-python-agent-centos-8
+    gate:
+      jobs:
+        - tripleo-buildimage-overcloud-full-centos-8
+        - tripleo-buildimage-ironic-python-agent-centos-8
+    experimental:
+      jobs:
+        - tripleo-buildimage-ironic-python-agent-centos-8
+        - tripleo-buildimage-overcloud-hardened-full-centos-8
+
 # CentOS 8 Image Build Jobs
 - job:
     name: tripleo-buildimage-ironic-python-agent-centos-8
