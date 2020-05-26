@@ -7,6 +7,7 @@
 - project:
     templates:
       - tripleo-ci-build-containers-jobs
+      - tripleo-ci-buildimage-jobs
       - tripleo-multinode-baremetal-full
       - tripleo-multinode-branchful
       - tripleo-multinode-container-full
@@ -36,26 +37,6 @@
               tox_environment:
                 PYTEST_REQPASS: 84
 
-        - tripleo-buildimage-overcloud-full-centos-8:
-            files: &build_images_files
-              - ^playbooks/tripleo-buildimages/.*$
-              - ^roles/oooci-build-images/.*$
-              - zuul.d/layout.yaml
-              - zuul.d/build-image.yaml
-        - tripleo-buildimage-ironic-python-agent-centos-8:
-            files: *build_images_files
-        - tripleo-buildimage-overcloud-hardened-full-centos-8:
-            files: *build_images_files
-        - tripleo-buildimage-overcloud-full-centos-8-ussuri:
-            files: *build_images_files
-        - tripleo-buildimage-overcloud-full-centos-7-train:
-            files: *build_images_files
-        - tripleo-buildimage-overcloud-full-centos-7:
-            files: *build_images_files
-        - tripleo-buildimage-ironic-python-agent-centos-7:
-            files: *build_images_files
-        - tripleo-buildimage-overcloud-hardened-full-centos-7:
-            files: *build_images_files
         - tripleo-ci-centos-7-scenario001-multinode-oooq-container:
             files:
               - ^playbooks/tripleo-ci/.*$
@@ -88,10 +69,6 @@
         - tripleo-tox-molecule
         - openstack-tox-py35:
             files: *py_files
-        - tripleo-buildimage-overcloud-full-centos-7:
-            files: *build_images_files
-        - tripleo-buildimage-overcloud-full-centos-8:
-            files: *build_images_files
         - tripleo-ci-centos-7-standalone-upgrade-train:
             branches: master
         - tripleo-ci-centos-7-standalone-upgrade-stein:

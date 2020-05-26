@@ -6,9 +6,7 @@
     name: tripleo-ci-build-containers-jobs
     check:
       jobs:
-        - tripleo-build-containers-centos-7
         - tripleo-build-containers-centos-7-rocky
-        - tripleo-build-containers-centos-7-buildah
         - tripleo-build-containers-centos-7-buildah-train
         - tripleo-build-containers-centos-7-buildah-stein
         - tripleo-build-containers-centos-8
@@ -16,9 +14,7 @@
     gate:
       queue: tripleo
       jobs:
-        - tripleo-build-containers-centos-7
         - tripleo-build-containers-centos-7-rocky
-        - tripleo-build-containers-centos-7-buildah
         - tripleo-build-containers-centos-7-buildah-stein
         - tripleo-build-containers-centos-7-buildah-train
         - tripleo-build-containers-centos-8

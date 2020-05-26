@@ -3,26 +3,65 @@
 # Zuul layout for TripleO Build Image jobs.
 
 - project-template:
+    name: tripleo-ci-buildimage-jobs
+    check:
+      jobs:
+        - tripleo-buildimage-overcloud-full-centos-7-train:
+            files: &build_images_files
+              - ^playbooks/tripleo-buildimages/.*$
+              - ^roles/oooci-build-images/.*$
+              - zuul.d/layout.yaml
+              - zuul.d/build-image.yaml
+        - tripleo-buildimage-ironic-python-agent-centos-7-train:
+            files: *build_images_files
+        - tripleo-buildimage-overcloud-full-centos-8:
+            files: *build_images_files
+        - tripleo-buildimage-overcloud-full-centos-8-ussuri:
+            files: *build_images_files
+        - tripleo-buildimage-ironic-python-agent-centos-8:
+            files: *build_images_files
+        - tripleo-buildimage-ironic-python-agent-centos-8-ussuri:
+            files: *build_images_files
+        - tripleo-buildimage-overcloud-hardened-full-centos-8:
+            files: *build_images_files
+        - tripleo-buildimage-overcloud-hardened-full-centos-8-ussuri:
+            files: *build_images_files
+    gate:
+      jobs:
+        - tripleo-buildimage-overcloud-full-centos-7-train:
+            files: *build_images_files
+        - tripleo-buildimage-ironic-python-agent-centos-7-train:
+            files: *build_images_files
+        - tripleo-buildimage-overcloud-full-centos-8:
+            files: *build_images_files
+        - tripleo-buildimage-overcloud-full-centos-8-ussuri:
+            files: *build_images_files
+        - tripleo-buildimage-ironic-python-agent-centos-8:
+            files: *build_images_files
+        - tripleo-buildimage-ironic-python-agent-centos-8-ussuri:
+            files: *build_images_files
+        - tripleo-buildimage-overcloud-hardened-full-centos-8:
+            files: *build_images_files
+        - tripleo-buildimage-overcloud-hardened-full-centos-8-ussuri:
+            files: *build_images_files
+
+- project-template:
     name: tripleo-buildimage-jobs
     check:
       jobs:
         - tripleo-buildimage-overcloud-full-centos-7
-        - tripleo-buildimage-overcloud-full-centos-7-train
         - tripleo-buildimage-overcloud-full-centos-8
-        - tripleo-buildimage-overcloud-full-centos-8-ussuri
+        - tripleo-buildimage-ironic-python-agent-centos-7
         - tripleo-buildimage-ironic-python-agent-centos-8
     gate:
       jobs:
         - tripleo-buildimage-overcloud-full-centos-7
         - tripleo-buildimage-overcloud-full-centos-8
-        - tripleo-buildimage-overcloud-full-centos-7-train
+        - tripleo-buildimage-ironic-python-agent-centos-7
         - tripleo-buildimage-ironic-python-agent-centos-8
-        - tripleo-buildimage-overcloud-full-centos-8-ussuri
     experimental:
       jobs:
-        - tripleo-buildimage-ironic-python-agent-centos-7
         - tripleo-buildimage-overcloud-hardened-full-centos-7
-        - tripleo-buildimage-ironic-python-agent-centos-8
         - tripleo-buildimage-overcloud-hardened-full-centos-8
 
 - project-template:
@@ -67,7 +106,6 @@
     branches: ^(?!stable/(queens|rocky|stein|train)).*$
     vars:
       tripleo_image_type: overcloud-hardened-full
-    voting: false
     irrelevant-files:
       - ^.*\.rst$
       - ^releasenotes/.*$
@@ -102,9 +140,23 @@
 - job:
     name: tripleo-buildimage-overcloud-full-centos-7-train
     parent: tripleo-build-images-base
+    branches: master
     override-checkout: 'stable/train'
     vars:
       tripleo_image_type: overcloud-full
+      tripleo_image_os: centos7
+      branch_override: stable/train
+    irrelevant-files:
+      - ^.*\.rst$
+      - ^releasenotes/.*$
+
+- job:
+    name: tripleo-buildimage-ironic-python-agent-centos-7-train
+    parent: tripleo-build-images-base
+    branches: master
+    override-checkout: 'stable/train'
+    vars:
+      tripleo_image_type: ironic-python-agent
       tripleo_image_os: centos7
       branch_override: stable/train
     irrelevant-files:
@@ -119,7 +171,6 @@
     vars:
       tripleo_image_type: ironic-python-agent
       tripleo_image_os: centos7
-    voting: false
     irrelevant-files:
       - ^.*\.rst$
       - ^releasenotes/.*$
