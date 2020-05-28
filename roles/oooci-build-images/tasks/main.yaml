@@ -111,3 +111,4 @@
   when:
     - tripleo_image_type is search("overcloud-full")
     - image_sanity | bool
+    - overcloud_stat_result.stat.exists|bool

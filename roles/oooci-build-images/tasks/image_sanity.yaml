@@ -21,10 +21,11 @@
 
 - name: Run sanity command on overcloud images
   shell: |
-    virt-customize -vx --smp 2 -m 2048 -a overcloud-full.qcow2 --selinux-relabel --run-command '{{ image_sanity_command }}' > virt_customize.log
-    virt-copy-out -a overcloud-full.qcow2 {{  image_sanity_files | join(' ') }} {{ ansible_user_dir }}/workspace
+    virt-customize -vx --smp 2 -m 2048 -a overcloud-full.qcow2 --selinux-relabel \
+      --run-command '{{ image_sanity_command }}' > {{ ansible_user_dir }}/virt_customize.log
+    virt-copy-out -a overcloud-full.qcow2 {{  image_sanity_files | join(' ') }} {{ workspace }}
   args:
-    chdir: "{{ ansible_user_dir }}/workspace"
+    chdir: "{{ workspace }}"
   environment:
     LIBGUESTFS_BACKEND_SETTINGS: force_tcg
     LIBGUESTFS_BACKEND: direct
@@ -34,7 +35,7 @@
   shell: |
     grep {{ item }} rpm_va.txt
   args:
-    chdir: "{{ ansible_user_dir }}/workspace"
+    chdir: "{{ workspace }}"
   register: files_missing
   changed_when: false
   ignore_errors: True
