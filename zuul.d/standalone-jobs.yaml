@@ -616,10 +616,9 @@
         - octavia
       featureset: '062'
       standalone_ceph: true
-      tempest_workers: 1
       featureset_override:
         validate_services: false
-        tempest_extra_config:
+        tempest_tempestconf_profile_overrides:
           load_balancer.provider: 'ovn'
           load_balancer.member_role: '"Member"'
           load_balancer.test_with_ipv6: false
@@ -634,7 +633,7 @@
         standalone_environment_files:
           - 'environments/low-memory-usage.yaml'
           - 'ci/environments/scenario010-standalone.yaml'
-        tempest_whitelist:
+        tempest_test_whitelist:
           - octavia_tempest_plugin.tests.scenario.v2.test_traffic_ops.TrafficOperationsScenarioTest.test_basic_traffic
 
 - job:
@@ -798,7 +797,6 @@
       # using featureset062 is tech debt and should be addressed at a future sprint
       featureset: '062'
       standalone_ceph: true
-      tempest_workers: 1
       featureset_override:
         validate_services: false
         standalone_environment_files:
@@ -817,10 +815,9 @@
         - octavia
       featureset: '062'
       standalone_ceph: true
-      tempest_workers: 1
       featureset_override:
         validate_services: false
-        tempest_extra_config:
+        tempest_tempestconf_profile_overrides:
           load_balancer.provider: 'ovn'
           load_balancer.member_role: '"Member"'
           load_balancer.test_with_ipv6: false
@@ -835,7 +832,7 @@
         standalone_environment_files:
           - 'environments/low-memory-usage.yaml'
           - 'ci/environments/scenario010-standalone.yaml'
-        tempest_whitelist:
+        tempest_test_whitelist:
           - octavia_tempest_plugin.tests.scenario.v2.test_traffic_ops.TrafficOperationsScenarioTest.test_basic_traffic
 
 - project-template:

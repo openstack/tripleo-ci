@@ -32,6 +32,7 @@
         - 'use_os_tempest'
         - 'validate_ha_overcloud'
         - 'validate_services'
+        - 'tempest_tempestconf_profile_overrides'
     fail:
       msg: "ERROR: {{ item }} is not overridable."
     when: item not in allowed_overrides
