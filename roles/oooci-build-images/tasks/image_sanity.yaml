@@ -41,8 +41,19 @@
   ignore_errors: True
   loop: "{{ missing_dirs }}"
 
-- name: Fail if missing files found
-  assert:
-    that:
-      - "item['rc'] == 1"
+- name: Show warning if missing files
+  debug:
+    msg: "WARNING: File(s) are missing on the overcloud image."
+  when: "item['rc'] == 1"
   loop: "{{ files_missing.results }}"
+
+- name: Fail if missing files (periodic only)
+  block:
+    - name: Ensure no missing files
+      assert:
+        that:
+          - "item['rc'] == 0"
+      loop: "{{ files_missing.results }}"
+  when:
+    - zuul.ref is defined
+    - periodic|default(false)|bool
