@@ -32,6 +32,8 @@ if [[ -z $STABLE_RELEASE ]]; then
     fi
     if [[ $OVERRIDE_ZUUL_BRANCH =~ ^cloudsig/ ]]; then
         export STABLE_RELEASE=${OVERRIDE_ZUUL_BRANCH}
+        export UPPER_CONSTRAINTS_FILE=https://releases.openstack.org/constraints/upper/${STABLE_RELEASE#cloudsig/}
+        export PIP_CONSTRAINT=https://releases.openstack.org/constraints/upper/${STABLE_RELEASE#cloudsig/}
     fi
 fi
 
