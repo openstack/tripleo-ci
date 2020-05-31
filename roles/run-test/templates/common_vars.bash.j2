@@ -30,6 +30,10 @@ if [[ -z $STABLE_RELEASE ]]; then
     if [[ $OVERRIDE_ZUUL_BRANCH =~ ^stable/ ]]; then
         export STABLE_RELEASE=${OVERRIDE_ZUUL_BRANCH#stable/}
     fi
+    if [[ $OVERRIDE_ZUUL_BRANCH == stable/rhos* ]]; then
+        export UPPER_CONSTRAINTS_FILE=https://releases.openstack.org/constraints/upper/{{ release|default("master") }}
+        export PIP_CONSTRAINT=https://releases.openstack.org/constraints/upper/{{ release|default("master") }}
+    fi
     if [[ $OVERRIDE_ZUUL_BRANCH =~ ^cloudsig/ ]]; then
         export STABLE_RELEASE=${OVERRIDE_ZUUL_BRANCH}
         export UPPER_CONSTRAINTS_FILE=https://releases.openstack.org/constraints/upper/${STABLE_RELEASE#cloudsig/}
