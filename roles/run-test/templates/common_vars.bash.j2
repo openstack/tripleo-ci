@@ -26,6 +26,8 @@ if [[ -z $STABLE_RELEASE ]]; then
     if [[ $ZUUL_BRANCH =~ ^stable/ ]]; then
         export STABLE_RELEASE=${ZUUL_BRANCH#stable/}
         export REVIEW_RELEASE=${ZUUL_BRANCH#stable/}
+        export UPPER_CONSTRAINTS_FILE=https://releases.openstack.org/constraints/upper/${STABLE_RELEASE}
+        export PIP_CONSTRAINT=https://releases.openstack.org/constraints/upper/${STABLE_RELEASE}
     fi
     if [[ $OVERRIDE_ZUUL_BRANCH =~ ^stable/ ]]; then
         export STABLE_RELEASE=${OVERRIDE_ZUUL_BRANCH#stable/}
