@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-from __future__ import print_function
 
 # Example usage:
 # python move_bugs.py --no-dry-run --priority-less-than High tripleo stein-3 train-1
