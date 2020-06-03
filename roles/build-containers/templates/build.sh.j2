@@ -58,15 +58,24 @@ if [[ "${TRIPLEO_CI_USR_PATH}" != '/usr' && -d "${TRIPLEO_CI_USR_PATH}/share/tri
 fi
 
 openstack tripleo container image build \
-    {% if push_containers|bool %}
-    --push \
-    {% endif %}
-    --base ubi8 \
-    --config-file {{ openstack_git_root }}/tripleo-common/container-images/tripleo_containers.yaml \
-    --config-path {{ openstack_git_root }}/tripleo-common/container-images \
-    --work-dir /tmp/container-builds \
-    --debug 2> containers-build-errors.log
-{% endif %}
+{%   if push_containers|bool %}
+     --push \
+{%   endif %}
+     --base ubi8 \
+{%   if distro is defined %}
+     --distro {{ distro }} \
+{%   endif %}
+{%   if ( excl_containers[ansible_distribution|lower][ansible_distribution_major_version|int] is defined
+     and excl_containers[ansible_distribution|lower][ansible_distribution_major_version|int]|length > 0 ) %}
+{%   for item in excl_containers[ansible_distribution|lower][ansible_distribution_major_version|int] %}
+     --exclude {{ item }} \
+{%   endfor %}
+{%   endif %}
+     --config-file {{ openstack_git_root }}/tripleo-common/container-images/tripleo_containers.yaml \
+     --config-path {{ openstack_git_root }}/tripleo-common/container-images \
+     --work-dir /tmp/container-builds \
+     --debug 2> containers-build-errors.log
+{%   endif %}
 RETCODE=$?
 
 {% if use_kolla | default(true) %}

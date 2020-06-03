@@ -5,7 +5,7 @@
     extra_args: --user
 
 - name: Install deps from upper-constraints
-  when: zuul_internal is undefined
+  when: (zuul_internal is undefined) or (not use_kolla|default(true))
   pip:
     extra_args: "-c {{ openstack_git_root }}/requirements/upper-constraints.txt"
     requirements: "{{ openstack_git_root }}/{{ item }}/requirements.txt"
@@ -18,7 +18,7 @@
     - tripleo-ansible
 
 - name: Install deps from requirements
-  when: zuul_internal is defined
+  when: zuul_internal is defined and use_kolla|default(true)|bool
   pip:
     requirements: "{{ openstack_git_root }}/{{ item }}/requirements.txt"
     virtualenv: "{{ workspace }}/venv_build"
@@ -33,7 +33,7 @@
   pip:
     name:
       - "file://{{ openstack_git_root }}/kolla"
-      - "file://{{ openstack_git_root }}/{% if zuul_internal is defined %}openstack-{% endif %}tripleo-common"
+      - "file://{{ openstack_git_root }}/{% if zuul_internal is defined and use_kolla|default(true)|bool %}openstack-{% endif %}tripleo-common"
       - "file://{{ openstack_git_root }}/python-tripleoclient"
       - "file://{{ openstack_git_root }}/tripleo-ansible"
       - decorator
@@ -42,5 +42,9 @@
 
 - name: set template override
   set_fact:
-    kolla_override_path:
-      "{{ openstack_git_root }}/{% if zuul_internal is defined %}openstack-{% endif %}tripleo-common/container-images/tripleo_kolla_template_overrides.j2"
+    kolla_override_path: >-
+      {% if zuul_internal is defined and use_kolla|default(true)|bool -%}
+      "{{ openstack_git_root }}/openstack-tripleo-common/container-images/tripleo_kolla_template_overrides.j2"
+      {% else -%}
+       "{{ openstack_git_root }}/tripleo-common/container-images/tripleo_kolla_template_overrides.j2"
+      {% endif %}
