@@ -1,6 +1,7 @@
 tripleo_image_source: https://images.rdoproject.org/CentOS-8-x86_64-GenericCloud.qcow2
 workspace: "{{ ansible_user_dir }}/workspace"
 openstack_git_root: "{{ ansible_user_dir }}/src/opendev.org/openstack"
+dib_pin: "{% if ansible_distribution_major_version is version(8, '<') %}@2.38.0{% endif %}"
 python_version:
   py2: python
   py3: python3
@@ -8,7 +9,7 @@ base_image_config:
   py2: overcloud-images.yaml
   py3: overcloud-images-python3.yaml
 tripleo_pip_projects:
-  - "file://{{ openstack_git_root }}/diskimage-builder"
+  - "git+file://{{ openstack_git_root }}/diskimage-builder{{ dib_pin }}"
   - "file://{{ openstack_git_root }}/python-tripleoclient"
   - "file://{{ openstack_git_root }}/tripleo-common"
 tripleo_common_path: "{{ openstack_git_root }}/tripleo-common"
