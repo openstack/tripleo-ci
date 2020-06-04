@@ -54,6 +54,6 @@
         that:
           - "item['rc'] == 0"
       loop: "{{ files_missing.results }}"
-  when:
-    - zuul.ref is defined
-    - periodic|default(false)|bool
+  when: >
+    ('periodic' in zuul.pipeline and not force_non_periodic|default(false)|bool) or
+    force_periodic|default(false)|bool
