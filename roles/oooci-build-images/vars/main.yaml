@@ -1,8 +1,0 @@
-workspace: "{{ ansible_user_dir }}/workspace"
-openstack_git_root: "{{ ansible_user_dir }}/src/opendev.org/openstack"
-python_version:
-  py2: python
-  py3: python3
-base_image_config:
-  py2: overcloud-images.yaml
-  py3: overcloud-images-python3.yaml

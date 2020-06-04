@@ -22,15 +22,9 @@ export ELEMENTS_PATH=$ELEMENTS
 # the tripleo_image_type is set and passed from the ci job definition
 if [ "{{ tripleo_image_type }}" == "overcloud-hardened-full" ]; then
   CONFIG_FILES="--config-file \
-    {% if python_v == "py3" %}
-    {{ tripleo_common_path }}/image-yaml/overcloud-hardened-images-python3.yaml \
-    {% else %}
-    {{ tripleo_common_path }}/image-yaml/overcloud-hardened-images.yaml \
-    {% endif %}
+    {{ tripleo_common_path }}/image-yaml/{{ hardened_image_config[python_v] }} \
     --config-file {{ tripleo_common_path }}/image-yaml/overcloud-hardened-images-{{ tripleo_image_os }}.yaml"
 else
-  # base_image_config in vars/common.yaml, python_v set in build-images role
-  # to set either overcloud-images.yaml or overcloud-images-python3.yaml
   CONFIG_FILES="--config-file \
     {{ tripleo_common_path }}/image-yaml/{{ base_image_config[python_v] }} \
     --config-file {{ tripleo_common_path }}/image-yaml/overcloud-images-{{ tripleo_image_os }}.yaml"

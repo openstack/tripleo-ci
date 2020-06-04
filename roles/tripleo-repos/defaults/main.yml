@@ -6,20 +6,9 @@ centos_mirror_host: "http://mirror.centos.org"
 fedora_mirror_host: "https://mirrors.fedoraproject.org"
 rdo_mirror_host: "https://trunk.rdoproject.org"
 override_repos: ""
-virtualenv_python:
-  yum: python
-  dnf: python3
-
 rpm_packages:
-  yum:
-    # we have special handling to provide pip on py27 systems
-    - git
-    - libselinux-python
-    - python-setuptools
-    - python-virtualenv
-  dnf:
-    - git
-    - python3-libselinux
-    - python3-pip
-    - python3-setuptools
-    - python3-virtualenv
+  - git
+  - python3-libselinux
+  - python3-pip
+  - python3-setuptools
+  - python3-virtualenv
