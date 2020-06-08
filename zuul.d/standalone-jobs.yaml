@@ -848,6 +848,7 @@
               # tripleo-heat-templates
               - environments/ssl/tls-everywhere-endpoints-dns.yaml
               - environments/services/haproxy-public-tls-certmonger.yaml
+              - environments/services/haproxy-public-tls-inject.yaml
               - environments/ssl/enable-internal-tls.yaml
               - ci/environments/standalone-ipa.yaml
               - deployment/ipa/ipaservices-baremetal-ansible.yaml
