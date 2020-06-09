@@ -1,6 +1,6 @@
 from emit_releases_file import get_dlrn_hash
 
-import mock
+from unittest import mock
 import pytest
 
 

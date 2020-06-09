@@ -1,6 +1,6 @@
 from emit_releases_file import load_featureset_file
 
-import mock
+from unittest import mock
 import pytest
 from six import PY2
 import yaml

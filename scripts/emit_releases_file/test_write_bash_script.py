@@ -1,7 +1,7 @@
 from emit_releases_file import write_releases_dictionary_to_bash
 
-import mock
-from mock import mock_open
+from unittest import mock
+from unittest.mock import mock_open
 import os
 from six import PY2
 
