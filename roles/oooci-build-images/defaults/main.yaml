@@ -44,8 +44,8 @@ build_all_images: false
 # Vars for running Image sanity
 # image_sanity_command var should in following format: <command_name > /tmp/output_file name>
 # We need to dump the command output in /var/tmp directory.
-image_sanity: false
-image_sanity_command: "rpm -qa > /var/tmp/rpm_qa.txt;rpm -Va > /var/tmp/rpm_va.txt"
+image_sanity: true
+image_sanity_command: "rpm -qa > /var/tmp/rpm_qa.txt; rpm -Va | grep missing > /var/tmp/rpm_va.txt"
 image_sanity_files:
   - /var/tmp/rpm_qa.txt
   - /var/tmp/rpm_va.txt

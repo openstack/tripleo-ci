@@ -33,7 +33,7 @@
 
 - name: Look for missing directories
   shell: |
-    grep {{ item }} rpm_va.txt
+    ! grep {{ item }} rpm_va.txt
   args:
     chdir: "{{ workspace }}"
   register: files_missing
