@@ -100,3 +100,9 @@
     # Rename fedora-stable.repo as kola.conf.j2 template expects delorean*
     mv /etc/yum.repos.d/fedora-stable.repo /etc/yum.repos.d/delorean-{{ ci_branch | default('master') }}-testing.repo
   when: ansible_distribution|lower  == "fedora"
+
+- name: Update all installed packages after new repos are setup
+  become: true
+  package:
+    name: '*'
+    state: latest

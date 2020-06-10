@@ -24,6 +24,9 @@
     rsync -var --no-links /etc/containers/ {{ workspace }}/etc/containers/ || true
     rsync -var --no-links --include 'yum.repos.d/***' --include 'yum.conf' --include 'dnf/***' --exclude='*' /etc/ {{ workspace }}/etc/ || true
 
+    # Collect installed packages
+    {{ ansible_pkg_mgr }} list installed &>{{ workspace }}/logs/system/installed_pkgs.txt
+
     # Save some statistics
     df -h &>{{ workspace }}/logs/system/disk_usage.txt
 
