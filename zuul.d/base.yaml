@@ -25,11 +25,12 @@
     roles:
       - zuul: opendev.org/zuul/zuul-jobs
       - zuul: opendev.org/openstack/openstack-zuul-jobs
-    required-projects:
+    required-projects: &required_projects
       - opendev.org/openstack/tripleo-ci
       - opendev.org/openstack/tripleo-quickstart
       - opendev.org/openstack/tripleo-quickstart-extras
       - opendev.org/openstack/tripleo-operator-ansible
+      - opendev.org/openstack/ansible-collections-openstack
       - opendev.org/openstack/tripleo-upgrade
       - opendev.org/x/browbeat
       - opendev.org/openstack/tripleo-ha-utils
@@ -88,25 +89,7 @@
     roles:
       - zuul: opendev.org/zuul/zuul-jobs
       - zuul: opendev.org/openstack/openstack-zuul-jobs
-    required-projects:
-      - opendev.org/openstack/tripleo-ci
-      - opendev.org/openstack/tripleo-quickstart
-      - opendev.org/openstack/tripleo-quickstart-extras
-      - opendev.org/openstack/tripleo-operator-ansible
-      - opendev.org/openstack/tripleo-repos
-      - opendev.org/openstack/tripleo-upgrade
-      - opendev.org/x/browbeat
-      - opendev.org/openstack/tripleo-ha-utils
-      - opendev.org/openstack/openstack-tempest-skiplist
-      - name: opendev.org/openstack/openstack-virtual-baremetal
-        override-checkout: stable/1.0
-      - name: opendev.org/openstack/openstack-ansible-os_tempest
-        override-checkout: master
-      - name: opendev.org/openstack/ansible-role-python_venv_build
-        override-checkout: master
-      - name: opendev.org/openstack/ansible-config_template
-        override-checkout: master
-      - opendev.org/openstack/ansible-role-collect-logs
+    required-projects: *required_projects
     pre-run:
       - playbooks/nodepool-provider/pre.yaml
       - playbooks/openstack-zuul-jobs/legacy/pre.yaml
