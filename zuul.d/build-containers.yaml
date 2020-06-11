@@ -27,6 +27,7 @@
         - tripleo-build-containers-centos-7
         - tripleo-build-containers-centos-7-buildah
         - tripleo-build-containers-centos-8
+        - tripleo-build-containers-ubi-8
     gate:
       queue: tripleo
       jobs:
@@ -163,7 +164,7 @@
     name: tripleo-build-containers-ubi-8
     parent: tripleo-build-containers-base-with-files
     nodeset: single-centos-8-node
-    branches: ^(?!stable/(pike|queens|rocky|stein|train)).*$
+    branches: ^(?!stable/(pike|queens|rocky|stein|train|ussuri)).*$
     voting: false
     roles:
       - zuul: opendev.org/openstack/tripleo-ansible
