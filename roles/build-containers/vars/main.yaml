@@ -32,6 +32,13 @@ exclude_containers:
   rocky:
     - grafana
 
+# container excludes for the non-kolla builds
+excl_containers:
+  redhat:
+    8:
+      - sahara-api
+      - sahara-engine
+
 timestamper_cmd: >-
     | awk '{ print strftime("%Y-%m-%d %H:%M:%S |"), $0; fflush(); }'
 
