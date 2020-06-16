@@ -576,7 +576,7 @@
 
 - job:
     name: tripleo-ci-centos-7-scenario010-standalone
-    voting: false
+    voting: true
     parent: tripleo-ci-base-standalone
     nodeset: single-centos-7-node
     branches: ^(stable/(stein|train)).*$
@@ -777,7 +777,7 @@
 
 - job:
     name: tripleo-ci-centos-8-scenario010-standalone
-    voting: false
+    voting: true
     parent: tripleo-ci-base-standalone-centos-8
     branches: ^(?!stable/(newton|ocata|pike|queens|rocky|stein|train)).*$
     vars:
