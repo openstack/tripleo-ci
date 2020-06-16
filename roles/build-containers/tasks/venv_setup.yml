@@ -1,3 +1,7 @@
+- name: Make sure we have pip
+  include_role:
+    name: ensure-pip
+
 - name: https://bugs.launchpad.net/tripleo/+bug/1862941 install six>=1.14.0
   pip:
     name:
