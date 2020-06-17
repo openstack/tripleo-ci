@@ -322,6 +322,8 @@
               # python-tripleoclient
               - ^tripleoclient/heat_launcher.*$
               - ^tripleoclient/v1/tripleo_(deploy|config|upgrade).*$
+              # python-tempestconf
+              - ^config_tempest/services/octavia.*$
 
         - tripleo-ci-centos-7-scenario010-standalone:
             files: *scen10_files
