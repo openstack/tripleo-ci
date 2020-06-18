@@ -865,7 +865,7 @@
     parent: tripleo-ci-base-standalone-centos-8
     voting: true
     nodeset: two-centos-8-nodes
-    branches: ^(?!stable/(newton|ocata|pike|queens|rocky|stein|train)).*$
+    branches: ^(?!stable/(newton|ocata|pike|queens|rocky|stein)).*$
     required-projects:
       - opendev.org/x/tripleo-ipa
       - opendev.org/openstack/tripleo-ansible
