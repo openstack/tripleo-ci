@@ -10,8 +10,6 @@ workers_args: >-
 # undercloud deployment
 undercloud_docker_registry_mirror: "{{ lookup('env','NODEPOOL_DOCKER_REGISTRY_V2_PROXY') }}"
 
-docker_registry_host: "{{ job.build_container_images|default(false)|bool | ternary('127.0.0.1:5001', 'docker.io') }}"
-
 dlrn_use_local_mirrors: true
 
 # ara install and config
