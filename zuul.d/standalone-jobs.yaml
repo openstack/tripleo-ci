@@ -855,15 +855,11 @@
               - deployment/octavia/*
               - deployment/ovn/*
               - deployment/rabbitmq/*
-    gate:
-      jobs:
-        - tripleo-ci-centos-8-standalone-on-multinode-ipa:
-            files: *tls_ipa_files
 
 - job:
     name: tripleo-ci-centos-8-standalone-on-multinode-ipa
     parent: tripleo-ci-base-standalone-centos-8
-    voting: true
+    voting: false
     nodeset: two-centos-8-nodes
     branches: ^(?!stable/(newton|ocata|pike|queens|rocky|stein)).*$
     required-projects:
