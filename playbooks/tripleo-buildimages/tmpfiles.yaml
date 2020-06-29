@@ -1,0 +1,11 @@
+---
+- hosts: all
+  tasks:
+    - name: remove removal of tmp files
+      # noqa 303
+      become: true
+      shell:
+        cmd: |
+          sed -i '/30d/d' /usr/lib/tmpfiles.d/tmp.conf;
+          sed -i '/10d/d' /usr/lib/tmpfiles.d/tmp.conf
+      changed_when: true

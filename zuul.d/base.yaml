@@ -565,7 +565,9 @@
     description: |
         Base abstract job for tripleo-buildimage-* centos-8 jobs
     parent: tripleo-ci-base-singlenode-centos-8
-    pre-run: playbooks/tripleo-buildimages/pre.yaml
+    pre-run:
+      - playbooks/tripleo-buildimages/pre.yaml
+      - playbooks/tripleo-buildimages/tmpfiles.yaml
     run: playbooks/tripleo-buildimages/run-v3.yaml
     post-run: playbooks/tripleo-buildimages/post.yaml
     timeout: 4200
