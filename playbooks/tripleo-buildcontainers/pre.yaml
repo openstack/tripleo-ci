@@ -2,6 +2,20 @@
   name: TripleO Setup Container Registry and repos mirror
   tasks:
 
+    - name: Disable EPEL repos with dnf
+      command: dnf config-manager --set-disabled epel epel-modular
+      become: true
+      changed_when: true
+      when:
+        - ansible_pkg_mgr == "dnf"
+
+    - name: Disable EPEL repos with yum
+      command: yum-config-manager --disable epel epel-modular
+      become: true
+      changed_when: true
+      when:
+        - ansible_pkg_mgr == "yum"
+
     - name: Include tripleo-repos
       include_role:
           name: tripleo-repos
