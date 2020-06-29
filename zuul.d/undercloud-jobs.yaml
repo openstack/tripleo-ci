@@ -67,7 +67,7 @@
 - job:
     name: tripleo-ci-centos-8-undercloud-containers
     parent: tripleo-ci-base-singlenode-centos-8
-    branches: ^(?!stable/(newton|ocata|pike|queens|rocky|stein|train)).*$
+    branches: ^(?!stable/(newton|ocata|pike|queens|rocky|stein)).*$
     voting: true
     vars:
       featureset: '027'

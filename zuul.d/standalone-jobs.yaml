@@ -27,7 +27,7 @@
 - job:
     name: tripleo-ci-centos-8-standalone
     parent: tripleo-ci-base-standalone-centos-8
-    branches: ^(?!stable/(newton|ocata|pike|queens|rocky|stein|train)).*$
+    branches: ^(?!stable/(newton|ocata|pike|queens|rocky|stein)).*$
     vars:
       featureset: '052'
     irrelevant-files:
@@ -624,7 +624,7 @@
     name: tripleo-ci-centos-8-scenario012-standalone
     voting: true
     parent: tripleo-ci-base-standalone-centos-8
-    branches: ^(?!stable/(newton|ocata|pike|queens|rocky|stein|train)).*$
+    branches: ^(?!stable/(newton|ocata|pike|queens|rocky|stein)).*$
     vars:
       featureset: '060'
       standalone_ceph: true
@@ -656,7 +656,7 @@
     name: tripleo-ci-centos-8-scenario001-standalone
     voting: true
     parent: tripleo-ci-base-standalone-centos-8
-    branches: ^(?!stable/(newton|ocata|pike|queens|rocky|stein|train)).*$
+    branches: ^(?!stable/(newton|ocata|pike|queens|rocky|stein)).*$
     vars:
       featureset: '052'
       standalone_ceph: true
@@ -679,7 +679,7 @@
     name: tripleo-ci-centos-8-scenario002-standalone
     voting: true
     parent: tripleo-ci-base-standalone-centos-8
-    branches: ^(?!stable/(newton|ocata|pike|queens|rocky|stein|train)).*$
+    branches: ^(?!stable/(newton|ocata|pike|queens|rocky|stein)).*$
     vars:
       featureset: '052'
       featureset_override:
@@ -707,7 +707,7 @@
     name: tripleo-ci-centos-8-scenario003-standalone
     voting: true
     parent: tripleo-ci-base-standalone-centos-8
-    branches: ^(?!stable/(newton|ocata|pike|queens|rocky|stein|train)).*$
+    branches: ^(?!stable/(newton|ocata|pike|queens|rocky|stein)).*$
     vars:
       featureset: '052'
       featureset_override:
@@ -726,7 +726,7 @@
     name: tripleo-ci-centos-8-scenario004-standalone
     voting: true
     parent: tripleo-ci-base-standalone-centos-8
-    branches: ^(?!stable/(newton|ocata|pike|queens|rocky|stein|train)).*$
+    branches: ^(?!stable/(newton|ocata|pike|queens|rocky|stein)).*$
     vars:
       featureset: '052'
       standalone_ceph: true
@@ -751,7 +751,7 @@
     name: tripleo-ci-centos-8-scenario007-standalone
     voting: true
     parent: tripleo-ci-base-standalone-centos-8
-    branches: ^(?!stable/(newton|ocata|pike|queens|rocky|stein|train)).*$
+    branches: ^(?!stable/(newton|ocata|pike|queens|rocky|stein)).*$
     vars:
       featureset: '052'
       featureset_override:
@@ -770,7 +770,7 @@
     name: tripleo-ci-centos-8-scenario010-standalone
     voting: false
     parent: tripleo-ci-base-standalone-centos-8
-    branches: ^(?!stable/(newton|ocata|pike|queens|rocky|stein|train)).*$
+    branches: ^(?!stable/(newton|ocata|pike|queens|rocky|stein)).*$
     vars:
       tags:
         - build
@@ -789,7 +789,7 @@
     name: tripleo-ci-centos-8-scenario010-ovn-provider-standalone
     voting: false
     parent: tripleo-ci-base-standalone-centos-8
-    branches: ^(?!stable/(newton|ocata|pike|queens|rocky|stein|train)).*$
+    branches: ^(?!stable/(newton|ocata|pike|queens|rocky|stein)).*$
     vars:
       tags:
         - build

@@ -133,7 +133,7 @@
     name: tripleo-build-containers-centos-8
     parent: tripleo-build-containers-base-with-files
     nodeset: single-centos-8-node
-    branches: ^(?!stable/(pike|queens|rocky|stein|train)).*$
+    branches: ^(?!stable/(pike|queens|rocky|stein)).*$
     voting: true
     required-projects:
       - opendev.org/openstack/ansible-role-container-registry
