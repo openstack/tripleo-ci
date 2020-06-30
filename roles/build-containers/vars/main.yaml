@@ -10,27 +10,23 @@ virtualenv_python:
   8: python3
 
 exclude_containers:
-  redhat:
-    8:
-      - fluentd
-      - opendaylight
-      - skydive-agent
-      - skydive-analyzer
-      - sensu-client
-      - sensu-base
-  centos:
-    7:
-      - opendaylight
-    8:
-      - fluentd
-      - opendaylight
-      - skydive-agent
-      - skydive-analyzer
-      - sensu-client
-      - sensu-base
-      - influxdb
+  master: &exclude_containers
+    - fluentd
+    - opendaylight
+    - skydive-agent
+    - skydive-analyzer
+    - sensu-client
+    - sensu-base
+    - influxdb
+  ussuri: *exclude_containers
+  train: *exclude_containers
+  stein:
+    - opendaylight
   rocky:
     - grafana
+    - opendaylight
+  queens:
+    - opendaylight
 
 # container excludes for the non-kolla builds
 excl_containers:

@@ -11,7 +11,7 @@ TRIPLEO_CI_PATH="{{ ansible_user_dir }}/src/opendev.org/openstack/tripleo-ci"
 openstack overcloud container image build {{ container_config }}\
     --kolla-config-file {{ workspace }}/kolla-build.conf \
     {% if ci_branch != 'rocky' %}
-    {% for item in exclude_containers[ansible_distribution|lower][ansible_distribution_major_version|int] %}
+    {% for item in exclude_containers[ci_branch] %}
         --exclude {{ item }} \
     {% endfor %}
     {% endif %}
@@ -24,7 +24,7 @@ egrep "^- " containers-to-build-full.log | awk '{ print $2 }' > containers-expec
 ### build
 openstack overcloud container image build {{ container_config }}\
     {% if ci_branch != 'rocky' %}
-    {% for item in exclude_containers[ansible_distribution|lower][ansible_distribution_major_version|int] %}
+    {% for item in exclude_containers[ci_branch] %}
         --exclude {{ item }} \
     {% endfor %}
     {% endif %}
