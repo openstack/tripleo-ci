@@ -3,4 +3,3 @@
   roles:
     - role: common
     - role: prepare-node
-    - role: disable_network_manager
