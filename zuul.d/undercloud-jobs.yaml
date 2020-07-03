@@ -42,6 +42,8 @@
             irrelevant-files: *undercloud_ignored
         - tripleo-ci-centos-7-containerized-undercloud-upgrades:
             irrelevant-files: *undercloud_ignored
+        - tripleo-ci-centos-8-containerized-undercloud-upgrades:
+            irrelevant-files: *undercloud_ignored
     gate:
       queue: tripleo
       jobs:
@@ -97,6 +99,18 @@
     # TODO(rlandy) make it voting when we confirm
     # https://review.opendev.org/#/c/611800/
     # is working as expected.
+    voting: false
+    vars:
+      featureset: '050'
+      featureset_override:
+        validate_services: false
+      extra_tags:
+        - undercloud-upgrade
+
+- job:
+    name: tripleo-ci-centos-8-containerized-undercloud-upgrades
+    parent: tripleo-ci-base-singlenode-centos-8
+    branches: ^(?!stable/(queens|rocky|stein|train)).*$
     voting: false
     vars:
       featureset: '050'
