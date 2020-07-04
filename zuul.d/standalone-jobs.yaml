@@ -333,7 +333,7 @@
             files: *scen10_files
 
         - tripleo-ci-centos-8-scenario012-standalone:
-            files:
+            files: &scen12_files
               # tripleo-common
               - ^container-images/.*$
               - tripleo_common/actions/ansible.py
@@ -428,6 +428,8 @@
             files: *scen10_files
         - tripleo-ci-centos-8-scenario010-standalone:
             files: *scen10_files
+        - tripleo-ci-centos-8-scenario012-standalone:
+            files: *scen12_files
 
     periodic:
       jobs:
@@ -627,9 +629,7 @@
 
 - job:
     name: tripleo-ci-centos-8-scenario012-standalone
-    # Note(chkumar246): Marking it non-voting as it is broken from
-    # long time, https://bugs.launchpad.net/tripleo/+bug/1867323
-    voting: false
+    voting: true
     parent: tripleo-ci-base-standalone-centos-8
     branches: ^(?!stable/(newton|ocata|pike|queens|rocky|stein|train)).*$
     vars:
