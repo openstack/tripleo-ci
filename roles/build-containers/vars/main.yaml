@@ -13,6 +13,8 @@ exclude_containers:
   master: &exclude_containers
     - fluentd
     - opendaylight
+    - neutron-server-opendaylight
+    - neutron-mlnx-agent
     - skydive-agent
     - skydive-analyzer
     - sensu-client
