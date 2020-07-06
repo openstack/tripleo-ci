@@ -61,16 +61,21 @@ openstack tripleo container image build \
 {%   if push_containers|bool %}
      --push \
 {%   endif %}
-     --base ubi8 \
 {%   if distro is defined %}
      --distro {{ distro }} \
 {%   endif %}
-{%   if ( excl_containers[ansible_distribution|lower][ansible_distribution_major_version|int] is defined
-     and excl_containers[ansible_distribution|lower][ansible_distribution_major_version|int]|length > 0 ) %}
-{%   for item in excl_containers[ansible_distribution|lower][ansible_distribution_major_version|int] %}
+{%   if registry_namespace is defined %}
+     --namespace {{ registry_namespace }} \
+{%   endif%}
+{%   if push_registry is defined %}
+     --registry {{ push_registry }} \
+{%   endif %}
+{%   for item in exclude_containers[ci_branch] %}
      --exclude {{ item }} \
 {%   endfor %}
-{%   endif %}
+     --tag {{ version_hash }} \
+     --base ubi8 \
+     --prefix {{ ansible_distribution | lower }}-binary \
      --config-file {{ openstack_git_root }}/tripleo-common/container-images/tripleo_containers.yaml \
      --config-path {{ openstack_git_root }}/tripleo-common/container-images \
      --work-dir /tmp/container-builds \
@@ -91,7 +96,7 @@ done
 
 {% else %}
 ### actual built containers
-sudo {{ container_cli }} images | grep '{{ registry_namespace }}/openstack' > containers-successfully-built.log
+sudo {{ container_cli }} images | grep '{{ registry_namespace }}/{{ ansible_distribution | lower }}' > containers-successfully-built.log
 (python3 || python) <<EOC
 import yaml
 with open('{{ openstack_git_root }}/tripleo-common/container-images/tripleo_containers.yaml') as f:
