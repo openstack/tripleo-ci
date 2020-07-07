@@ -6,6 +6,7 @@
   - name: Check overridable settings
     vars:
       allowed_overrides:
+        - 'artg_repos_dir'
         - 'cirros_image'
         - 'dlrn_hash_tag'
         - 'dlrn_hash_tag_newest'
