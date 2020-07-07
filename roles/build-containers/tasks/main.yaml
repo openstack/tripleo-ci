@@ -199,6 +199,19 @@
     - kolla_base_image is defined
     - kolla_base_tag is defined
 
+- name: Make sure authfile exists
+  when: buildcontainers_authfile_path is defined
+  block:
+    - name: Check for authfile
+      stat:
+        path: '{{ buildcontainers_authfile_path }}'
+      register: authfile_exist
+
+    - name: Make sure autfile exists
+      assert:
+        that:
+          - authfile_exist.stat.exists | bool
+
 - name: Generate building script
   template:
     src: templates/build.sh.j2

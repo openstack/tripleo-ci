@@ -61,6 +61,9 @@ openstack tripleo container image build \
 {%   if push_containers|bool %}
      --push \
 {%   endif %}
+{%   if buildcontainers_authfile_path is defined %}
+     --authfile {{ buildcontainers_authfile_path }} \
+{%   endif %}
 {%   if distro is defined %}
      --distro {{ distro }} \
 {%   endif %}
