@@ -162,11 +162,9 @@
       branch_override: stable/ussuri
 
 - job:
-    name: tripleo-build-containers-ubi-8
+    name: tripleo-build-containers-ubi-8-base
     parent: tripleo-build-containers-base-with-files
     nodeset: single-centos-8-node
-    branches: ^(?!stable/(pike|queens|rocky|stein|train|ussuri)).*$
-    voting: true
     roles:
       - zuul: opendev.org/openstack/tripleo-ansible
     required-projects:
@@ -183,3 +181,27 @@
       buildcontainers_override_repos: current-tripleo
       push_containers: false
       push_containers_podman: false
+
+- job:
+    name: tripleo-build-containers-ubi-8
+    parent: tripleo-build-containers-ubi-8-base
+    branches: ^(?!stable/(pike|queens|rocky|stein)).*$
+    voting: true
+
+- job:
+    name: tripleo-build-containers-ubi-8-ussuri
+    parent: tripleo-build-containers-ubi-8-base
+    branches: master
+    override-checkout: stable/ussuri
+    vars:
+      branch_override: stable/ussuri
+    voting: false
+
+- job:
+    name: tripleo-build-containers-ubi-8-train
+    parent: tripleo-build-containers-ubi-8-base
+    branches: master
+    override-checkout: stable/train
+    vars:
+      branch_override: stable/train
+    voting: false
