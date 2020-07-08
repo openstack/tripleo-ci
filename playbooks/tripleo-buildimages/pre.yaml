@@ -2,17 +2,19 @@
   name: TripleO image building job pre.yaml
   tasks:
 
-    - name: Disable EPEL repos with dnf
-      command: dnf config-manager --set-disabled epel epel-modular
+    - name: Disable EPEL repos with dnf if exists
+      command: dnf config-manager --set-disabled "epel*"
       become: true
       changed_when: true
+      failed_when: false
       when:
         - ansible_pkg_mgr == "dnf"
 
-    - name: Disable EPEL repos with yum
-      command: yum-config-manager --disable epel epel-modular
+    - name: Disable EPEL repos with yum if exists
+      command: yum-config-manager --disable "epel*"
       become: true
       changed_when: true
+      failed_when: false
       when:
         - ansible_pkg_mgr == "yum"
 
