@@ -19,6 +19,9 @@ function previous_release_mixed_upgrade_case {
     local release="${1:-master}"
     case "${release}" in
         ''|master|promotion-testing-hash-master)
+            echo "ussuri"
+            ;;
+        ussuri|promotion-testing-hash-ussuri)
             echo "train"
             ;;
         train|promotion-testing-hash-train)
