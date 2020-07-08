@@ -29,13 +29,11 @@ exclude_containers:
     - opendaylight
   queens:
     - opendaylight
-
-# container excludes for the non-kolla builds
-excl_containers:
-  redhat:
-    8:
-      - sahara-api
-      - sahara-engine
+  rhos-17:
+    - sahara-api
+    - sahara-engine
+    # until BZ 1854466 is resolved
+    - octavia-api
 
 timestamper_cmd: >-
     | awk '{ print strftime("%Y-%m-%d %H:%M:%S |"), $0; fflush(); }'

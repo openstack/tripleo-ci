@@ -20,6 +20,8 @@ container_cli_opt: ""
 # used together with component_ci_configs in vars/main
 component_ci_containers: ""
 openstack_git_root: "{{ ansible_user_dir }}/src/opendev.org/openstack"
+# container prefix is generally centos for usptream and rhel for downstream
+container_name_prefix: "{{ ansible_distribution|lower }}"
 registry_namespace: >-
   {% if osp_branch is defined -%}
   tripleo{{ osp_branch }}

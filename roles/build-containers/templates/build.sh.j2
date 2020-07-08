@@ -70,14 +70,14 @@ openstack tripleo container image build \
 {%   if push_registry is defined %}
      --registry {{ push_registry }} \
 {%   endif %}
-{%   for item in exclude_containers[ci_branch] %}
+{%   for item in exclude_containers[osp_branch|default(ci_branch)] %}
      --exclude {{ item }} \
 {%   endfor %}
      --tag {{ version_hash }} \
      --base ubi8 \
-     --prefix {{ ansible_distribution | lower }}-binary \
-     --config-file {{ openstack_git_root }}/tripleo-common/container-images/tripleo_containers.yaml \
-     --config-path {{ openstack_git_root }}/tripleo-common/container-images \
+     --prefix {{ container_name_prefix }}-binary \
+     --config-file {{ openstack_git_root }}/{% if zuul_internal is defined %}openstack-{% endif %}tripleo-common/container-images/tripleo_containers.yaml \
+     --config-path {{ openstack_git_root }}/{% if zuul_internal is defined %}openstack-{% endif %}tripleo-common/container-images \
      --work-dir /tmp/container-builds \
      --debug 2> containers-build-errors.log
 {%   endif %}
@@ -96,10 +96,10 @@ done
 
 {% else %}
 ### actual built containers
-sudo {{ container_cli }} images | grep '{{ registry_namespace }}/{{ ansible_distribution | lower }}' > containers-successfully-built.log
+sudo {{ container_cli }} images | grep '{{ registry_namespace }}/{{ container_name_prefix }}' > containers-successfully-built.log
 (python3 || python) <<EOC
 import yaml
-with open('{{ openstack_git_root }}/tripleo-common/container-images/tripleo_containers.yaml') as f:
+with open('{{ openstack_git_root }}/{% if zuul_internal is defined %}openstack-{% endif %}tripleo-common/container-images/tripleo_containers.yaml') as f:
   x = yaml.safe_load(f)
 with open('containers-expected-to-build.log', 'w') as f:
   for i in x['container_images']:
