@@ -32,8 +32,6 @@ exclude_containers:
   rhos-17:
     - sahara-api
     - sahara-engine
-    # until BZ 1854466 is resolved
-    - octavia-api
 
 timestamper_cmd: >-
     | awk '{ print strftime("%Y-%m-%d %H:%M:%S |"), $0; fflush(); }'
