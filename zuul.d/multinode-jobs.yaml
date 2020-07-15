@@ -436,6 +436,8 @@
     vars:
       nodes: 1ctlr
       featureset: '030'
+      playbooks:
+        - multinode.yml
 
 - job:
     name: tripleo-ci-centos-7-scenario008-multinode-oooq-container
