@@ -113,6 +113,26 @@
       branch_override: 'stable/train'
     irrelevant-files: *upgrade_irrelevant
 
+- job:
+    name: tripleo-ci-centos-8-standalone-upgrade
+    parent: tripleo-ci-base-standalone-upgrade-centos-8
+    voting: false
+    branches: ^master$
+    vars:
+      featureset: '056'
+    irrelevant-files: *upgrade_irrelevant
+
+- job:
+    name: tripleo-ci-centos-8-standalone-upgrade-ussuri
+    parent: tripleo-ci-base-standalone-upgrade-centos-8
+    voting: false
+    branches: ^stable/ussuri$
+    override-checkout: 'stable/ussuri'
+    vars:
+      featureset: '056'
+      branch_override: 'stable/ussuri'
+    irrelevant-files: *upgrade_irrelevant
+
 - project-template:
     name: tripleo-standalone-scenarios-full
     check:
@@ -383,6 +403,8 @@
         - tripleo-ci-centos-7-scenario007-standalone:
             files: *scen7_files
         - tripleo-ci-centos-7-standalone-rocky
+        - tripleo-ci-centos-8-standalone-upgrade
+        - tripleo-ci-centos-8-standalone-upgrade-ussuri
         - tripleo-ci-centos-7-standalone-upgrade-stein
         - tripleo-ci-centos-7-standalone-upgrade-train
         - tripleo-ci-centos-8-standalone
