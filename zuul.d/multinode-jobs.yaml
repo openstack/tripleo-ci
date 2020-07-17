@@ -167,6 +167,8 @@
             irrelevant-files: *multinode_ignored
         - tripleo-ci-centos-8-containers-multinode:
             irrelevant-files: *multinode_ignored
+        - tripleo-ci-centos-8-containers-undercloud-minion:
+            irrelevant-files: *multinode_ignored
         - tripleo-ci-centos-7-standalone:
             irrelevant-files: *standalone_ignored
         - tripleo-ci-centos-8-standalone:
@@ -265,7 +267,6 @@
     name: tripleo-ci-centos-8-containers-undercloud-minion
     parent: tripleo-ci-base-multinode-centos-8
     branches: ^(?!stable/(newton|ocata|pike|queens|rocky|stein|train)).*$
-    voting: false
     vars:
       nodes: 1minion
       featureset: '061'
