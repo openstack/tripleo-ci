@@ -122,6 +122,7 @@
       featureset: '056'
     irrelevant-files: *upgrade_irrelevant
 
+# docker-ha, podman env files https://bugs.launchpad.net/tripleo/+bug/1887159
 - job:
     name: tripleo-ci-centos-8-standalone-upgrade-ussuri
     parent: tripleo-ci-base-standalone-upgrade-centos-8
@@ -131,6 +132,11 @@
     vars:
       featureset: '056'
       branch_override: 'stable/ussuri'
+      featureset_override:
+        standalone_environment_files:
+          - 'environments/low-memory-usage.yaml'
+          - 'environments/docker-ha.yaml'
+          - 'environments/podman.yaml'
     irrelevant-files: *upgrade_irrelevant
 
 - project-template:
