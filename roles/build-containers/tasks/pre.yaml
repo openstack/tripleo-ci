@@ -92,6 +92,7 @@
       when:
         (release is defined and release == 'train')
          or (branch_override is defined and branch_override == 'stable/train')
+         or (ci_branch is defined and ci_branch == 'train')
     - name: Configure tripleo registry
       include_role:
           name: "{{ tripleo_image_serve_role | default('tripleo_image_serve') }}"
