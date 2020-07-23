@@ -21,6 +21,11 @@
   get_url:
     url: "{{ tripleo_image_source }}"
     dest: "{{ dib_local_image }}"
+    timeout: 20
+  register: result
+  until: result is success
+  retries: 60
+  delay: 10
 
 # The python_v fact is used with vars/common.yaml to set the right
 # overcloud-images file in the build-images.sh.j2 template
