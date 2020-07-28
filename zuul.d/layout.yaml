@@ -23,7 +23,7 @@
             vars:
               tox_environment:
                 PYTEST_REQPASS: 1
-        - openstack-tox-py35:
+        - openstack-tox-py36:
             success-url: "tox/reports.html"
             failure-url: "tox/reports.html"
             files: &py_files
@@ -67,7 +67,7 @@
         # jobs might be defined and nothing can merge in this repo.
         - openstack-tox-linters
         - tripleo-tox-molecule
-        - openstack-tox-py35:
+        - openstack-tox-py36:
             files: *py_files
         - tripleo-ci-centos-7-standalone-upgrade-train:
             branches: master
