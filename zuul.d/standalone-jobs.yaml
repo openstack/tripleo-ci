@@ -7,7 +7,7 @@
     name: tripleo-ci-centos-7-standalone
     parent: tripleo-ci-base-standalone
     nodeset: single-centos-7-node
-    branches: ^(stable/(stein|train)).*$
+    branches: ^(stable/(stein)).*$
     vars:
       featureset: '052'
     irrelevant-files:
@@ -452,7 +452,7 @@
     voting: true
     parent: tripleo-ci-base-standalone
     nodeset: single-centos-7-node
-    branches: ^(stable/(stein|train)).*$
+    branches: ^(stable/(stein)).*$
     vars:
       featureset: '052'
       standalone_ceph: true
@@ -476,7 +476,7 @@
     voting: true
     parent: tripleo-ci-base-standalone
     nodeset: single-centos-7-node
-    branches: ^(stable/(stein|train)).*$
+    branches: ^(stable/(stein)).*$
     vars:
       featureset: '052'
       featureset_override:
@@ -505,7 +505,7 @@
     voting: true
     parent: tripleo-ci-base-standalone
     nodeset: single-centos-7-node
-    branches: ^(stable/(stein|train)).*$
+    branches: ^(stable/(stein)).*$
     vars:
       featureset: '052'
       featureset_override:
@@ -525,7 +525,7 @@
     voting: true
     parent: tripleo-ci-base-standalone
     nodeset: single-centos-7-node
-    branches: ^(stable/(stein|train)).*$
+    branches: ^(stable/(stein)).*$
     vars:
       featureset: '052'
       standalone_ceph: true
@@ -550,7 +550,7 @@
     voting: true
     parent: tripleo-ci-base-standalone
     nodeset: single-centos-7-node
-    branches: ^(stable/(stein|train)).*$
+    branches: ^(stable/(stein)).*$
     vars:
       tags:
         - build
@@ -570,7 +570,7 @@
     voting: false
     parent: tripleo-ci-base-standalone
     nodeset: single-centos-7-node
-    branches: ^(stable/(stein|train)).*$
+    branches: ^(stable/(stein)).*$
     vars:
       tags:
         - build

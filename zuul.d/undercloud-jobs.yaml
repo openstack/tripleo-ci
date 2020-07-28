@@ -56,7 +56,7 @@
     name: tripleo-ci-centos-7-undercloud-containers
     parent: tripleo-ci-base-singlenode
     nodeset: single-centos-7-node
-    branches: ^(stable/(rocky|stein|train)).*$
+    branches: ^(stable/(rocky|stein)).*$
     vars:
       featureset: '027'
 
