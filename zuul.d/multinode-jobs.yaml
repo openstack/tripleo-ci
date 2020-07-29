@@ -221,23 +221,11 @@
              irrelevant-files: *multinode_ignored
         - tripleo-ci-centos-7-containers-multinode-train:
             irrelevant-files: *multinode_ignored
-        - tripleo-ci-centos-7-containers-multinode-stein:
-            irrelevant-files: *multinode_ignored
-        - tripleo-ci-centos-7-containers-multinode-rocky:
-            irrelevant-files: *multinode_ignored
-        - tripleo-ci-centos-7-containers-multinode-queens:
-            irrelevant-files: *multinode_ignored
     gate:
       jobs:
         - tripleo-ci-centos-8-containers-multinode-ussuri:
              irrelevant-files: *multinode_ignored
         - tripleo-ci-centos-7-containers-multinode-train:
-            irrelevant-files: *multinode_ignored
-        - tripleo-ci-centos-7-containers-multinode-stein:
-            irrelevant-files: *multinode_ignored
-        - tripleo-ci-centos-7-containers-multinode-rocky:
-            irrelevant-files: *multinode_ignored
-        - tripleo-ci-centos-7-containers-multinode-queens:
             irrelevant-files: *multinode_ignored
     periodic:
       jobs:
@@ -256,6 +244,14 @@
         - tripleo-ci-centos-7-containers-multinode-queens:
             vars:
               force_non_periodic: true
+    experimental:
+      jobs:
+        - tripleo-ci-centos-7-containers-multinode-stein:
+            irrelevant-files: *multinode_ignored
+        - tripleo-ci-centos-7-containers-multinode-rocky:
+            irrelevant-files: *multinode_ignored
+        - tripleo-ci-centos-7-containers-multinode-queens:
+            irrelevant-files: *multinode_ignored
 
 ## CentOS 8 jobs
 - job:
