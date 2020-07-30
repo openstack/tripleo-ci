@@ -11,6 +11,7 @@
         - tripleo-build-containers-centos-7-buildah-stein
         - tripleo-build-containers-centos-8
         - tripleo-build-containers-centos-8-ussuri
+        - tripleo-build-containers-centos-8-train
     gate:
       queue: tripleo
       jobs:
@@ -19,6 +20,7 @@
         - tripleo-build-containers-centos-7-buildah-train
         - tripleo-build-containers-centos-8
         - tripleo-build-containers-centos-8-ussuri
+        - tripleo-build-containers-centos-8-train
 
 - project-template:
     name: tripleo-build-containers-jobs
@@ -42,11 +44,13 @@
       jobs:
         - tripleo-build-containers-centos-7-train
         - tripleo-build-containers-centos-7-buildah-train
+        - tripleo-build-containers-centos-8-train
     gate:
       queue: tripleo
       jobs:
         - tripleo-build-containers-centos-7-train
         - tripleo-build-containers-centos-7-buildah-train
+        - tripleo-build-containers-centos-8-train
 
 - project-template:
     name: tripleo-build-containers-jobs-stein
@@ -160,6 +164,14 @@
     override-checkout: stable/ussuri
     vars:
       branch_override: stable/ussuri
+
+- job:
+    name: tripleo-build-containers-centos-8-train
+    parent: tripleo-build-containers-centos-8
+    branches: master
+    override-checkout: stable/train
+    vars:
+      branch_override: stable/train
 
 - job:
     name: tripleo-build-containers-ubi-8-base

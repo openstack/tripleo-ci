@@ -219,6 +219,8 @@
       jobs:
         - tripleo-ci-centos-8-containers-multinode-ussuri:
              irrelevant-files: *multinode_ignored
+        - tripleo-ci-centos-8-containers-multinode-train:
+             irrelevant-files: *multinode_ignored
         - tripleo-ci-centos-7-containers-multinode-train:
             irrelevant-files: *multinode_ignored
         - tripleo-ci-centos-7-containers-multinode-stein:
@@ -231,6 +233,8 @@
       jobs:
         - tripleo-ci-centos-8-containers-multinode-ussuri:
              irrelevant-files: *multinode_ignored
+        - tripleo-ci-centos-8-containers-multinode-train:
+             irrelevant-files: *multinode_ignored
         - tripleo-ci-centos-7-containers-multinode-train:
             irrelevant-files: *multinode_ignored
         - tripleo-ci-centos-7-containers-multinode-stein:
@@ -242,6 +246,9 @@
     periodic:
       jobs:
         - tripleo-ci-centos-8-containers-multinode-ussuri:
+            vars:
+              force_non_periodic: true
+        - tripleo-ci-centos-8-containers-multinode-train:
             vars:
               force_non_periodic: true
         - tripleo-ci-centos-7-containers-multinode-train:
@@ -337,6 +344,14 @@
     override-checkout: stable/ussuri
     vars:
       branch_override: stable/ussuri
+
+- job:
+    name: tripleo-ci-centos-8-containers-multinode-train
+    parent: tripleo-ci-centos-8-containers-multinode
+    branches: master
+    override-checkout: stable/train
+    vars:
+      branch_override: stable/train
 
 ## CentOS 7 jobs
 - job:
