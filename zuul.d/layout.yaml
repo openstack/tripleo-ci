@@ -55,10 +55,20 @@
         - tripleo-ci-centos-8-scenario007-multinode-oooq-container:
             files:
               - ^playbooks/tripleo-ci/.*$
-        - tripleo-ci-centos-7-standalone-upgrade-stein:
-            branches: stable/train
         - tripleo-ci-centos-7-standalone-upgrade-train:
             branches: master
+        - tripleo-ci-centos-8-scenario000-multinode-oooq-container-updates:
+            files:
+              - ^scripts/emit_releases_file/.*$
+              - ^roles/run-test/.*$
+              - ^roles/common/.*$
+              - ^roles/tripleo-repos/.*$
+        - tripleo-ci-centos-8-scenario000-multinode-oooq-container-upgrades:
+            files:
+              - ^scripts/emit_releases_file/.*$
+              - ^roles/run-test/.*$
+              - ^roles/common/.*$
+              - ^roles/tripleo-repos/.*$
 
     gate:
       queue: tripleo
@@ -71,5 +81,3 @@
             files: *py_files
         - tripleo-ci-centos-7-standalone-upgrade-train:
             branches: master
-        - tripleo-ci-centos-7-standalone-upgrade-stein:
-            branches: stable/train
