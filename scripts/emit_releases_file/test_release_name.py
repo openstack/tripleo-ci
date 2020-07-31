@@ -1,6 +1,6 @@
 from emit_releases_file import compose_releases_dictionary
 
-import mock
+from unittest import mock
 import pytest
 
 
