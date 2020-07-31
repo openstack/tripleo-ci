@@ -298,6 +298,13 @@
       tags:
         - build
         - standalone
+    irrelevant-files: &irrelevant_base_standalone
+      - ^zuul.d/build-containers.yaml
+      - ^zuul.d/build-image.yaml
+      - ^zuul.d/deprecated-jobs.yaml
+      - ^zuul.d/multinode-jobs.yaml
+      - ^zuul.d/undercloud-jobs.yaml
+      - ^zuul.d/periodic.yaml
 
 - job:
     name: tripleo-ci-base-standalone-centos-8
@@ -321,6 +328,7 @@
       tags:
         - build
         - standalone
+    irrelevant-files: *irrelevant_base_standalone
 
 - job:
     name: tripleo-ci-base-standalone-upgrade
@@ -343,6 +351,7 @@
         - standalone
       extra_tags:
         - standalone-upgrade
+    irrelevant-files: *irrelevant_base_standalone
 
 - job:
     name: tripleo-ci-base-standalone-upgrade-centos-8
@@ -365,6 +374,7 @@
         - standalone
       extra_tags:
         - standalone-upgrade
+    irrelevant-files: *irrelevant_base_standalone
 
 - job:
     name: tripleo-build-containers-base-noreposetup-rhel8
@@ -559,6 +569,13 @@
       - opendev.org/openstack/tripleo-puppet-elements
       - opendev.org/openstack/tripleo-repos
       - opendev.org/openstack/requirements
+    irrelevant-files: &irrelevant_build_img
+      - ^zuul.d/build-containers.yaml
+      - ^zuul.d/deprecated-jobs.yaml
+      - ^zuul.d/multinode-jobs.yaml
+      - ^zuul.d/periodic.yaml
+      - ^zuul.d/standalone-jobs.yaml
+      - ^zuul.d/undercloud-jobs.yaml
 
 - job:
     name: tripleo-build-images-base-centos-8
@@ -588,3 +605,4 @@
       - opendev.org/openstack/tripleo-puppet-elements
       - opendev.org/openstack/tripleo-repos
       - opendev.org/openstack/requirements
+    irrelevant-files: *irrelevant_build_img
