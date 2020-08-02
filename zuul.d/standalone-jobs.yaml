@@ -400,8 +400,6 @@
               - config/general_config/featureset052.yml
               # puppet-tripleo
               - ^manifests/haproxy.*$
-        - tripleo-ci-centos-7-scenario007-standalone:
-            files: *scen7_files
         - tripleo-ci-centos-7-standalone-rocky
         - tripleo-ci-centos-8-standalone-upgrade
         - tripleo-ci-centos-8-standalone-upgrade-ussuri
@@ -429,8 +427,6 @@
             files: *scen3_files
         - tripleo-ci-centos-7-scenario004-standalone:
             files: *scen4_files
-        - tripleo-ci-centos-7-scenario007-standalone:
-            files: *scen7_files
         - tripleo-ci-centos-8-scenario001-standalone:
             files: *scen1_files
         - tripleo-ci-centos-8-scenario002-standalone:
@@ -550,26 +546,6 @@
           - 'manila_tempest_tests.tests.api.test_shares.SharesCephFSTest.test_create_get_delete_share'
 
 - job:
-    name: tripleo-ci-centos-7-scenario007-standalone
-    voting: true
-    parent: tripleo-ci-base-standalone
-    nodeset: single-centos-7-node
-    branches: ^stable/train$
-    vars:
-      featureset: '052'
-      featureset_override:
-        run_tempest: false
-        standalone_environment_files:
-          - 'environments/low-memory-usage.yaml'
-          - 'ci/environments/scenario007-standalone.yaml'
-        tempest_services:
-          - neutron
-        tempest_test_whitelist:
-          - 'tempest.scenario.test_network_basic_ops.TestNetworkBasicOps.test_network_basic_ops'
-        tempest_private_net_provider_type: 'vxlan'
-        use_os_tempest: true
-
-- job:
     name: tripleo-ci-centos-7-scenario010-standalone
     voting: true
     parent: tripleo-ci-base-standalone
@@ -638,7 +614,7 @@
     name: tripleo-ci-centos-7-standalone-os-tempest
     parent: tripleo-ci-base-standalone
     nodeset: single-centos-7-node
-    branches: ^(?!stable/(newton|ocata|pike|queens|rocky)).*$
+    branches: ^stable/stein$
     vars:
       featureset: '052'
       featureset_override:

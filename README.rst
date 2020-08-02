@@ -168,6 +168,14 @@ predictable placement          X
 introspection              X
 ======================== ===== == =======
 
+How to deprecate job?
+---------------------
+
+1. Move the job definition to zuul.d/deprecated-jobs.yaml
+2. Change the parent job to 'tripleo-ci-deprecated'
+3. Change the branches var value to 'none/deprecated'
+4. Remove job usage from the project-templates and from projects.
+
 Documentation
 -------------
 
