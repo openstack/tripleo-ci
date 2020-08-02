@@ -465,7 +465,7 @@
     name: tripleo-ci-centos-7-scenario007-multinode-oooq-container
     parent: tripleo-ci-base-multinode
     voting: false
-    branches: ^stable/(queens|rocky|stein|train).*$
+    branches: ^stable/(queens|rocky|stein).*$
     vars:
       nodes: 1ctlr
       featureset: '030'
@@ -485,7 +485,7 @@
     name: tripleo-ci-centos-7-scenario008-multinode-oooq-container
     parent: tripleo-ci-base-multinode
     voting: false
-    branches: ^(stable/(queens|rocky|stein|train)).*$
+    branches: ^(stable/(queens|rocky|stein)).*$
     vars:
       nodes: 1ctlr
       featureset: '031'
@@ -494,7 +494,7 @@
     name: tripleo-ci-centos-7-scenario010-multinode-oooq-container
     parent: tripleo-ci-base-multinode
     voting: false
-    branches: ^(stable/(queens|rocky|stein|train)).*$
+    branches: ^(stable/(queens|rocky|stein)).*$
     vars:
       nodes: 1ctlr
       featureset: '038'
