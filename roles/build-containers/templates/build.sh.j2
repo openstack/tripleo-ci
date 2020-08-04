@@ -45,17 +45,32 @@ export ANSIBLE_FILTER_PLUGINS="${TRIPLEO_ANSIBLE_WORKPATH}/plugins/filter"
 export ANSIBLE_LIBRARY="${TRIPLEO_ANSIBLE_WORKPATH}/plugins/modules"
 export ANSIBLE_MODULE_UTILS="${TRIPLEO_ANSIBLE_WORKPATH}/plugins/module_utils"
 export ANSIBLE_ROLES_PATH="${TRIPLEO_ANSIBLE_WORKPATH}/roles"
+export ROLE_REPOS="tripleo-common ansible/roles"
 
-if [[ "${TRIPLEO_CI_USR_PATH}" != '/usr' && -d "${TRIPLEO_CI_USR_PATH}/share/tripleo-common" ]]; then
-    # Check if the target directory exists and is not a symlink
-    if [[ -d "/usr/share/tripleo-common" && ! -L "/usr/share/tripleo-common" ]]; then
-        echo "Creating a backup of /usr/share/tripleo-common.bak"
-        sudo mv /usr/share/tripleo-common /usr/share/tripleo-common.bak
+echo "print exported variables"
+set | grep -i TRIPLEO
+set | grep -i ANSIBLE
+
+echo "list files in ansible role path, ${TRIPLEO_ANSIBLE_WORKPATH}/roles"
+ls -la "${TRIPLEO_ANSIBLE_WORKPATH}/roles"
+
+
+# Ensure that the roles from tripleo-common and tripleo-ansible installed
+# from the venv are available in the roles path
+# The tripleo-common role path can be found here:
+# https://opendev.org/openstack/tripleo-common/src/branch/master/tripleo_common/actions/ansible.py
+for ROLE_REPO in $ROLE_REPOS; do
+    if [[ "${TRIPLEO_CI_USR_PATH}" != '/usr' && -d "${TRIPLEO_CI_USR_PATH}/share/${ROLE_REPO}" ]]; then
+        # Check if the target directory exists and is not a symlink
+        if [[ -d "/usr/share/${ROLE_REPO}" && ! -L "/usr/share/${ROLE_REPO}" ]]; then
+            echo "Creating a backup of /usr/share/${ROLE_REPO}.bak"
+            sudo mv /usr/share/${ROLE_REPO} /usr/share/${ROLE_REPO}.bak
+        fi
+        # Link our venv'd ${ROLE_REPO} files into the root path.
+        echo -e "Linking ${TRIPLEO_CI_USR_PATH}/share/${ROLE_REPO} to /usr/share/${ROLE_REPO}"
+        sudo ln -sf ${TRIPLEO_CI_USR_PATH}/share/${ROLE_REPO} /usr/share/${ROLE_REPO}
     fi
-    # Link our venv'd tripleo-common files into the root path.
-    echo -e "Linking ${TRIPLEO_CI_USR_PATH}/share/tripleo-common to /usr/share/tripleo-common"
-    sudo ln -sf ${TRIPLEO_CI_USR_PATH}/share/tripleo-common /usr/share/tripleo-common
-fi
+done
 
 openstack tripleo container image build \
 {%   if push_containers|bool %}
