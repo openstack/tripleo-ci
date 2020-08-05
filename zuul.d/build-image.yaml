@@ -65,14 +65,14 @@
         - tripleo-buildimage-overcloud-full-centos-8
         - tripleo-buildimage-ironic-python-agent-centos-7
         - tripleo-buildimage-ironic-python-agent-centos-8
+        - tripleo-buildimage-overcloud-hardened-full-centos-7
+        - tripleo-buildimage-overcloud-hardened-full-centos-8
     gate:
       jobs:
         - tripleo-buildimage-overcloud-full-centos-7
         - tripleo-buildimage-overcloud-full-centos-8
         - tripleo-buildimage-ironic-python-agent-centos-7
         - tripleo-buildimage-ironic-python-agent-centos-8
-    experimental:
-      jobs:
         - tripleo-buildimage-overcloud-hardened-full-centos-7
         - tripleo-buildimage-overcloud-hardened-full-centos-8
 
@@ -230,7 +230,6 @@
     vars:
       tripleo_image_type: overcloud-hardened-full
       tripleo_image_os: centos7
-    voting: false
     irrelevant-files:
       - ^.*\.rst$
       - ^releasenotes/.*$
