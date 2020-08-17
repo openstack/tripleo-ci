@@ -18,6 +18,7 @@ artcl_collect_list:
   - /var/lib/pki/
   - /home/{{ undercloud_user }}/.instack/install-undercloud.log
   - /home/{{ undercloud_user }}/.config/openstack/
+  - /home/{{ undercloud_user }}/.tripleo/
   - /home/{{ undercloud_user }}/stackrc
   - /home/{{ undercloud_user }}/overcloudrc
   - /home/*/*.log
