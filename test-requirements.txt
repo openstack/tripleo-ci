@@ -3,7 +3,6 @@ ansi2html  # GPL (soft-dependency of pytest-html)
 docker>=3.7  # Apache
 molecule>=3.0.2  # MIT
 paramiko>=2.5.0  # LGPL (soft-dependency of docker that enables ssh protocol)
-pprint
 pre-commit>=1.10  # MIT License
 pytest  # MIT
 pytest-cov  # MIT
