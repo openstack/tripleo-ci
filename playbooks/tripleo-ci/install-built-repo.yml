@@ -1,0 +1,27 @@
+---
+- hosts: all
+  tasks:
+
+    - when: registry_ip_address is defined
+      block:
+
+        - name: Check if we have a repo
+          wait_for:
+            timeout: 2
+            port: 8766
+            host: '{{ registry_ip_address }}'
+          register: waitfor
+          ignore_errors: true
+
+        - name: Create a repo if got registry IP from Zuul
+          become: true
+          when: waitfor is success
+          copy:
+            dest: /etc/yum.repos.d/gating.repo
+            content: |
+              [gating-repo]
+              name=Gating repository
+              baseurl=http://{{ registry_ip_address }}:8766/
+              enabled=1
+              gpgcheck=0
+              priority=1
