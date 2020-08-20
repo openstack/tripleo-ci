@@ -21,7 +21,12 @@ container_cli_opt: ""
 component_ci_containers: ""
 openstack_git_root: "{{ ansible_user_dir }}/src/opendev.org/openstack"
 # container prefix is generally centos for usptream and rhel for downstream
-container_name_prefix: "{{ ansible_distribution|lower }}"
+container_name_prefix: >-
+  {% if osp_branch is not defined and ci_branch in ['queens','rocky','stein','train','ussuri'] -%}
+  {{ ansible_distribution|lower }}-binary
+  {%- else -%}
+  openstack
+  {%- endif -%}
 # In order to use custom auth file for pushing containers to registry
 # --authfile flag is used. The default auth file is
 # /run/containers/0/auth.json, It will be auto
