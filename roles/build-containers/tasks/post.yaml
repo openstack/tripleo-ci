@@ -8,6 +8,7 @@
     mkdir -p {{ workspace }}/conf/
     mkdir -p {{ workspace }}/logs/system
     mkdir -p {{ workspace }}/logs/httpd_data
+    mkdir -p {{ workspace }}/etc/ansible
     mkdir -p {{ workspace }}/etc/docker
     mkdir -p {{ workspace }}/etc/httpd
     mkdir -p {{ workspace }}/logs/buildah-builds
@@ -19,6 +20,7 @@
     mv /tmp/kolla-* {{ workspace }}/logs/buildah-builds/ || true
     mv /tmp/container-* {{ workspace }}/logs/buildah-builds/ || true
     rsync -var --no-links /var/log/ {{ workspace }}/logs/system/ || true
+    rsync -var --no-links /etc/ansible/ {{ workspace }}/etc/ansible/ || true
     rsync -var --no-links /etc/docker/ {{ workspace }}/etc/docker/ || true
     rsync -var --no-links /etc/httpd/ {{ workspace }}/etc/httpd/ || true
     rsync -var --no-links /var/www/html/ {{ workspace }}/logs/httpd_data/ || true
