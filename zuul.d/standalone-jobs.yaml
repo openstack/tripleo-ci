@@ -834,10 +834,8 @@
     branches: ^(?!stable/(newton|ocata|pike|queens|rocky|stein)).*$
     required-projects:
       - opendev.org/x/tripleo-ipa
-      - opendev.org/openstack/tripleo-ansible
     roles:
       - zuul: opendev.org/x/tripleo-ipa
-      - zuul: opendev.org/openstack/tripleo-ansible
     vars:
       featureset: '052'
       enable_tls: true
