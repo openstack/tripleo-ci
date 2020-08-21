@@ -88,6 +88,9 @@ openstack tripleo container image build \
 {%   if push_registry is defined %}
      --registry {{ push_registry }} \
 {%   endif %}
+{%   if rhel_modules is defined %}
+     --rhel-modules {{ rhel_modules | join(",") }} \
+{%   endif %}
 {%   for item in exclude_containers[osp_branch|default(ci_branch)] %}
      --exclude {{ item }} \
 {%   endfor %}
