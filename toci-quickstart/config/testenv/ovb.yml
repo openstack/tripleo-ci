@@ -18,7 +18,8 @@ undercloud_ironic_ipxe_port: 3816
 non_root_user_setup: false
 step_set_undercloud_hostname: true
 undercloud_hostname: undercloud
-undercloud_docker_registry_mirror: "{{ lookup('env','NODEPOOL_DOCKER_REGISTRY_V2_PROXY') }}"
+# NOTE(mwhahaha): removed until we can sort out the docker.io issues LP#1889122
+#undercloud_docker_registry_mirror: "{{ lookup('env','NODEPOOL_DOCKER_REGISTRY_V2_PROXY') }}"
 dlrn_use_local_mirrors: true
 run_validate_undercloud: true
 step_overcloud_prep_flavors: false
