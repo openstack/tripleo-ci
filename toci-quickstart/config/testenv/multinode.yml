@@ -8,7 +8,8 @@ workers_args: >-
     -e {{ tripleo_root }}/tripleo-ci/test-environments/worker-config.yaml
     -e {{ overcloud_templates_path }}/environments/debug.yaml
 # undercloud deployment
-undercloud_docker_registry_mirror: "{{ lookup('env','NODEPOOL_DOCKER_REGISTRY_V2_PROXY') }}"
+# NOTE(mwhahaha): removed until we can sort out the docker.io issues LP#1889122
+#undercloud_docker_registry_mirror: "{{ lookup('env','NODEPOOL_DOCKER_REGISTRY_V2_PROXY') }}"
 
 dlrn_use_local_mirrors: true
 
