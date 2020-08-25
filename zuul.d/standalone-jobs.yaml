@@ -440,7 +440,6 @@
         - tripleo-ci-centos-8-scenario007-standalone:
             files: *scen7_files
         - tripleo-ci-centos-7-standalone-upgrade-stein
-        - tripleo-ci-centos-7-standalone-upgrade-train
         - tripleo-ci-centos-7-standalone
         - tripleo-ci-centos-8-standalone
 
