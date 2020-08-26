@@ -610,7 +610,7 @@
     pre-run: playbooks/tripleo-buildimages/pre.yaml
     run: playbooks/tripleo-buildimages/run-v3.yaml
     post-run: playbooks/tripleo-buildimages/post.yaml
-    timeout: 4200
+    timeout: 5400
     nodeset: single-centos-7-node
     required-projects:
       - opendev.org/openstack/diskimage-builder
@@ -644,7 +644,7 @@
       - playbooks/tripleo-buildimages/tmpfiles.yaml
     run: playbooks/tripleo-buildimages/run-v3.yaml
     post-run: playbooks/tripleo-buildimages/post.yaml
-    timeout: 4200
+    timeout: 5400
     nodeset: single-centos-8-node
     vars:
       tripleo_image_os: centos8
