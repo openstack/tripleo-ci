@@ -1,0 +1,17 @@
+
+- hosts: all
+  tasks:
+    - name: Return Zuul data
+      debug:
+        msg: >-
+          Running podman registry and repository on
+          {{ hostvars[groups.all[0]].ansible_host | default('nowhere') }}
+
+    - name: Set registry IP address
+      zuul_return:
+        data:
+          zuul:
+            pause: true
+          registry_ip_address: "{{ hostvars[groups.all[0]].ansible_host }}"
+      tags:
+        - skip_ansible_lint
