@@ -1,0 +1,11 @@
+---
+# Tag and push in the same task for the sake of doing less tasks
+- name: "Tag for provider registry and push image: {{ image }}"
+  command: >
+    {{ cmd }}
+  with_items:
+    - "{{ container_cli }} tag {{ image }}:{{ version_hash }} {{ image.replace(push_registry_port|string, '5001') }}:{{ version_hash }}"
+    - "{{ container_cli }} push {{ container_cli_opt }} {{ image.replace(push_registry_port|string, '5001') }}:{{ version_hash }}"
+  loop_control:
+    loop_var: "cmd"
+  changed_when: true
