@@ -4,3 +4,9 @@
     - name: Run build containers tasks
       include_role:
         name: build-containers
+
+    - name: Fail job if it's configured
+      fail:
+        msg: >-
+          Job has finished successfully, but forced to fail by force_job_failure variable
+      when: force_job_failure|default(false)|bool
