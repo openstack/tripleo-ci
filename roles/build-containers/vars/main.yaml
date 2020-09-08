@@ -29,9 +29,7 @@ exclude_containers:
     - opendaylight
   queens:
     - opendaylight
-  rhos-17:
-    - sahara-api
-    - sahara-engine
+  rhos-17: *exclude_containers
   rhos-16.2: *exclude_containers
 
 timestamper_cmd: >-
