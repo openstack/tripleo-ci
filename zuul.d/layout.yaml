@@ -10,11 +10,12 @@
       - tripleo-ci-buildimage-jobs
       - tripleo-multinode-baremetal-full
       - tripleo-multinode-branchful
-      - tripleo-multinode-container-full
+      - tripleo-multinode-container-full-pipeline
       - tripleo-multinode-experimental
       - tripleo-standalone-scenarios-pipeline
       - tripleo-undercloud-jobs
       - tripleo-periodic
+      - tripleo-multinode-tripleoci
     check:
       jobs:
         - openstack-tox-linters
@@ -52,17 +53,8 @@
         - tripleo-ci-centos-7-scenario007-multinode-oooq-container:
             files:
               - ^playbooks/tripleo-ci/.*$
-        - tripleo-ci-centos-8-scenario007-multinode-oooq-container:
-            files:
-              - ^playbooks/tripleo-ci/.*$
         - tripleo-ci-centos-7-standalone-upgrade-train:
             branches: master
-        - tripleo-ci-centos-8-scenario000-multinode-oooq-container-updates:
-            files:
-              - ^scripts/emit_releases_file/.*$
-              - ^roles/run-test/.*$
-              - ^roles/common/.*$
-              - ^roles/tripleo-repos/.*$
         - tripleo-ci-centos-8-scenario000-multinode-oooq-container-upgrades:
             files:
               - ^scripts/emit_releases_file/.*$
