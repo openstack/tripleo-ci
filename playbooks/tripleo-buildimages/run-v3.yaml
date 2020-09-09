@@ -3,3 +3,9 @@
   - name: Run image build using the build-images role
     include_role:
       name: oooci-build-images
+
+  - name: Fail job if it's configured
+    fail:
+      msg: >-
+        Job has finished successfully, but forced to fail by force_job_failure variable
+    when: force_job_failure|default(false)|bool
