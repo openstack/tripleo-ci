@@ -254,3 +254,28 @@
       static: no
       with_items: "{{ built_images.stdout_lines }}"
   become: true
+
+- name: Populate provider registry
+  when:
+    - provider_job|default(false)|bool
+  block:
+    - name: Retrieve built images
+      command: "awk '{ print $1 }' {{ workspace }}/containers-successfully-built.log"
+      register: built_images
+    - name: Run registry
+      shell: >-
+        $(command -v docker || command -v podman) run -d -e REGISTRY_HTTP_ADDR=0.0.0.0:5001 -p 5001:5001 --name registry registry:2
+      changed_when: true
+    - name: Open ports
+      command: iptables -I INPUT -p tcp --dport 5001 -j ACCEPT
+      changed_when: true
+    - name: Disable HTTPS and certificates to access registry (buildah)
+      set_fact:
+        container_cli_opt: '--tls-verify=false'
+    - name: Retag and push images to provider registry
+      vars:
+        image: "{{ item }}"
+      include: provider_push.yaml
+      static: no
+      with_items: "{{ built_images.stdout_lines }}"
+  become: true
