@@ -95,7 +95,7 @@ openstack tripleo container image build \
      --exclude {{ item }} \
 {%   endfor %}
      --tag {{ version_hash }} \
-     --base ubi8 \
+     --base {{ containers_base_image | default('ubi8') }} \
      --prefix {{ container_name_prefix }} \
      --config-file {{ openstack_git_root }}/{% if zuul_internal is defined %}openstack-{% endif %}tripleo-common/container-images/tripleo_containers.yaml \
      --config-path {{ openstack_git_root }}/{% if zuul_internal is defined %}openstack-{% endif %}tripleo-common/container-images \
