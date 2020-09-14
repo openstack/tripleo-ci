@@ -44,6 +44,20 @@
       - ^vars/sova-patterns.yml$
       # like parent but with requirements.txt and setup.py removed
 
+- job:
+    name: tripleo-ci-centos-8-standalone-build
+    parent: tripleo-ci-centos-8-standalone
+    vars:
+      build_container_images: true
+    files:
+      - config/release/tripleo-ci/.*
+      - roles/standalone/.*
+      - roles/build-containers/.*
+      - roles/container-build/.*
+      - roles/container-prep/.*
+      - roles/container-update/.*
+      - roles/extras-common/.*
+
 # This job is rocky only!
 # os_tempest needs updates rocky, that's WIP
 - job:
@@ -414,6 +428,7 @@
         - tripleo-ci-centos-7-standalone-upgrade-stein
         - tripleo-ci-centos-7-standalone-upgrade-train
         - tripleo-ci-centos-8-standalone
+        - tripleo-ci-centos-8-standalone-build
         - tripleo-ci-centos-7-standalone
         - tripleo-ci-centos-7-scenario001-standalone:
             files: *scen1_files
@@ -448,6 +463,7 @@
         - tripleo-ci-centos-7-standalone-upgrade-stein
         - tripleo-ci-centos-7-standalone
         - tripleo-ci-centos-8-standalone
+        - tripleo-ci-centos-8-standalone-build
 
         - tripleo-ci-centos-7-scenario010-standalone:
             files: *scen10_files
