@@ -181,6 +181,7 @@
       environment_infra: osinfra
       environment_type: multinode
       common_featureset: featureset-multinode-common.yml
+      configure_swap_size: 4096
       playbooks:
         - quickstart.yml
         - multinode-undercloud.yml

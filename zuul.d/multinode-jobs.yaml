@@ -467,17 +467,12 @@
              irrelevant-files: *multinode_ignored
         - tripleo-ci-centos-8-containers-multinode-train:
              irrelevant-files: *multinode_ignored
-        - tripleo-ci-centos-7-containers-multinode-train:
-            irrelevant-files: *multinode_ignored
     periodic:
       jobs:
         - tripleo-ci-centos-8-containers-multinode-ussuri:
             vars:
               force_non_periodic: true
         - tripleo-ci-centos-8-containers-multinode-train:
-            vars:
-              force_non_periodic: true
-        - tripleo-ci-centos-7-containers-multinode-train:
             vars:
               force_non_periodic: true
         - tripleo-ci-centos-7-containers-multinode-stein:
@@ -617,7 +612,7 @@
     name: tripleo-ci-centos-7-containers-multinode-train
     parent: tripleo-ci-base-multinode
     timeout: 10800
-    voting: true
+    voting: false
     branches: master
     override-checkout: 'stable/train'
     vars:
