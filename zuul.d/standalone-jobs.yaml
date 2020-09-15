@@ -423,8 +423,15 @@
               # puppet-tripleo
               - ^manifests/haproxy.*$
         - tripleo-ci-centos-7-standalone-rocky
-        - tripleo-ci-centos-8-standalone-upgrade
-        - tripleo-ci-centos-8-standalone-upgrade-ussuri
+        - tripleo-ci-centos-8-standalone-upgrade:
+            irrelevant-files: &sa_upgrade_ignore
+              - zuul.d/build-containers.yaml
+              - zuul.d/build-image.yaml
+              - zuul.d/multinode-jobs.yaml
+              - zuul.d/undercloud-jobs.yaml
+              - zuul.d/ansible.yaml
+        - tripleo-ci-centos-8-standalone-upgrade-ussuri:
+            irrelevant-files: *sa_upgrade_ignore
         - tripleo-ci-centos-7-standalone-upgrade-stein
         - tripleo-ci-centos-7-standalone-upgrade-train
         - tripleo-ci-centos-8-standalone
@@ -540,8 +547,10 @@
         - tripleo-ci-centos-7-scenario010-ovn-provider-standalone:
             files: *scen10_files
         - tripleo-ci-centos-7-standalone-rocky
-        - tripleo-ci-centos-8-standalone-upgrade
-        - tripleo-ci-centos-8-standalone-upgrade-ussuri
+        - tripleo-ci-centos-8-standalone-upgrade:
+            irrelevant-files: *sa_upgrade_ignore
+        - tripleo-ci-centos-8-standalone-upgrade-ussuri:
+            irrelevant-files: *sa_upgrade_ignore
         - tripleo-ci-centos-7-standalone-upgrade-stein
         - tripleo-ci-centos-7-standalone-upgrade-train
         - tripleo-ci-centos-7-standalone

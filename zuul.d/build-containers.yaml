@@ -6,15 +6,25 @@
     name: tripleo-ci-build-containers-jobs
     check:
       jobs:
-        - tripleo-build-containers-centos-7-buildah-train
-        - tripleo-build-containers-centos-7-buildah-stein
-        - tripleo-build-containers-ubi-8
+        - tripleo-build-containers-centos-7-buildah-train:
+            files: &build_container_files
+              - ^playbooks/tripleo-buildcontainers/.*$
+              - ^roles/build-containers/.*$
+              - zuul.d/layout.yaml
+              - zuul.d/build-containers.yaml
+        - tripleo-build-containers-centos-7-buildah-stein:
+            files: *build_container_files
+        - tripleo-build-containers-ubi-8:
+            files: *build_container_files
     gate:
       queue: tripleo
       jobs:
-        - tripleo-build-containers-centos-7-buildah-stein
-        - tripleo-build-containers-centos-7-buildah-train
-        - tripleo-build-containers-ubi-8
+        - tripleo-build-containers-centos-7-buildah-stein:
+            files: *build_container_files
+        - tripleo-build-containers-centos-7-buildah-train:
+            files: *build_container_files
+        - tripleo-build-containers-ubi-8:
+            files: *build_container_files
 
 - project-template:
     name: tripleo-build-containers-jobs
