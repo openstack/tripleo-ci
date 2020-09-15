@@ -475,6 +475,9 @@
         - tripleo-ci-centos-8-containers-multinode-train:
             vars:
               force_non_periodic: true
+        - tripleo-ci-centos-7-containers-multinode-train:
+            vars:
+              force_non_periodic: true
         - tripleo-ci-centos-7-containers-multinode-stein:
             vars:
               force_non_periodic: true

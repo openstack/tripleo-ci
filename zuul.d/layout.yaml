@@ -20,6 +20,7 @@
       jobs:
         - openstack-tox-linters
         - tripleo-build-containers-ubi-8
+        - tripleo-ci-centos-8-content-provider
         - tripleo-tox-molecule:
             vars:
               tox_environment:
@@ -71,5 +72,6 @@
         - tripleo-tox-molecule
         - openstack-tox-py36:
             files: *py_files
+        - tripleo-ci-centos-8-content-provider
         - tripleo-ci-centos-7-standalone-upgrade-train:
             branches: master
