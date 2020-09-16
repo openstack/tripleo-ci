@@ -1036,3 +1036,17 @@
       playbooks:
         - quickstart.yml
         - multinode-standalone-pre.yml
+
+- job:
+    name: tripleo-ci-centos-8-content-provider-ussuri
+    parent: tripleo-ci-centos-8-content-provider
+    override-checkout: stable/ussuri
+    vars:
+      branch_override: stable/ussuri
+
+- job:
+    name: tripleo-ci-centos-8-content-provider-train
+    parent: tripleo-ci-centos-8-content-provider
+    override-checkout: stable/train
+    vars:
+      branch_override: stable/train

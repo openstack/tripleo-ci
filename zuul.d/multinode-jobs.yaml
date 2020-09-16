@@ -254,7 +254,7 @@
             irrelevant-files: *multinode_ignored
         - tripleo-ci-centos-8-standalone:
             irrelevant-files: *standalone_ignored
-            vars: &consumer_vars
+            vars: &sa_consumer_vars
               consumer_job: true
               build_container_images: false
               tags:
@@ -290,7 +290,7 @@
               - tripleo-ci-centos-8-content-provider
         - tripleo-ci-centos-8-standalone:
             irrelevant-files: *standalone_ignored
-            vars: *consumer_vars
+            vars: *sa_consumer_vars
             dependencies:
               - tripleo-ci-centos-8-content-provider
         - tripleo-ci-centos-8-scenario000-multinode-oooq-container-updates:
@@ -379,27 +379,27 @@
 
         - tripleo-ci-centos-8-standalone:
             irrelevant-files: *standalone_ignored
-            vars: *consumer_vars
+            vars: *sa_consumer_vars
             dependencies:
               - tripleo-ci-centos-8-content-provider
         - tripleo-ci-centos-8-scenario001-standalone:
             irrelevant-files: *standalone_ignored
-            vars: *consumer_vars
+            vars: *sa_consumer_vars
             dependencies:
               - tripleo-ci-centos-8-content-provider
         - tripleo-ci-centos-8-scenario002-standalone:
             irrelevant-files: *standalone_ignored
-            vars: *consumer_vars
+            vars: *sa_consumer_vars
             dependencies:
               - tripleo-ci-centos-8-content-provider
         - tripleo-ci-centos-8-scenario003-standalone:
             irrelevant-files: *standalone_ignored
-            vars: *consumer_vars
+            vars: *sa_consumer_vars
             dependencies:
               - tripleo-ci-centos-8-content-provider
         - tripleo-ci-centos-8-scenario004-standalone:
             irrelevant-files: *standalone_ignored
-            vars: *consumer_vars
+            vars: *sa_consumer_vars
             dependencies:
               - tripleo-ci-centos-8-content-provider
 
@@ -425,7 +425,7 @@
             irrelevant-files: *multinode_ignored
         - tripleo-ci-centos-8-standalone:
             irrelevant-files: *standalone_ignored
-            vars: *consumer_vars
+            vars: *sa_consumer_vars
             dependencies:
               - tripleo-ci-centos-8-content-provider
 
@@ -455,18 +455,26 @@
     name: tripleo-multinode-branchful
     check:
       jobs:
+        - tripleo-ci-centos-8-content-provider-ussuri
         - tripleo-ci-centos-8-containers-multinode-ussuri:
-             irrelevant-files: *multinode_ignored
+            irrelevant-files: *multinode_ignored
+            vars: *multi_consumer_vars
+            dependencies:
+              - tripleo-ci-centos-8-content-provider-ussuri
+        - tripleo-ci-centos-8-content-provider-train
         - tripleo-ci-centos-8-containers-multinode-train:
-             irrelevant-files: *multinode_ignored
+            irrelevant-files: *multinode_ignored
+            vars: *multi_consumer_vars
+            dependencies:
+              - tripleo-ci-centos-8-content-provider-train
         - tripleo-ci-centos-7-containers-multinode-train:
             irrelevant-files: *multinode_ignored
     gate:
       jobs:
         - tripleo-ci-centos-8-containers-multinode-ussuri:
-             irrelevant-files: *multinode_ignored
+            irrelevant-files: *multinode_ignored
         - tripleo-ci-centos-8-containers-multinode-train:
-             irrelevant-files: *multinode_ignored
+            irrelevant-files: *multinode_ignored
     periodic:
       jobs:
         - tripleo-ci-centos-8-containers-multinode-ussuri:
