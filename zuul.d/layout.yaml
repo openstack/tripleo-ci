@@ -8,14 +8,12 @@
     templates:
       - tripleo-ci-build-containers-jobs
       - tripleo-ci-buildimage-jobs
-      - tripleo-multinode-baremetal-full
       - tripleo-multinode-branchful
       - tripleo-multinode-container-full-pipeline
       - tripleo-multinode-experimental
       - tripleo-standalone-scenarios-pipeline
       - tripleo-undercloud-jobs
       - tripleo-periodic
-      - tripleo-multinode-tripleoci
     check:
       jobs:
         - openstack-tox-linters
