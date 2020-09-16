@@ -1,4 +1,6 @@
 - name: Swap is essential as we are not meeting memory requirements
+  vars:
+    configure_swap_size: 8192
   include_role:
     name: configure-swap
 
