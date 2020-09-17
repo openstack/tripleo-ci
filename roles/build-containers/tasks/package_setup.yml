@@ -4,7 +4,6 @@
     name:
       - "openstack-kolla"
       - "python*-tripleoclient"
-      - "tripleo-ansible"
 
 - name: set template override
   set_fact:

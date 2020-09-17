@@ -179,3 +179,40 @@
         validate_services: false
       extra_tags:
         - undercloud-upgrade
+
+- job:
+    name: tripleo-ci-centos-7-content-provider
+    parent: tripleo-ci-base-singlenode
+    branches: master
+    run:
+      - playbooks/tripleo-buildcontainers/docker.yaml
+      - playbooks/tripleo-ci/run-v3.yaml
+      - playbooks/tripleo-ci/run-provider.yml
+    voting: true
+    vars:
+      featureset: '027'
+      provider_job: true
+      ib_create_web_repo: true
+      playbooks:
+        - quickstart.yml
+        - multinode-standalone-pre.yml
+      tags:
+        - undercloud
+        - build
+
+- job:
+    name: tripleo-ci-centos-7-content-provider-queens
+    parent: tripleo-ci-centos-7-content-provider
+    branches: master
+    override-checkout: stable/queens
+    vars:
+      branch_override: stable/queens
+
+- job:
+    name: tripleo-ci-centos-7-content-provider-train
+    parent: tripleo-ci-centos-7-content-provider
+    branches: master
+    override-checkout: stable/train
+    vars:
+      branch_override: stable/train
+      use_buildah: true

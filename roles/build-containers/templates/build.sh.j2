@@ -2,15 +2,17 @@
 {% if buildcontainers_venv is defined and buildcontainers_venv %}
 source {{ workspace }}/venv_build/bin/activate
 pip install -U decorator
-{% endif %}
 TRIPLEO_COMMON_PATH="{{ openstack_git_root }}/{% if zuul_internal is defined %}openstack-{% endif %}tripleo-common"
+{% else %}
+TRIPLEO_COMMON_PATH="/usr/share/openstack-tripleo-common"
+{% endif %}
 TRIPLEO_CI_PATH="{{ ansible_user_dir }}/src/opendev.org/openstack/tripleo-ci"
 
 ### list containers to build
 {% if use_kolla | default(true) %}
 openstack overcloud container image build {{ container_config }}\
     --kolla-config-file {{ workspace }}/kolla-build.conf \
-    {% if ci_branch != 'rocky' and ci_branch in exclude_containers %}
+    {% if ci_branch not in ['queens', 'rocky'] and ci_branch in exclude_containers %}
     {% for item in exclude_containers[ci_branch] %}
         --exclude {{ item }} \
     {% endfor %}
@@ -23,7 +25,7 @@ egrep "^- " containers-to-build-full.log | awk '{ print $2 }' > containers-expec
 
 ### build
 openstack overcloud container image build {{ container_config }}\
-    {% if ci_branch != 'rocky' and ci_branch in exclude_containers %}
+    {% if ci_branch not in ['queens', 'rocky'] and ci_branch in exclude_containers %}
     {% for item in exclude_containers[ci_branch] %}
         --exclude {{ item }} \
     {% endfor %}
@@ -118,7 +120,7 @@ RETCODE=$?
 sudo {{ container_cli }} images | grep {{ registry_namespace }}/{{ kolla_base }}-binary > containers-successfully-built.log
 ### grep errors in all build logs
 egrep "^Error:|No match" /tmp/kolla-*/docker -R > containers-build-errors.log 2>&1
-egrep "^Error:|No match" /tmp/container-*/docker -R >> containers-build-errors.log 2>&1
+egrep "^Error:|No match" /tmp/container-builds/*/docker -R >> containers-build-errors.log 2>&1
 ### not built (failed)
 for i in `cat containers-expected-to-build.log`; do
   grep "$i" containers-successfully-built.log || echo "$i" >> containers-failed-to-build.log

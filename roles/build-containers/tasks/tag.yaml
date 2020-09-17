@@ -5,7 +5,7 @@
     {{ cmd }}
   with_items:
     - "{{ container_cli }} tag {{ image }}:{{ version_hash }} {{ image }}:{{ version_hash }}_{{ ansible_architecture }}"
-    - "{{ container_cli }} push {{ container_cli_opt }} {{ image }}:{{ version_hash }}_{{ ansible_architecture }}"
+    - "{{ container_cli }} push {% if use_buildah|bool %}{{ container_cli_opt }}{% endif %} {{ image }}:{{ version_hash }}_{{ ansible_architecture }}"
   loop_control:
     loop_var: "cmd"
   changed_when: true
