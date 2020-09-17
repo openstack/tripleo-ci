@@ -1,5 +1,13 @@
 ---
 - name: Set python_v fact to py2 or py3 for use with base_image_config
   set_fact:
-    python_v: "py{{ ansible_python['version']['major'] }}"
+    python_v: "{{ ansible_facts['distribution_major_version'] is version('8', '>=') | ternary('py3', 'py2') }}"
     cacheable: true
+
+- name: distribution_major_version
+  debug:
+    msg: "{{ ansible_facts['distribution_major_version'] }}"
+
+- name: python_v
+  debug:
+    msg: "{{ python_v }}"

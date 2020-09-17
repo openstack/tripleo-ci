@@ -1,6 +1,4 @@
 ---
-# get python_v fact used with vars/common.yaml to get
-# python2 or python3 packages in below tasks
 - name: Get python_v fact for py2 or py3 common vars
   include_tasks: check_set_py3.yaml
 
@@ -9,47 +7,46 @@
     path: '{{ workspace }}'
     state: directory
 
-- name: Install pip and virtualenv
+- name: Install pip
   become: true
   package:
-    name: "{{ item }}"
+    name: "python3-pip"
     state: present
-  loop:
-    - "{{ python_version[python_v] }}-pip"
-    - "{{ python_version[python_v] }}-virtualenv"
 
-- when: python_v == "py2"
-  block:
+- name: Install virtualenv/pyyaml from epel
+  yum:
+    name:
+      - python36-virtualenv
+      - python36-PyYAML
+    enablerepo: epel
+    state: present
+  become: true
+  when: ansible_distribution_major_version|int == 7
 
-    - name: Install PyYAML for python2
-      package:
-        name: PyYAML
-        state: present
-      become: true
+- name: Install PyYAML and virtualenv
+  package:
+    name:
+      - "python3-virtualenv"
+      - "python3-pyyaml"
+    state: present
+  become: true
+  when: ansible_distribution_major_version|int >= 8
 
-- when: python_v == "py3"
-  block:
+- name: Install python3-devel with provides pathfix.py
+  package:
+    name: python3-devel
+    state: present
+  become: true
 
-    - name: Install PyYAML for python3
-      package:
-        name: python3-pyyaml
-        state: present
-      become: true
+- name: Create a script that fixes shebang for python3
+  template:
+    src: pathfix_repos.sh.j2
+    dest: "{{ workspace }}/pathfix_repos.sh"
+    mode: u=rwx
 
-    - name: Install python3-devel with provides pathfix.py
-      package:
-        name: python3-devel
-        state: present
-      become: true
-
-    - name: Create a script that fixes shebang for python3
-      template:
-        src: pathfix_repos.sh.j2
-        dest: "{{ workspace }}/pathfix_repos.sh"
-        mode: u=rwx
-
-    - name: Fix shebang path for python3
-      command: bash {{ workspace }}/pathfix_repos.sh
+- name: Fix shebang path for python3
+  command: bash {{ workspace }}/pathfix_repos.sh
+  changed_when: true
 
 - name: Install deps from upper-constraints
   when: ansible_distribution == 'CentOS'
@@ -57,14 +54,32 @@
     extra_args: "-c {{ openstack_git_root }}/requirements/upper-constraints.txt"
     requirements: "{{ openstack_git_root }}/{{ item }}/requirements.txt"
     virtualenv: "{{ workspace }}/venv"
+    virtualenv_command: "/usr/bin/python3 -m venv"
   with_items:
     - diskimage-builder
     - python-tripleoclient
     - tripleo-common
-
 
 - name: pip install tripleo items
   pip:
     name: "{{ tripleo_pip_projects }}"
     state: present
     virtualenv: "{{ workspace }}/venv"
+    virtualenv_command: "/usr/bin/python3 -m venv"
+
+# Workaround for https://bugs.launchpad.net/diskimage-builder/+bug/1745626
+# venv created with 'python3 -m venv' does not have activate_this.py
+# TODO(rfolco): Remove this workaround when bug #1745626 is fixed
+- name: Workaround for bug #1745626
+  block:
+    - name: Create temp venv w/ virtualenv command
+      pip:
+        name: setuptools
+        virtualenv: "{{ workspace }}/.tmp"
+        virtualenv_command: "virtualenv-3"
+
+    - name: Borrow activate_this.py
+      copy:
+        src: "{{ workspace }}/.tmp/bin/activate_this.py"
+        dest: "{{ workspace }}/venv/bin/"
+        remote_src: yes

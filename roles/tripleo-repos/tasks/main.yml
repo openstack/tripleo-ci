@@ -1,43 +1,50 @@
 ---
+- name: Install and enable epel (centos7/rhel7)
+  block:
+    - name: Install epel-release
+      package:
+        name: epel-release
+        state: present
+    - name: Ensure EPEL repo is enabled
+      ini_file:
+        dest: /etc/yum.repos.d/epel.repo
+        section: epel
+        option: enabled
+        value: '1'
+  become: true
+  when: ansible_distribution_major_version|int == 7
+
 - name: install system packages
   become: true
   package:
-    name: "{{ rpm_packages[ansible_pkg_mgr] }}"
+    name: "{{ rpm_packages }}"
     state: present
-
-- name: install pip from epel on centos-7
-  when: ansible_distribution == 'CentOS' and ansible_distribution_major_version == 7
-  block:
-    - name: install epel if needed
-      become: true
-      package:
-        name: epel-release
-
-    - name: install pip on py27 distros
-      shell: yum install -y --disableexcludes='*' /usr/bin/pip
-      register: result
-      changed_when: "'Nothing to do' not in result.stdout"
-      args:
-        warn: false
-
-# TODO(ssbarnea) workaround for https://bugs.launchpad.net/tripleo/+bug/1821575
-# virtualenv-3 is missing in infra prepared images but any version should do
-- name: detect virtualenv command to use
-  shell: command -v virtualenv-3 || command -v virtualenv
-  args:
-    warn: false
-  changed_when: false
-  register: venv_cmd
 
 - name: pip install tripleo-repos
   become: true
   pip:
     name: "{{ tripleo_repos_repository }}"
     virtualenv: "{{ workspace }}/venv"
-    virtualenv_python: "{{ virtualenv_python[ansible_pkg_mgr] }}"
     # https://github.com/ansible/ansible/issues/52275
-    virtualenv_command: "{{ venv_cmd.stdout_lines|first }}"
+    virtualenv_command: "/usr/bin/python3 -m venv"
     virtualenv_site_packages: true
+  # NOTE(rfolco): we need to set both virtualenv_command and
+  # ansible_python_interpreter, otherwise we hit this error:
+  # Failed to import the required Python library (setuptools)
+  # This happens in a dual python env like centos7.8
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+
+- name: Disable epel (centos7/rhel7)
+  block:
+    - name: Ensure EPEL repo is disabled
+      ini_file:
+        dest: /etc/yum.repos.d/epel.repo
+        section: epel
+        option: enabled
+        value: '0'
+  become: true
+  when: ansible_distribution_major_version|int == 7
 
 - name: Set branch for building containers check jobs
   set_fact:
