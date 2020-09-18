@@ -39,3 +39,5 @@ registry_namespace: >-
   {%- else -%}
   tripleo{{ ci_branch }}
   {%- endif -%}
+container_registry_image: quay.io/tripleoci/registry:2
+provider_registry_port: 5001
