@@ -35,6 +35,9 @@ image_cache_dir_cleanup: true
 build_image_isolated: false
 build_undercloud: false
 
+# Rely on RDO registry instead of docker.io due to rate limit
+docker_registry_host: trunk.registry.rdoproject.org
+
 # We don't need to cleanup TripleO CI
 tempest_track_resources: false
 
