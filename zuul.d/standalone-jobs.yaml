@@ -948,6 +948,7 @@
           loadbalancer-feature-enabled.l7_protocol_enabled: false
           loadbalancer-feature-enabled.l4_protocol: 'TCP'
           loadbalancer-feature-enabled.session_persistence_enabled: false
+          loadbalancer-feature-enabled.not_implemented_is_error: false
         standalone_environment_files:
           - 'environments/low-memory-usage.yaml'
           - 'ci/environments/scenario010-standalone.yaml'
