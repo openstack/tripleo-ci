@@ -2,6 +2,7 @@
     name: tripleo-periodic
     periodic:
       jobs:
+        - tripleo-ci-centos-8-content-provider
         - tripleo-ci-centos-8-containers-multinode:
             vars:
               force_non_periodic: true

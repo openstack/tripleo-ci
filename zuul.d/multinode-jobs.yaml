@@ -604,7 +604,7 @@
 - job:
     name: tripleo-ci-centos-7-containers-multinode
     parent: tripleo-ci-base-multinode
-    branches: ^(stable/(pike|queens|rocky|stein|train)).*$
+    branches: ^(stable/(pike|queens|rocky|stein)).*$
     vars:
       nodes: 1ctlr
       featureset: '010'
