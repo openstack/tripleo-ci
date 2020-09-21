@@ -116,6 +116,7 @@ artcl_collect_list:
   - /etc/modprobe.d/
   - /etc/modules-load.d/
   - /etc/mongo*
+  - /etc/multipath*
   - /etc/my.cnf*
   - /etc/my.cnf.d/
   - /etc/named*
