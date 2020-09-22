@@ -10,7 +10,6 @@ platforms:
     hostname: ${MOLECULE_PLATFORM:-centos7}
     image: ${MOLECULE_IMAGE:-centos:7}
     dockerfile: ../Dockerfile.j2
-    pkg_extras: python-setuptools
     easy_install: [pip]
     environment: &env
       http_proxy: "{{ lookup('env', 'http_proxy') }}"
