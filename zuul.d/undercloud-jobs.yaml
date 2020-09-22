@@ -63,6 +63,8 @@
     check:
       jobs:
         - tripleo-ci-centos-8-content-provider
+        - tripleo-ci-centos-8-content-provider-ussuri
+        - tripleo-ci-centos-8-content-provider-train
         - tripleo-ci-centos-8-undercloud-containers:
             irrelevant-files: *undercloud_ignored
             vars: &undercloud_consumer_vars
@@ -71,6 +73,18 @@
                 - build
             dependencies:
               - tripleo-ci-centos-8-content-provider
+        - tripleo-ci-centos-8-undercloud-upgrade:
+            vars: *undercloud_consumer_vars
+            irrelevant-files: *undercloud_ignored
+            dependencies:
+              - tripleo-ci-centos-8-content-provider
+              - tripleo-ci-centos-8-content-provider-ussuri
+        - tripleo-ci-centos-8-undercloud-upgrade-ussuri:
+            vars: *undercloud_consumer_vars
+            irrelevant-files: *undercloud_ignored
+            dependencies:
+              - tripleo-ci-centos-8-content-provider-ussuri
+              - tripleo-ci-centos-8-content-provider-train
         - tripleo-ci-centos-7-undercloud-oooq:
             irrelevant-files: *undercloud_ignored
         - tripleo-ci-centos-7-undercloud-upgrades:
@@ -79,14 +93,13 @@
             irrelevant-files: *undercloud_ignored
         - tripleo-ci-centos-7-containerized-undercloud-upgrades:
             irrelevant-files: *undercloud_ignored
-        - tripleo-ci-centos-8-undercloud-upgrade:
-            irrelevant-files: *undercloud_ignored
-        - tripleo-ci-centos-8-undercloud-upgrade-ussuri:
-            irrelevant-files: *undercloud_ignored
+
     gate:
       queue: tripleo
       jobs:
         - tripleo-ci-centos-8-content-provider
+        - tripleo-ci-centos-8-content-provider-ussuri
+        - tripleo-ci-centos-8-content-provider-train
         - tripleo-ci-centos-8-undercloud-containers:
             irrelevant-files: *undercloud_ignored
             vars: *undercloud_consumer_vars
@@ -99,8 +112,11 @@
         - tripleo-ci-centos-7-containers-undercloud-minion:
             irrelevant-files: *undercloud_ignored
         - tripleo-ci-centos-8-undercloud-upgrade-ussuri:
+            vars: *undercloud_consumer_vars
             irrelevant-files: *undercloud_ignored
-
+            dependencies:
+              - tripleo-ci-centos-8-content-provider-ussuri
+              - tripleo-ci-centos-8-content-provider-train
 
 - job:
     name: tripleo-ci-centos-7-undercloud-containers
