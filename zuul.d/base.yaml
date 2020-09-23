@@ -78,6 +78,9 @@
       - tox.ini
       - ^setup.*$
       - ^vars/sova-patterns.yml$
+      - ^.ansible-lint$
+      - ^.pre-commit-config.yaml$
+      - ^.yamllint$
 
 # This job definition holds the required projects
 # for tripleo-ci-base-centos-8. The required projects are separated
@@ -135,6 +138,9 @@
       - tox.ini
       - ^setup.*$
       - ^vars/sova-patterns.yml$
+       ^.ansible-lint$
+      - ^.pre-commit-config.yaml$
+      - ^.yamllint$
 
 - job:
     name: tripleo-ci-base-multinode
