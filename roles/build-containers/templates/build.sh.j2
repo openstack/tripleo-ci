@@ -34,6 +34,9 @@ openstack overcloud container image build {{ container_config }}\
     {% if ci_branch not in ['queens', 'rocky', 'stein'] %}
         --work-dir /tmp/container-builds \
     {% endif %}
+    {% if build_timeout is defined %}
+        --build-timeout {{ build_timeout }} \
+    {% endif %}
     --kolla-config-file {{ workspace }}/kolla-build.conf
 {% else %}
 ### build
@@ -100,6 +103,9 @@ openstack tripleo container image build \
      --config-file {{ openstack_git_root }}/{% if zuul_internal is defined %}openstack-{% endif %}tripleo-common/container-images/tripleo_containers.yaml \
      --config-path {{ openstack_git_root }}/{% if zuul_internal is defined %}openstack-{% endif %}tripleo-common/container-images \
      --work-dir /tmp/container-builds \
+{%   if build_timeout is defined %}
+     --build-timeout {{ build_timeout }} \
+{%   endif %}
      --debug 2> containers-build-errors.log
 {%   endif %}
 RETCODE=$?
