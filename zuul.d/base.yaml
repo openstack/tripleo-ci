@@ -322,6 +322,21 @@
         - build
         - standalone
     irrelevant-files: &irrelevant_base_standalone
+      - ^.*\.md$
+      - ^.*\.rst$
+      - ^doc/.*$
+      - ^etc/.*$
+      - ^metadata.json$
+      - ^releasenotes/.*$
+      # do not put requirements.txt here, as it can have a huge impact
+      - ^test-requirements.txt$
+      - ^lower-constraints.txt$
+      - ^spec/.*$
+      - ^Puppetfile.*$
+      - tox.ini
+      - ^setup.*$
+      - ^vars/sova-patterns.yml$
+      # zuul changes
       - ^zuul.d/build-containers.yaml
       - ^zuul.d/build-image.yaml
       - ^zuul.d/deprecated-jobs.yaml
