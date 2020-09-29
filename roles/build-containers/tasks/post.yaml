@@ -1,4 +1,8 @@
 ---
+- name: Build report
+  include: build-report.yaml
+  when: not use_kolla | default(false)
+
 - name: Grab job artifacts
   become: true
   args:
@@ -11,14 +15,13 @@
     mkdir -p {{ workspace }}/etc/ansible
     mkdir -p {{ workspace }}/etc/docker
     mkdir -p {{ workspace }}/etc/httpd
-    mkdir -p {{ workspace }}/logs/buildah-builds
 
     mv *.conf {{ workspace }}/conf/
-    mv {{ openstack_git_root }}/tripleo-common/container-images/overcloud_containers.yaml {{ workspace }}/conf/
+    mv {{ openstack_git_root }}/{% if zuul_internal is defined %}openstack-{% endif %}tripleo-common/container-images/*_containers.yaml {{ workspace }}/conf/
     mv *.log {{ workspace }}/logs/
+    mv *.html {{ workspace }}/logs/
     mv *.sh {{ workspace }}/logs/
-    mv /tmp/kolla-* {{ workspace }}/logs/buildah-builds/ || true
-    mv /tmp/container-* {{ workspace }}/logs/buildah-builds/ || true
+    mv /tmp/kolla-* {{ workspace }}/logs/ || true
     rsync -var --no-links /var/log/ {{ workspace }}/logs/system/ || true
     rsync -var --no-links /etc/ansible/ {{ workspace }}/etc/ansible/ || true
     rsync -var --no-links /etc/docker/ {{ workspace }}/etc/docker/ || true

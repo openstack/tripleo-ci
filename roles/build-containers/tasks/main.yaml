@@ -128,6 +128,7 @@
 - name: Set container cli
   set_fact:
     container_cli: "{% if use_buildah|bool %}buildah{% else %}docker{% endif %}"
+    cacheable: yes
 
 - name: Set config-file
   set_fact:
@@ -200,37 +201,48 @@
         that:
           - authfile_exist.stat.exists | bool
 
-- name: Generate building script
+- name: Generate kolla building script
   template:
-    src: templates/build.sh.j2
+    src: templates/kolla-build.sh.j2
     dest: "{{ workspace }}/build_containers.sh"
     mode: 0777
     force: yes
+  when: use_kolla | default(true)
+
+- name: Generate tripleo building script
+  template:
+    src: templates/tripleo-build.sh.j2
+    dest: "{{ workspace }}/build_containers.sh"
+    mode: 0777
+    force: yes
+  when: not use_kolla | default(true)
 
 - name: "Run image build as ansible user > {{ workspace }}/build.log"
   args:
     chdir: '{{ workspace }}'
-  shell: set -o pipefail && bash build_containers.sh 2>&1 {{ timestamper_cmd }} > {{ workspace }}/build.log
+  shell: set -o pipefail && bash build_containers.sh 2>&1 {{ timestamper_cmd }} > {{ workspace }}/logs/build.log
   when:
     - ansible_distribution|lower != "redhat"
 
 - name: "Run image build as root > {{ workspace }}/build.log"
   args:
     chdir: '{{ workspace }}'
-  shell: set -o pipefail && bash build_containers.sh 2>&1 {{ timestamper_cmd }} > {{ workspace }}/build.log
-  become: true
+  shell: set -o pipefail && bash build_containers.sh 2>&1 {{ timestamper_cmd }} > {{ workspace }}/logs/build.log
   when:
-    - ansible_distribution|lower  == "redhat"
+    - ansible_distribution|lower == "redhat"
+  become: true
 
-- name: Retrieve list of built x86_64 images, retag, and push
+- name: Retrieve built images
+  shell: "{{ container_cli }} images | grep {{ container_name_prefix }} | awk '{ print $1 }'"
+  register: built_images
+  become: true
+
+- name: Retag and push x86_64 images
   when:
     - ansible_architecture == "x86_64"
     - push_containers | bool
     - not push_containers_podman | default(false) | bool
   block:
-    - name: Retrieve built images
-      command: "awk '{ print $1 }' {{ workspace }}/containers-successfully-built.log"
-      register: built_images
     - name: Disable HTTPS and certificates to access registry (buildah)
       set_fact:
         container_cli_opt: '--tls-verify=false'
@@ -242,13 +254,6 @@
       static: no
       with_items: "{{ built_images.stdout_lines }}"
   become: true
-
-- name: Retrieve built images
-  command: "awk '{ print $1 }' {{ workspace }}/containers-successfully-built.log"
-  register: built_images
-  become: true
-  when:
-    - job.provider_job|default(false)|bool
 
 - name: Run registry
   when:
