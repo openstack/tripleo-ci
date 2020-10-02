@@ -59,6 +59,12 @@ export DIB_YUM_REPO_CONF="/etc/yum.repos.d/delorean*"
 
 {% endif %}
 
+{% if dib_dnf_module_streams is defined %}
+
+export DIB_DNF_MODULE_STREAMS="{{ dib_dnf_module_streams }}"
+
+{% endif %}
+
 export DIB_DEBUG_TRACE=1
 
 openstack --debug overcloud image build {% if not build_all_images|bool %}--image-name {{ tripleo_image_type }}{% endif %} \
