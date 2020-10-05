@@ -108,7 +108,7 @@
 - job:
     name: tripleo-ci-centos-7-standalone-upgrade-stein
     parent: tripleo-ci-base-standalone-upgrade
-    voting: true
+    voting: false
     branches: ^stable/stein$
     override-checkout: 'stable/stein'
     vars:
@@ -467,7 +467,6 @@
             files: *scen4_files
         - tripleo-ci-centos-8-scenario007-standalone:
             files: *scen7_files
-        - tripleo-ci-centos-7-standalone-upgrade-stein
         - tripleo-ci-centos-7-standalone
         - tripleo-ci-centos-8-standalone
         - tripleo-ci-centos-8-standalone-build
