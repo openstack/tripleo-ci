@@ -12,7 +12,7 @@
       - tripleo-multinode-container-full-pipeline
       - tripleo-multinode-experimental
       - tripleo-standalone-scenarios-pipeline
-      - tripleo-undercloud-jobs
+      - tripleo-undercloud-jobs-pipeline
       - tripleo-periodic
     check:
       jobs:

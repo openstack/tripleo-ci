@@ -310,6 +310,14 @@
         - images
 
 - job:
+    name: tripleo-ci-undercloud-content-consumer-centos-8
+    abstract: true
+    description: |
+        Intermediate layer for content consumer undercloud jobs
+    pre-run: playbooks/tripleo-ci/install-built-repo.yml
+    parent: tripleo-ci-base-singlenode-centos-8
+
+- job:
     name: tripleo-ci-base-standalone
     abstract: true
     description: |
