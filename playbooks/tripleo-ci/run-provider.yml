@@ -13,5 +13,7 @@
           zuul:
             pause: true
           registry_ip_address: "{{ hostvars[groups.all[0]].ansible_host }}"
+          provider_dlrn_hash: "{{ dlrn_hash|default('') }}"
+          provider_dlrn_hash_tag: "{{ dlrn_hash_tag|default('') }}"
       tags:
         - skip_ansible_lint
