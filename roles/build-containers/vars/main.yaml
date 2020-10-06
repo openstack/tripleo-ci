@@ -15,6 +15,7 @@ exclude_containers:
     - opendaylight
     - neutron-server-opendaylight
     - neutron-mlnx-agent
+    - nova-serialproxy
     - sahara-api
     - sahara-engine
     - skydive-agent
