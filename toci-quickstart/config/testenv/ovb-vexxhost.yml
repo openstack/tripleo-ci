@@ -26,7 +26,21 @@ update_containers: >-
   {%- endif -%}
 
 # Rely on RDO registry instead of docker.io due to rate limit
-docker_registry_host: trunk.registry.rdoproject.org
+# job.build_container_images is defined in zuul as a
+# direct var.  adding build_container_images as tqe
+# var so that we can turn this on/off per release w/o
+# changing zuul and breaking jobs via inheritance.
+docker_registry_host: >-
+  {% if job is defined and
+  job.build_container_images is defined and
+  job.build_container_images|default(false)|bool or
+  build_container_images|default(false)|bool -%}
+  127.0.0.1:5001
+  {%- elif job.registry_ip_address is defined -%}
+  {{ job.registry_ip_address }}:5001
+  {%- else -%}
+  trunk.registry.rdoproject.org
+  {%- endif -%}
 
 # We don't need to cleanup TripleO CI
 tempest_track_resources: false
