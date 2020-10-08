@@ -26,12 +26,31 @@
         registry_ip_address_branch: "{'{{ ci_branch }}': '{{ hostvars[groups.all[0]].ansible_host }}'}"
         provider_dlrn_hash_branch: "{'{{ ci_branch }}': '{{ dlrn_hash|default('') }}'}"
 
+    - name: Check if DLRN tag was dumped in /tmp/container_build_id
+      stat:
+        path: /tmp/container_build_id
+      register: build_id
+
+    - name: Recover DLRN tag
+      when: build_id.stat.exists
+      block:
+
+        - name: Load file
+          slurp:
+            src: /tmp/container_build_id
+          register: dlrn_file
+
+        - name: Set fact for DLRN tag
+          set_fact:
+            dlrn_hash: "{{ dlrn_file['content'] | b64decode | trim }}"
+            dlrn_hash_tag: "{{ dlrn_file['content'] | b64decode | trim }}"
+
     - name: Return Zuul data
       debug:
         msg: >-
           Running podman registry and repository on
           {{ hostvars[groups.all[0]].ansible_host | default('nowhere') }}
-          for branch {{ ci_branch }}
+          for branch {{ ci_branch }} and DLRN tag {{ dlrn_hash|default('no tag') }}
 
     - name: Set registry IP address
       zuul_return:
