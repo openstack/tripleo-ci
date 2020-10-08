@@ -10,7 +10,6 @@
       - tripleo-ci-buildimage-jobs
       - tripleo-multinode-branchful
       - tripleo-multinode-container-full-pipeline
-      - tripleo-multinode-experimental
       - tripleo-standalone-scenarios-pipeline
       - tripleo-undercloud-jobs-pipeline
       - tripleo-periodic

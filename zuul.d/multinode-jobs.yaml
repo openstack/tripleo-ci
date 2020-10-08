@@ -440,14 +440,6 @@
         - tripleo-ci-centos-7-standalone-upgrade-train:
             irrelevant-files: *standalone_ignored
 
-- project-template:
-    name: tripleo-multinode-experimental
-    experimental:
-      jobs:
-        - tripleo-ci-centos-7-scenario006-multinode-oooq-container
-        - tripleo-ci-centos-7-scenario010-multinode-oooq-container
-        - tripleo-ci-centos-7-scenario011-multinode-oooq-container
-
 # NOTE(rfolco): tripleo-multinode-branchful should be used in ci repos only
 # Check where this template is used across openstack repos with the url below:
 # http://codesearch.openstack.org/?q=tripleo-multinode-branchful
