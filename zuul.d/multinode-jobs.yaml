@@ -455,6 +455,7 @@
     check:
       jobs:
         - tripleo-ci-centos-8-content-provider-ussuri
+        - tripleo-ci-centos-8-content-provider-train
         - tripleo-ci-centos-7-content-provider-train
         - tripleo-ci-centos-7-content-provider-queens
         - tripleo-ci-centos-8-containers-multinode-ussuri:
@@ -462,7 +463,6 @@
             vars: *multi_consumer_vars
             dependencies:
               - tripleo-ci-centos-8-content-provider-ussuri
-        - tripleo-ci-centos-8-content-provider-train
         - tripleo-ci-centos-8-containers-multinode-train:
             irrelevant-files: *multinode_ignored
             vars: *multi_consumer_vars
@@ -480,10 +480,18 @@
               - tripleo-ci-centos-7-content-provider-queens
     gate:
       jobs:
+        - tripleo-ci-centos-8-content-provider-ussuri
+        - tripleo-ci-centos-8-content-provider-train
         - tripleo-ci-centos-8-containers-multinode-ussuri:
             irrelevant-files: *multinode_ignored
+            vars: *multi_consumer_vars
+            dependencies:
+              - tripleo-ci-centos-8-content-provider-ussuri
         - tripleo-ci-centos-8-containers-multinode-train:
             irrelevant-files: *multinode_ignored
+            vars: *multi_consumer_vars
+            dependencies:
+              - tripleo-ci-centos-8-content-provider-train
     periodic:
       jobs:
         - tripleo-ci-centos-8-containers-multinode-ussuri:
@@ -621,7 +629,7 @@
 - job:
     name: tripleo-ci-centos-7-containers-multinode
     parent: tripleo-ci-base-multinode
-    branches: ^(stable/(pike|queens|rocky|stein)).*$
+    branches: ^(stable/(rocky|queens)).*$
     vars:
       nodes: 1ctlr
       featureset: '010'
@@ -687,7 +695,7 @@
 - job:
     name: tripleo-ci-centos-7-scenario001-multinode-oooq-container
     parent: tripleo-ci-base-multinode
-    branches: ^stable/(pike|queens|rocky).*$
+    branches: ^(stable/queens).*$
     voting: false
     vars:
       nodes: 1ctlr
@@ -696,7 +704,7 @@
 - job:
     name: tripleo-ci-centos-7-scenario002-multinode-oooq-container
     parent: tripleo-ci-base-multinode
-    branches: ^stable/(pike|queens|rocky).*$
+    branches: ^(stable/queens).*$
     voting: false
     vars:
       nodes: 1ctlr
@@ -705,7 +713,7 @@
 - job:
     name: tripleo-ci-centos-7-scenario003-multinode-oooq-container
     parent: tripleo-ci-base-multinode
-    branches: ^stable/(pike|queens|rocky).*$
+    branches: ^(stable/queens).*$
     voting: false
     vars:
       nodes: 1ctlr
@@ -714,7 +722,7 @@
 - job:
     name: tripleo-ci-centos-7-scenario004-multinode-oooq-container
     parent: tripleo-ci-base-multinode
-    branches: ^stable/(pike|queens|rocky).*$
+    branches: ^(stable/queens).*$
     voting: false
     vars:
       nodes: 1ctlr
@@ -724,7 +732,7 @@
     name: tripleo-ci-centos-7-scenario006-multinode-oooq-container
     parent: tripleo-ci-base-multinode
     voting: false
-    branches: ^(stable/(queens|rocky|stein|train)).*$
+    branches: ^(stable/(queens|train)).*$
     vars:
       nodes: 1ctlr
       featureset: '026'
@@ -733,7 +741,7 @@
     name: tripleo-ci-centos-7-scenario007-multinode-oooq-container
     parent: tripleo-ci-base-multinode
     voting: false
-    branches: ^stable/(queens|rocky|stein).*$
+    branches: ^stable/(queens).*$
     vars:
       nodes: 1ctlr
       featureset: '030'
@@ -753,7 +761,7 @@
     name: tripleo-ci-centos-7-scenario008-multinode-oooq-container
     parent: tripleo-ci-base-multinode
     voting: false
-    branches: ^(stable/(queens|rocky|stein)).*$
+    branches: ^(stable/queens).*$
     vars:
       nodes: 1ctlr
       featureset: '031'
@@ -762,7 +770,7 @@
     name: tripleo-ci-centos-7-scenario010-multinode-oooq-container
     parent: tripleo-ci-base-multinode
     voting: false
-    branches: ^(stable/(queens|rocky|stein)).*$
+    branches: ^(stable/queens).*$
     vars:
       nodes: 1ctlr
       featureset: '038'
@@ -804,7 +812,7 @@
     name: tripleo-ci-centos-7-scenario000-multinode-oooq-container-upgrades
     parent: tripleo-ci-base-multinode
     voting: false
-    branches: ^(stable/(queens|rocky|stein|train)).*$
+    branches: ^(stable/(queens|train)).*$
     vars:
       nodes: 1ctlr
       featureset: '051'
