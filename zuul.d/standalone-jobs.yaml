@@ -994,6 +994,21 @@
               # puppet
               - manifests/profile/base/rabbitmq.pp
 
+- project-template:
+    name: tripleo-standalone-multinode-ipa-pipeline
+    check:
+      jobs:
+        - tripleo-ci-centos-8-content-provider
+        - tripleo-ci-centos-8-standalone-on-multinode-ipa:
+            files: *tls_ipa_files
+            vars: &ipa_consumer_vars
+              consumer_job: true
+              build_container_images: false
+              tags:
+                - standalone
+            dependencies:
+              - tripleo-ci-centos-8-content-provider
+
 - job:
     name: tripleo-ci-centos-8-standalone-on-multinode-ipa
     parent: tripleo-ci-base-standalone-centos-8
