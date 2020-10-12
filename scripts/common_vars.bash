@@ -15,6 +15,12 @@ fi
 if [ "$ZUUL_BRANCH" = "stable/1.0" -a "$ZUUL_PROJECT" = "openstack/openstack-virtual-baremetal" ]; then
     export ZUUL_BRANCH="master"
 fi
+# For puppet-pacemaker "stable/1.1.x" is a centos7 support branch
+if [ "$ZUUL_BRANCH" = "stable/1.1.x" -a "$ZUUL_PROJECT" = "openstack/puppet-pacemaker" ]; then
+    export ZUUL_BRANCH="stable/train"
+    export STABLE_RELEASE="train"
+fi
+
 
 export OVERRIDE_ZUUL_BRANCH=${OVERRIDE_ZUUL_BRANCH:-""}
 export STABLE_RELEASE=${STABLE_RELEASE:-""}
