@@ -19,6 +19,8 @@
         - openstack-tox-linters
         - tripleo-build-containers-ubi-8
         - tripleo-ci-centos-8-content-provider
+        - tripleo-ci-centos-8-content-provider-ussuri
+        - tripleo-ci-centos-8-content-provider-train
         - tripleo-tox-molecule:
             vars:
               tox_environment:
@@ -71,5 +73,7 @@
         - openstack-tox-py36:
             files: *py_files
         - tripleo-ci-centos-8-content-provider
+        - tripleo-ci-centos-8-content-provider-ussuri
+        - tripleo-ci-centos-8-content-provider-train
         - tripleo-ci-centos-7-standalone-upgrade-train:
             branches: master
