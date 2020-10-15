@@ -486,8 +486,8 @@
             vars: &consumer_vars
               consumer_job: true
               build_container_images: false
-              tags:
-                - standalone
+              remove_tags:
+                - build
             dependencies:
               - tripleo-ci-centos-8-content-provider
         - tripleo-ci-centos-8-scenario002-standalone:
@@ -515,9 +515,8 @@
             vars:
               consumer_job: true
               build_container_images: false
-              tags:
-                - standalone
-                - octavia
+              remove_tags:
+                - build
             dependencies:
               - tripleo-ci-centos-8-content-provider
         - tripleo-ci-centos-8-scenario010-ovn-provider-standalone:
@@ -525,9 +524,8 @@
             vars:
               consumer_job: true
               build_container_images: false
-              tags:
-                - standalone
-                - octavia
+              remove_tags:
+                - build
             dependencies:
               - tripleo-ci-centos-8-content-provider
         - tripleo-ci-centos-8-scenario012-standalone:
@@ -1004,8 +1002,8 @@
             vars: &ipa_consumer_vars
               consumer_job: true
               build_container_images: false
-              tags:
-                - standalone
+              remove_tags:
+                - build
             dependencies:
               - tripleo-ci-centos-8-content-provider
 

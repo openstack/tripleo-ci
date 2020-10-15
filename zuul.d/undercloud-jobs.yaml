@@ -67,11 +67,8 @@
             irrelevant-files: *undercloud_ignored
             vars: &undercloud_consumer_vars
               consumer_job: true
-              tags:
-              - undercloud-setup
-              - undercloud-scripts
-              - undercloud-install
-              - undercloud-validate
+              remove_tags:
+                - build
             dependencies:
               - tripleo-ci-centos-8-content-provider
         - tripleo-ci-centos-7-undercloud-oooq:
