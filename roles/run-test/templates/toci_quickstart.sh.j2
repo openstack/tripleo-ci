@@ -41,7 +41,7 @@ QUICKSTART_VENV_CMD="
 #REMOVE build from --skip-tags ASAP
 QUICKSTART_INSTALL_CMD="
     $LOCAL_WORKING_DIR/bin/ansible-playbook
-    --tags {{ ','.join(tags + (extra_tags|default([]))) }}
+    --tags {{ ','.join((tags + (extra_tags|default([]))) | difference(remove_tags|default([]))) }}
 "
 
 export QUICKSTART_DEFAULT_RELEASE_ARG="--extra-vars @$LOCAL_WORKING_DIR/config/release/tripleo-ci/{{ ansible_distribution }}-{{ ansible_distribution_major_version }}/$QUICKSTART_RELEASE.yml"
