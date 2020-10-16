@@ -31,7 +31,6 @@
               - ^playbooks/tripleo-buildcontainers/.*$
               - ^playbooks/tripleo-buildimages/.*$
               - ^vars/sova-patterns.yml$
-              - zuul.d/layout.yaml
               - zuul.d/build-containers.yaml
               - zuul.d/build-image.yaml
               - zuul.d/standalone-jobs.yaml
@@ -458,12 +457,12 @@
         - tripleo-ci-centos-8-content-provider-train
         - tripleo-ci-centos-7-content-provider-train
         - tripleo-ci-centos-7-content-provider-queens
-        - tripleo-ci-centos-8-containers-multinode-ussuri:
+        - tripleo-ci-centos-8-containers-multinode-ussuri: &multi_consumer_job_ussuri
             irrelevant-files: *multinode_ignored
             vars: *multi_consumer_vars
             dependencies:
               - tripleo-ci-centos-8-content-provider-ussuri
-        - tripleo-ci-centos-8-containers-multinode-train:
+        - tripleo-ci-centos-8-containers-multinode-train: &multi_consumer_job_train
             irrelevant-files: *multinode_ignored
             vars: *multi_consumer_vars
             dependencies:
@@ -482,16 +481,8 @@
       jobs:
         - tripleo-ci-centos-8-content-provider-ussuri
         - tripleo-ci-centos-8-content-provider-train
-        - tripleo-ci-centos-8-containers-multinode-ussuri:
-            irrelevant-files: *multinode_ignored
-            vars: *multi_consumer_vars
-            dependencies:
-              - tripleo-ci-centos-8-content-provider-ussuri
-        - tripleo-ci-centos-8-containers-multinode-train:
-            irrelevant-files: *multinode_ignored
-            vars: *multi_consumer_vars
-            dependencies:
-              - tripleo-ci-centos-8-content-provider-train
+        - tripleo-ci-centos-8-containers-multinode-ussuri: *multi_consumer_job_ussuri
+        - tripleo-ci-centos-8-containers-multinode-train: *multi_consumer_job_train
     periodic:
       jobs:
         - tripleo-ci-centos-8-containers-multinode-ussuri:
@@ -520,6 +511,9 @@
             irrelevant-files: *multinode_ignored
         - tripleo-ci-centos-7-containers-multinode-queens:
             irrelevant-files: *multinode_ignored
+            vars: *multi_consumer_vars
+            dependencies:
+              - tripleo-ci-centos-7-content-provider-queens
 
 - project-template:
     name: tripleo-multinode-tripleoci
