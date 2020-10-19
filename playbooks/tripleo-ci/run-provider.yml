@@ -2,6 +2,18 @@
 - hosts: all
   tasks:
 
+    - name: Collect only facts of network
+      setup:
+        gather_subset:
+          - network
+
+    - name: Discover an IPv4 for provider job
+      set_fact:
+        provider_ip: >-
+          {{ hostvars[groups.all[0]].ansible_host if hostvars[groups.all[0]].ansible_host
+          is match("[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+")
+          else hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}
+
     - name: Discover a branch
       block:
 
@@ -23,7 +35,7 @@
     - name: Set branch variables
       set_fact:
         provider_job_branch: "{{ ci_branch }}"
-        registry_ip_address_branch: "{'{{ ci_branch }}': '{{ hostvars[groups.all[0]].ansible_host }}'}"
+        registry_ip_address_branch: "{'{{ ci_branch }}': '{{ provider_ip }}'}"
         provider_dlrn_hash_branch: "{'{{ ci_branch }}': '{{ dlrn_hash|default('') }}'}"
 
     - name: Check if DLRN tag was dumped in /tmp/container_build_id
@@ -49,7 +61,7 @@
       debug:
         msg: >-
           Running podman registry and repository on
-          {{ hostvars[groups.all[0]].ansible_host | default('nowhere') }}
+          {{ provider_ip | default('nowhere') }}
           for branch {{ ci_branch }} and DLRN tag {{ dlrn_hash|default('no tag') }}
 
     - name: Set registry IP address
@@ -57,7 +69,7 @@
         data:
           zuul:
             pause: true
-          registry_ip_address: "{{ hostvars[groups.all[0]].ansible_host }}"
+          registry_ip_address: "{{ provider_ip }}"
           provider_dlrn_hash: "{{ dlrn_hash|default('') }}"
           provider_dlrn_hash_tag: "{{ dlrn_hash_tag|default('') }}"
           provider_job_branch: "{{ provider_job_branch }}"
