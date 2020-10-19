@@ -325,6 +325,16 @@
     parent: tripleo-ci-base
     nodeset: single-centos-7-node
     vars:
+      # for standalone we don't need the multinode network configuration but
+      # we do want the interface to be created. So let's create br-ex but
+      # configure it with a different network than what we use for standalone.
+      # any jobs that need this network configuration for multinode need to
+      # adjust their configuration to us 172.16.1.0/24
+      bridge_name: br-ex
+      bridge_address_prefix: 172.16.1
+      bridge_address_subnet: 24
+      bridge_address_offset: 2
+      bridge_mtu: 1350
       undercloud: 127.0.0.2
       environment_infra: osinfra
       environment_type: standalone
@@ -383,6 +393,16 @@
     nodeset: single-centos-8-node
     pre-run: playbooks/tripleo-ci/install-built-repo.yml
     vars:
+      # for standalone we don't need the multinode network configuration but
+      # we do want the interface to be created. So let's create br-ex but
+      # configure it with a different network than what we use for standalone.
+      # any jobs that need this network configuration for multinode need to
+      # adjust their configuration to us 172.16.1.0/24
+      bridge_name: br-ex
+      bridge_address_prefix: 172.16.1
+      bridge_address_subnet: 24
+      bridge_address_offset: 2
+      bridge_mtu: 1350
       undercloud: 127.0.0.2
       environment_infra: osinfra
       environment_type: standalone
@@ -404,6 +424,16 @@
     nodeset: single-centos-7-node
     vars:
       undercloud: 127.0.0.2
+      # for standalone we don't need the multinode network configuration but
+      # we do want the interface to be created. So let's create br-ex but
+      # configure it with a different network than what we use for standalone.
+      # any jobs that need this network configuration for multinode need to
+      # adjust their configuration to us 172.16.1.0/24
+      bridge_name: br-ex
+      bridge_address_prefix: 172.16.1
+      bridge_address_subnet: 24
+      bridge_address_offset: 2
+      bridge_mtu: 1350
       environment_infra: osinfra
       environment_type: standalone
       common_featureset: featureset-multinode-common.yml
@@ -427,6 +457,16 @@
     nodeset: single-centos-8-node
     vars:
       undercloud: 127.0.0.2
+      # for standalone we don't need the multinode network configuration but
+      # we do want the interface to be created. So let's create br-ex but
+      # configure it with a different network than what we use for standalone.
+      # any jobs that need this network configuration for multinode need to
+      # adjust their configuration to us 172.16.1.0/24
+      bridge_name: br-ex
+      bridge_address_prefix: 172.16.1
+      bridge_address_subnet: 24
+      bridge_address_offset: 2
+      bridge_mtu: 1350
       environment_infra: osinfra
       environment_type: standalone
       common_featureset: featureset-multinode-common.yml
