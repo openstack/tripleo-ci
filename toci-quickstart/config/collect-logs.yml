@@ -255,6 +255,7 @@ artcl_collect_list:
   - /var/log/mistral/
   - /var/log/monasca/
   - /var/log/murano/
+  - /var/log/netstat*.log
   - /var/log/neutron/
   - /var/log/nova/
   - /var/log/novajoin/
