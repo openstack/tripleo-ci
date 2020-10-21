@@ -35,6 +35,8 @@ artcl_collect_list:
   - /home/{{ undercloud_user }}/deploy-overcloudrc
   - /home/{{ undercloud_user }}/network-environment.yaml
   - /home/{{ undercloud_user }}/workspace/ovb/*.y*ml
+  - /home/{{ undercloud_user }}/workspace/*.log
+  - /home/{{ undercloud_user }}/workspace/*.sh
   - /home/{{ undercloud_user }}/skip_file
   - /home/{{ undercloud_user }}/*.subunit
   - /home/{{ undercloud_user }}/tempest/

@@ -8,6 +8,7 @@
   when:
     - ansible_distribution|lower != 'redhat'
     - ansible_distribution_major_version is version('8', '<')
+    - buildcontainers_venv | default(true) | bool
   block:
     - name: Set registry_deploy to true only when needed
       set_fact:
@@ -43,7 +44,7 @@
         section: 'registries.insecure'
         option: registries
         value:
-          - "localhost:{{ push_registry_port }}"
+          - "localhost:{{ push_registry_port | default('5001') }}"
 
 - name: Setup repo web service
   become: true
@@ -62,7 +63,7 @@
     - name: Fetch delorean repos if present
       shell: |
           set -ex
-          find /etc/yum.repos.d/ -name delorean\* | xargs -I {} cp {} /var/www/html/
+          find /etc/yum.repos.d/ -name delorean\* -o -name quickstart-centos\* | xargs -I {} cp {} /var/www/html/
 
     - name: Add http iptables rules from containers
       command: iptables -I openstack-INPUT 1 -p tcp --dport 80 -s 172.17.0.0/16 -j ACCEPT

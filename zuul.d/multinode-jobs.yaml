@@ -448,6 +448,8 @@
     check:
       jobs:
         - tripleo-ci-centos-8-content-provider-ussuri
+        - tripleo-ci-centos-7-content-provider-train
+        - tripleo-ci-centos-7-content-provider-queens
         - tripleo-ci-centos-8-containers-multinode-ussuri:
             irrelevant-files: *multinode_ignored
             vars: *multi_consumer_vars
@@ -461,6 +463,14 @@
               - tripleo-ci-centos-8-content-provider-train
         - tripleo-ci-centos-7-containers-multinode-train:
             irrelevant-files: *multinode_ignored
+            vars: *multi_consumer_vars
+            dependencies:
+              - tripleo-ci-centos-7-content-provider-train
+        - tripleo-ci-centos-7-containers-multinode-queens:
+            irrelevant-files: *multinode_ignored
+            vars: *multi_consumer_vars
+            dependencies:
+              - tripleo-ci-centos-7-content-provider-queens
     gate:
       jobs:
         - tripleo-ci-centos-8-containers-multinode-ussuri:

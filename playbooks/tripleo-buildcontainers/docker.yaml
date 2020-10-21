@@ -1,0 +1,14 @@
+- hosts: all
+  tasks:
+    - name: Configure docker proxy
+      include_role:
+        name: use-docker-mirror
+        tasks_from: mirror
+
+    - name: Set fact of docker upstream
+      set_fact:
+        use_upstream_docker: False
+
+    - name: Install docker
+      include_role:
+        name: ensure-docker
