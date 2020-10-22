@@ -225,18 +225,8 @@
             vars: &multi_consumer_vars
               consumer_job: true
               build_container_images: false
-              tags:
-                - undercloud-setup
-                - undercloud-scripts
-                - undercloud-install
-                - undercloud-post-install
-                - tripleo-validations
-                - overcloud-scripts
-                - overcloud-prep-config
-                - overcloud-prep-containers
-                - overcloud-deploy
-                - overcloud-post-deploy
-                - overcloud-validate
+              remove_tags:
+                - build
             dependencies:
               - tripleo-ci-centos-8-content-provider
         - tripleo-ci-centos-8-scenario000-multinode-oooq-container-updates:
@@ -257,8 +247,8 @@
             vars: &sa_consumer_vars
               consumer_job: true
               build_container_images: false
-              tags:
-                - standalone
+              remove_tags:
+                - build
             dependencies:
               - tripleo-ci-centos-8-content-provider
         - tripleo-ci-centos-7-standalone:
