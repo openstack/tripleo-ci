@@ -21,12 +21,6 @@
         - tripleo-ci-centos-8-scenario010-standalone:
             vars:
               force_non_periodic: true
-        - tripleo-ci-centos-7-standalone-upgrade-stein:
-            vars:
-              force_non_periodic: true
-        - tripleo-ci-centos-7-standalone-upgrade-train:
-            vars:
-              force_non_periodic: true
         - tripleo-ci-centos-8-standalone:
             vars:
               force_non_periodic: true

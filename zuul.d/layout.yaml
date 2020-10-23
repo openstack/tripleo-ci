@@ -71,8 +71,6 @@
             vars: *multi_consumer_vars
             files: *multi_files_c7
             dependencies: *multi_deps_c7
-        - tripleo-ci-centos-7-standalone-upgrade-train:
-            branches: master
         - tripleo-ci-centos-8-scenario000-multinode-oooq-container-upgrades:
             files:
               - ^scripts/emit_releases_file/.*$
@@ -89,5 +87,3 @@
         - tripleo-tox-molecule
         - openstack-tox-py36:
             files: *py_files
-        - tripleo-ci-centos-7-standalone-upgrade-train:
-            branches: master

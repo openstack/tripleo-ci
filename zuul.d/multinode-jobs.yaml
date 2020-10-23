@@ -84,13 +84,6 @@
               - zuul.d/undercloud-jobs.yaml
         - tripleo-ci-centos-7-standalone:
             irrelevant-files: *standalone_ignored
-        - tripleo-ci-centos-7-standalone-rocky:
-            irrelevant-files: *standalone_ignored
-        - tripleo-ci-centos-7-standalone-upgrade-stein:
-            irrelevant-files: *standalone_ignored
-        - tripleo-ci-centos-7-standalone-upgrade-train:
-            irrelevant-files: *standalone_ignored
-
 
     gate:
       queue: tripleo
@@ -113,10 +106,6 @@
             irrelevant-files: *multinode_ignored
         - tripleo-ci-centos-8-scenario000-multinode-oooq-container-upgrades-ussuri:
             irrelevant-files: *multinode_ignored
-        - tripleo-ci-centos-7-standalone-upgrade-stein:
-            irrelevant-files: *standalone_ignored
-        - tripleo-ci-centos-7-standalone-upgrade-train:
-            irrelevant-files: *standalone_ignored
 
 - project-template:
     name: tripleo-multinode-baremetal-full
@@ -163,10 +152,6 @@
             irrelevant-files: *multinode_ignored
         - tripleo-ci-centos-7-standalone:
             irrelevant-files: *standalone_ignored
-        - tripleo-ci-centos-7-standalone-upgrade-stein:
-            irrelevant-files: *standalone_ignored
-        - tripleo-ci-centos-7-standalone-upgrade-train:
-            irrelevant-files: *standalone_ignored
         - tripleo-ci-centos-7-scenario001-standalone:
             irrelevant-files: *standalone_ignored
         - tripleo-ci-centos-7-scenario002-standalone:
@@ -209,10 +194,6 @@
             irrelevant-files: *multinode_ignored
         - tripleo-ci-centos-8-scenario000-multinode-oooq-container-upgrades-ussuri:
             irrelevant-files: *multinode_ignored
-        - tripleo-ci-centos-7-standalone-upgrade-stein:
-            irrelevant-files: *standalone_ignored
-        - tripleo-ci-centos-7-standalone-upgrade-train:
-            irrelevant-files: *standalone_ignored
 
 - project-template:
     name: tripleo-multinode-container-minimal-pipeline
@@ -268,10 +249,6 @@
             irrelevant-files: *standalone_ignored
         - tripleo-ci-centos-7-standalone-rocky:
             irrelevant-files: *standalone_ignored
-        - tripleo-ci-centos-7-standalone-upgrade-stein:
-            irrelevant-files: *standalone_ignored
-        - tripleo-ci-centos-7-standalone-upgrade-train:
-            irrelevant-files: *standalone_ignored
         - tripleo-ci-centos-7-undercloud-containers:
             irrelevant-files: *multinode_ignored
         - tripleo-ci-centos-7-containers-multinode:
@@ -323,10 +300,6 @@
             irrelevant-files: *multinode_ignored
         - tripleo-ci-centos-7-scenario000-multinode-oooq-container-updates:
             irrelevant-files: *multinode_ignored
-        - tripleo-ci-centos-7-standalone-upgrade-stein:
-            irrelevant-files: *standalone_ignored
-        - tripleo-ci-centos-7-standalone-upgrade-train:
-            irrelevant-files: *standalone_ignored
 
 - project-template:
     name: tripleo-multinode-container-full-pipeline
@@ -393,10 +366,6 @@
             irrelevant-files: *multinode_ignored
         - tripleo-ci-centos-7-standalone:
             irrelevant-files: *standalone_ignored
-        - tripleo-ci-centos-7-standalone-upgrade-stein:
-            irrelevant-files: *standalone_ignored
-        - tripleo-ci-centos-7-standalone-upgrade-train:
-            irrelevant-files: *standalone_ignored
         - tripleo-ci-centos-7-scenario001-standalone:
             irrelevant-files: *standalone_ignored
         - tripleo-ci-centos-7-scenario002-standalone:
@@ -477,10 +446,6 @@
             irrelevant-files: *standalone_ignored
         - tripleo-ci-centos-7-scenario000-multinode-oooq-container-updates:
             irrelevant-files: *multinode_ignored
-        - tripleo-ci-centos-7-standalone-upgrade-stein:
-            irrelevant-files: *standalone_ignored
-        - tripleo-ci-centos-7-standalone-upgrade-train:
-            irrelevant-files: *standalone_ignored
 
 # NOTE(rfolco): tripleo-multinode-branchful should be used in ci repos only
 # Check where this template is used across openstack repos with the url below:
