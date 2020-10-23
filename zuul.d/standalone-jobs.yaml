@@ -143,6 +143,11 @@
     branches: ^master$
     vars:
       featureset: '056'
+      featureset_override:
+        standalone_environment_files:
+          - 'environments/low-memory-usage.yaml'
+          - 'environments/docker-ha.yaml'
+          - 'environments/podman.yaml'
     irrelevant-files: *upgrade_irrelevant
 
 # docker-ha, podman env files https://bugs.launchpad.net/tripleo/+bug/1887159
