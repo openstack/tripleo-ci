@@ -154,12 +154,10 @@
 - job:
     name: tripleo-ci-centos-8-standalone-upgrade-ussuri
     parent: tripleo-ci-base-standalone-upgrade-centos-8
-    voting: false
+    voting: true
     branches: ^stable/ussuri$
-    override-checkout: 'stable/ussuri'
     vars:
       featureset: '056'
-      branch_override: 'stable/ussuri'
       featureset_override:
         standalone_environment_files:
           - 'environments/low-memory-usage.yaml'
@@ -199,7 +197,7 @@
               # tripleo-quickstart
               - config/general_config/featureset052.yml
               # puppet-tripleo
-              - ^manifests/certmonger/ceph.*$ # ceph dashboard
+              - ^manifests/certmonger/ceph.*$  # ceph dashboard
               - ^manifests/haproxy.*$
               - ^manifests/profile/(base|pacemaker)/aodh.*$
               - ^manifests/profile/(base|pacemaker)/ceilometer.*$
@@ -217,7 +215,7 @@
               - roles/run-test/.*
               - roles/common/.*
               - roles/prepare-node/.*
-              - roles/ceph-loop-device/.* # scen1/4 ceph
+              - roles/ceph-loop-device/.*  # scen1/4 ceph
               # python-tripleoclient
               - ^tripleoclient/heat_launcher.*$
               - ^tripleoclient/v1/tripleo_(deploy|config|upgrade).*$
@@ -328,7 +326,7 @@
               - ^manifests/haproxy.*$
               - ^manifests/profile/(base|pacemaker)/glance.*$
               - ^manifests/profile/(base|pacemaker)/manila.*$
-              - ^manifests/profile/(base|pacemaker)/ceph.*$ # ceph_nfs / ganesha
+              - ^manifests/profile/(base|pacemaker)/ceph.*$  # ceph_nfs / ganesha
               # tripleo-quickstart-extras
               - roles/standalone/.*
               - roles/validate-tempest/.*
@@ -336,7 +334,7 @@
               - roles/run-test/.*
               - roles/common/.*
               - roles/prepare-node/.*
-              - roles/ceph-loop-device/.* # scen1/4 ceph
+              - roles/ceph-loop-device/.*  # scen1/4 ceph
               # python-tripleoclient
               - ^tripleoclient/heat_launcher.*$
               - ^tripleoclient/v1/tripleo_(deploy|config|upgrade).*$
@@ -414,7 +412,7 @@
               - roles/run-test/.*
               - roles/common/.*
               - roles/prepare-node/.*
-              - roles/ceph-loop-device/.* # scen1/4 ceph
+              - roles/ceph-loop-device/.*  # scen1/4 ceph
               # python-tripleoclient
               - ^tripleoclient/heat_launcher.*$
               - ^tripleoclient/v1/tripleo_(deploy|config|upgrade).*$
@@ -474,6 +472,9 @@
             files: *scen4_files
         - tripleo-ci-centos-8-scenario007-standalone:
             files: *scen7_files
+        - tripleo-ci-centos-8-standalone-upgrade-ussuri
+        - tripleo-ci-centos-7-standalone
+        - tripleo-ci-centos-8-standalone
         - tripleo-ci-centos-7-standalone
         - tripleo-ci-centos-8-standalone
         - tripleo-ci-centos-8-standalone-build
