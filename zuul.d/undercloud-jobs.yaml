@@ -180,7 +180,6 @@
 - job:
     name: tripleo-ci-centos-7-content-provider
     parent: tripleo-ci-base-singlenode
-    branches: master
     run:
       - playbooks/tripleo-buildcontainers/docker.yaml
       - playbooks/tripleo-ci/run-v3.yaml
