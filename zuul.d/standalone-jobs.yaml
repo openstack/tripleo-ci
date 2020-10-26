@@ -150,6 +150,18 @@
           - 'environments/podman.yaml'
     irrelevant-files: *upgrade_irrelevant
 
+- job:
+    name: tripleo-ci-centos-8-standalone-upgrade-victoria
+    parent: tripleo-ci-base-standalone-upgrade-centos-8
+    voting: true
+    branches: ^stable/victoria$
+    vars:
+      featureset: '056'
+      featureset_override:
+        standalone_environment_files:
+          - 'environments/low-memory-usage.yaml'
+    irrelevant-files: *upgrade_irrelevant
+
 # docker-ha, podman env files https://bugs.launchpad.net/tripleo/+bug/1887159
 - job:
     name: tripleo-ci-centos-8-standalone-upgrade-ussuri

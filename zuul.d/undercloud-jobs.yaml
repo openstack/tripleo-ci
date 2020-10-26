@@ -193,6 +193,18 @@
         - undercloud-upgrade
 
 - job:
+    name: tripleo-ci-centos-8-undercloud-upgrade-victoria
+    parent: tripleo-ci-base-singlenode-centos-8
+    branches: ^stable/victoria$
+    voting: true
+    vars:
+      featureset: '050'
+      featureset_override:
+        validate_services: false
+      extra_tags:
+        - undercloud-upgrade
+
+- job:
     name: tripleo-ci-centos-7-content-provider-base
     parent: tripleo-ci-base-singlenode
     run:
