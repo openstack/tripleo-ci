@@ -8,7 +8,7 @@
   when:
     - ansible_distribution|lower != 'redhat'
     - ansible_distribution_major_version is version('8', '<')
-    - buildcontainers_venv | default(true) | bool
+    - buildcontainers_venv | default(true) | bool or setup_docker_registry | default(false) | bool
   block:
     - name: Set registry_deploy to true only when needed
       set_fact:
