@@ -561,8 +561,6 @@
         - tripleo-ci-centos-7-scenario010-ovn-provider-standalone:
             files: *scen10_files
         - tripleo-ci-centos-7-standalone-rocky
-        - tripleo-ci-centos-8-standalone-upgrade
-        - tripleo-ci-centos-8-standalone-upgrade-ussuri
         - tripleo-ci-centos-7-standalone-upgrade-stein
         - tripleo-ci-centos-7-standalone-upgrade-train
         - tripleo-ci-centos-7-standalone
