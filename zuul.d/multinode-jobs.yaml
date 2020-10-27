@@ -524,10 +524,16 @@
     name: tripleo-multinode-branchful
     check:
       jobs:
+        - tripleo-ci-centos-8-content-provider-victoria
         - tripleo-ci-centos-8-content-provider-ussuri
         - tripleo-ci-centos-8-content-provider-train
         - tripleo-ci-centos-7-content-provider-train
         - tripleo-ci-centos-7-content-provider-queens
+        - tripleo-ci-centos-8-containers-multinode-victoria: &multi_consumer_job_victoria
+            irrelevant-files: *multinode_ignored
+            vars: *multi_consumer_vars
+            dependencies:
+              - tripleo-ci-centos-8-content-provider-victoria
         - tripleo-ci-centos-8-containers-multinode-ussuri: &multi_consumer_job_ussuri
             irrelevant-files: *multinode_ignored
             vars: *multi_consumer_vars
@@ -550,12 +556,21 @@
               - tripleo-ci-centos-7-content-provider-queens
     gate:
       jobs:
+        - tripleo-ci-centos-8-content-provider-victoria
         - tripleo-ci-centos-8-content-provider-ussuri
         - tripleo-ci-centos-8-content-provider-train
+        - tripleo-ci-centos-8-containers-multinode-victoria: *multi_consumer_job_victoria
         - tripleo-ci-centos-8-containers-multinode-ussuri: *multi_consumer_job_ussuri
         - tripleo-ci-centos-8-containers-multinode-train: *multi_consumer_job_train
     periodic:
       jobs:
+        - tripleo-ci-centos-8-content-provider-victoria
+        - tripleo-ci-centos-8-content-provider-ussuri
+        - tripleo-ci-centos-8-content-provider-train
+        - tripleo-ci-centos-7-content-provider-queens
+        - tripleo-ci-centos-8-containers-multinode-victoria:
+            vars:
+              force_non_periodic: true
         - tripleo-ci-centos-8-containers-multinode-ussuri:
             vars:
               force_non_periodic: true
@@ -687,6 +702,14 @@
       extra_tags:
         - undercloud-minion-setup
         - undercloud-minion-deploy
+
+- job:
+    name: tripleo-ci-centos-8-containers-multinode-victoria
+    parent: tripleo-ci-centos-8-containers-multinode
+    branches: master
+    override-checkout: stable/victoria
+    vars:
+      branch_override: stable/victoria
 
 - job:
     name: tripleo-ci-centos-8-containers-multinode-ussuri
