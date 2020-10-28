@@ -31,11 +31,9 @@
               - ^playbooks/tripleo-buildcontainers/.*$
               - ^playbooks/tripleo-buildimages/.*$
               - ^vars/sova-patterns.yml$
-              - zuul.d/layout.yaml
               - zuul.d/build-containers.yaml
               - zuul.d/build-image.yaml
               - zuul.d/standalone-jobs.yaml
-              - zuul.d/undercloud-jobs.yaml
               # tripleo-quickstart-extras
               - playbooks/quickstart-extras-standalone.yml
               - roles/standalone/.*
@@ -202,6 +200,7 @@
         - tripleo-ci-centos-8-content-provider
         - tripleo-ci-centos-8-content-provider-ussuri
         - tripleo-ci-centos-8-content-provider-train
+        - tripleo-ci-centos-7-content-provider
         - tripleo-ci-centos-8-containers-multinode:
             irrelevant-files: *multinode_ignored
             vars: &multi_consumer_vars
@@ -247,12 +246,22 @@
               - tripleo-ci-centos-8-content-provider
         - tripleo-ci-centos-7-standalone:
             irrelevant-files: *standalone_ignored
+            vars: *sa_consumer_vars
+            dependencies:
+              - tripleo-ci-centos-7-content-provider
         - tripleo-ci-centos-7-standalone-rocky:
+            irrelevant-files: *standalone_ignored
+        - tripleo-ci-centos-7-standalone-upgrade-stein:
+            irrelevant-files: *standalone_ignored
+        - tripleo-ci-centos-7-standalone-upgrade-train:
             irrelevant-files: *standalone_ignored
         - tripleo-ci-centos-7-undercloud-containers:
             irrelevant-files: *multinode_ignored
         - tripleo-ci-centos-7-containers-multinode:
-             irrelevant-files: *multinode_ignored
+            irrelevant-files: *multinode_ignored
+            vars: *multi_consumer_vars
+            dependencies:
+              - tripleo-ci-centos-7-content-provider
         - tripleo-ci-centos-7-scenario000-multinode-oooq-container-updates:
             irrelevant-files: *multinode_ignored
         - tripleo-ci-centos-7-scenario000-multinode-oooq-container-upgrades:
@@ -264,6 +273,7 @@
         - tripleo-ci-centos-8-content-provider
         - tripleo-ci-centos-8-content-provider-ussuri
         - tripleo-ci-centos-8-content-provider-train
+        - tripleo-ci-centos-7-content-provider
         - tripleo-ci-centos-8-containers-multinode:
             irrelevant-files: *multinode_ignored
             vars: *multi_consumer_vars
@@ -295,11 +305,21 @@
             dependencies:
               - tripleo-ci-centos-8-content-provider-ussuri
         - tripleo-ci-centos-7-standalone:
-              irrelevant-files: *standalone_ignored
+            irrelevant-files: *standalone_ignored
+            vars: *sa_consumer_vars
+            dependencies:
+              - tripleo-ci-centos-7-content-provider
         - tripleo-ci-centos-7-containers-multinode:
             irrelevant-files: *multinode_ignored
+            vars: *multi_consumer_vars
+            dependencies:
+              - tripleo-ci-centos-7-content-provider
         - tripleo-ci-centos-7-scenario000-multinode-oooq-container-updates:
             irrelevant-files: *multinode_ignored
+        - tripleo-ci-centos-7-standalone-upgrade-stein:
+            irrelevant-files: *standalone_ignored
+        - tripleo-ci-centos-7-standalone-upgrade-train:
+            irrelevant-files: *standalone_ignored
 
 - project-template:
     name: tripleo-multinode-container-full-pipeline
@@ -629,7 +649,7 @@
 - job:
     name: tripleo-ci-centos-7-containers-multinode
     parent: tripleo-ci-base-multinode
-    branches: ^(stable/(rocky|queens)).*$
+    branches: ^(stable/(queens|train)).*$
     vars:
       nodes: 1ctlr
       featureset: '010'
