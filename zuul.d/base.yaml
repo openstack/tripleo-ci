@@ -361,13 +361,6 @@
       - tox.ini
       - ^setup.*$
       - ^vars/sova-patterns.yml$
-      # zuul changes
-      - ^zuul.d/build-containers.yaml
-      - ^zuul.d/build-image.yaml
-      - ^zuul.d/deprecated-jobs.yaml
-      - ^zuul.d/multinode-jobs.yaml
-      - ^zuul.d/undercloud-jobs.yaml
-      - ^zuul.d/periodic.yaml
 
 # This job definition holds the required projects
 # for tripleo-ci-base-standalone-centos-8. The required projects are
