@@ -11,8 +11,9 @@ hardened_image_config:
   py3: overcloud-hardened-images-python3.yaml
 tripleo_pip_projects:
   - "git+file://{{ openstack_git_root }}/diskimage-builder{{ dib_pin }}"
-  - "file://{{ openstack_git_root }}/python-tripleoclient"
+  - "file://{{ openstack_git_root }}/tripleo-ansible"
   - "file://{{ openstack_git_root }}/tripleo-common"
+  - "file://{{ openstack_git_root }}/python-tripleoclient"
 tripleo_common_path: "{{ openstack_git_root }}/tripleo-common"
 tripleo_elements_path:
   - "{{ openstack_git_root }}/tripleo-puppet-elements/elements"

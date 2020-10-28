@@ -57,8 +57,9 @@
     virtualenv_command: "/usr/bin/python3 -m venv"
   with_items:
     - diskimage-builder
-    - python-tripleoclient
     - tripleo-common
+    - tripleo-ansible
+    - python-tripleoclient
 
 - name: pip install tripleo items
   pip:

@@ -686,6 +686,7 @@
       - opendev.org/openstack/ironic-python-agent
       - opendev.org/openstack/ironic-python-agent-builder
       - opendev.org/openstack/python-tripleoclient
+      - opendev.org/openstack/tripleo-ansible
       - opendev.org/openstack/tripleo-common
       - opendev.org/openstack/tripleo-image-elements
       - opendev.org/openstack/tripleo-puppet-elements
@@ -722,6 +723,7 @@
       - opendev.org/openstack/ironic-python-agent
       - opendev.org/openstack/ironic-python-agent-builder
       - opendev.org/openstack/python-tripleoclient
+      - opendev.org/openstack/tripleo-ansible
       - opendev.org/openstack/tripleo-common
       - opendev.org/openstack/tripleo-image-elements
       - opendev.org/openstack/tripleo-puppet-elements
