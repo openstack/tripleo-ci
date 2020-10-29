@@ -198,6 +198,7 @@
     check:
       jobs:
         - tripleo-ci-centos-8-content-provider
+        - tripleo-ci-centos-8-content-provider-victoria
         - tripleo-ci-centos-8-content-provider-ussuri
         - tripleo-ci-centos-8-content-provider-train
         - tripleo-ci-centos-7-content-provider
@@ -215,6 +216,11 @@
             vars: *multi_consumer_vars
             dependencies:
               - tripleo-ci-centos-8-content-provider
+        - tripleo-ci-centos-8-scenario000-multinode-oooq-container-updates-victoria:
+            irrelevant-files: *multinode_ignored
+            vars: *multi_consumer_vars
+            dependencies:
+              - tripleo-ci-centos-8-content-provider-victoria
         - tripleo-ci-centos-8-scenario000-multinode-oooq-container-updates-ussuri:
             irrelevant-files: *multinode_ignored
             vars: *multi_consumer_vars
@@ -230,6 +236,11 @@
             vars: *multi_consumer_vars
             dependencies:
               - tripleo-ci-centos-8-content-provider
+        - tripleo-ci-centos-8-scenario000-multinode-oooq-container-upgrades-victoria:
+            irrelevant-files: *multinode_ignored
+            vars: *multi_consumer_vars
+            dependencies:
+              - tripleo-ci-centos-8-content-provider-victoria
         - tripleo-ci-centos-8-scenario000-multinode-oooq-container-upgrades-ussuri:
             irrelevant-files: *multinode_ignored
             vars: *multi_consumer_vars
@@ -271,6 +282,7 @@
       queue: tripleo
       jobs:
         - tripleo-ci-centos-8-content-provider
+        - tripleo-ci-centos-8-content-provider-victoria
         - tripleo-ci-centos-8-content-provider-ussuri
         - tripleo-ci-centos-8-content-provider-train
         - tripleo-ci-centos-7-content-provider
@@ -289,6 +301,11 @@
             vars: *multi_consumer_vars
             dependencies:
               - tripleo-ci-centos-8-content-provider
+        - tripleo-ci-centos-8-scenario000-multinode-oooq-container-updates-victoria:
+            irrelevant-files: *multinode_ignored
+            vars: *multi_consumer_vars
+            dependencies:
+              - tripleo-ci-centos-8-content-provider-victoria
         - tripleo-ci-centos-8-scenario000-multinode-oooq-container-updates-ussuri:
             irrelevant-files: *multinode_ignored
             vars: *multi_consumer_vars
@@ -299,6 +316,11 @@
             vars: *multi_consumer_vars
             dependencies:
               - tripleo-ci-centos-8-content-provider-train
+        - tripleo-ci-centos-8-scenario000-multinode-oooq-container-upgrades-victoria:
+            irrelevant-files: *multinode_ignored
+            vars: *multi_consumer_vars
+            dependencies:
+              - tripleo-ci-centos-8-content-provider-victoria
         - tripleo-ci-centos-8-scenario000-multinode-oooq-container-upgrades-ussuri:
             irrelevant-files: *multinode_ignored
             vars: *multi_consumer_vars
@@ -326,6 +348,7 @@
     check:
       jobs:
         - tripleo-ci-centos-8-content-provider
+        - tripleo-ci-centos-8-content-provider-victoria
         - tripleo-ci-centos-8-content-provider-ussuri
         - tripleo-ci-centos-8-content-provider-train
         - tripleo-ci-centos-8-containers-multinode:
@@ -343,6 +366,11 @@
             vars: *multi_consumer_vars
             dependencies:
               - tripleo-ci-centos-8-content-provider
+        - tripleo-ci-centos-8-scenario000-multinode-oooq-container-updates-victoria:
+            irrelevant-files: *multinode_ignored
+            vars: *multi_consumer_vars
+            dependencies:
+              - tripleo-ci-centos-8-content-provider-victoria
         - tripleo-ci-centos-8-scenario000-multinode-oooq-container-updates-ussuri:
             irrelevant-files: *multinode_ignored
             vars: *multi_consumer_vars
@@ -358,6 +386,11 @@
             vars: *multi_consumer_vars
             dependencies:
               - tripleo-ci-centos-8-content-provider
+        - tripleo-ci-centos-8-scenario000-multinode-oooq-container-upgrades-victoria:
+            irrelevant-files: *multinode_ignored
+            vars: *multi_consumer_vars
+            dependencies:
+              - tripleo-ci-centos-8-content-provider-victoria
         - tripleo-ci-centos-8-scenario000-multinode-oooq-container-upgrades-ussuri:
             irrelevant-files: *multinode_ignored
             vars: *multi_consumer_vars
@@ -428,6 +461,7 @@
       queue: tripleo
       jobs:
         - tripleo-ci-centos-8-content-provider
+        - tripleo-ci-centos-8-content-provider-victoria
         - tripleo-ci-centos-8-content-provider-ussuri
         - tripleo-ci-centos-8-content-provider-train
         - tripleo-ci-centos-8-containers-multinode:
@@ -440,6 +474,11 @@
             vars: *multi_consumer_vars
             dependencies:
               - tripleo-ci-centos-8-content-provider
+        - tripleo-ci-centos-8-scenario000-multinode-oooq-container-updates-victoria:
+            irrelevant-files: *multinode_ignored
+            vars: *multi_consumer_vars
+            dependencies:
+              - tripleo-ci-centos-8-content-provider-victoria
         - tripleo-ci-centos-8-scenario000-multinode-oooq-container-updates-ussuri:
             irrelevant-files: *multinode_ignored
             vars: *multi_consumer_vars
@@ -450,6 +489,11 @@
             vars: *multi_consumer_vars
             dependencies:
               - tripleo-ci-centos-8-content-provider-train
+        - tripleo-ci-centos-8-scenario000-multinode-oooq-container-upgrades-victoria:
+            irrelevant-files: *multinode_ignored
+            vars: *multi_consumer_vars
+            dependencies:
+              - tripleo-ci-centos-8-content-provider-victoria
         - tripleo-ci-centos-8-scenario000-multinode-oooq-container-upgrades-ussuri:
             irrelevant-files: *multinode_ignored
             vars: *multi_consumer_vars

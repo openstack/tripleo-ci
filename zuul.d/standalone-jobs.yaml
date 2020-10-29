@@ -499,6 +499,7 @@
     check:
       jobs:
         - tripleo-ci-centos-8-content-provider
+        - tripleo-ci-centos-8-content-provider-victoria
         - tripleo-ci-centos-8-content-provider-ussuri
         - tripleo-ci-centos-8-content-provider-train
         - tripleo-ci-centos-8-scenario001-standalone:
@@ -561,6 +562,11 @@
             vars: *consumer_vars
             dependencies:
               - tripleo-ci-centos-8-content-provider
+              - tripleo-ci-centos-8-content-provider-victoria
+        - tripleo-ci-centos-8-standalone-upgrade-victoria:
+            vars: *consumer_vars
+            dependencies:
+              - tripleo-ci-centos-8-content-provider-victoria
               - tripleo-ci-centos-8-content-provider-ussuri
         - tripleo-ci-centos-8-standalone-upgrade-ussuri:
             vars: *consumer_vars
@@ -587,9 +593,9 @@
       queue: tripleo
       jobs:
         - tripleo-ci-centos-8-content-provider
-        # https://bugs.launchpad.net/tripleo/+bug/1895822
-        # - tripleo-ci-centos-8-content-provider-ussuri
-        # - tripleo-ci-centos-8-content-provider-train
+        - tripleo-ci-centos-8-content-provider-victoria
+        - tripleo-ci-centos-8-content-provider-ussuri
+        - tripleo-ci-centos-8-content-provider-train
         - tripleo-ci-centos-8-scenario001-standalone:
             files: *scen1_files
             vars: *consumer_vars
@@ -624,13 +630,16 @@
             vars: *consumer_vars
             dependencies:
               - tripleo-ci-centos-8-content-provider
-        # https://bugs.launchpad.net/tripleo/+bug/1895822
-        # - tripleo-ci-centos-8-standalone-upgrade-ussuri:
-        #    vars: *consumer_vars
-        #    irrelevant-files: *sa_upgrade_ignore
-        #    dependencies:
-        #      - tripleo-ci-centos-8-content-provider-ussuri
-        #      - tripleo-ci-centos-8-content-provider-train
+        - tripleo-ci-centos-8-standalone-upgrade-victoria:
+            vars: *consumer_vars
+            dependencies:
+              - tripleo-ci-centos-8-content-provider-victoria
+              - tripleo-ci-centos-8-content-provider-ussuri
+        - tripleo-ci-centos-8-standalone-upgrade-ussuri:
+            vars: *consumer_vars
+            dependencies:
+              - tripleo-ci-centos-8-content-provider-ussuri
+              - tripleo-ci-centos-8-content-provider-train
         # Keep CentOS 7 jobs as usual
         - tripleo-ci-centos-7-scenario001-standalone:
             files: *scen1_files
