@@ -60,6 +60,18 @@
         name: httpd
         state: started
 
+    - name: Check if gating repo was built
+      stat:
+        path: /etc/yum.repos.d/gating.repo
+      register: gating
+
+    - name: Change gating repo for Kolla build
+      shell: |
+        cp /etc/yum.repos.d/gating.repo /var/www/html/
+        cp -r /opt/gating_repo /var/www/html/
+        sed -i "s@baseurl=.*@baseurl=http://{{ ansible_default_ipv4.address }}/gating_repo@g" /var/www/html/gating.repo
+      when: gating.stat.exists
+
     - name: Fetch delorean repos if present
       shell: |
           set -ex
