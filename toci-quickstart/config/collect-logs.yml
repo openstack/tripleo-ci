@@ -302,3 +302,7 @@ artcl_exclude_list:
   - /home/{{ undercloud_user }}/.tobiko/*.subunit
   - /home/{{ undercloud_user }}/instackenv.json
   - /etc/pki/rhui/
+  - overlay*
+  - root
+  - console*primary.log
+  - anaconda*
