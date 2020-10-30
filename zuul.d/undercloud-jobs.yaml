@@ -200,6 +200,7 @@
       - playbooks/tripleo-buildcontainers/docker.yaml
       - playbooks/tripleo-ci/run-v3.yaml
       - playbooks/tripleo-ci/run-provider.yml
+    post-run: playbooks/tripleo-buildcontainers/post.yaml
     voting: true
     vars:
       featureset: '027'

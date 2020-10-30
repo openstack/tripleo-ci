@@ -119,8 +119,8 @@ RETCODE=$?
 ### actual built containers
 sudo {{ container_cli }} images | grep {{ registry_namespace }}/{{ kolla_base }}-binary > containers-successfully-built.log
 ### grep errors in all build logs
-egrep "^Error:|No match" /tmp/kolla-*/docker -R > containers-build-errors.log 2>&1
-egrep "^Error:|No match" /tmp/container-builds/*/docker -R >> containers-build-errors.log 2>&1
+sudo egrep "^Error:|No match" /tmp/kolla-*/docker -R > containers-build-errors.log 2>&1 || true
+sudo egrep "^Error:|No match" /tmp/container-builds/*/docker -R >> containers-build-errors.log 2>&1 || true
 ### not built (failed)
 for i in `cat containers-expected-to-build.log`; do
   grep "$i" containers-successfully-built.log || echo "$i" >> containers-failed-to-build.log
