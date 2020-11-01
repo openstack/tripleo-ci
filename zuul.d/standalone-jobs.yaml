@@ -1067,24 +1067,16 @@
         - quickstart.yml
         - multinode-standalone-pre.yml
 
-# master can be removed once victoria is branched
-# the ussuri content provider is only needed for
-# n-1 ussuri n+1
-
 - job:
     name: tripleo-ci-centos-8-content-provider-ussuri
     parent: tripleo-ci-centos-8-content-provider
-    branches: ^(master|stable/(train|ussuri)).*$
     override-checkout: stable/ussuri
     vars:
       branch_override: stable/ussuri
 
-# the train content provider is only needed for
-# n-1 train n+1
 - job:
     name: tripleo-ci-centos-8-content-provider-train
     parent: tripleo-ci-centos-8-content-provider
-    branches: ^(stable/(stein|train|ussuri)).*$
     override-checkout: stable/train
     vars:
       branch_override: stable/train
