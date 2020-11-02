@@ -32,10 +32,6 @@
               - zuul.d/standalone-jobs.yaml
               - zuul.d/multinode-jobs.yaml
 
-        - tripleo-ci-centos-7-undercloud-upgrades:
-            irrelevant-files: *undercloud_ignored
-        - tripleo-ci-centos-7-undercloud-containers:
-            irrelevant-files: *undercloud_ignored
         - tripleo-ci-centos-8-undercloud-containers:
             irrelevant-files: *undercloud_ignored
         - tripleo-ci-centos-7-containerized-undercloud-upgrades:
@@ -85,10 +81,6 @@
             dependencies:
               - tripleo-ci-centos-8-content-provider-ussuri
               - tripleo-ci-centos-8-content-provider-train
-        - tripleo-ci-centos-7-undercloud-oooq:
-            irrelevant-files: *undercloud_ignored
-        - tripleo-ci-centos-7-undercloud-upgrades:
-            irrelevant-files: *undercloud_ignored
         - tripleo-ci-centos-7-undercloud-containers:
             irrelevant-files: *undercloud_ignored
         - tripleo-ci-centos-7-containerized-undercloud-upgrades:
@@ -105,8 +97,6 @@
             vars: *undercloud_consumer_vars
             dependencies:
               - tripleo-ci-centos-8-content-provider
-        - tripleo-ci-centos-7-undercloud-oooq:
-            irrelevant-files: *undercloud_ignored
         - tripleo-ci-centos-7-undercloud-containers:
             irrelevant-files: *undercloud_ignored
         - tripleo-ci-centos-7-containers-undercloud-minion:
@@ -122,7 +112,7 @@
     name: tripleo-ci-centos-7-undercloud-containers
     parent: tripleo-ci-base-singlenode
     nodeset: single-centos-7-node
-    branches: ^(stable/(rocky|stein)).*$
+    branches: ^(stable/rocky).*$
     vars:
       featureset: '027'
 
@@ -138,20 +128,9 @@
     name: tripleo-ci-centos-7-undercloud-oooq
     parent: tripleo-ci-base-singlenode
     nodeset: single-centos-7-node
-    branches: ^(stable/(newton|ocata|pike|queens|rocky)).*$
+    branches: ^(stable/queens).*$
     vars:
       featureset: '003'
-
-- job:
-    name: tripleo-ci-centos-7-undercloud-upgrades
-    parent: tripleo-ci-base-singlenode
-    nodeset: single-centos-7-node
-    branches: ^(stable/rocky).*$
-    voting: true
-    vars:
-      featureset: '047'
-      extra_tags:
-        - undercloud-upgrade
 
 - job:
     name: tripleo-ci-centos-7-containerized-undercloud-upgrades
