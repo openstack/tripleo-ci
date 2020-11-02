@@ -345,6 +345,9 @@
               - tripleo-ci-centos-8-content-provider-ussuri
         - tripleo-ci-centos-8-containers-undercloud-minion:
             irrelevant-files: *multinode_ignored
+            vars: *multi_consumer_vars
+            dependencies:
+              - tripleo-ci-centos-8-content-provider
 
         - tripleo-ci-centos-7-containers-multinode:
             irrelevant-files: *multinode_ignored
@@ -434,6 +437,9 @@
               - tripleo-ci-centos-8-content-provider-ussuri
         - tripleo-ci-centos-8-containers-undercloud-minion:
             irrelevant-files: *multinode_ignored
+            vars: *multi_consumer_vars
+            dependencies:
+              - tripleo-ci-centos-8-content-provider
         - tripleo-ci-centos-8-standalone:
             irrelevant-files: *standalone_ignored
             vars: *sa_consumer_vars
