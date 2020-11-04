@@ -208,6 +208,7 @@
       buildcontainers_override_repos: current-tripleo
       push_containers: false
       push_containers_podman: false
+      containers_base_image: "ubi8:8.2"
 
 - job:
     name: tripleo-build-containers-ubi-8
