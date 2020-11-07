@@ -16,7 +16,6 @@
     check:
       jobs:
         - openstack-tox-linters
-        - tripleo-build-containers-ubi-8
         - tripleo-tox-molecule:
             vars:
               tox_environment:
@@ -34,50 +33,6 @@
             vars:
               tox_environment:
                 PYTEST_REQPASS: 84
-
-        - tripleo-ci-centos-7-scenario001-multinode-oooq-container:
-            vars: &multi_consumer_vars
-              consumer_job: true
-              build_container_images: false
-              tags:
-                - undercloud-setup
-                - undercloud-scripts
-                - undercloud-install
-                - undercloud-post-install
-                - tripleo-validations
-                - overcloud-scripts
-                - overcloud-prep-config
-                - overcloud-prep-containers
-                - overcloud-deploy
-                - overcloud-post-deploy
-                - overcloud-validate
-            dependencies: &multi_deps_c7
-              - tripleo-ci-centos-7-content-provider
-            files: &multi_files_c7
-              - ^playbooks/tripleo-ci/.*$
-        - tripleo-ci-centos-7-scenario002-multinode-oooq-container:
-            vars: *multi_consumer_vars
-            files: *multi_files_c7
-            dependencies: *multi_deps_c7
-        - tripleo-ci-centos-7-scenario003-multinode-oooq-container:
-            vars: *multi_consumer_vars
-            files: *multi_files_c7
-            dependencies: *multi_deps_c7
-        - tripleo-ci-centos-7-scenario004-multinode-oooq-container:
-            vars: *multi_consumer_vars
-            files: *multi_files_c7
-            dependencies: *multi_deps_c7
-        - tripleo-ci-centos-7-scenario007-multinode-oooq-container:
-            vars: *multi_consumer_vars
-            files: *multi_files_c7
-            dependencies: *multi_deps_c7
-        - tripleo-ci-centos-8-scenario000-multinode-oooq-container-upgrades:
-            files:
-              - ^scripts/emit_releases_file/.*$
-              - ^roles/run-test/.*$
-              - ^roles/common/.*$
-              - ^roles/tripleo-repos/.*$
-
     gate:
       queue: tripleo
       jobs:
