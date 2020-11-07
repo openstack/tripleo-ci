@@ -48,6 +48,12 @@
   command: bash {{ workspace }}/pathfix_repos.sh
   changed_when: true
 
+- name: Install python3-setuptools
+  package:
+    name: "python3-setuptools"
+    state: present
+  become: true
+
 - name: Install deps from upper-constraints
   when: ansible_distribution == 'CentOS'
   pip:
