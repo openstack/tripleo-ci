@@ -30,7 +30,6 @@
               - zuul.d/build-containers.yaml
               - zuul.d/build-image.yaml
               - zuul.d/standalone-jobs.yaml
-              - zuul.d/multinode-jobs.yaml
 
         - tripleo-ci-centos-8-undercloud-containers:
             irrelevant-files: *undercloud_ignored
@@ -61,6 +60,7 @@
         - tripleo-ci-centos-8-content-provider
         - tripleo-ci-centos-8-content-provider-ussuri
         - tripleo-ci-centos-8-content-provider-train
+        - tripleo-ci-centos-7-content-provider
         - tripleo-ci-centos-8-undercloud-containers:
             irrelevant-files: *undercloud_ignored
             vars: &undercloud_consumer_vars
@@ -81,8 +81,16 @@
             dependencies:
               - tripleo-ci-centos-8-content-provider-ussuri
               - tripleo-ci-centos-8-content-provider-train
-        - tripleo-ci-centos-7-undercloud-containers:
+        - tripleo-ci-centos-7-undercloud-oooq:
+            vars: *undercloud_consumer_vars
             irrelevant-files: *undercloud_ignored
+            dependencies:
+              - tripleo-ci-centos-7-content-provider
+        - tripleo-ci-centos-7-undercloud-containers:
+            vars: *undercloud_consumer_vars
+            irrelevant-files: *undercloud_ignored
+            dependencies:
+              - tripleo-ci-centos-7-content-provider
         - tripleo-ci-centos-7-containerized-undercloud-upgrades:
             irrelevant-files: *undercloud_ignored
 
@@ -92,15 +100,27 @@
         - tripleo-ci-centos-8-content-provider
         - tripleo-ci-centos-8-content-provider-ussuri
         - tripleo-ci-centos-8-content-provider-train
+        - tripleo-ci-centos-7-content-provider
         - tripleo-ci-centos-8-undercloud-containers:
             irrelevant-files: *undercloud_ignored
             vars: *undercloud_consumer_vars
             dependencies:
               - tripleo-ci-centos-8-content-provider
+        - tripleo-ci-centos-7-undercloud-oooq:
+            irrelevant-files: *undercloud_ignored
+            vars: *undercloud_consumer_vars
+            dependencies:
+              - tripleo-ci-centos-7-content-provider
         - tripleo-ci-centos-7-undercloud-containers:
             irrelevant-files: *undercloud_ignored
+            vars: *undercloud_consumer_vars
+            dependencies:
+              - tripleo-ci-centos-7-content-provider
         - tripleo-ci-centos-7-containers-undercloud-minion:
             irrelevant-files: *undercloud_ignored
+            vars: *undercloud_consumer_vars
+            dependencies:
+              - tripleo-ci-centos-7-content-provider
         - tripleo-ci-centos-8-undercloud-upgrade-ussuri:
             vars: *undercloud_consumer_vars
             irrelevant-files: *undercloud_ignored
@@ -173,14 +193,13 @@
         - undercloud-upgrade
 
 - job:
-    name: tripleo-ci-centos-7-content-provider
+    name: tripleo-ci-centos-7-content-provider-base
     parent: tripleo-ci-base-singlenode
     run:
       - playbooks/tripleo-buildcontainers/docker.yaml
       - playbooks/tripleo-ci/run-v3.yaml
       - playbooks/tripleo-ci/run-provider.yml
     post-run: playbooks/tripleo-buildcontainers/post.yaml
-    voting: true
     vars:
       featureset: '027'
       provider_job: true
@@ -193,8 +212,15 @@
         - build
 
 - job:
+    name: tripleo-ci-centos-7-content-provider
+    parent: tripleo-ci-centos-7-content-provider-base
+    branches: ^(stable/(queens|train)).*$
+    voting: true
+
+
+- job:
     name: tripleo-ci-centos-7-content-provider-queens
-    parent: tripleo-ci-centos-7-content-provider
+    parent: tripleo-ci-centos-7-content-provider-base
     branches: master
     override-checkout: stable/queens
     vars:
@@ -202,7 +228,7 @@
 
 - job:
     name: tripleo-ci-centos-7-content-provider-train
-    parent: tripleo-ci-centos-7-content-provider
+    parent: tripleo-ci-centos-7-content-provider-base
     branches: master
     override-checkout: stable/train
     vars:
