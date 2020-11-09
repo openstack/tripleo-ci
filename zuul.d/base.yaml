@@ -401,6 +401,7 @@
       environment_infra: osinfra
       environment_type: standalone
       common_featureset: featureset-multinode-common.yml
+      containers_base_image: "ubi8:8.2"
       playbooks:
         - quickstart.yml
         - multinode-standalone.yml
