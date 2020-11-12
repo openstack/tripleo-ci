@@ -53,6 +53,14 @@
     name: "python3-setuptools"
     state: present
   become: true
+  when: python_v == "py3"
+
+- name: Install python-setuptools
+  package:
+    name: "python-setuptools"
+    state: present
+  become: true
+  when: python_v == "py2"
 
 - name: Install deps from upper-constraints
   when: ansible_distribution == 'CentOS'
