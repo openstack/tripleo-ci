@@ -139,7 +139,7 @@ fi
 EXTERNAL_REPOS="x/browbeat openstack/tripleo-ha-utils openstack/tripleo-ci openstack/tripleo-quickstart-extras openstack/openstack-ansible-os_tempest \
 openstack/ansible-config_template openstack/ansible-role-python_venv_build openstack/ansible-role-collect-logs \
 openstack/tripleo-operator-ansible openstack/ansible-collections-openstack openstack/tripleo-ansible x/tripleo-ipa \
-openstack/openstack-tempest-skiplist"
+openstack/openstack-tempest-skiplist openstack/tripleo-validations openstack/validations-common"
 for EXTERNAL_REPO in $EXTERNAL_REPOS; do
     if [[ -d ${TRIPLEO_ROOT%openstack}/$EXTERNAL_REPO ]]; then
         sed -i "s#git+https://opendev.org/$EXTERNAL_REPO#file://${TRIPLEO_ROOT%openstack}/$EXTERNAL_REPO#1" ${TRIPLEO_ROOT}/tripleo-quickstart/quickstart-extras-requirements.txt
