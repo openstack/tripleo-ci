@@ -31,9 +31,11 @@
               - ^playbooks/tripleo-buildcontainers/.*$
               - ^playbooks/tripleo-buildimages/.*$
               - ^vars/sova-patterns.yml$
+              - zuul.d/layout.yaml
               - zuul.d/build-containers.yaml
               - zuul.d/build-image.yaml
               - zuul.d/standalone-jobs.yaml
+              - zuul.d/undercloud-jobs.yaml
               # tripleo-quickstart-extras
               - playbooks/quickstart-extras-standalone.yml
               - roles/standalone/.*

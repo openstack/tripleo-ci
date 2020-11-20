@@ -30,6 +30,7 @@
               - zuul.d/build-containers.yaml
               - zuul.d/build-image.yaml
               - zuul.d/standalone-jobs.yaml
+              - zuul.d/multinode-jobs.yaml
 
         - tripleo-ci-centos-8-undercloud-containers:
             irrelevant-files: *undercloud_ignored
