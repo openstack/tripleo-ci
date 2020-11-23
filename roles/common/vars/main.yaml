@@ -36,6 +36,8 @@ rhcloud: >-
   rdocloud
   {%- elif 'vexxhost-nodepool-tripleo' in nodepool_provider -%}
   vexxhost
+  {%- elif 'psi-public-nodepool-tripleo' in nodepool_provider -%}
+  psi
   {%- elif nodepool_provider == 'tripleo-ci' and environment_type == 'ovb' -%}
   internal
   {%- endif -%}
