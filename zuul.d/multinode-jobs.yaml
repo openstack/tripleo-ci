@@ -761,7 +761,7 @@
 - job:
     name: tripleo-ci-centos-7-containers-multinode-queens
     parent: tripleo-ci-base-multinode
-    voting: true
+    voting: false
     branches: master
     override-checkout: 'stable/queens'
     vars:
