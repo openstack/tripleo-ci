@@ -255,13 +255,17 @@
       with_items: "{{ built_images.stdout_lines }}"
   become: true
 
-- name: Populate provider registry
+- name: Retrieve built images
+  command: "awk '{ print $1 }' {{ workspace }}/containers-successfully-built.log"
+  register: built_images
+  become: true
+  when:
+    - job.provider_job|default(false)|bool
+
+- name: Run registry
   when:
     - job.provider_job|default(false)|bool
   block:
-    - name: Retrieve built images
-      command: "awk '{ print $1 }' {{ workspace }}/containers-successfully-built.log"
-      register: built_images
     - name: Run registry
       shell: >-
         $(command -v docker || command -v podman) run -d \
@@ -269,6 +273,20 @@
           -p {{ provider_registry_port }}:{{ provider_registry_port }} \
           --name registry {{ container_registry_image }}
       changed_when: true
+  rescue:
+    - name: Run registry (rescue)
+      shell: >-
+        $(command -v docker || command -v podman) run -d \
+          -e REGISTRY_HTTP_ADDR=0.0.0.0:{{ provider_registry_port }} \
+          -p {{ provider_registry_port }}:{{ provider_registry_port }} \
+          --name registry trunk.registry.rdoproject.org/ceph/registry:2
+      changed_when: true
+  become: true
+
+- name: Populate provider registry
+  when:
+    - job.provider_job|default(false)|bool
+  block:
     - name: Open ports
       command: iptables -I INPUT -p tcp --dport 5001 -j ACCEPT
       changed_when: true
