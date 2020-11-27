@@ -148,6 +148,7 @@
     description: |
         Base abstract job for multinode TripleO CI zuulv3 jobs
     parent: tripleo-ci-base
+    pre-run: playbooks/tripleo-ci/install-built-repo.yml
     vars:
       undercloud: 127.0.0.2
       environment_infra: osinfra
@@ -260,6 +261,7 @@
         Base abstract job for singlenode TripleO CI zuulv3 jobs
     parent: tripleo-ci-base
     nodeset: single-centos-7-node
+    pre-run: playbooks/tripleo-ci/install-built-repo.yml
     vars:
       undercloud: 127.0.0.2
       environment_infra: osinfra
@@ -325,6 +327,7 @@
         Base abstract job for standalone TripleO CI zuulv3 jobs
     parent: tripleo-ci-base
     nodeset: single-centos-7-node
+    pre-run: playbooks/tripleo-ci/install-built-repo.yml
     vars:
       # for standalone we don't need the multinode network configuration but
       # we do want the interface to be created. So let's create br-ex but
@@ -417,6 +420,7 @@
         Base abstract job for standalone upgrade TripleO CI zuulv3 jobs
     parent: tripleo-ci-base
     nodeset: single-centos-7-node
+    pre-run: playbooks/tripleo-ci/install-built-repo.yml
     vars:
       undercloud: 127.0.0.2
       # for standalone we don't need the multinode network configuration but
