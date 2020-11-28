@@ -149,6 +149,10 @@
     branches: ^(stable/rocky).*$
     vars:
       featureset: '027'
+      playbooks:
+        - quickstart.yml
+        - multinode-undercloud.yml
+        - multinode-validate.yml
 
 - job:
     name: tripleo-ci-centos-8-undercloud-containers
@@ -157,6 +161,10 @@
     voting: true
     vars:
       featureset: '027'
+      playbooks:
+        - quickstart.yml
+        - multinode-undercloud.yml
+        - multinode-validate.yml
 
 - job:
     name: tripleo-ci-centos-7-undercloud-oooq
@@ -165,6 +173,10 @@
     branches: ^(stable/queens).*$
     vars:
       featureset: '003'
+      playbooks:
+        - quickstart.yml
+        - multinode-undercloud.yml
+        - multinode-validate.yml
 
 - job:
     name: tripleo-ci-centos-7-containerized-undercloud-upgrades
