@@ -1,0 +1,23 @@
+---
+tripleo_deps_from_package:
+  - "openstack-kolla"
+  - "python*-tripleoclient"
+
+upper_constraints_items:
+  - tripleo-common
+  - python-tripleoclient
+  - tripleo-ansible
+  - kolla
+
+requirements_items:
+  - openstack-tripleo-common
+  - python-tripleoclient
+  - tripleo-ansible
+  - kolla
+
+source_items:
+  - "file://{{ openstack_git_root }}/kolla"
+  - "file://{{ openstack_git_root }}/{% if zuul_internal is defined %}openstack-{% endif %}tripleo-common"
+  - "file://{{ openstack_git_root }}/python-tripleoclient"
+  - "file://{{ openstack_git_root }}/tripleo-ansible"
+  - decorator

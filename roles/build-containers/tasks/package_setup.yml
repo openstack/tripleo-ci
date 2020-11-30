@@ -1,9 +1,10 @@
+- name: Include OS distro version specific variables
+  include_vars: "{{ ansible_distribution | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
+
 - name: install tripleo dependencies from package
   become: true
   package:
-    name:
-      - "openstack-kolla"
-      - "python*-tripleoclient"
+    name: "{{ tripleo_deps_from_package }}"
 
 - name: set template override
   set_fact:
