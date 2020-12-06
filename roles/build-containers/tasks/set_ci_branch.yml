@@ -1,0 +1,21 @@
+---
+- name: Set ci_branch from regular Zuul branch
+  set_fact:
+    ci_branch: "{{ zuul.branch | regex_replace('(stable|cloudsig)/', '') }}"
+  when: zuul is defined
+
+- name: Set ci_branch from branch_override variable
+  set_fact:
+    ci_branch: "{{ branch_override | regex_replace('(stable|cloudsig)/', '') }}"
+  when: branch_override is defined
+
+- name: Set ci_branch from release variable (in periodic)
+  set_fact:
+    ci_branch: "{{ release }}"
+  when: release is defined
+
+- name: Fail if we did not set ci_branch fact
+  fail:
+    msg: >-
+      Failed to get ci_branch from zuul.branch or branch_override or release
+  when: ci_branch is not defined

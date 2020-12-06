@@ -14,23 +14,10 @@
           is match("[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+")
           else hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}
 
-    - name: Discover a branch
-      block:
-
-        - name: Set from regular Zuul branch
-          set_fact:
-            ci_branch: "{{ zuul.branch | regex_replace('(stable|cloudsig)/', '') }}"
-          when: zuul is defined
-
-        - name: Set from branch_override variable
-          set_fact:
-            ci_branch: "{{ branch_override | regex_replace('(stable|cloudsig)/', '') }}"
-          when: branch_override is defined
-
-        - name: Set from release variable (in periodic)
-          set_fact:
-            ci_branch: "{{ release }}"
-          when: release is defined
+    - name: Discover the content-provider branch and set ci_branch
+      include_role:
+        name: build-containers
+        tasks_from: set_ci_branch.yml
 
     - name: Set branch variables
       set_fact:
@@ -68,7 +55,6 @@
         data:
           zuul:
             pause: true
-          registry_ip_address: "{{ provider_ip }}"
           provider_dlrn_hash_branch: "{{ provider_dlrn_hash_branch|default('') }}"
           provider_dlrn_hash_tag_branch: "{{ provider_dlrn_hash_tag_branch|default('') }}"
           provider_job_branch: "{{ provider_job_branch }}"

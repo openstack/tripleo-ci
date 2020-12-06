@@ -1,18 +1,6 @@
 ---
-- name: Set branch for building containers check jobs
-  set_fact:
-    ci_branch: "{{ zuul.branch | regex_replace('(stable|cloudsig)/', '') }}"
-  when: zuul is defined
-
-- name: Set branch for building containers branchless
-  set_fact:
-    ci_branch: "{{ branch_override | regex_replace('(stable|cloudsig)/', '') }}"
-  when: branch_override is defined
-
-- name: Set branch for building containers periodic
-  set_fact:
-    ci_branch: "{{ release }}"
-  when: release is defined
+- name: Set ci_branch for building containers check jobs
+  include_tasks: set_ci_branch.yml
 
 - name: Set facts for kolla-build.conf
   set_fact:

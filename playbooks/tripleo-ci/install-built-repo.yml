@@ -2,14 +2,19 @@
 - hosts: all
   tasks:
 
-    - when: registry_ip_address is defined
+    - when: registry_ip_address_branch is defined
       block:
+
+        - name: Discover the target ci_branch
+          include_role:
+            name: build-containers
+            tasks_from: set_ci_branch.yml
 
         - name: Check if we have a repo
           wait_for:
             timeout: 2
             port: 8766
-            host: '{{ registry_ip_address }}'
+            host: '{{ registry_ip_address_branch[ci_branch] }}'
           register: waitfor
           ignore_errors: true
 
@@ -21,7 +26,7 @@
             content: |
               [gating-repo]
               name=Gating repository
-              baseurl=http://{{ registry_ip_address }}:8766/
+              baseurl=http://{{ registry_ip_address_branch[ci_branch] }}:8766/
               enabled=1
               gpgcheck=0
               priority=1
