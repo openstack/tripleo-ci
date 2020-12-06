@@ -224,11 +224,7 @@
       environment_infra: ovb
       environment_type: ovb
       playbooks:
-        - ovb-setup.yml
-        - baremetal-full-undercloud.yml
-        - baremetal-full-overcloud-prep.yml
-        - baremetal-full-overcloud.yml
-        - baremetal-full-overcloud-validate.yml
+        - ovb.yml
       tags:
         - all
 
@@ -246,11 +242,7 @@
       environment_infra: ovb
       environment_type: ovb
       playbooks:
-        - ovb-setup.yml
-        - baremetal-full-undercloud.yml
-        - baremetal-full-overcloud-prep.yml
-        - baremetal-full-overcloud.yml
-        - baremetal-full-overcloud-validate.yml
+        - ovb.yml
       tags:
         - all
 
