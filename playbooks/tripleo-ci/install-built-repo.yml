@@ -5,28 +5,34 @@
     - when: registry_ip_address_branch is defined
       block:
 
-        - name: Discover the target ci_branch
-          include_role:
-            name: build-containers
-            tasks_from: set_ci_branch.yml
-
         - name: Check if we have a repo
           wait_for:
             timeout: 2
             port: 8766
-            host: '{{ registry_ip_address_branch[ci_branch] }}'
+            host: '{{ registry_ip_address_branch[item.key] }}'
           register: waitfor
           ignore_errors: true
+          loop: '{{ registry_ip_address_branch | dict2items }}'
 
+        # create the gating repo for any branch defined in
+        # registry_ip_address_branch.
+        # Allow the release config to appropriately enable the gating repo
+        # for the branch in use.
+        # related-review: https://review.opendev.org/ 763747
+        # LP: https://launchpad.net/bugs/1907122
         - name: Create a repo if got registry IP from Zuul
           become: true
-          when: waitfor is success
+          when:
+            - server is not failed
           copy:
-            dest: /etc/yum.repos.d/gating.repo
+            dest: /etc/yum.repos.d/gating-repo-{{ server.item.key }}.repo
             content: |
-              [gating-repo]
+              [gating-repo-{{ server.item.key }}]
               name=Gating repository
-              baseurl=http://{{ registry_ip_address_branch[ci_branch] }}:8766/
+              baseurl=http://{{ server.item.value }}:8766/
               enabled=1
               gpgcheck=0
               priority=1
+          loop: "{{ waitfor.results }}"
+          loop_control:
+            loop_var: server
