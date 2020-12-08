@@ -72,7 +72,6 @@
       - ^releasenotes/.*$
       # do not put requirements.txt here, as it can have a huge impact
       - ^test-requirements.txt$
-      - ^lower-constraints.txt$
       - ^spec/.*$
       - ^Puppetfile.*$
       - tox.ini
@@ -132,7 +131,6 @@
       - ^releasenotes/.*$
       # do not put requirements.txt here, as it can have a huge impact
       - ^test-requirements.txt$
-      - ^lower-constraints.txt$
       - ^spec/.*$
       - ^Puppetfile.*$
       - tox.ini
@@ -350,7 +348,6 @@
       - ^releasenotes/.*$
       # do not put requirements.txt here, as it can have a huge impact
       - ^test-requirements.txt$
-      - ^lower-constraints.txt$
       - ^spec/.*$
       - ^Puppetfile.*$
       - tox.ini
@@ -583,7 +580,6 @@
     files:
       # generic:
       - ^bindep.txt$
-      - ^lower-constraints.txt$
       - ^requirements.txt$
       - ^setup.cfg$
       - ^setup.py$
@@ -620,7 +616,6 @@
     files:
       # generic:
       - ^bindep.txt$
-      - ^lower-constraints.txt$
       - ^requirements.txt$
       - ^setup.cfg$
       - ^setup.py$
