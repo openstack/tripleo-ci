@@ -973,6 +973,8 @@
         standalone_environment_files:
           - 'environments/low-memory-usage.yaml'
           - 'ci/environments/scenario010-standalone.yaml'
+        tempest_test_whitelist:
+          - '^octavia_tempest_plugin.*smoke'
 
 - job:
     name: tripleo-ci-centos-8-scenario010-ovn-provider-standalone
