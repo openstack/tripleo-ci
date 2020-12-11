@@ -143,6 +143,7 @@ artcl_collect_list:
   - /etc/os-*
   - /etc/os-net-config/
   - /etc/pacemaker/
+  - /etc/passwd
   - /etc/panko/
   - /etc/pip.conf
   - /etc/pki/
