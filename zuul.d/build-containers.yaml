@@ -14,8 +14,6 @@
               - zuul.d/build-containers.yaml
         - tripleo-build-containers-centos-7-buildah-stein:
             files: *build_container_files
-        - tripleo-build-containers-ubi-8:
-            files: *build_container_files
     gate:
       queue: tripleo
       jobs:
@@ -23,42 +21,26 @@
             files: *build_container_files
         - tripleo-build-containers-centos-7-buildah-train:
             files: *build_container_files
-        - tripleo-build-containers-ubi-8:
-            files: *build_container_files
 
 - project-template:
     name: tripleo-build-containers-jobs
     check:
       jobs:
         - tripleo-build-containers-centos-7-buildah
-        - tripleo-build-containers-ubi-8
     gate:
       queue: tripleo
       jobs:
         - tripleo-build-containers-centos-7-buildah
-        - tripleo-build-containers-ubi-8
-
-- project-template:
-    name: tripleo-build-containers-jobs-ussuri
-    check:
-      jobs:
-        - tripleo-build-containers-ubi-8-ussuri
-    gate:
-      queue: tripleo
-      jobs:
-        - tripleo-build-containers-ubi-8-ussuri
 
 - project-template:
     name: tripleo-build-containers-jobs-train
     check:
       jobs:
         - tripleo-build-containers-centos-7-train
-        - tripleo-build-containers-ubi-8-train
     gate:
       queue: tripleo
       jobs:
         - tripleo-build-containers-centos-7-train
-        - tripleo-build-containers-ubi-8-train
 
 - project-template:
     name: tripleo-build-containers-jobs-stein
@@ -215,21 +197,3 @@
     parent: tripleo-build-containers-ubi-8-base
     branches: ^(?!stable/(pike|queens|rocky|stein)).*$
     voting: true
-
-- job:
-    name: tripleo-build-containers-ubi-8-ussuri
-    parent: tripleo-build-containers-ubi-8-base
-    branches: master
-    override-checkout: stable/ussuri
-    vars:
-      branch_override: stable/ussuri
-    voting: false
-
-- job:
-    name: tripleo-build-containers-ubi-8-train
-    parent: tripleo-build-containers-ubi-8-base
-    branches: master
-    override-checkout: stable/train
-    vars:
-      branch_override: stable/train
-    voting: false
