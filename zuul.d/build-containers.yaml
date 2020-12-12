@@ -192,8 +192,10 @@
       push_containers_podman: false
       containers_base_image: "ubi8:8.2"
 
+# containers-ubi-8 is exercised via the content-provider jobs
+# excluding train as tripleo-repos + train + current is blocked
 - job:
     name: tripleo-build-containers-ubi-8
     parent: tripleo-build-containers-ubi-8-base
-    branches: ^(?!stable/(pike|queens|rocky|stein)).*$
+    branches: ^(?!stable/(pike|queens|rocky|stein|train)).*$
     voting: true
