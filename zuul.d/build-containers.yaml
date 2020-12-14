@@ -197,5 +197,5 @@
 - job:
     name: tripleo-build-containers-ubi-8
     parent: tripleo-build-containers-ubi-8-base
-    branches: ^(?!stable/(pike|queens|rocky|stein|train)).*$
+    branches: ^(?!stable/(pike|queens|rocky|stein|train|ussuri)).*$
     voting: true
