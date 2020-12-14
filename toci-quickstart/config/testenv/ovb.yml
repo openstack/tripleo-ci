@@ -87,3 +87,5 @@ deploy_timeout: 120
 
 # OVB logs are far too big not to be compressed
 artcl_gzip: true
+# override any featureset file.. doc creation should not run in 3rd party
+artcl_gen_docs: false
