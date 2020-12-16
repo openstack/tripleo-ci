@@ -1,14 +1,16 @@
 ansible<2.10
 PyYAML
 ansi2html  # GPL (soft-dependency of pytest-html)
-docker>=3.7  # Apache
-molecule>=3.0,<3.1
+molecule>=3.2.3,<3.3
+molecule-containers>=0.2.1
+molecule-docker
+molecule-podman
 paramiko>=2.5.0  # LGPL (soft-dependency of docker that enables ssh protocol)
 pre-commit>=1.10  # MIT License
 pytest  # MIT
 pytest-cov  # MIT
 pytest-html  # MPL 2.0
-pytest-molecule>=1.3.0,<1.3.1  # MIT (reference: https://launchpad.net/bugs/1900033)
+pytest-molecule>=1.3.3,<1.4.0  # MIT (reference: https://launchpad.net/bugs/1900033)
 pytest-plus  # MIT
 pytest-xdist  # MIT
 requests
