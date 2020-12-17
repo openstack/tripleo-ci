@@ -22,6 +22,7 @@
               - tox.ini
               - ^roles/build-containers/.*$
               - ^roles/oooci-build-images/.*$
+              - ^roles/tripleo-repos/.*$
               - ^playbooks/deprecated/.*$
               - ^playbooks/tripleo-buildcontainers/.*$
               - ^playbooks/tripleo-buildimages/.*$

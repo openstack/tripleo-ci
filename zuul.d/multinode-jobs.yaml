@@ -28,6 +28,7 @@
               - ^releasenotes/.*$
               - ^roles/build-containers/.*$
               - ^roles/oooci-build-images/.*$
+              - ^roles/tripleo-repos/.*$
               - ^spec/.*$
               - ^test-requirements.txt$
               - ^vars/sova-patterns.yml$
@@ -74,6 +75,7 @@
               - ^releasenotes/.*$
               - ^roles/build-containers/.*$
               - ^roles/oooci-build-images/.*$
+              - ^roles/tripleo-repos/.*$
               - ^spec/.*$
               - ^test-requirements.txt$
               - ^vars/sova-patterns.yml$

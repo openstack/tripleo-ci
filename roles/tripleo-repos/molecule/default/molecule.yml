@@ -6,9 +6,9 @@ driver:
 log: true
 platforms:
 
-  - name: ${MOLECULE_PLATFORM:-centos7}
-    hostname: ${MOLECULE_PLATFORM:-centos7}
-    image: ${MOLECULE_IMAGE:-centos:7}
+  - name: ${MOLECULE_PLATFORM:-centos8}
+    hostname: ${MOLECULE_PLATFORM:-centos8}
+    image: ${MOLECULE_IMAGE:-centos:8}
     dockerfile: ../Dockerfile.j2
     easy_install: [pip]
     environment: &env
