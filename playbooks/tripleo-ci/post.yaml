@@ -5,6 +5,33 @@
       set_fact:
         zuul_console_json: "{{ lookup('file', zuul.executor.log_root + '/job-output.json') }}"
 
+- name: Generate build report for the container build
+  hosts: primary
+  tasks:
+    - name: Build report (content provider)
+      include_role:
+        name: build-containers
+        tasks_from: build-report
+      when:
+        - provider_job | default(false) | bool
+        - not use_kolla | default(false) | bool
+
+    - name: Check that the report.html exists
+      stat:
+        path: "{{ ansible_user_dir }}/workspace/logs/report.html"
+      register: stat_report_result
+
+    - name: Return report.html artifact to Zuul
+      zuul_return:
+        data:
+          zuul:
+            artifacts:
+              - name: "Build report"
+                url: "logs/report.html"
+                metadata:
+                  type: build_report
+      when: stat_report_result.stat.exists
+
 - name: Collect logs
   hosts: primary
   tasks:
