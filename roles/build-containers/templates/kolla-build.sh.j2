@@ -1,0 +1,31 @@
+#!/bin/bash -eux
+{% if buildcontainers_venv is defined and buildcontainers_venv %}
+source {{ workspace }}/venv_build/bin/activate
+pip install -U decorator
+TRIPLEO_COMMON_PATH="{{ openstack_git_root }}/{% if zuul_internal is defined %}openstack-{% endif %}tripleo-common"
+{% else %}
+TRIPLEO_COMMON_PATH="/usr/share/openstack-tripleo-common"
+{% endif %}
+TRIPLEO_CI_PATH="{{ ansible_user_dir }}/src/opendev.org/openstack/tripleo-ci"
+
+### build
+openstack overcloud container image build {{ container_config }}\
+    {% if ci_branch not in ['queens', 'rocky'] and ci_branch in exclude_containers %}
+    {% for item in exclude_containers[ci_branch] %}
+        --exclude {{ item }} \
+    {% endfor %}
+    {% endif %}
+    {% if use_buildah is defined and use_buildah %}
+        --use-buildah \
+    {% endif %}
+    {% if ci_branch not in ['queens', 'rocky', 'stein'] %}
+        --work-dir /tmp/container-builds \
+    {% endif %}
+    {% if build_timeout is defined %}
+        --build-timeout {{ build_timeout }} \
+    {% endif %}
+    --kolla-config-file {{ workspace }}/kolla-build.conf
+
+### grep errors in all build logs
+sudo egrep "^Error:|No match" /tmp/kolla-*/docker -R > containers-build-errors.log 2>&1 || true
+sudo egrep "^Error:|No match" /tmp/container-builds/*/docker -R >> containers-build-errors.log 2>&1 || true
