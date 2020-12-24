@@ -1062,7 +1062,6 @@
       featureset: '052'
       provider_job: true
       build_container_images: true
-      containers_base_image: "ubi8:8.2"
       ib_create_web_repo: true
       playbooks:
         - quickstart.yml
