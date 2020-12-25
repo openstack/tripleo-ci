@@ -99,8 +99,6 @@
             irrelevant-files: *standalone_ignored
         - tripleo-ci-centos-8-standalone:
             irrelevant-files: *standalone_ignored
-        - tripleo-ci-centos-7-scenario000-multinode-oooq-container-updates:
-            irrelevant-files: *multinode_ignored
         - tripleo-ci-centos-8-scenario000-multinode-oooq-container-updates:
             irrelevant-files: *multinode_ignored
         - tripleo-ci-centos-8-scenario000-multinode-oooq-container-updates-ussuri:
@@ -341,11 +339,7 @@
             vars: *multi_consumer_vars
             dependencies:
               - tripleo-ci-centos-7-content-provider
-        - tripleo-ci-centos-7-scenario000-multinode-oooq-container-updates:
-            irrelevant-files: *multinode_ignored
         - tripleo-ci-centos-7-standalone-upgrade-stein:
-            irrelevant-files: *standalone_ignored
-        - tripleo-ci-centos-7-standalone-upgrade-train:
             irrelevant-files: *standalone_ignored
 
 - project-template:
@@ -514,13 +508,10 @@
             vars: *sa_consumer_vars
             dependencies:
               - tripleo-ci-centos-8-content-provider
-
         - tripleo-ci-centos-7-containers-multinode:
             irrelevant-files: *multinode_ignored
         - tripleo-ci-centos-7-standalone:
             irrelevant-files: *standalone_ignored
-        - tripleo-ci-centos-7-scenario000-multinode-oooq-container-updates:
-            irrelevant-files: *multinode_ignored
 
 # NOTE(rfolco): tripleo-multinode-branchful should be used in ci repos only
 # Check where this template is used across openstack repos with the url below:
