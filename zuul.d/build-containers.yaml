@@ -190,7 +190,6 @@
       buildcontainers_override_repos: current-tripleo
       push_containers: false
       push_containers_podman: false
-      containers_base_image: "ubi8:8.2"
 
 # containers-ubi-8 is exercised via the content-provider jobs
 # excluding train as tripleo-repos + train + current is blocked
