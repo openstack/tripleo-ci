@@ -42,7 +42,7 @@ def test_container_is_built(image):
         pytest.skip("container image excluded: {}".format(image))
 
     # [TEST 1]: check if image exists
-    cmd = ['buildah', 'images', image]
+    cmd = ['podman', 'images', image]
     proc = subprocess.run(
         cmd, universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE
     )

@@ -2,7 +2,7 @@
   block:
 
     - name: Move container-builds dir to workspace/logs
-      shell: "mv /tmp/container-* ./logs/"
+      shell: "mv {{ ansible_user_dir }}/container-* ./logs/"
       become: true
       args:
         chdir: "{{ workspace }}"
@@ -82,11 +82,17 @@
         - pytest
         - pytest-html
 
+    - name: install podman
+      become: true
+      package:
+        name: podman
+        state: present
+
     - name: Execute build-report
       shell: |
         source "venv_build/bin/activate"
         {{ virtualenv_python[ansible_distribution_major_version|int] }} -m pytest \
-            --html=report.html --self-contained-html {{ images_args }} build-report.py
+            --html=logs/report.html --self-contained-html {{ images_args }} build-report.py
       args:
         chdir: "{{ workspace }}"
       become: true

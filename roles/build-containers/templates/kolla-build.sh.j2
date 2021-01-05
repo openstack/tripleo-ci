@@ -19,7 +19,7 @@ openstack overcloud container image build {{ container_config }}\
         --use-buildah \
     {% endif %}
     {% if ci_branch not in ['queens', 'rocky', 'stein'] %}
-        --work-dir /tmp/container-builds \
+        --work-dir {{ ansible_user_dir }}/container-builds \
     {% endif %}
     {% if build_timeout is defined %}
         --build-timeout {{ build_timeout }} \

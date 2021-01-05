@@ -74,7 +74,7 @@ openstack tripleo container image build \
      --prefix {{ container_name_prefix }} \
      --config-file {{ openstack_git_root }}/{% if zuul_internal is defined %}openstack-{% endif %}tripleo-common/container-images/tripleo_containers.yaml \
      --config-path {{ openstack_git_root }}/{% if zuul_internal is defined %}openstack-{% endif %}tripleo-common/container-images \
-     --work-dir /tmp/container-builds \
+     --work-dir {{ ansible_user_dir }}/container-builds \
 {%   if build_timeout is defined %}
      --build-timeout {{ build_timeout }} \
 {%   endif %}
