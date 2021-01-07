@@ -7,9 +7,11 @@
     vars:
       allowed_overrides:
         - 'artg_repos_dir'
+        - 'baremetal_provision'
         - 'cirros_image'
         - 'dlrn_hash_tag'
         - 'dlrn_hash_tag_newest'
+        - 'extra_args'
         - 'run_tempest'
         - 'standalone_container_cli'
         - 'standalone_environment_files'
