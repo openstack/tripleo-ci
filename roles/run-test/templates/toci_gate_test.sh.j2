@@ -47,6 +47,9 @@ $(python_cmd) -m pip --version || \
     (curl -s "https://bootstrap.pypa.io/get-pip.py" -o "get-pip.py"; sudo $(python_cmd) get-pip.py)
 
 if [ "$(python_cmd)" == "python3" ]; then
+    if [[ "$(package_manager)" == *"/usr/bin/yum"* ]]; then
+       sudo $(python_cmd) -m pip install requests
+    fi
     sudo $(package_manager) install python3-setuptools python3-requests python3-urllib3 python3-PyYAML
 else
     sudo $(package_manager) install python2-setuptools python2-requests python-requests python-urllib3 PyYAML
