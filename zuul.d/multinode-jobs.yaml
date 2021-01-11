@@ -47,8 +47,6 @@
              irrelevant-files: *multinode_ignored
         - tripleo-ci-centos-7-scenario000-multinode-oooq-container-updates:
             irrelevant-files: *multinode_ignored
-        - tripleo-ci-centos-7-scenario000-multinode-oooq-container-upgrades:
-            irrelevant-files: *multinode_ignored
         - tripleo-ci-centos-8-scenario000-multinode-oooq-container-updates:
             irrelevant-files: *multinode_ignored
         - tripleo-ci-centos-8-scenario000-multinode-oooq-container-updates-ussuri:
@@ -138,8 +136,6 @@
         - tripleo-ci-centos-8-scenario007-multinode-oooq-container:
             irrelevant-files: *multinode_ignored
         - tripleo-ci-centos-7-scenario000-multinode-oooq-container-updates:
-            irrelevant-files: *multinode_ignored
-        - tripleo-ci-centos-7-scenario000-multinode-oooq-container-upgrades:
             irrelevant-files: *multinode_ignored
         - tripleo-ci-centos-8-scenario000-multinode-oooq-container-updates:
             irrelevant-files: *multinode_ignored
@@ -240,8 +236,6 @@
               - tripleo-ci-centos-7-content-provider
         - tripleo-ci-centos-7-scenario000-multinode-oooq-container-updates:
             irrelevant-files: *multinode_ignored
-        - tripleo-ci-centos-7-scenario000-multinode-oooq-container-upgrades:
-            irrelevant-files: *multinode_ignored
 
     gate:
       queue: tripleo
@@ -307,8 +301,6 @@
         - tripleo-ci-centos-7-scenario007-multinode-oooq-container:
             irrelevant-files: *multinode_ignored
         - tripleo-ci-centos-7-scenario000-multinode-oooq-container-updates:
-            irrelevant-files: *multinode_ignored
-        - tripleo-ci-centos-7-scenario000-multinode-oooq-container-upgrades:
             irrelevant-files: *multinode_ignored
         - tripleo-ci-centos-7-standalone:
             irrelevant-files: *standalone_ignored
@@ -730,23 +722,6 @@
     vars:
       nodes: 1ctlr
       featureset: '044'
-
-# The upgrades from Ocata to Pike needs to run
-# from an uncontainerized to a containerized
-# deployment, this job runs an upgrade from a
-# containerized to a containerized deployment.
-# Older upgrades than Pike can not use this job.
-# Launchpad bug: #1786062
-- job:
-    name: tripleo-ci-centos-7-scenario000-multinode-oooq-container-upgrades
-    parent: tripleo-ci-base-multinode
-    voting: false
-    branches: ^(stable/(queens|train)).*$
-    vars:
-      nodes: 1ctlr
-      featureset: '051'
-      extra_tags:
-        - overcloud-upgrade
 
 - job:
     name: tripleo-ci-centos-8-scenario000-multinode-oooq-container-upgrades
