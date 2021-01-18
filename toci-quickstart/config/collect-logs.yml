@@ -66,6 +66,7 @@ artcl_collect_list:
   - /etc/ci/
   - /etc/cinder/
   - /etc/cloud/
+  - /etc/cni/
   - /etc/collectd.conf*
   - /etc/collectd.d/
   - /etc/congress/
