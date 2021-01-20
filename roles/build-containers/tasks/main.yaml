@@ -1,4 +1,9 @@
 ---
+- name: Ensure logs directory exists
+  file:
+    path: '{{ workspace }}/logs'
+    state: directory
+
 - name: Set ci_branch for building containers check jobs
   include_tasks: set_ci_branch.yml
 
@@ -217,14 +222,15 @@
     force: yes
   when: not use_kolla | default(true)
 
-- name: "Run image build as ansible user > {{ workspace }}/build.log"
+
+- name: "Run image build as ansible user > {{ workspace }}/logs/build.log"
   args:
     chdir: '{{ workspace }}'
   shell: set -o pipefail && bash build_containers.sh 2>&1 {{ timestamper_cmd }} > {{ workspace }}/logs/build.log
   when:
     - ansible_distribution|lower != "redhat"
 
-- name: "Run image build as root > {{ workspace }}/build.log"
+- name: "Run image build as root > {{ workspace }}/logs/build.log"
   args:
     chdir: '{{ workspace }}'
   shell: set -o pipefail && bash build_containers.sh 2>&1 {{ timestamper_cmd }} > {{ workspace }}/logs/build.log
