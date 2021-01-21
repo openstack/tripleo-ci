@@ -60,9 +60,6 @@
     check:
       jobs:
         - tripleo-ci-centos-8-content-provider
-        - tripleo-ci-centos-8-content-provider-victoria
-        - tripleo-ci-centos-8-content-provider-ussuri
-        - tripleo-ci-centos-8-content-provider-train
         - tripleo-ci-centos-7-content-provider
         - tripleo-ci-centos-8-undercloud-containers:
             irrelevant-files: *undercloud_ignored
@@ -72,24 +69,6 @@
                 - build
             dependencies:
               - tripleo-ci-centos-8-content-provider
-        - tripleo-ci-centos-8-undercloud-upgrade:
-            vars: *undercloud_consumer_vars
-            irrelevant-files: *undercloud_ignored
-            dependencies:
-              - tripleo-ci-centos-8-content-provider
-              - tripleo-ci-centos-8-content-provider-victoria
-        - tripleo-ci-centos-8-undercloud-upgrade-ussuri:
-            vars: *undercloud_consumer_vars
-            irrelevant-files: *undercloud_ignored
-            dependencies:
-              - tripleo-ci-centos-8-content-provider-ussuri
-              - tripleo-ci-centos-8-content-provider-train
-        - tripleo-ci-centos-8-undercloud-upgrade-victoria:
-            vars: *undercloud_consumer_vars
-            irrelevant-files: *undercloud_ignored
-            dependencies:
-              - tripleo-ci-centos-8-content-provider-victoria
-              - tripleo-ci-centos-8-content-provider-ussuri
         - tripleo-ci-centos-7-undercloud-oooq:
             vars: *undercloud_consumer_vars
             irrelevant-files: *undercloud_ignored
@@ -107,9 +86,6 @@
       queue: tripleo
       jobs:
         - tripleo-ci-centos-8-content-provider
-        - tripleo-ci-centos-8-content-provider-victoria
-        - tripleo-ci-centos-8-content-provider-ussuri
-        - tripleo-ci-centos-8-content-provider-train
         - tripleo-ci-centos-7-content-provider
         - tripleo-ci-centos-8-undercloud-containers:
             irrelevant-files: *undercloud_ignored
@@ -131,18 +107,6 @@
             vars: *undercloud_consumer_vars
             dependencies:
               - tripleo-ci-centos-7-content-provider
-        - tripleo-ci-centos-8-undercloud-upgrade-ussuri:
-            vars: *undercloud_consumer_vars
-            irrelevant-files: *undercloud_ignored
-            dependencies:
-              - tripleo-ci-centos-8-content-provider-ussuri
-              - tripleo-ci-centos-8-content-provider-train
-        - tripleo-ci-centos-8-undercloud-upgrade-victoria:
-            vars: *undercloud_consumer_vars
-            irrelevant-files: *undercloud_ignored
-            dependencies:
-              - tripleo-ci-centos-8-content-provider-victoria
-              - tripleo-ci-centos-8-content-provider-ussuri
 - job:
     name: tripleo-ci-centos-7-undercloud-containers
     parent: tripleo-ci-base-singlenode
