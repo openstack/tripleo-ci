@@ -99,7 +99,7 @@
 - job:
     name: tripleo-ci-base-centos-8
     # min version to use (needed for proper python interpreter detection)
-    ansible-version: 2.8
+    ansible-version: 2.9
     abstract: true
     description: |
         Base abstract job for all TripleO CI centos-8 zuulv3 jobs
@@ -235,7 +235,7 @@
     description: |
         Base abstract job for OVB TripleO CI centos-8 zuulv3 jobs
     # min version to use
-    ansible-version: 2.8
+    ansible-version: 2.9
     parent: tripleo-ci-base-centos-8
     nodeset: single-centos-8-node
     vars:
