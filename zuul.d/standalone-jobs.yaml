@@ -898,12 +898,14 @@
           - manila
         tempest_tempest_conf_overrides:
           'share.multitenancy_enabled': 'False'
-          'share.enable_protocols': 'cephfs'
+          'share.enable_protocols': 'nfs'
           'share.capability_snapshot_support': 'False'
           'share.capability_create_share_from_snapshot_support': 'False'
         tempest_test_whitelist:
           - 'tempest.scenario.test_network_basic_ops.TestNetworkBasicOps.test_network_basic_ops'
-          - 'manila_tempest_tests.tests.api.test_shares.SharesCephFSTest.test_create_get_delete_share'
+          # Add the following back after
+          # https://review.opendev.org/c/openstack/tripleo-heat-templates/+/769937 merges
+          # - 'manila_tempest_tests.tests.api.test_shares.SharesNFSTest.test_create_get_delete_share'
 
 - job:
     name: tripleo-ci-centos-8-scenario007-standalone
