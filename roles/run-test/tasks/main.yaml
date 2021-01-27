@@ -16,6 +16,7 @@
         - 'standalone_container_cli'
         - 'standalone_environment_files'
         - 'standalone_upgrade'
+        - 'standalone_virt_type'
         - 'tempest_cloud_name'
         - 'tempest_extra_config'
         - 'tempest_format'
