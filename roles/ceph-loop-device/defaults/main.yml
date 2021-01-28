@@ -4,6 +4,4 @@ ceph_loop_device_legacy: /dev/loop3
 ceph_loop_device_file: /var/lib/ceph-osd.img
 ceph_loop_device_file_legacy: /var/lib/ceph-osd-legacy.img
 ceph_logical_volume_group: ceph_vg
-ceph_logical_volume_wal: ceph_lv_wal
-ceph_logical_volume_db: ceph_lv_db
 ceph_logical_volume_data: ceph_lv_data
