@@ -93,13 +93,17 @@
       - tox.ini
 
 - job:
-    name: tripleo-ci-centos-7-standalone-upgrade
-    parent: tripleo-ci-base-standalone-upgrade
-    nodeset: single-centos-7-node
+    name: tripleo-ci-centos-8-standalone-upgrade
+    parent: tripleo-ci-base-standalone-upgrade-centos-8
     voting: false
     branches: ^master$
     vars:
       featureset: '056'
+      featureset_override:
+        standalone_environment_files:
+          - 'environments/low-memory-usage.yaml'
+          - 'environments/docker-ha.yaml'
+          - 'environments/podman.yaml'
     irrelevant-files: &upgrade_irrelevant
       - .*molecule.*
       - ^.*\.md$
@@ -121,41 +125,6 @@
       - zuul.d/undercloud-jobs.yaml
       # like parent but with requirements.txt and setup.py removed
 
-- job:
-    name: tripleo-ci-centos-7-standalone-upgrade-stein
-    parent: tripleo-ci-base-standalone-upgrade
-    voting: false
-    branches: ^stable/stein$
-    override-checkout: 'stable/stein'
-    vars:
-      featureset: '056'
-      branch_override: 'stable/stein'
-    irrelevant-files: *upgrade_irrelevant
-
-- job:
-    name: tripleo-ci-centos-7-standalone-upgrade-train
-    parent: tripleo-ci-base-standalone-upgrade
-    voting: false
-    branches: ^stable/train$
-    override-checkout: 'stable/train'
-    vars:
-      featureset: '056'
-      branch_override: 'stable/train'
-    irrelevant-files: *upgrade_irrelevant
-
-- job:
-    name: tripleo-ci-centos-8-standalone-upgrade
-    parent: tripleo-ci-base-standalone-upgrade-centos-8
-    voting: false
-    branches: ^master$
-    vars:
-      featureset: '056'
-      featureset_override:
-        standalone_environment_files:
-          - 'environments/low-memory-usage.yaml'
-          - 'environments/docker-ha.yaml'
-          - 'environments/podman.yaml'
-    irrelevant-files: *upgrade_irrelevant
 
 - job:
     name: tripleo-ci-centos-8-standalone-upgrade-victoria

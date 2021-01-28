@@ -217,10 +217,6 @@
               - tripleo-ci-centos-7-content-provider
         - tripleo-ci-centos-7-standalone-rocky:
             irrelevant-files: *standalone_ignored
-        - tripleo-ci-centos-7-standalone-upgrade-stein:
-            irrelevant-files: *standalone_ignored
-        - tripleo-ci-centos-7-standalone-upgrade-train:
-            irrelevant-files: *standalone_ignored
         - tripleo-ci-centos-7-undercloud-containers:
             irrelevant-files: *multinode_ignored
         - tripleo-ci-centos-7-containers-multinode:
@@ -254,8 +250,6 @@
             vars: *multi_consumer_vars
             dependencies:
               - tripleo-ci-centos-7-content-provider
-        - tripleo-ci-centos-7-standalone-upgrade-stein:
-            irrelevant-files: *standalone_ignored
 
 - project-template:
     name: tripleo-multinode-container-full-pipeline
