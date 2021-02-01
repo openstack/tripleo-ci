@@ -8,7 +8,7 @@
       include_role:
         name: tripleo-repos
 
-    - name: validate that we can install openstack-tripleo-common
+    - name: validate that we can install openstack-tripleo-common  # noqa package-latest
       package:
         name: openstack-tripleo-common
         state: latest

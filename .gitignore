@@ -21,3 +21,4 @@ scripts/emit_releases_file/assets/
 scripts/emit_releases_file/htmlcov/
 scripts/emit_releases_file/pytest-report.html
 tripleo_ci.egg-info/
+.cache

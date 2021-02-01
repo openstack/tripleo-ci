@@ -74,8 +74,7 @@
       changed_when: false
 
     - name: Show the environment passed in to job shell scripts
-      # noqa 305
-      shell: env
+      command: env
       args:
         executable: /bin/bash
         warn: false
