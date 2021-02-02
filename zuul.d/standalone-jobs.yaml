@@ -204,9 +204,6 @@
               - roles/common/.*
               - roles/prepare-node/.*
               - roles/ceph-loop-device/.*  # scen1/4 ceph
-              # python-tripleoclient
-              - ^tripleoclient/heat_launcher.*$
-              - ^tripleoclient/v1/tripleo_(deploy|config|upgrade).*$
         - tripleo-ci-centos-8-scenario002-standalone:
             files: &scen2_files
               # tripleo-common
@@ -252,9 +249,6 @@
               - roles/run-test/.*
               - roles/prepare-node/.*
               - roles/common/.*
-              # python-tripleoclient
-              - ^tripleoclient/heat_launcher.*$
-              - ^tripleoclient/v1/tripleo_(deploy|config|upgrade).*$
         - tripleo-ci-centos-8-scenario003-standalone:
             files: &scen3_files
               # tripleo-common
@@ -287,9 +281,6 @@
               - roles/run-test/.*
               - roles/common/.*
               - roles/prepare-node/.*
-              # python-tripleoclient
-              - ^tripleoclient/heat_launcher.*$
-              - ^tripleoclient/v1/tripleo_(deploy|config|upgrade).*$
         - tripleo-ci-centos-8-scenario004-standalone:
             files: &scen4_files
               # tripleo-common
@@ -323,9 +314,6 @@
               - roles/common/.*
               - roles/prepare-node/.*
               - roles/ceph-loop-device/.*  # scen1/4 ceph
-              # python-tripleoclient
-              - ^tripleoclient/heat_launcher.*$
-              - ^tripleoclient/v1/tripleo_(deploy|config|upgrade).*$
         - tripleo-ci-centos-8-scenario010-standalone:
             files: &scen10_files
               # tripleo-common
@@ -359,9 +347,6 @@
               - ^deployed-server/.*$
               - ^network/endpoints/.*$
               - ^common/.*$
-              # python-tripleoclient
-              - ^tripleoclient/heat_launcher.*$
-              - ^tripleoclient/v1/tripleo_(deploy|config|upgrade).*$
               # python-tempestconf
               - ^config_tempest/services/octavia.*$
 
@@ -401,9 +386,6 @@
               - roles/common/.*
               - roles/prepare-node/.*
               - roles/ceph-loop-device/.*  # scen1/4 ceph
-              # python-tripleoclient
-              - ^tripleoclient/heat_launcher.*$
-              - ^tripleoclient/v1/tripleo_(deploy|config|upgrade).*$
         - tripleo-ci-centos-8-scenario007-standalone:
             files: &scen7_files
               # tripleo-common
