@@ -8,6 +8,12 @@
 - name: Generate build report for the container build
   hosts: primary
   tasks:
+    - name: "Create log directory"
+      file:
+        path: "{{ ansible_user_dir }}/workspace/logs"
+        state: directory
+        recurse: yes
+
     - name: Build report (content provider)
       include_role:
         name: build-containers
