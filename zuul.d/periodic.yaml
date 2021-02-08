@@ -67,9 +67,6 @@
         - tripleo-ci-centos-7-containers-multinode-stein:
             vars:
               force_non_periodic: true
-        - tripleo-ci-centos-7-containers-multinode-rocky:
-            vars:
-              force_non_periodic: true
         - tripleo-ci-centos-7-containers-multinode-queens:
             vars: *multi_consumer_vars_periodic
             dependencies:
