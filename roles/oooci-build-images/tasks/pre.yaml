@@ -62,6 +62,12 @@
   become: true
   when: python_v == "py2"
 
+- name: Ensure a recent version of pip is installed
+  pip:
+    name: "pip>=19.1.1"
+    virtualenv: "{{ workspace }}/venv"
+    virtualenv_command: "/usr/bin/python3 -m venv"
+
 - name: Install deps from upper-constraints
   when: ansible_distribution == 'CentOS'
   pip:
