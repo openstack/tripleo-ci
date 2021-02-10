@@ -19,8 +19,8 @@
         name: build-containers
         tasks_from: build-report
       when:
+        - ansible_distribution_major_version is version('8', '>=')
         - provider_job | default(false) | bool
-        - not use_kolla | default(false) | bool
 
     - name: Check that the report.html exists
       stat:
