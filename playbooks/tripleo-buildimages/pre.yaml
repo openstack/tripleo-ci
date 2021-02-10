@@ -1,3 +1,4 @@
+---
 - hosts: all
   name: TripleO image building job pre.yaml
   tasks:
@@ -20,7 +21,7 @@
 
     - name: Include tripleo-repos
       include_role:
-          name: tripleo-repos
+        name: tripleo-repos
       vars:
         override_repos: "{{ build_override_repos | default('') }}"
         tripleo_repos_repository: "{{ ansible_user_dir }}/{{ zuul.projects['opendev.org/openstack/tripleo-repos'].src_dir }}"

@@ -1,3 +1,4 @@
+---
 projects:
   - name: os-apply-config
   - name: os-collect-config

@@ -1,3 +1,4 @@
+---
 workspace: "{{ ansible_user_dir }}/workspace"
 tripleo_root: "{{ ansible_user_dir }}/src/opendev.org/openstack"
 tripleo_ci_dir: "{{ ansible_user_dir }}/{{ zuul.projects['opendev.org/openstack/tripleo-ci'].src_dir }}"

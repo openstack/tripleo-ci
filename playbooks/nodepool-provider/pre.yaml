@@ -1,6 +1,7 @@
+---
 - name: Configure /etc/nodepool/provider for backwards compatibility
   hosts: all
-  gather_facts: no
+  gather_facts: false
   tasks:
     - name: Warn that /etc/nodepool/provider is deprecated
       debug:

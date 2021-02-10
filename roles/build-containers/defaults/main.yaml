@@ -1,3 +1,4 @@
+---
 push_registry_port: 8787
 push_registry: "127.0.0.1:{{ push_registry_port }}"
 push_containers: "false"
@@ -8,7 +9,7 @@ kolla_base_image: "{{ kolla_base }}"
 # Kolla sets the default kolla tag on its own based on dstro
 # and setting a different default breaks other distro dependent
 # default (like the package manager)
-#kolla_base_tag: latest
+# kolla_base_tag: latest
 kolla_base_pull: true
 use_buildah: false
 buildcontainers_override_repos: ""

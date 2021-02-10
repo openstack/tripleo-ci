@@ -6,8 +6,6 @@ skip_list:
     - empty-string-compare  # https://github.com/ansible/ansible-lint/issues/457
     - role-name  # Role name run-test does not match ``^[a-z][a-z0-9_]+$`` pattern
     - risky-file-permissions  # File permissions unset or incorrect
-    # TODO(ssbarnea): Remove these in follow-ups
-    - yaml
 verbosity: 1
 mock_modules:
     - zuul_return

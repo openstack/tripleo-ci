@@ -19,7 +19,7 @@
     parent: tripleo-ci-base-multinode
     pre-run: playbooks/deprecated/pre.yaml
 
-#TODO(rfolco): non-containeirized (nc) scenarios are no longer supported.
+# TODO(rfolco): non-containeirized (nc) scenarios are no longer supported.
 # These (nc) scenario jobs ran until ocata release and should be removed
 # or replaced by containerized scenario jobs *-container.
 - job:
@@ -79,7 +79,7 @@
       nodes: 1ctlr
       featureset: '004'
 
-#TODO(rfolco): scen00{6,9} are containeirized, remove this when
+# TODO(rfolco): scen00{6,9} are containeirized, remove this when
 # all projects using them rename to the *-container (dup) jobs
 - job:
     name: tripleo-ci-centos-7-scenario006-multinode-oooq

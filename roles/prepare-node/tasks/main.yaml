@@ -1,3 +1,4 @@
+---
 - name: Swap is essential as we are not meeting memory requirements
   vars:
     configure_swap_size: 8192
@@ -24,7 +25,7 @@
     path: /home/zuul/src/
     state: directory
     mode: u=rwX,g=rX,o=rX
-    recurse: yes
+    recurse: true
 
 - name: "set zull_dump"
   set_fact:

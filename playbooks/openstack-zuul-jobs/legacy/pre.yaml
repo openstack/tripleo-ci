@@ -1,5 +1,6 @@
+---
 - hosts: all
-  gather_facts: no
+  gather_facts: false
   tasks:
     - name: Set IP addresses for the nodes missing private IPs
       set_fact:

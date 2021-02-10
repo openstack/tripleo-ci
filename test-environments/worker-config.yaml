@@ -1,3 +1,4 @@
+---
 # TODO(bnemec): Should these settings be moved to low-memory-usage.yaml
 # in tripleo-heat-templates?
 parameter_defaults:
