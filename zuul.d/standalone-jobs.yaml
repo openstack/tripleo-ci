@@ -229,8 +229,6 @@
               - ^deployed-server/.*$
               - ^network/endpoints/.*$
               - ^common/.*$
-              # tripleo-quickstart
-              - config/general_config/featureset052.yml
               # puppet-tripleo
               - ^manifests/profile/(base|pacemaker)/aodh.*$
               - ^manifests/profile/(base|pacemaker)/barbican.*$
@@ -242,13 +240,6 @@
               - ^manifests/profile/(base|pacemaker)/panko.*$
               - ^manifests/profile/(base|pacemaker)/swift.*$
               - ^manifests/profile/(base|pacemaker)/zaqar.*$
-              # tripleo-quickstart-extras
-              - roles/standalone/.*
-              - roles/validate-tempest/.*
-              # tripleo-ci
-              - roles/run-test/.*
-              - roles/prepare-node/.*
-              - roles/common/.*
         - tripleo-ci-centos-8-scenario003-standalone:
             files: &scen3_files
               # tripleo-common
@@ -266,21 +257,12 @@
               - ^deployed-server/.*$
               - ^network/endpoints/.*$
               - ^common/.*$
-              # tripleo-quickstart
-              - config/general_config/featureset052.yml
               # puppet-tripleo
               - ^manifests/haproxy.*$
               - ^manifests/profile/(base|pacemaker)/glance.*$
               - ^manifests/profile/(base|pacemaker)/mistral.*$
               - ^manifests/profile/(base|pacemaker)/sahara.*$
               - ^manifests/profile/(base|pacemaker)/designate.*$
-              # tripleo-quickstart-extras
-              - roles/standalone/.*
-              - roles/validate-tempest/.*
-              # tripleo-ci
-              - roles/run-test/.*
-              - roles/common/.*
-              - roles/prepare-node/.*
         - tripleo-ci-centos-8-scenario004-standalone:
             files: &scen4_files
               # tripleo-common
@@ -299,21 +281,11 @@
               - ^deployed-server/.*$
               - ^network/endpoints/.*$
               - ^common/.*$
-              # tripleo-quickstart
-              - config/general_config/featureset052.yml
               # puppet-tripleo
               - ^manifests/haproxy.*$
               - ^manifests/profile/(base|pacemaker)/glance.*$
               - ^manifests/profile/(base|pacemaker)/manila.*$
               - ^manifests/profile/(base|pacemaker)/ceph.*$  # ceph_nfs / ganesha
-              # tripleo-quickstart-extras
-              - roles/standalone/.*
-              - roles/validate-tempest/.*
-              # tripleo-ci
-              - roles/run-test/.*
-              - roles/common/.*
-              - roles/prepare-node/.*
-              - roles/ceph-loop-device/.*  # scen1/4 ceph
         - tripleo-ci-centos-8-scenario010-standalone:
             files: &scen10_files
               # tripleo-common
@@ -331,13 +303,7 @@
               - ^manifests/profile/base/database/mysql.*$
               - ^manifests/profile/base/octavia.*$
               # tripleo-quickstart-extras
-              - roles/standalone/.*
-              - roles/validate-tempest/.*
-                roles/octavia-amphora-download/.*
-              # tripleo-ci
-              - roles/run-test/.*
-              - roles/common/.*
-              - roles/prepare-node/.*
+              - roles/octavia-amphora-download/.*
               # tripleo-heat-templates
               # TODO(beagles): octavia testing touches neutron, glance and nova.
               # It may be sensible to expand this list after it has proven itself.
@@ -378,14 +344,6 @@
               # puppet-tripleo
               - ^manifests/haproxy.*$
               - ^manifests/profile/(base|pacemaker)/glance.*$
-              # tripleo-quickstart-extras
-              - roles/standalone/.*
-              - roles/validate-tempest/.*
-              # tripleo-ci
-              - roles/run-test/.*
-              - roles/common/.*
-              - roles/prepare-node/.*
-              - roles/ceph-loop-device/.*  # scen1/4 ceph
         - tripleo-ci-centos-8-scenario007-standalone:
             files: &scen7_files
               # tripleo-common
