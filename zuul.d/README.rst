@@ -10,7 +10,7 @@ config can be overriden:
 
  - `run_tempest`: To run tempest or not (true|false).
  - `tempest_whitelist`: List of tests you want to be executed.
- - `test_black_regex`: Set of tempest tests to skip.
+ - `test_exclude_regex`: Set of tempest tests to skip.
  - `tempest_format`: Installing tempest from venv, packages or containers
  - `tempest_extra_config`: A dict values in order to override the tempest.conf
  - `tempest_plugins`: List of tempest plugins needs to be installed
@@ -31,7 +31,7 @@ Example::
             run_tempest: true
             tempest_whitelist:
               - 'tempest.scenario.test_volume_boot_pattern.TestVolumeBootPattern.test_volume_boot_pattern'
-            tempest_black_regex: 'tempest.api.network|tempest.api.compute'
+            tempest_exclude_regex: 'tempest.api.network|tempest.api.compute'
             tempest_format: 'containers'
             tempest_extra_config: {'telemetry.alarm_granularity': '60'}
             tempest_workers: 1
