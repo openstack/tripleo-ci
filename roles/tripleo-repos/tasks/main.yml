@@ -61,6 +61,19 @@
     ci_branch: "{{ release }}"
   when: release is defined
 
+- name: Get /etc/os-release name
+  shell: 'source /etc/os-release && echo -e -n "$NAME"'
+  register: os_name_output
+
+- name: Set stream false
+  set_fact:
+    is_stream_node: false
+
+- name: Set stream true if stream node
+  set_fact:
+    is_stream_node: true
+  when: "os_name_output.stdout_lines[0]| regex_search('(S|s)tream$')"
+
 - name: Install repos
   become: true
   shell: |
@@ -89,10 +102,18 @@
         MIRROR="--mirror $DISTRO_MIRROR_HOST"
     fi
 
-    tripleo-repos \
-      -b "{{ ci_branch | default('master') }}" \
-      $MIRROR \
-      --rdo-mirror $RDO_MIRROR_HOST $REPO ceph opstools
+    if [ "{{ is_stream_node|string }}" == "True" ]; then
+        tripleo-repos \
+          -b "{{ ci_branch | default('master') }}" \
+          $MIRROR \
+          --rdo-mirror $RDO_MIRROR_HOST $REPO ceph opstools \
+          --stream
+    else
+        tripleo-repos \
+          -b "{{ ci_branch | default('master') }}" \
+          $MIRROR \
+          --rdo-mirror $RDO_MIRROR_HOST $REPO ceph opstools
+    fi
   register: result
   changed_when: "'Installed:' in result.stdout_lines"
   args:
