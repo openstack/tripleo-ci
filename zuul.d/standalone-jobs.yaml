@@ -913,6 +913,9 @@
           loadbalancer-feature-enabled.l4_protocol: 'TCP'
           loadbalancer-feature-enabled.session_persistence_enabled: false
           loadbalancer-feature-enabled.not_implemented_is_error: false
+          network-feature-enabled.port_security: true
+          load_balancer.test_server_path: >-
+            "/usr/lib/python{{ [ansible_python.version.major, ansible_python.version.minor] | join('.') }}/site-packages/octavia_tempest_plugin/contrib/test_server/test_server.bin"
         standalone_environment_files:
           - 'environments/low-memory-usage.yaml'
           - 'ci/environments/scenario010-standalone.yaml'
