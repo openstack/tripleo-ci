@@ -1,7 +1,7 @@
 ---
 - name: Build report
   include: build-report.yaml
-  when: not use_kolla | default(false)
+  when: not use_kolla | default(true)
 
 - name: Grab job artifacts
   become: true
