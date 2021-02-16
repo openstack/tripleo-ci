@@ -162,3 +162,59 @@
           - 'tempest.scenario.test_network_basic_ops.TestNetworkBasicOps.test_network_basic_ops'
         tempest_private_net_provider_type: 'vxlan'
         use_os_tempest: true
+
+- job:
+    name: tripleo-ci-centos-8-standalone-upgrade
+    parent: tripleo-ci-base-standalone-upgrade-centos-8
+    voting: false
+    branches: ^master$
+    vars:
+      featureset: '056'
+      featureset_override:
+        standalone_environment_files:
+          - 'environments/low-memory-usage.yaml'
+          - 'environments/docker-ha.yaml'
+          - 'environments/podman.yaml'
+    irrelevant-files:
+      - .*molecule.*
+      - ^.*\.md$
+      - ^.*\.rst$
+      - ^Puppetfile.*$
+      - ^doc/.*$
+      - ^etc/.*$
+      - ^lower-constraints.txt$
+      - ^metadata.json$
+      - ^releasenotes/.*$
+      - ^spec/.*$
+      - ^test-requirements.txt$
+      - ^vars/sova-patterns.yml$
+      - tox.ini
+      - zuul.d/ansible.yaml
+      - zuul.d/build-containers.yaml
+      - zuul.d/build-image.yaml
+      - zuul.d/multinode-jobs.yaml
+      - zuul.d/undercloud-jobs.yaml
+      # like parent but with requirements.txt and setup.py removed
+
+- job:
+    name: tripleo-ci-centos-8-undercloud-upgrade
+    parent: tripleo-ci-base-singlenode-centos-8
+    branches: ^master$
+    voting: false
+    vars:
+      featureset: '050'
+      featureset_override:
+        validate_services: false
+      extra_tags:
+        - undercloud-upgrade
+
+- job:
+    name: tripleo-ci-centos-8-scenario000-multinode-oooq-container-upgrades
+    parent: tripleo-ci-base-multinode-centos-8
+    voting: false
+    branches: ^master$
+    vars:
+      nodes: 1ctlr
+      featureset: '051'
+      extra_tags:
+        - overcloud-upgrade

@@ -51,8 +51,6 @@
             irrelevant-files: *multinode_ignored
         - tripleo-ci-centos-8-scenario000-multinode-oooq-container-updates-train:
             irrelevant-files: *multinode_ignored
-        - tripleo-ci-centos-8-scenario000-multinode-oooq-container-upgrades:
-            irrelevant-files: *multinode_ignored
         - tripleo-ci-centos-8-scenario000-multinode-oooq-container-upgrades-ussuri:
             irrelevant-files: *multinode_ignored
         - tripleo-ci-centos-8-standalone:
@@ -138,8 +136,6 @@
         - tripleo-ci-centos-8-scenario000-multinode-oooq-container-updates-ussuri:
             irrelevant-files: *multinode_ignored
         - tripleo-ci-centos-8-scenario000-multinode-oooq-container-updates-train:
-            irrelevant-files: *multinode_ignored
-        - tripleo-ci-centos-8-scenario000-multinode-oooq-container-upgrades:
             irrelevant-files: *multinode_ignored
         - tripleo-ci-centos-8-scenario000-multinode-oooq-container-upgrades-ussuri:
             irrelevant-files: *multinode_ignored
@@ -690,17 +686,6 @@
     vars:
       nodes: 1ctlr
       featureset: '044'
-
-- job:
-    name: tripleo-ci-centos-8-scenario000-multinode-oooq-container-upgrades
-    parent: tripleo-ci-base-multinode-centos-8
-    voting: false
-    branches: ^master$
-    vars:
-      nodes: 1ctlr
-      featureset: '051'
-      extra_tags:
-        - overcloud-upgrade
 
 - job:
     name: tripleo-ci-centos-8-scenario000-multinode-oooq-container-upgrades-ussuri

@@ -93,10 +93,10 @@
       - tox.ini
 
 - job:
-    name: tripleo-ci-centos-8-standalone-upgrade
+    name: tripleo-ci-centos-8-standalone-upgrade-victoria
     parent: tripleo-ci-base-standalone-upgrade-centos-8
-    voting: false
-    branches: ^master$
+    voting: true
+    branches: ^stable/victoria$
     vars:
       featureset: '056'
       featureset_override:
@@ -125,18 +125,6 @@
       - zuul.d/undercloud-jobs.yaml
       # like parent but with requirements.txt and setup.py removed
 
-
-- job:
-    name: tripleo-ci-centos-8-standalone-upgrade-victoria
-    parent: tripleo-ci-base-standalone-upgrade-centos-8
-    voting: true
-    branches: ^stable/victoria$
-    vars:
-      featureset: '056'
-      featureset_override:
-        standalone_environment_files:
-          - 'environments/low-memory-usage.yaml'
-    irrelevant-files: *upgrade_irrelevant
 
 # docker-ha, podman env files https://bugs.launchpad.net/tripleo/+bug/1887159
 - job:
@@ -363,7 +351,6 @@
               # puppet-tripleo
               - ^manifests/haproxy.*$
         - tripleo-ci-centos-7-standalone-rocky
-        - tripleo-ci-centos-8-standalone-upgrade
         - tripleo-ci-centos-8-standalone-upgrade-ussuri
         - tripleo-ci-centos-8-standalone
         - tripleo-ci-centos-8-standalone-build
