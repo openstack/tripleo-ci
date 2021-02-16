@@ -77,8 +77,8 @@
               - zuul.d/build-containers.yaml
               - zuul.d/build-image.yaml
               - zuul.d/layout.yaml
-              - zuul.d/standalone-jobs.yaml
               - zuul.d/undercloud-jobs.yaml
+              - zuul.d/multinode-jobs.yaml
         - tripleo-ci-centos-7-standalone:
             irrelevant-files: *standalone_ignored
 
