@@ -19,7 +19,7 @@
 
     - name: Configure docker registry
       include_role:
-          name: ansible-role-container-registry
+        name: ansible-role-container-registry
       vars:
         container_registry_docker_options: "--log-driver=journald --signature-verification=false --iptables=true --live-restore"
         container_registry_port: "{{ push_registry_port | default('8787') }}"
@@ -108,7 +108,7 @@
          or (ci_branch is defined and ci_branch == 'train')
     - name: Configure tripleo registry
       include_role:
-          name: "{{ tripleo_image_serve_role | default('tripleo_image_serve') }}"
+        name: "{{ tripleo_image_serve_role | default('tripleo_image_serve') }}"
       vars:
         tripleo_container_registry_port: "{{ push_registry_port | default('8787') }}"
   become: true

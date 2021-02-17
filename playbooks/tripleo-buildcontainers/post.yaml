@@ -1,3 +1,4 @@
+---
 - hosts: primary
   tasks:
     - name: Run build containers post tasks

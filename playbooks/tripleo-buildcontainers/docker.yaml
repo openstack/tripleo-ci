@@ -1,3 +1,4 @@
+---
 - hosts: all
   tasks:
     - name: Configure docker proxy
@@ -7,7 +8,7 @@
 
     - name: Set fact of docker upstream
       set_fact:
-        use_upstream_docker: False
+        use_upstream_docker: false
 
     - name: Install docker
       include_role:

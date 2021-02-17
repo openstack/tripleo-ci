@@ -1,3 +1,4 @@
+---
 - name: Write console log to localhost as fact zuul_console_json
   hosts: localhost
   tasks:
@@ -12,7 +13,7 @@
       file:
         path: "{{ ansible_user_dir }}/workspace/logs"
         state: directory
-        recurse: yes
+        recurse: true
 
     - name: Build report (content provider)
       include_role:

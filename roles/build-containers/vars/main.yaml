@@ -1,3 +1,4 @@
+---
 workspace: "{{ ansible_user_dir }}/workspace"
 
 # https://review.opendev.org/#/c/669471 - rhel8 kolla support

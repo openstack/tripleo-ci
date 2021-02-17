@@ -1,21 +1,22 @@
+---
 container_images:
-- imagename: docker.io/tripleomaster/centos-binary-nova-api:current-tripleo
-  image_source: kolla
-- imagename: docker.io/tripleomaster/centos-binary-nova-compute-ironic:current-tripleo
-  image_source: kolla
-- imagename: docker.io/tripleomaster/centos-binary-nova-compute:current-tripleo
-  image_source: kolla
-- imagename: docker.io/tripleomaster/centos-binary-nova-conductor:current-tripleo
-  image_source: kolla
-- imagename: docker.io/tripleomaster/centos-binary-nova-libvirt:current-tripleo
-  image_source: kolla
-- imagename: docker.io/tripleomaster/centos-binary-nova-novncproxy:current-tripleo
-  image_source: kolla
-- imagename: docker.io/tripleomaster/centos-binary-nova-scheduler:current-tripleo
-  image_source: kolla
-- imagename: docker.io/tripleomaster/centos-binary-nova-serialproxy:current-tripleo
-  image_source: kolla
-- imagename: docker.io/tripleomaster/centos-binary-novajoin-notifier:current-tripleo
-  image_source: kolla
-- imagename: docker.io/tripleomaster/centos-binary-novajoin-server:current-tripleo
-  image_source: kolla
+  - imagename: docker.io/tripleomaster/centos-binary-nova-api:current-tripleo
+    image_source: kolla
+  - imagename: docker.io/tripleomaster/centos-binary-nova-compute-ironic:current-tripleo
+    image_source: kolla
+  - imagename: docker.io/tripleomaster/centos-binary-nova-compute:current-tripleo
+    image_source: kolla
+  - imagename: docker.io/tripleomaster/centos-binary-nova-conductor:current-tripleo
+    image_source: kolla
+  - imagename: docker.io/tripleomaster/centos-binary-nova-libvirt:current-tripleo
+    image_source: kolla
+  - imagename: docker.io/tripleomaster/centos-binary-nova-novncproxy:current-tripleo
+    image_source: kolla
+  - imagename: docker.io/tripleomaster/centos-binary-nova-scheduler:current-tripleo
+    image_source: kolla
+  - imagename: docker.io/tripleomaster/centos-binary-nova-serialproxy:current-tripleo
+    image_source: kolla
+  - imagename: docker.io/tripleomaster/centos-binary-novajoin-notifier:current-tripleo
+    image_source: kolla
+  - imagename: docker.io/tripleomaster/centos-binary-novajoin-server:current-tripleo
+    image_source: kolla

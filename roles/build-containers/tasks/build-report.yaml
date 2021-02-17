@@ -1,3 +1,4 @@
+---
 - name: Container build report
   block:
 
@@ -6,7 +7,7 @@
       become: true
       args:
         chdir: "{{ workspace }}"
-      ignore_errors: yes
+      ignore_errors: true
 
     - name: Set ci_branch for building containers check jobs
       include_tasks: set_ci_branch.yml
@@ -19,7 +20,7 @@
       fetch:
         src: "{{ openstack_git_root }}/{% if zuul_internal is defined %}openstack-{% endif %}tripleo-common/container-images/tripleo_containers.yaml"
         dest: "{{ zuul.executor.work_root }}/"
-        flat: yes
+        flat: true
 
     - name: Load list of containers expected to build
       include_vars:
@@ -49,7 +50,7 @@
       lineinfile:
         line: "{{ item }}"
         path: "{{ workspace }}/containers-expected.log"
-        create: yes
+        create: true
         state: present
       with_items: "{{ expected_containers }}"
 
@@ -97,4 +98,4 @@
         chdir: "{{ workspace }}"
       become: true
 
-  ignore_errors: yes
+  ignore_errors: true

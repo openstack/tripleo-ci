@@ -38,7 +38,7 @@
     chdir: "{{ workspace }}"
   register: files_missing
   changed_when: false
-  ignore_errors: True
+  ignore_errors: true
   loop: "{{ missing_dirs }}"
 
 - name: Show warning if missing files

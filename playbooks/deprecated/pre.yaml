@@ -1,6 +1,7 @@
+---
 - name: Deprecation warning
   hosts: all
-  gather_facts: no
+  gather_facts: false
   tasks:
     - name: Warn that the job is deprecated
       debug:

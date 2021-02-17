@@ -13,7 +13,7 @@ undercloud_ansible_cfg: false
 toci_vxlan_networking: true
 toci_vxlan_networking_multinode: true
 vxlan_mtu: 1350
-hostname_correction: true # workaround restriction on toci images
+hostname_correction: true  # workaround restriction on toci images
 
 mtu: "{{ vxlan_mtu }}"
 undercloud_local_mtu: "{{ mtu }}"
@@ -23,8 +23,8 @@ overcloud_neutron_global_physnet_mtu: "{{ mtu }}"
 ceph_use_fqdn: true
 
 # environment settings, not TRIPLEO-CI specific
-undercloud_local_interface: "br-ex" # related to osinfra network configuration
-minion_local_interface: "br-ex" # related to osinfra network configuration
+undercloud_local_interface: "br-ex"  # related to osinfra network configuration
+minion_local_interface: "br-ex"  # related to osinfra network configuration
 flavor_args: ""
 undercloud_conf_extras: "net_config_override = /opt/stack/new/tripleo-ci/undercloud-configs/net-config-multinode.json.template"
 generate_pingtest_subunit: true
@@ -69,7 +69,7 @@ update_containers: >-
 # Tempestmail settings
 tempestmail_log_server: http://logs.rdoproject.org
 
-#build-test packages
+# build-test packages
 artg_repos_dir: "{{ tripleo_root }}"
 
 # disable disk cleaning before starting installation

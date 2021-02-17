@@ -1,3 +1,4 @@
+---
 # TRIPLEO-CI environment settings
 cloudenv: "upstream"
 undercloud_user: "{{ lookup('env','USER') }}"
@@ -9,7 +10,7 @@ workers_args: >-
     -e {{ overcloud_templates_path }}/environments/debug.yaml
 # undercloud deployment
 # NOTE(mwhahaha): removed until we can sort out the docker.io issues LP#1889122
-#undercloud_docker_registry_mirror: "{{ lookup('env','NODEPOOL_DOCKER_REGISTRY_V2_PROXY') }}"
+# undercloud_docker_registry_mirror: "{{ lookup('env','NODEPOOL_DOCKER_REGISTRY_V2_PROXY') }}"
 
 dlrn_use_local_mirrors: true
 
@@ -17,7 +18,7 @@ dlrn_use_local_mirrors: true
 undercloud_ansible_cfg: false
 
 vxlan_networking: true
-hostname_correction: true # workaround restriction on toci images
+hostname_correction: true  # workaround restriction on toci images
 
 vxlan_mtu: 1350
 mtu: "{{ vxlan_mtu }}"
@@ -26,8 +27,8 @@ minion_local_mtu: "{{ mtu }}"
 overcloud_neutron_global_physnet_mtu: "{{ mtu }}"
 
 # environment settings, not TRIPLEO-CI specific
-undercloud_local_interface: "br-ex" # related to osinfra network configuration
-minion_local_interface: "br-ex" # related to osinfra network configuration
+undercloud_local_interface: "br-ex"  # related to osinfra network configuration
+minion_local_interface: "br-ex"  # related to osinfra network configuration
 flavor_args: ""
 undercloud_conf_extras: "net_config_override = /opt/stack/new/tripleo-ci/undercloud-configs/net-config-multinode.json.template"
 generate_pingtest_subunit: true
@@ -48,7 +49,7 @@ update_containers: >-
   true
   {%- endif -%}
 
-#build-test packages
+# build-test packages
 artg_repos_dir: /home/zuul/src/opendev.org/openstack
 # InfluxDB module settings
 influxdb_only_successful_tasks: true

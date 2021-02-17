@@ -1,3 +1,4 @@
+---
 - hosts: subnodes
   name: Bootstrap subnodes - setup ceph-ansible /dev/loop3 /var/lib/ceph-osd.img
   tasks:

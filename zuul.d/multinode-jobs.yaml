@@ -44,7 +44,7 @@
         - tripleo-ci-centos-7-undercloud-containers:
             irrelevant-files: *multinode_ignored
         - tripleo-ci-centos-7-containers-multinode:
-             irrelevant-files: *multinode_ignored
+            irrelevant-files: *multinode_ignored
         - tripleo-ci-centos-8-scenario000-multinode-oooq-container-updates:
             irrelevant-files: *multinode_ignored
         - tripleo-ci-centos-8-scenario000-multinode-oooq-container-updates-ussuri:

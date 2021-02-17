@@ -1,3 +1,4 @@
+---
 - project-template:
     name: tripleo-periodic
     periodic:

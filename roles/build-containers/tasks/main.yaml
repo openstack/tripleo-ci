@@ -74,7 +74,7 @@
     description: Dummy epel repository
     file: delorean_epel_dummy
     baseurl: https://download.fedoraproject.org/pub/epel/$releasever/$basearch/
-    enabled: no
+    enabled: false
   with_items:
     - epel
     - epel-modular
@@ -128,12 +128,12 @@
     src: templates/kolla-build.conf.j2
     dest: "{{ workspace }}/kolla-build.conf"
     mode: 0644
-    force: yes
+    force: true
 
 - name: Set container cli
   set_fact:
     container_cli: "{% if use_buildah|bool %}buildah{% else %}docker{% endif %}"
-    cacheable: yes
+    cacheable: true
 
 - name: Set config-file
   set_fact:
@@ -211,7 +211,7 @@
     src: templates/kolla-build.sh.j2
     dest: "{{ workspace }}/build_containers.sh"
     mode: 0777
-    force: yes
+    force: true
   when: use_kolla | default(true)
 
 - name: Generate tripleo building script
@@ -219,7 +219,7 @@
     src: templates/tripleo-build.sh.j2
     dest: "{{ workspace }}/build_containers.sh"
     mode: 0777
-    force: yes
+    force: true
   when: not use_kolla | default(true)
 
 
@@ -258,7 +258,7 @@
       vars:
         image: "{{ item }}"
       include: tag.yaml
-      static: no
+      static: false
       with_items: "{{ built_images.stdout_lines }}"
   become: true
 
@@ -298,6 +298,6 @@
       vars:
         image: "{{ item }}"
       include: provider_push.yaml
-      static: no
+      static: false
       with_items: "{{ built_images.stdout_lines }}"
   become: true
