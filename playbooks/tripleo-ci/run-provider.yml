@@ -41,7 +41,7 @@
         - name: Set fact for DLRN tag
           set_fact:
             provider_dlrn_hash_branch: "{'{{ ci_branch }}': '{{ dlrn_file['content'] | b64decode | trim }}'}"
-            provider_dlrn_hash_tag_branch: "{'{{ ci_branch }}': '{{ dlrn_file['content'] | b64decode | trim}}'}"
+            provider_dlrn_hash_tag_branch: "{'{{ ci_branch }}': '{{ dlrn_file['content'] | b64decode | trim }}'}"
 
     - name: Return Zuul data
       debug:

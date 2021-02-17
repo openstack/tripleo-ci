@@ -9,7 +9,7 @@
     msg: "boostrap-subnodes - warning {{ ceph_loop_device }} already exists"
   when: dev_loop3_res.stat.exists
 
-- name: Make sure we have losetup installed/latest
+- name: Make sure we have losetup installed/latest  # noqa: package-latest
   become: true
   package:
     name:

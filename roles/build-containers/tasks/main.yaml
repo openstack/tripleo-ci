@@ -238,10 +238,11 @@
     - ansible_distribution|lower == "redhat"
   become: true
 
-- name: Retrieve built images
+- name: Retrieve built images  # noqa risky-shell-pipe
   shell: "{{ container_cli }} images | grep {{ container_name_prefix }} | awk '{ print $1 }'"
   register: built_images
   become: true
+  changed_when: false
 
 - name: Retag and push x86_64 images
   when:
