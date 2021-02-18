@@ -119,16 +119,6 @@
             irrelevant-files: *multinode_ignored
         - tripleo-ci-centos-8-containers-undercloud-minion:
             irrelevant-files: *multinode_ignored
-        - tripleo-ci-centos-7-scenario001-multinode-oooq-container:
-            irrelevant-files: *multinode_ignored
-        - tripleo-ci-centos-7-scenario002-multinode-oooq-container:
-            irrelevant-files: *multinode_ignored
-        - tripleo-ci-centos-7-scenario003-multinode-oooq-container:
-            irrelevant-files: *multinode_ignored
-        - tripleo-ci-centos-7-scenario004-multinode-oooq-container:
-            irrelevant-files: *multinode_ignored
-        - tripleo-ci-centos-7-scenario007-multinode-oooq-container:
-            irrelevant-files: *multinode_ignored
         - tripleo-ci-centos-8-scenario007-multinode-oooq-container:
             irrelevant-files: *multinode_ignored
         - tripleo-ci-centos-8-scenario000-multinode-oooq-container-updates:
@@ -271,16 +261,6 @@
         - tripleo-ci-centos-7-containers-multinode:
             irrelevant-files: *multinode_ignored
         - tripleo-ci-centos-7-undercloud-containers:
-            irrelevant-files: *multinode_ignored
-        - tripleo-ci-centos-7-scenario001-multinode-oooq-container:
-            irrelevant-files: *multinode_ignored
-        - tripleo-ci-centos-7-scenario002-multinode-oooq-container:
-            irrelevant-files: *multinode_ignored
-        - tripleo-ci-centos-7-scenario003-multinode-oooq-container:
-            irrelevant-files: *multinode_ignored
-        - tripleo-ci-centos-7-scenario004-multinode-oooq-container:
-            irrelevant-files: *multinode_ignored
-        - tripleo-ci-centos-7-scenario007-multinode-oooq-container:
             irrelevant-files: *multinode_ignored
         - tripleo-ci-centos-7-standalone:
             irrelevant-files: *standalone_ignored
@@ -592,60 +572,6 @@
       featureset: '010'
       playbooks:
         - multinode.yml
-
-- job:
-    name: tripleo-ci-centos-7-scenario001-multinode-oooq-container
-    parent: tripleo-ci-base-multinode
-    branches: ^(stable/queens).*$
-    voting: false
-    vars:
-      nodes: 1ctlr
-      featureset: '016'
-
-- job:
-    name: tripleo-ci-centos-7-scenario002-multinode-oooq-container
-    parent: tripleo-ci-base-multinode
-    branches: ^(stable/queens).*$
-    voting: false
-    vars:
-      nodes: 1ctlr
-      featureset: '017'
-
-- job:
-    name: tripleo-ci-centos-7-scenario003-multinode-oooq-container
-    parent: tripleo-ci-base-multinode
-    branches: ^(stable/queens).*$
-    voting: false
-    vars:
-      nodes: 1ctlr
-      featureset: '018'
-
-- job:
-    name: tripleo-ci-centos-7-scenario004-multinode-oooq-container
-    parent: tripleo-ci-base-multinode
-    branches: ^(stable/queens).*$
-    voting: false
-    vars:
-      nodes: 1ctlr
-      featureset: '019'
-
-- job:
-    name: tripleo-ci-centos-7-scenario006-multinode-oooq-container
-    parent: tripleo-ci-base-multinode
-    voting: false
-    branches: ^(stable/(queens|train)).*$
-    vars:
-      nodes: 1ctlr
-      featureset: '026'
-
-- job:
-    name: tripleo-ci-centos-7-scenario007-multinode-oooq-container
-    parent: tripleo-ci-base-multinode
-    voting: false
-    branches: ^stable/(queens).*$
-    vars:
-      nodes: 1ctlr
-      featureset: '030'
 
 - job:
     name: tripleo-ci-centos-8-scenario007-multinode-oooq-container
