@@ -194,11 +194,6 @@
               - roles/ceph-loop-device/.*  # scen1/4 ceph
         - tripleo-ci-centos-8-scenario002-standalone:
             files: &scen2_files
-              # tripleo-common
-              - ^container-images/.*$
-              - tripleo_common/image/kolla_builder.py
-              - workbooks/ceph-ansible.yaml
-              - tripleo_common/actions/ansible.py
               # tripleo-heat-templates
               - ^((docker|puppet)/services|deployment)/.*aodh.*$
               - ^((docker|puppet)/services|deployment)/.*barbican.*$
@@ -230,9 +225,6 @@
               - ^manifests/profile/(base|pacemaker)/zaqar.*$
         - tripleo-ci-centos-8-scenario003-standalone:
             files: &scen3_files
-              # tripleo-common
-              - ^container-images/.*$
-              - tripleo_common/image/kolla_builder.py
               # tripleo-heat-templates
               - ^((docker|puppet)/services|deployment)/.*designate.*$
               - ^((docker|puppet)/services|deployment)/.*glance.*$
@@ -253,11 +245,6 @@
               - ^manifests/profile/(base|pacemaker)/designate.*$
         - tripleo-ci-centos-8-scenario004-standalone:
             files: &scen4_files
-              # tripleo-common
-              - workbooks/ceph-ansible.yaml
-              - ^container-images/.*$
-              - tripleo_common/actions/ansible.py
-              - tripleo_common/image/kolla_builder.py
               # tripleo-heat-templates
               - ^(docker/services|deployment)/ceph.*$
               - ^(docker/services|deployment)/glance.*$
@@ -281,9 +268,6 @@
               - playbooks/octavia-files.yaml
               - playbooks/roles/octavia.*$
               - playbooks/roles/common/.*$
-              - ^container-images/.*$
-              - tripleo_common/actions/ansible.py
-              - tripleo_common/image/kolla_builder.py
               # tripleo-quickstart
               - config/general_config/featureset062.yml
               # puppet-tripleo
@@ -315,10 +299,6 @@
 
         - tripleo-ci-centos-8-scenario012-standalone:
             files: &scen12_files
-              # tripleo-common
-              - ^container-images/.*$
-              - tripleo_common/actions/ansible.py
-              - tripleo_common/image/kolla_builder.py
               # tripleo-heat-templates
               - ^(docker/services|deployment)/glance.*$
               - ^(docker/services|deployment)/ironic.*$
@@ -334,11 +314,6 @@
               - ^manifests/profile/(base|pacemaker)/glance.*$
         - tripleo-ci-centos-8-scenario007-standalone:
             files: &scen7_files
-              # tripleo-common
-              - workbooks/ceph-ansible.yaml
-              - ^container-images/.*$
-              - tripleo_common/actions/ansible.py
-              - tripleo_common/image/kolla_builder.py
               # tripleo-heat-templates
               - ^((docker|puppet)/services|deployment)/.*neutron.*$
               - ci/environments/scenario007-standalone.yaml
