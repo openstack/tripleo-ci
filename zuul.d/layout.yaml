@@ -33,6 +33,9 @@
             vars:
               tox_environment:
                 PYTEST_REQPASS: 84
+        - tripleo-ci-centos-8-content-provider:
+            dependencies:
+              - openstack-tox-linters
     gate:
       queue: tripleo
       jobs:

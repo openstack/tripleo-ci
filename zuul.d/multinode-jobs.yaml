@@ -330,11 +330,22 @@
     name: tripleo-multinode-branchful
     check:
       jobs:
-        - tripleo-ci-centos-8-content-provider-victoria
-        - tripleo-ci-centos-8-content-provider-ussuri
-        - tripleo-ci-centos-8-content-provider-train
-        - tripleo-ci-centos-7-content-provider-train
-        - tripleo-ci-centos-7-content-provider-queens
+        - openstack-tox-linters
+        - tripleo-ci-centos-8-content-provider-victoria:
+            dependencies:
+              - openstack-tox-linters
+        - tripleo-ci-centos-8-content-provider-ussuri:
+            dependencies:
+              - openstack-tox-linters
+        - tripleo-ci-centos-8-content-provider-train:
+            dependencies:
+              - openstack-tox-linters
+        - tripleo-ci-centos-7-content-provider-train:
+            dependencies:
+              - openstack-tox-linters
+        - tripleo-ci-centos-7-content-provider-queens:
+            dependencies:
+              - openstack-tox-linters
         - tripleo-ci-centos-8-containers-multinode-victoria: &multi_consumer_job_victoria
             irrelevant-files: *multinode_ignored
             vars: *multi_consumer_vars
