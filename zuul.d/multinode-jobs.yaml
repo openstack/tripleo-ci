@@ -340,12 +340,6 @@
         - tripleo-ci-centos-8-content-provider-train:
             dependencies:
               - openstack-tox-linters
-        - tripleo-ci-centos-7-content-provider-train:
-            dependencies:
-              - openstack-tox-linters
-        - tripleo-ci-centos-7-content-provider-queens:
-            dependencies:
-              - openstack-tox-linters
         - tripleo-ci-centos-8-containers-multinode-victoria: &multi_consumer_job_victoria
             irrelevant-files: *multinode_ignored
             vars: *multi_consumer_vars
@@ -361,16 +355,6 @@
             vars: *multi_consumer_vars
             dependencies:
               - tripleo-ci-centos-8-content-provider-train
-        - tripleo-ci-centos-7-containers-multinode-train:
-            irrelevant-files: *multinode_ignored
-            vars: *multi_consumer_vars
-            dependencies:
-              - tripleo-ci-centos-7-content-provider-train
-        - tripleo-ci-centos-7-containers-multinode-queens:
-            irrelevant-files: *multinode_ignored
-            vars: *multi_consumer_vars
-            dependencies:
-              - tripleo-ci-centos-7-content-provider-queens
     gate:
       jobs:
         - tripleo-ci-centos-8-content-provider-victoria
@@ -385,11 +369,6 @@
             irrelevant-files: *multinode_ignored
         - tripleo-ci-centos-7-containers-multinode-rocky:
             irrelevant-files: *multinode_ignored
-        - tripleo-ci-centos-7-containers-multinode-queens:
-            irrelevant-files: *multinode_ignored
-            vars: *multi_consumer_vars
-            dependencies:
-              - tripleo-ci-centos-7-content-provider-queens
 
 - project-template:
     name: tripleo-multinode-tripleoci
@@ -529,20 +508,6 @@
         - multinode.yml
 
 - job:
-    name: tripleo-ci-centos-7-containers-multinode-train
-    parent: tripleo-ci-base-multinode
-    timeout: 10800
-    voting: false
-    branches: master
-    override-checkout: 'stable/train'
-    vars:
-      branch_override: 'stable/train'
-      nodes: 1ctlr
-      featureset: '010'
-      playbooks:
-        - multinode.yml
-
-- job:
     name: tripleo-ci-centos-7-containers-multinode-stein
     parent: tripleo-ci-base-multinode
     timeout: 10800
@@ -565,20 +530,6 @@
     override-checkout: 'stable/rocky'
     vars:
       branch_override: 'stable/rocky'
-      nodes: 1ctlr
-      featureset: '010'
-      playbooks:
-        - multinode.yml
-
-
-- job:
-    name: tripleo-ci-centos-7-containers-multinode-queens
-    parent: tripleo-ci-base-multinode
-    voting: false
-    branches: master
-    override-checkout: 'stable/queens'
-    vars:
-      branch_override: 'stable/queens'
       nodes: 1ctlr
       featureset: '010'
       playbooks:

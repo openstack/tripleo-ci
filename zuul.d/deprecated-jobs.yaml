@@ -72,6 +72,33 @@
       featureset: '031'
 
 - job:
+    name: tripleo-ci-centos-7-containers-multinode-queens
+    parent: tripleo-ci-base-multinode
+    voting: false
+    branches: master
+    override-checkout: 'stable/queens'
+    vars:
+      branch_override: 'stable/queens'
+      nodes: 1ctlr
+      featureset: '010'
+      playbooks:
+        - multinode.yml
+
+- job:
+    name: tripleo-ci-centos-7-containers-multinode-train
+    parent: tripleo-ci-base-multinode
+    timeout: 10800
+    voting: false
+    branches: master
+    override-checkout: 'stable/train'
+    vars:
+      branch_override: 'stable/train'
+      nodes: 1ctlr
+      featureset: '010'
+      playbooks:
+        - multinode.yml
+
+- job:
     name: tripleo-ci-centos-7-nonha-multinode-oooq
     parent: tripleo-ci-deprecated
     branches: none/deprecated
