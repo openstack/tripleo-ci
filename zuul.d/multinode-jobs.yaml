@@ -163,6 +163,8 @@
             irrelevant-files: *standalone_ignored
         - tripleo-ci-centos-8-standalone:
             irrelevant-files: *standalone_ignored
+        - tripleo-ci-centos-8-scenario007-multinode-oooq-container:
+            irrelevant-files: *multinode_ignored
         - tripleo-ci-centos-8-scenario000-multinode-oooq-container-updates:
             irrelevant-files: *multinode_ignored
         - tripleo-ci-centos-8-scenario000-multinode-oooq-container-updates-ussuri:
@@ -304,6 +306,11 @@
       jobs:
         - tripleo-ci-centos-8-content-provider
         - tripleo-ci-centos-8-containers-multinode:
+            irrelevant-files: *multinode_ignored
+            vars: *multi_consumer_vars
+            dependencies:
+              - tripleo-ci-centos-8-content-provider
+        - tripleo-ci-centos-8-scenario007-multinode-oooq-container:
             irrelevant-files: *multinode_ignored
             vars: *multi_consumer_vars
             dependencies:
@@ -538,7 +545,6 @@
 - job:
     name: tripleo-ci-centos-8-scenario007-multinode-oooq-container
     parent: tripleo-ci-base-multinode-centos-8
-    voting: false
     branches: ^(?!stable/(queens|rocky|stein|train|ussuri)).*$
     vars:
       nodes: 1ctlr
