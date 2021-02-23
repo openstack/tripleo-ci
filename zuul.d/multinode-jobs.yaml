@@ -4,14 +4,11 @@
 # It contains all the jobs using deployed-servers in nodepool.
 
 - project-template:
-    name: tripleo-multinode-baremetal-minimal
-    gate:
-      queue: tripleo
-
-- project-template:
-    name: tripleo-multinode-container-minimal
+    name: tripleo-multinode-container-minimal-pipeline
     check:
       jobs:
+        - tripleo-ci-centos-8-content-provider
+        - tripleo-ci-centos-7-content-provider
         - tripleo-ci-centos-8-containers-multinode:
             irrelevant-files: &multinode_ignored
               - ^.*\.md$
@@ -41,147 +38,6 @@
               - zuul.d/layout.yaml
               - zuul.d/standalone-jobs.yaml
               - zuul.d/undercloud-jobs.yaml
-        - tripleo-ci-centos-7-undercloud-containers:
-            irrelevant-files: *multinode_ignored
-        - tripleo-ci-centos-7-containers-multinode:
-            irrelevant-files: *multinode_ignored
-        - tripleo-ci-centos-8-scenario000-multinode-oooq-container-updates:
-            irrelevant-files: *multinode_ignored
-        - tripleo-ci-centos-8-scenario000-multinode-oooq-container-updates-ussuri:
-            irrelevant-files: *multinode_ignored
-        - tripleo-ci-centos-8-scenario000-multinode-oooq-container-updates-train:
-            irrelevant-files: *multinode_ignored
-        - tripleo-ci-centos-8-scenario000-multinode-oooq-container-upgrades-ussuri:
-            irrelevant-files: *multinode_ignored
-        - tripleo-ci-centos-8-standalone:
-            irrelevant-files: &standalone_ignored
-              - ^.*\.md$
-              - ^.*\.rst$
-              - ^Puppetfile.*$
-              - ^doc/.*$
-              - ^docs/.*$
-              - ^etc/.*$
-              - ^lower-constraints.txt$
-              - ^metadata.json$
-              - ^playbooks/deprecated/.*$
-              - ^playbooks/tripleo-buildcontainers/.*$
-              - ^playbooks/tripleo-buildimages/.*$
-              - ^releasenotes/.*$
-              - ^roles/build-containers/.*$
-              - ^roles/oooci-build-images/.*$
-              - ^roles/tripleo-repos/.*$
-              - ^spec/.*$
-              - ^test-requirements.txt$
-              - ^vars/sova-patterns.yml$
-              - tox.ini
-              - zuul.d/build-containers.yaml
-              - zuul.d/build-image.yaml
-              - zuul.d/layout.yaml
-              - zuul.d/undercloud-jobs.yaml
-              - zuul.d/multinode-jobs.yaml
-        - tripleo-ci-centos-7-standalone:
-            irrelevant-files: *standalone_ignored
-
-    gate:
-      queue: tripleo
-      jobs:
-        - tripleo-ci-centos-7-containers-multinode:
-            irrelevant-files: *multinode_ignored
-        - tripleo-ci-centos-8-containers-multinode:
-            irrelevant-files: *multinode_ignored
-        - tripleo-ci-centos-7-standalone:
-            irrelevant-files: *standalone_ignored
-        - tripleo-ci-centos-8-standalone:
-            irrelevant-files: *standalone_ignored
-        - tripleo-ci-centos-8-scenario000-multinode-oooq-container-updates:
-            irrelevant-files: *multinode_ignored
-        - tripleo-ci-centos-8-scenario000-multinode-oooq-container-updates-ussuri:
-            irrelevant-files: *multinode_ignored
-        - tripleo-ci-centos-8-scenario000-multinode-oooq-container-updates-train:
-            irrelevant-files: *multinode_ignored
-        - tripleo-ci-centos-8-scenario000-multinode-oooq-container-upgrades-ussuri:
-            irrelevant-files: *multinode_ignored
-
-- project-template:
-    name: tripleo-multinode-baremetal-full
-    gate:
-      queue: tripleo
-
-- project-template:
-    name: tripleo-multinode-container-full
-    check:
-      jobs:
-        - tripleo-ci-centos-8-containers-multinode:
-            irrelevant-files: *multinode_ignored
-        - tripleo-ci-centos-7-containers-multinode:
-            irrelevant-files: *multinode_ignored
-        - tripleo-ci-centos-7-undercloud-containers:
-            irrelevant-files: *multinode_ignored
-        - tripleo-ci-centos-8-containers-undercloud-minion:
-            irrelevant-files: *multinode_ignored
-        - tripleo-ci-centos-8-scenario007-multinode-oooq-container:
-            irrelevant-files: *multinode_ignored
-        - tripleo-ci-centos-8-scenario000-multinode-oooq-container-updates:
-            irrelevant-files: *multinode_ignored
-        - tripleo-ci-centos-8-scenario000-multinode-oooq-container-updates-ussuri:
-            irrelevant-files: *multinode_ignored
-        - tripleo-ci-centos-8-scenario000-multinode-oooq-container-updates-train:
-            irrelevant-files: *multinode_ignored
-        - tripleo-ci-centos-8-scenario000-multinode-oooq-container-upgrades-ussuri:
-            irrelevant-files: *multinode_ignored
-        - tripleo-ci-centos-7-standalone:
-            irrelevant-files: *standalone_ignored
-        - tripleo-ci-centos-7-scenario001-standalone:
-            irrelevant-files: *standalone_ignored
-        - tripleo-ci-centos-7-scenario002-standalone:
-            irrelevant-files: *standalone_ignored
-        - tripleo-ci-centos-7-scenario003-standalone:
-            irrelevant-files: *standalone_ignored
-        - tripleo-ci-centos-7-scenario004-standalone:
-            irrelevant-files: *standalone_ignored
-        - tripleo-ci-centos-8-standalone:
-            irrelevant-files: *standalone_ignored
-        - tripleo-ci-centos-8-scenario001-standalone:
-            irrelevant-files: *standalone_ignored
-        - tripleo-ci-centos-8-scenario002-standalone:
-            irrelevant-files: *standalone_ignored
-        - tripleo-ci-centos-8-scenario003-standalone:
-            irrelevant-files: *standalone_ignored
-        - tripleo-ci-centos-8-scenario004-standalone:
-            irrelevant-files: *standalone_ignored
-
-    gate:
-      queue: tripleo
-      jobs:
-        - tripleo-ci-centos-7-containers-multinode:
-            irrelevant-files: *multinode_ignored
-        - tripleo-ci-centos-8-containers-multinode:
-            irrelevant-files: *multinode_ignored
-        - tripleo-ci-centos-8-containers-undercloud-minion:
-            irrelevant-files: *multinode_ignored
-        - tripleo-ci-centos-7-standalone:
-            irrelevant-files: *standalone_ignored
-        - tripleo-ci-centos-8-standalone:
-            irrelevant-files: *standalone_ignored
-        - tripleo-ci-centos-8-scenario007-multinode-oooq-container:
-            irrelevant-files: *multinode_ignored
-        - tripleo-ci-centos-8-scenario000-multinode-oooq-container-updates:
-            irrelevant-files: *multinode_ignored
-        - tripleo-ci-centos-8-scenario000-multinode-oooq-container-updates-ussuri:
-            irrelevant-files: *multinode_ignored
-        - tripleo-ci-centos-8-scenario000-multinode-oooq-container-updates-train:
-            irrelevant-files: *multinode_ignored
-        - tripleo-ci-centos-8-scenario000-multinode-oooq-container-upgrades-ussuri:
-            irrelevant-files: *multinode_ignored
-
-- project-template:
-    name: tripleo-multinode-container-minimal-pipeline
-    check:
-      jobs:
-        - tripleo-ci-centos-8-content-provider
-        - tripleo-ci-centos-7-content-provider
-        - tripleo-ci-centos-8-containers-multinode:
-            irrelevant-files: *multinode_ignored
             vars: &multi_consumer_vars
               consumer_job: true
               build_container_images: false
@@ -189,24 +45,6 @@
                 - build
             dependencies:
               - tripleo-ci-centos-8-content-provider
-        - tripleo-ci-centos-8-standalone:
-            irrelevant-files: *standalone_ignored
-            vars: &sa_consumer_vars
-              consumer_job: true
-              build_container_images: false
-              remove_tags:
-                - build
-            dependencies:
-              - tripleo-ci-centos-8-content-provider
-        - tripleo-ci-centos-7-standalone:
-            irrelevant-files: *standalone_ignored
-            vars: *sa_consumer_vars
-            dependencies:
-              - tripleo-ci-centos-7-content-provider
-        - tripleo-ci-centos-7-standalone-rocky:
-            irrelevant-files: *standalone_ignored
-        - tripleo-ci-centos-7-undercloud-containers:
-            irrelevant-files: *multinode_ignored
         - tripleo-ci-centos-7-containers-multinode:
             irrelevant-files: *multinode_ignored
             vars: *multi_consumer_vars
@@ -223,16 +61,6 @@
             vars: *multi_consumer_vars
             dependencies:
               - tripleo-ci-centos-8-content-provider
-        - tripleo-ci-centos-8-standalone:
-            irrelevant-files: *standalone_ignored
-            vars: *sa_consumer_vars
-            dependencies:
-              - tripleo-ci-centos-8-content-provider
-        - tripleo-ci-centos-7-standalone:
-            irrelevant-files: *standalone_ignored
-            vars: *sa_consumer_vars
-            dependencies:
-              - tripleo-ci-centos-7-content-provider
         - tripleo-ci-centos-7-containers-multinode:
             irrelevant-files: *multinode_ignored
             vars: *multi_consumer_vars
@@ -262,44 +90,6 @@
 
         - tripleo-ci-centos-7-containers-multinode:
             irrelevant-files: *multinode_ignored
-        - tripleo-ci-centos-7-undercloud-containers:
-            irrelevant-files: *multinode_ignored
-        - tripleo-ci-centos-7-standalone:
-            irrelevant-files: *standalone_ignored
-        - tripleo-ci-centos-7-scenario001-standalone:
-            irrelevant-files: *standalone_ignored
-        - tripleo-ci-centos-7-scenario002-standalone:
-            irrelevant-files: *standalone_ignored
-        - tripleo-ci-centos-7-scenario003-standalone:
-            irrelevant-files: *standalone_ignored
-        - tripleo-ci-centos-7-scenario004-standalone:
-            irrelevant-files: *standalone_ignored
-
-        - tripleo-ci-centos-8-standalone:
-            irrelevant-files: *standalone_ignored
-            vars: *sa_consumer_vars
-            dependencies:
-              - tripleo-ci-centos-8-content-provider
-        - tripleo-ci-centos-8-scenario001-standalone:
-            irrelevant-files: *standalone_ignored
-            vars: *sa_consumer_vars
-            dependencies:
-              - tripleo-ci-centos-8-content-provider
-        - tripleo-ci-centos-8-scenario002-standalone:
-            irrelevant-files: *standalone_ignored
-            vars: *sa_consumer_vars
-            dependencies:
-              - tripleo-ci-centos-8-content-provider
-        - tripleo-ci-centos-8-scenario003-standalone:
-            irrelevant-files: *standalone_ignored
-            vars: *sa_consumer_vars
-            dependencies:
-              - tripleo-ci-centos-8-content-provider
-        - tripleo-ci-centos-8-scenario004-standalone:
-            irrelevant-files: *standalone_ignored
-            vars: *sa_consumer_vars
-            dependencies:
-              - tripleo-ci-centos-8-content-provider
 
     gate:
       queue: tripleo
@@ -320,15 +110,8 @@
             vars: *multi_consumer_vars
             dependencies:
               - tripleo-ci-centos-8-content-provider
-        - tripleo-ci-centos-8-standalone:
-            irrelevant-files: *standalone_ignored
-            vars: *sa_consumer_vars
-            dependencies:
-              - tripleo-ci-centos-8-content-provider
         - tripleo-ci-centos-7-containers-multinode:
             irrelevant-files: *multinode_ignored
-        - tripleo-ci-centos-7-standalone:
-            irrelevant-files: *standalone_ignored
 
 # NOTE(rfolco): tripleo-multinode-branchful should be used in ci repos only
 # Check where this template is used across openstack repos with the url below:
@@ -376,25 +159,6 @@
             irrelevant-files: *multinode_ignored
         - tripleo-ci-centos-7-containers-multinode-rocky:
             irrelevant-files: *multinode_ignored
-
-- project-template:
-    name: tripleo-multinode-tripleoci
-    check:
-      jobs:
-        - tripleo-ci-centos-8-content-provider
-        - tripleo-ci-centos-8-scenario000-multinode-oooq-container-updates:
-            files:
-              - ^scripts/emit_releases_file/.*$
-              - ^roles/run-test/.*$
-              - ^roles/common/.*$
-              - ^roles/tripleo-repos/.*$
-            dependencies:
-              - tripleo-ci-centos-8-content-provider
-        - tripleo-ci-centos-8-scenario007-multinode-oooq-container:
-            files:
-              - ^playbooks/tripleo-ci/.*$
-            dependencies:
-              - tripleo-ci-centos-8-content-provider
 
 ## CentOS 8 jobs
 - job:
