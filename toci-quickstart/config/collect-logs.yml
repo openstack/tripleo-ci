@@ -53,7 +53,7 @@ artcl_collect_list:
   - /home/{{ undercloud_user }}/browbeat/log/*
   - /home/{{ undercloud_user }}/.config/
   - /home/{{ undercloud_user }}/.tobiko/
-  - /home/{{ undercloud_user }}/overcloud-deploy-*/
+  - /home/{{ undercloud_user }}/overcloud-deploy/
   - /tmp/ansible-*/
   - /tmp/ansible-*
   - /etc/ansible/
