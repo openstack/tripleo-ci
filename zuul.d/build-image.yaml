@@ -13,6 +13,7 @@
               - zuul.d/build-image.yaml
               - tripleoclient/v1/overcloud_image.py
               - elements/.*
+              - ^image-yaml/.*
         - tripleo-buildimage-ironic-python-agent-centos-7-train:
             files: *build_images_files
         - tripleo-buildimage-overcloud-full-centos-8:
@@ -32,13 +33,17 @@
         - tripleo-buildimage-ironic-python-agent-centos-8-train:
             files: *build_images_files
         - tripleo-buildimage-overcloud-hardened-full-centos-8:
-            files: *build_images_files
+            files: &build_images_hardened_files
+              - ^image-yaml/.*hardened.*
+              - ^elements/overcloud-secure
+              - ^elements/overcloud-partition
+              - ^diskimage_builder/elements/modprobe
         - tripleo-buildimage-overcloud-hardened-full-centos-8-victoria:
-            files: *build_images_files
+            files: *build_images_hardened_files
         - tripleo-buildimage-overcloud-hardened-full-centos-8-ussuri:
-            files: *build_images_files
+            files: *build_images_hardened_files
         - tripleo-buildimage-overcloud-hardened-full-centos-8-train:
-            files: *build_images_files
+            files: *build_images_hardened_files
     gate:
       jobs:
         - tripleo-buildimage-overcloud-full-centos-7-train:
@@ -61,6 +66,14 @@
             files: *build_images_files
         - tripleo-buildimage-ironic-python-agent-centos-8-train:
             files: *build_images_files
+        - tripleo-buildimage-overcloud-hardened-full-centos-8:
+            files: *build_images_hardened_files
+        - tripleo-buildimage-overcloud-hardened-full-centos-8-victoria:
+            files: *build_images_hardened_files
+        - tripleo-buildimage-overcloud-hardened-full-centos-8-ussuri:
+            files: *build_images_hardened_files
+        - tripleo-buildimage-overcloud-hardened-full-centos-8-train:
+            files: *build_images_hardened_files
 
 - project-template:
     name: tripleo-buildimage-jobs
@@ -75,9 +88,9 @@
         - tripleo-buildimage-ironic-python-agent-centos-8:
             files: *build_images_files
         - tripleo-buildimage-overcloud-hardened-full-centos-7:
-            files: *build_images_files
+            files: *build_images_hardened_files
         - tripleo-buildimage-overcloud-hardened-full-centos-8:
-            files: *build_images_files
+            files: *build_images_hardened_files
     gate:
       jobs:
         - tripleo-buildimage-overcloud-full-centos-7:
@@ -88,6 +101,10 @@
             files: *build_images_files
         - tripleo-buildimage-ironic-python-agent-centos-8:
             files: *build_images_files
+        - tripleo-buildimage-overcloud-hardened-full-centos-7:
+            files: *build_images_hardened_files
+        - tripleo-buildimage-overcloud-hardened-full-centos-8:
+            files: *build_images_hardened_files
 
 - project-template:
     name: tripleo-buildimage-jobs-centos-8
@@ -95,14 +112,17 @@
       jobs:
         - tripleo-buildimage-overcloud-full-centos-8
         - tripleo-buildimage-ironic-python-agent-centos-8
+        - tripleo-buildimage-overcloud-hardened-full-centos-8:
+            files: *build_images_hardened_files
     gate:
       jobs:
         - tripleo-buildimage-overcloud-full-centos-8
         - tripleo-buildimage-ironic-python-agent-centos-8
+        - tripleo-buildimage-overcloud-hardened-full-centos-8:
+            files: *build_images_hardened_files
     experimental:
       jobs:
         - tripleo-buildimage-ironic-python-agent-centos-8
-        - tripleo-buildimage-overcloud-hardened-full-centos-8
 
 # CentOS 8 Image Build Jobs
 - job:
@@ -129,7 +149,6 @@
     name: tripleo-buildimage-overcloud-hardened-full-centos-8
     parent: tripleo-build-images-base-centos-8
     branches: ^(?!stable/(queens|rocky|stein)).*$
-    voting: false
     vars:
       tripleo_image_type: overcloud-hardened-full
     irrelevant-files:
