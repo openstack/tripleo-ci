@@ -238,6 +238,17 @@
     - ansible_distribution|lower == "redhat"
   become: true
 
+# Workaround for https://bugs.launchpad.net/tripleo/+bug/1916742 as buildah is throwing warnings
+- name: Check if "/usr/share/containers/libpod.conf" exists.
+  become: true
+  stat: path=/usr/share/containers/libpod.conf
+  register: libpod_conf_file_stat
+
+- name: "Move /usr/share/containers/libpod.conf to /usr/share/containers/libpod.conf_backup"
+  become: true
+  command: mv /usr/share/containers/libpod.conf /usr/share/containers/libpod.conf_backup
+  when: libpod_conf_file_stat.stat.exists
+
 - name: Retrieve built images  # noqa risky-shell-pipe
   shell: "{{ container_cli }} images | grep {{ container_name_prefix }} | awk '{ print $1 }'"
   register: built_images
