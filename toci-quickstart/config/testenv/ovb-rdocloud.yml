@@ -15,10 +15,6 @@ workers_args: >-
   -e {{ overcloud_templates_path }}/environments/low-memory-usage.yaml
   -e {{ tripleo_root }}/tripleo-ci/test-environments/worker-config.yaml
   -e {{ overcloud_templates_path }}/environments/debug.yaml
-# Use cirros cached image
-tempest_test_image_path: /opt/cache/files/cirros-0.4.0-x86_64-disk.img
-tempest_tempest_conf_overrides:
-  image.image_path: http://images.rdoproject.org/cirros/cirros-0.4.0-x86_64-disk.img
 
 # Container update settings
 update_containers: >-
@@ -42,12 +38,6 @@ docker_registry_host: >-
   {%- else -%}
   trunk.registry.rdoproject.org
   {%- endif -%}
-
-# We don't need to cleanup TripleO CI
-tempest_track_resources: false
-
-# Tempestmail settings
-tempestmail_log_server: http://logs.rdoproject.org
 
 # build-test packages
 artg_repos_dir: "{{ tripleo_root }}"
