@@ -17,3 +17,8 @@ source_items:
   - "file://{{ openstack_git_root }}/python-tripleoclient"
   - "file://{{ openstack_git_root }}/tripleo-ansible"
   - decorator
+
+volume_mounts:
+   - "/etc/yum.repos.d:/etc/distro.repos.d:z"
+   - "/etc/pki/rpm-gpg:/etc/pki/rpm-gpg:z"
+   - "/etc/dnf/vars:/etc/dnf/vars:z"
