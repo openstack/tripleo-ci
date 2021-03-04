@@ -152,6 +152,7 @@
               - tripleo_common/image/kolla_builder.py
               - workbooks/ceph-ansible.yaml
               - tripleo_common/actions/ansible.py
+              - tripleoclient/utils.py
               # tripleo-heat-templates
               - ^((docker|puppet)/services|deployment)/.*aodh.*$
               - ^((docker|puppet)/services|deployment)/.*ceilometer.*$
