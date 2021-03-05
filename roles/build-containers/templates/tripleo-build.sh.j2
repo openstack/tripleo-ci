@@ -78,4 +78,9 @@ openstack tripleo container image build \
 {%   if build_timeout is defined %}
      --build-timeout {{ build_timeout }} \
 {%   endif %}
+{%   if volume_mounts is defined %}
+{%   for item in volume_mounts %}
+     --volume {{ item }} \
+{%   endfor %}
+{%   endif %}
      --debug
