@@ -126,7 +126,7 @@
     parent: tripleo-build-containers-base-with-files
     nodeset: single-centos-8-node
     branches: ^(?!stable/(pike|queens|rocky|stein)).*$
-    voting: true
+    voting: false
     required-projects:
       - opendev.org/openstack/ansible-role-container-registry
       - opendev.org/openstack/kolla
@@ -197,4 +197,4 @@
     name: tripleo-build-containers-ubi-8
     parent: tripleo-build-containers-ubi-8-base
     branches: ^(?!stable/(pike|queens|rocky|stein|train|ussuri)).*$
-    voting: true
+    voting: false

@@ -129,6 +129,7 @@
     name: tripleo-buildimage-ironic-python-agent-centos-8
     parent: tripleo-build-images-base-centos-8
     branches: ^(?!stable/(queens|rocky|stein)).*$
+    voting: false
     vars:
       tripleo_image_type: ironic-python-agent
     irrelevant-files:
@@ -139,6 +140,7 @@
     name: tripleo-buildimage-overcloud-full-centos-8
     parent: tripleo-build-images-base-centos-8
     branches: ^(?!stable/(queens|rocky|stein)).*$
+    voting: false
     vars:
       tripleo_image_type: overcloud-full
     irrelevant-files:
@@ -149,6 +151,7 @@
     name: tripleo-buildimage-overcloud-hardened-full-centos-8
     parent: tripleo-build-images-base-centos-8
     branches: ^(?!stable/(queens|rocky|stein)).*$
+    voting: false
     vars:
       tripleo_image_type: overcloud-hardened-full
     irrelevant-files:
