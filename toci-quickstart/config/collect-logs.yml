@@ -6,6 +6,7 @@ artcl_publish: true
 artcl_rsync_logs: false
 artcl_collect_list:
   - /var/lib/container-puppet/
+  - /var/lib/config-data/ansible-generated/
   - /var/lib/config-data/puppet-generated/
   - /var/lib/docker-puppet/
   - /var/lib/heat-config/
