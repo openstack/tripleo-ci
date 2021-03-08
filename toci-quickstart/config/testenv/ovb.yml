@@ -56,11 +56,6 @@ floating_ip_cidr: >-
   {%- if network_isolation|default(true)|bool %}10.0.0.0/24
   {%- else %}192.168.24.0/24
   {%- endif %}
-tempest_test_image_path: /opt/cache/files/cirros-0.4.0-x86_64-disk.img
-tempest_tempest_conf_overrides:
-  image.image_path: http://images.rdoproject.org/cirros/cirros-0.4.0-x86_64-disk.img
-# We don't need to cleanup TripleO CI
-tempest_track_resources: false
 undercloud_undercloud_cleanup: false
 
 # Deployment metrics

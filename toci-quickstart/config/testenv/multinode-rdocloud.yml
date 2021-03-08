@@ -36,9 +36,6 @@ image_cache_dir_cleanup: true
 build_image_isolated: false
 build_undercloud: false
 
-# We don't need to cleanup TripleO CI
-tempest_track_resources: false
-
 # Rely on RDO registry instead of docker.io due to rate limit
 # job.build_container_images is defined in zuul as a
 # direct var.  adding build_container_images as tqe
@@ -56,11 +53,6 @@ docker_registry_host: >-
   trunk.registry.rdoproject.org
   {%- endif -%}
 
-# Use cirros cached image
-tempest_test_image_path: /opt/cache/files/cirros-0.4.0-x86_64-disk.img
-tempest_tempest_conf_overrides:
-  image.image_path: http://images.rdoproject.org/cirros/cirros-0.4.0-x86_64-disk.img
-
 # Container settings are set in release files
 # Container update settings
 update_containers: >-
@@ -68,8 +60,6 @@ update_containers: >-
   true
   {%- endif -%}
 
-# Tempestmail settings
-tempestmail_log_server: http://logs.rdoproject.org
 # Deployment metrics
 ara_graphite_prefix: "test.tripleo.{{ lookup('env', 'STABLE_RELEASE')|default('master', true) }}.{{ lookup('env', 'TOCI_JOBTYPE') }}."
 ara_graphite_server: 66.187.229.172
