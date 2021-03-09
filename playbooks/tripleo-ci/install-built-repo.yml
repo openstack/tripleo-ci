@@ -5,6 +5,10 @@
     - when: registry_ip_address_branch is defined
       block:
 
+        # Check if we have built something in content provider.
+        # If we did - create a gating-repo pointing to content provider. The
+        # port 8766 will be opened.
+        # If we didn't build, port 8766 will be closed - skip gating-repo creating.
         - name: Check if we have a repo
           wait_for:
             timeout: 2
