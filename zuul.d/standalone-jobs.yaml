@@ -289,6 +289,7 @@
               - ^(docker/services|deployment)/octavia.*$
               - ci/environments/scenario010-standalone.yaml
               - ^environments\services/octavia.*.yaml
+              - ^deployment/ceph-ansible.*$
               # python-tempestconf
               - ^config_tempest/services/octavia.*$
             vars:
