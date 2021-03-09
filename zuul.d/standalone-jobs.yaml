@@ -148,7 +148,15 @@
         - tripleo-ci-centos-8-scenario001-standalone:
             files: &scen1_files
               # tripleo-common
-              - ^container-images/.*$
+              - ^container-images/tcib/base/collectd.*$
+              - ^container-images/tcib/base/os/aodh.*$
+              - ^container-images/tcib/base/os/ceilometer.*$
+              - ^container-images/tcib/base/os/cinder.*$
+              - ^container-images/tcib/base/os/gnocchi.*$
+              - ^container-images/tcib/base/os/heat.*$
+              - ^container-images/tcib/base/qdrouterd.*$
+              - ^container-images/tcib/base/rabbitmq.*$
+              - ^container-images/tcib/base/redis.*$
               - tripleo_common/image/kolla_builder.py
               - workbooks/ceph-ansible.yaml
               - tripleo_common/actions/ansible.py
@@ -226,6 +234,9 @@
               - tripleo-ci-centos-8-content-provider
         - tripleo-ci-centos-8-scenario003-standalone:
             files: &scen3_files
+              #tripleo-common
+              - ^container-images/tcib/base/os/designate.*$
+              - ^container-images/tcib/base/os/mistral.*$
               # tripleo-heat-templates
               - ^((docker|puppet)/services|deployment)/.*designate.*$
               - ^((docker|puppet)/services|deployment)/.*glance.*$
@@ -244,6 +255,8 @@
               - tripleo-ci-centos-8-content-provider
         - tripleo-ci-centos-8-scenario004-standalone:
             files: &scen4_files
+              # tripleo-common
+              - ^container-images/tcib/base/os/manila.*$
               # tripleo-heat-templates
               - ^(docker/services|deployment)/ceph.*$
               - ^(docker/services|deployment)/glance.*$
@@ -260,6 +273,8 @@
               - tripleo-ci-centos-8-content-provider
         - tripleo-ci-centos-8-scenario007-standalone:
             files: &scen7_files
+              # tripleo-common
+              - ^container-images/tcib/base/os/neutron.*$
               # tripleo-heat-templates
               - ^((docker|puppet)/services|deployment)/.*neutron.*$
               - ci/environments/scenario007-standalone.yaml
@@ -271,6 +286,7 @@
         - tripleo-ci-centos-8-scenario010-standalone:
             files: &scen10_files
               # tripleo-common
+              - ^container-images/tcib/base/os/octavia.*$
               - workbooks/octavia_post.yaml
               - playbooks/octavia-files.yaml
               - playbooks/roles/octavia.*$
