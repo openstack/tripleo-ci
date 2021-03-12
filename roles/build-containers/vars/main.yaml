@@ -31,11 +31,14 @@ exclude_containers:
   train: *exclude_containers
   stein:
     - opendaylight
+    - neutron-server-opendaylight
   rocky:
     - grafana
     - opendaylight
+    - neutron-server-opendaylight
   queens:
     - opendaylight
+    - neutron-server-opendaylight
   rhos-17: *exclude_containers
   rhos-16.2: *exclude_containers
 
