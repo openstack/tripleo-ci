@@ -3,9 +3,9 @@
     name: two-centos-8-nodes
     nodes:
       - name: primary
-        label: centos-8
+        label: centos-8-stream
       - name: secondary
-        label: centos-8
+        label: centos-8-stream
     groups:
       - name: switch
         nodes:
@@ -39,7 +39,7 @@
     name: single-centos-8-node
     nodes:
       - name: primary
-        label: centos-8
+        label: centos-8-stream
     groups:
       - name: switch
         nodes:
@@ -51,7 +51,7 @@
     name: single-centos-8-node-standalone
     nodes:
       - name: primary
-        label: centos-8
+        label: centos-8-stream
     groups:
       - name: switch
         nodes: []
@@ -74,11 +74,11 @@
     name: three-centos-8-nodes
     nodes:
       - name: primary
-        label: centos-8
+        label: centos-8-stream
       - name: secondary-1
-        label: centos-8
+        label: centos-8-stream
       - name: secondary-2
-        label: centos-8
+        label: centos-8-stream
     groups:
       - name: switch
         nodes:
@@ -113,6 +113,9 @@
         nodes:
           - secondary-1
           - secondary-2
+
+# To be deleted after centos-8 nodes are switched
+# to stream labels
 
 - nodeset:
     name: single-centos-8-stream-node
