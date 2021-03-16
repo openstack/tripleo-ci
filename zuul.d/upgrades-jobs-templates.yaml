@@ -30,6 +30,7 @@
               - zuul.d/build-image.yaml
               - zuul.d/standalone-jobs.yaml
               - zuul.d/undercloud-jobs.yaml
+              - zuul.d/multinode-jobs.yaml
               # tripleo-quickstart-extras
               - playbooks/quickstart-extras-standalone.yml
               - roles/standalone/.*
@@ -86,6 +87,7 @@
               - zuul.d/build-containers.yaml
               - zuul.d/build-image.yaml
               - zuul.d/standalone-jobs.yaml
+              - zuul.d/undercloud-jobs.yaml
               - zuul.d/multinode-jobs.yaml
             dependencies:
               - tripleo-ci-centos-8-content-provider
@@ -328,6 +330,7 @@
       - zuul.d/build-image.yaml
       - zuul.d/multinode-jobs.yaml
       - zuul.d/undercloud-jobs.yaml
+      - zuul.d/standalone-jobs.yaml
       # like parent but with requirements.txt and setup.py removed
 
 # docker-ha, podman env files https://bugs.launchpad.net/tripleo/+bug/1887159
