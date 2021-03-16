@@ -1,3 +1,4 @@
+import copy
 from emit_releases_file import write_releases_dictionary_to_bash
 
 from unittest import mock
@@ -13,8 +14,11 @@ else:
     BUILTINS_OPEN = "builtins.open"
 
 
-def test_empty_releases_dictionary_fails():
+def test_empty_releases_dictionary_fails(caplog):
     assert not write_releases_dictionary_to_bash({}, "")
+
+    expected_info = ('emit-releases', 40, 'Writting releases dictionary')
+    assert expected_info in caplog.record_tuples
 
 
 @pytest.fixture
@@ -57,7 +61,8 @@ def releases_dictionary():
     ],
 )
 def test_missing_key_fails(releases_dictionary, deleted_key):
-    wrong_releases_dictionary = releases_dictionary.pop(deleted_key)
+    wrong_releases_dictionary = copy.copy(releases_dictionary)
+    wrong_releases_dictionary.pop(deleted_key)
     assert not write_releases_dictionary_to_bash(wrong_releases_dictionary, "")
 
 

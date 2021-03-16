@@ -249,7 +249,7 @@ def main(args=sys.argv[1:]):
         )
     results = {}
     for review in proj_reviews:
-        for ts, message in get_jenkins_comment_message(review).iteritems():
+        for ts, message in get_jenkins_comment_message(review).items():
             ci_results = process_jenkins_comment_message(message, job_names)
 
             patchset = str(re.search('Patch Set (.+?):', message).group(1))

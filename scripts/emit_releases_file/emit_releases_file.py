@@ -37,6 +37,7 @@ import os
 import re
 import requests
 import yaml
+from typing import Dict
 
 # Define releases
 RELEASES = [
@@ -375,7 +376,9 @@ def shim_convert_old_release_names(releases_names, is_periodic):
     return modified_releases_name
 
 
-def write_releases_dictionary_to_bash(releases_dictionary, bash_file_name):
+def write_releases_dictionary_to_bash(
+    releases_dictionary: Dict[str, str], bash_file_name
+):
     logger = logging.getLogger('emit-releases')
     # Make it deterministic, expected constants in the proper order
     try:
