@@ -26,12 +26,14 @@ exclude_containers:
     - sensu-client
     - sensu-base
     - influxdb
+    - tempest
   victoria: *exclude_containers
   ussuri: *exclude_containers
   train: *exclude_containers
   stein:
     - opendaylight
     - neutron-server-opendaylight
+    - tempest
   rocky:
     - grafana
     - opendaylight
