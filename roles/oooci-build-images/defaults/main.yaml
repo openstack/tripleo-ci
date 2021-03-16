@@ -1,5 +1,5 @@
 ---
-tripleo_image_source: https://images.rdoproject.org/CentOS-8-x86_64-GenericCloud.qcow2
+tripleo_image_source: https://images.rdoproject.org/CentOS-8-Stream-x86_64-GenericCloud.qcow2
 workspace: "{{ ansible_user_dir }}/workspace"
 openstack_git_root: "{{ ansible_user_dir }}/src/opendev.org/openstack"
 dib_pin: ""
