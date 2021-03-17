@@ -42,14 +42,24 @@ directories will also exist in these logs.</li>
 <li><a href='undercloud/var/log/extra/'>undercloud/var/log/extra/</a> -
 extra system details like package list, and cpu info gathered from the
 undercloud</li>
-<li><a href='undercloud/var/log/extra/rpm-list.txt.gz'>undercloud/var/log/extra/rpm-list.txt.gz</a>
-- rpms installed to the undercloud, container rpms can be found in extra/<podman|docker>/containers/$container/info.log</li>
 <li><a href='undercloud/var/lib/mistral'>undercloud/var/lib/mistral</a>
 - output of all ansible used by config-download to drive the overcloud deployment</li>
+</ul>
+<h3>Links yum repo and rpm info</h3>
+<ul>
+<li><a href='delorean_logs'>delorean_logs</a>
+- Note: if content-providers are used, the rpm build is done on the content-provider.
+ The source code change is built into rpm and the build logs are here</li>
+<li><a href='etc/yum.repos.d/gating.repo'>gating.repo</a>
+- the yum repo where the gerrit change is built and provided. i.e. content-provider</li>
 <li><a href='undercloud/etc/yum.repos.d/'>undercloud/etc/yum.repos.d/</a>
 - link to the yum.repos.d directory </li>
 <li><a href='undercloud/etc/yum.repos.d/delorean.repo'>undercloud/etc/yum.repos.d/delorean.repo</a>
 - link to the delorean.repo ( the build ) </li>
+<li><a href='undercloud/var/log/extra/rpm-list.txt.gz'>undercloud/var/log/extra/rpm-list.txt.gz</a>
+- rpms installed to the undercloud, container rpms can be found in extra/<podman|docker>/containers/$container/info.log</li>
+<li><a href='undercloud/etc/dnf/modules.d/'>undercloud/etc/dnf/modules.d/</a>
+- link to yum module information </li>
 </ul>
 <h3>Links container log files</h3>
 <ul>
@@ -62,10 +72,8 @@ undercloud</li>
 <li><a href='undercloud/var/log/tripleo-container-image-prepare.log'>undercloud/var/log/tripleo-container-image-prepare.log</a>
 - the container download, container update and provision log </li>
 </ul>
-<h3>Links to package builds and tempest</h3>
+<h3>Links to tempest results</h3>
 <ul>
-<li><a href='delorean_logs'>delorean_logs</a>
-- the source code change built into rpm and the build logs are here</li>
 <li><a href='undercloud/var/log/tempest/'>undercloud/var/log/tempest/</a>
 - Tempest run results logs </li>
 <li><a href='undercloud/home/zuul/tempest/etc/'>undercloud/home/zuul/tempest/etc/</a>
