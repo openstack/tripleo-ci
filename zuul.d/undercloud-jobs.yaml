@@ -34,6 +34,7 @@
               - zuul.d/build-image.yaml
               - zuul.d/standalone-jobs.yaml
               - zuul.d/multinode-jobs.yaml
+              - zuul.d/upgrades-jobs-templates.yaml
             vars: &undercloud_consumer_vars
               consumer_job: true
               remove_tags:
