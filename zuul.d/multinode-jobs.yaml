@@ -13,11 +13,11 @@
             irrelevant-files: &multinode_ignored
               - ^.*\.md$
               - ^.*\.rst$
+              - .*.txt$
               - ^Puppetfile.*$
               - ^doc/.*$
               - ^docs/.*$
               - ^etc/.*$
-              - ^lower-constraints.txt$
               - ^metadata.json$
               - ^playbooks/deprecated/.*$
               - ^playbooks/tripleo-buildcontainers/.*$
@@ -27,7 +27,6 @@
               - ^roles/oooci-build-images/.*$
               - ^roles/tripleo-repos/.*$
               - ^spec/.*$
-              - ^test-requirements.txt$
               - ^vars/sova-patterns.yml$
               - playbooks/quickstart-extras-standalone.yml  # tripleo-quickstart-extras
               - roles/standalone-upgrade/.*
@@ -53,13 +52,22 @@
               # upgrade/update featuresets
               - ^config/general_config/featureset037.yml
               - ^config/general_config/featureset051.yml
-              - tox.ini
               - zuul.d/upgrades-jobs-templates.yaml
               - zuul.d/build-containers.yaml
               - zuul.d/build-image.yaml
               - zuul.d/layout.yaml
               - zuul.d/standalone-jobs.yaml
               - zuul.d/undercloud-jobs.yaml
+              # tripleo-ansible
+              - ^_skeleton_role_/.*
+              - ^scripts/.*
+              - ^tox.ini$
+              - ^tripleo_ansible/playbooks/docker-vfs-setup.yml$
+              - ^tripleo_ansible/.*molecule.*
+              - ^tripleo_ansible/roles/.*/meta.*
+              - ^tripleo_ansible/roles/test_deps/.*
+              - ^zuul.d/base.yaml
+              - ^zuul.d/molecule.yaml
             vars: &multi_consumer_vars
               consumer_job: true
               build_container_images: false

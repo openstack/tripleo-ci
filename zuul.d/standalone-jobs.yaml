@@ -148,6 +148,11 @@
               - roles/common/.*
               - roles/prepare-node/.*
               - roles/ceph-loop-device/.*  # scen1/4 ceph
+              # tripleo-ansible
+              - ^tripleo_ansible/roles/tripleo_ceph_.*/.*
+              - ^tripleo_ansible/roles/tripleo_hieradata/.*
+              - ^tripleo_ansible/roles/tripleo_upgrade_hiera/.*
+              - ^setup.*
             vars: &consumer_vars
               consumer_job: true
               build_container_images: false
@@ -181,6 +186,9 @@
               - ^manifests/profile/(base|pacemaker)/panko.*$
               - ^manifests/profile/(base|pacemaker)/swift.*$
               - ^manifests/profile/(base|pacemaker)/zaqar.*$
+              # tripleo-ansible
+              - ^tripleo_ansible/roles/tripleo_hieradata/.*
+              - ^tripleo_ansible/roles/tripleo_upgrade_hiera/.*
             vars: *consumer_vars
             dependencies:
               - tripleo-ci-centos-8-content-provider
@@ -202,6 +210,10 @@
               - ^manifests/profile/(base|pacemaker)/mistral.*$
               - ^manifests/profile/(base|pacemaker)/sahara.*$
               - ^manifests/profile/(base|pacemaker)/designate.*$
+              # tripleo-ansible
+              - ^tripleo_ansible/roles/tripleo_create_admin/.*
+              - ^tripleo_ansible/roles/tripleo_hieradata/.*
+              - ^tripleo_ansible/roles/tripleo_upgrade_hiera/.*
             vars: *consumer_vars
             dependencies:
               - tripleo-ci-centos-8-content-provider
@@ -220,6 +232,8 @@
               - ^manifests/profile/(base|pacemaker)/glance.*$
               - ^manifests/profile/(base|pacemaker)/manila.*$
               - ^manifests/profile/(base|pacemaker)/ceph.*$  # ceph_nfs / ganesha
+              # tripleo-ansible
+              - ^tripleo_ansible/roles/tripleo_ceph_.*/.*
             vars: *consumer_vars
             dependencies:
               - tripleo-ci-centos-8-content-provider
@@ -260,6 +274,8 @@
               - ^deployment/ceph-ansible.*$
               # python-tempestconf
               - ^config_tempest/services/octavia.*$
+              # tripleo-ansible
+              - ^tripleo_ansible/roles/octavia_.*/.*
             vars:
               consumer_job: true
               build_container_images: false
