@@ -78,6 +78,11 @@ openstack tripleo container image build \
 {%   if build_timeout is defined %}
      --build-timeout {{ build_timeout }} \
 {%   endif %}
+{%   if dockerfile_labels is defined %}
+{%   for item in dockerfile_labels %}
+     --label {{ item }} \
+{%   endfor %}
+{%   endif %}
 {%   if volume_mounts is defined %}
 {%   for item in volume_mounts %}
      --volume {{ item }} \
