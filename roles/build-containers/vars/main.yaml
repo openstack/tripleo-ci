@@ -13,7 +13,7 @@ virtualenv_python:
 # Current implementation assumes that any branch name not mentioned here
 # would default to the excludes defined on master branch.
 exclude_containers:
-  master: &exclude_containers
+  master: &exclude_master_containers
     - fluentd
     - opendaylight
     - neutron-server-opendaylight
@@ -27,13 +27,24 @@ exclude_containers:
     - sensu-base
     - influxdb
     - tempest
-  victoria: *exclude_containers
+  victoria: &exclude_containers
+    - fluentd
+    - opendaylight
+    - neutron-server-opendaylight
+    - neutron-mlnx-agent
+    - nova-serialproxy
+    - sahara-api
+    - sahara-engine
+    - skydive-agent
+    - skydive-analyzer
+    - sensu-client
+    - sensu-base
+    - influxdb
   ussuri: *exclude_containers
   train: *exclude_containers
   stein:
     - opendaylight
     - neutron-server-opendaylight
-    - tempest
   rocky:
     - grafana
     - opendaylight
@@ -41,7 +52,7 @@ exclude_containers:
   queens:
     - opendaylight
     - neutron-server-opendaylight
-  rhos-17: *exclude_containers
+  rhos-17: *exclude_master_containers
   rhos-16.2: *exclude_containers
 
 timestamper_cmd: >-
