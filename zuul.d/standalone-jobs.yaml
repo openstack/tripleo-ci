@@ -33,7 +33,7 @@
 - job:
     name: tripleo-ci-centos-8-standalone
     parent: tripleo-ci-base-standalone-centos-8
-    branches: ^(?!stable/(newton|ocata|pike|queens|rocky|stein)).*$
+    branches: ^(?!stable/(newton|ocata|pike|queens|stein)).*$
     vars:
       featureset: '052'
     irrelevant-files:
@@ -65,32 +65,6 @@
       - roles/container-prep/.*
       - roles/container-update/.*
       - roles/extras-common/.*
-
-# This job is rocky only!
-# os_tempest needs updates rocky, that's WIP
-- job:
-    name: tripleo-ci-centos-7-standalone-rocky
-    parent: tripleo-ci-base-standalone
-    nodeset: single-centos-7-node
-    branches: stable/rocky
-    vars:
-      featureset: '052'
-      featureset_override:
-        tempest_format: container
-        use_os_tempest: false
-    irrelevant-files:
-      - .*molecule.*
-      - ^.*\.md$
-      - ^.*\.rst$
-      - ^Puppetfile.*$
-      - ^doc/.*$
-      - ^etc/.*$
-      - ^metadata.json$
-      - ^releasenotes/.*$
-      - ^spec/.*$
-      - ^test-requirements.txt$
-      - ^vars/sova-patterns.yml$
-      - tox.ini
 
 - project-template:
     name: tripleo-standalone-scenarios-pipeline
@@ -299,7 +273,6 @@
             files: *scen10_files
         - tripleo-ci-centos-7-scenario010-ovn-provider-standalone:
             files: *scen10_files
-        - tripleo-ci-centos-7-standalone-rocky
         - tripleo-ci-centos-7-standalone
         - tripleo-ci-centos-7-scenario001-standalone:
             files: *scen1_files
@@ -514,7 +487,7 @@
     name: tripleo-ci-centos-8-scenario012-standalone
     voting: true
     parent: tripleo-ci-base-standalone-centos-8
-    branches: ^(?!stable/(newton|ocata|pike|queens|rocky|stein)).*$
+    branches: ^(?!stable/(newton|ocata|pike|queens|stein)).*$
     vars:
       featureset: '060'
       standalone_ceph: true
@@ -546,7 +519,7 @@
     name: tripleo-ci-centos-8-scenario001-standalone
     voting: true
     parent: tripleo-ci-base-standalone-centos-8
-    branches: ^(?!stable/(newton|ocata|pike|queens|rocky|stein)).*$
+    branches: ^(?!stable/(newton|ocata|pike|queens|stein)).*$
 
 - job:
     name: tripleo-ci-centos-8-scenario001-standalone-options
@@ -577,7 +550,7 @@
     name: tripleo-ci-centos-8-scenario002-standalone
     voting: true
     parent: tripleo-ci-base-standalone-centos-8
-    branches: ^(?!stable/(newton|ocata|pike|queens|rocky|stein)).*$
+    branches: ^(?!stable/(newton|ocata|pike|queens|stein)).*$
 
 - job:
     name: tripleo-ci-centos-8-scenario002-standalone-options
@@ -612,7 +585,7 @@
     name: tripleo-ci-centos-8-scenario003-standalone
     voting: true
     parent: tripleo-ci-base-standalone-centos-8
-    branches: ^(?!stable/(newton|ocata|pike|queens|rocky|stein)).*$
+    branches: ^(?!stable/(newton|ocata|pike|queens|stein)).*$
 
 - job:
     name: tripleo-ci-centos-8-scenario003-standalone-options
@@ -640,7 +613,7 @@
     name: tripleo-ci-centos-8-scenario004-standalone
     voting: true
     parent: tripleo-ci-base-standalone-centos-8
-    branches: ^(?!stable/(newton|ocata|pike|queens|rocky|stein)).*$
+    branches: ^(?!stable/(newton|ocata|pike|queens|stein)).*$
 
 - job:
     name: tripleo-ci-centos-8-scenario004-standalone-options
@@ -673,7 +646,7 @@
     name: tripleo-ci-centos-8-scenario007-standalone
     voting: true
     parent: tripleo-ci-base-standalone-centos-8
-    branches: ^(?!stable/(newton|ocata|pike|queens|rocky|stein)).*$
+    branches: ^(?!stable/(newton|ocata|pike|queens|stein)).*$
     vars:
       featureset: '052'
       featureset_override:
@@ -692,7 +665,7 @@
     name: tripleo-ci-centos-8-scenario010-standalone
     voting: false
     parent: tripleo-ci-base-standalone-centos-8
-    branches: ^(?!stable/(newton|ocata|pike|queens|rocky|stein)).*$
+    branches: ^(?!stable/(newton|ocata|pike|queens|stein)).*$
     vars:
       tags:
         - build
@@ -713,7 +686,7 @@
     name: tripleo-ci-centos-8-scenario010-ovn-provider-standalone
     voting: false
     parent: tripleo-ci-base-standalone-centos-8
-    branches: ^(?!stable/(newton|ocata|pike|queens|rocky|stein)).*$
+    branches: ^(?!stable/(newton|ocata|pike|queens|stein)).*$
     vars:
       tags:
         - build
@@ -789,7 +762,7 @@
     parent: tripleo-ci-base-standalone-centos-8
     voting: false
     nodeset: two-centos-8-nodes
-    branches: ^(?!stable/(newton|ocata|pike|queens|rocky|stein|train)).*$
+    branches: ^(?!stable/(newton|ocata|pike|queens|stein|train)).*$
     required-projects:
       - opendev.org/x/tripleo-ipa
     roles:
@@ -813,7 +786,7 @@
 - job:
     name: tripleo-ci-centos-8-content-provider
     parent: tripleo-ci-base-standalone-centos-8
-    branches: ^(?!stable/(newton|ocata|pike|queens|rocky|stein)).*$
+    branches: ^(?!stable/(newton|ocata|pike|queens|stein)).*$
     run:
       - playbooks/tripleo-ci/run-v3.yaml
       - playbooks/tripleo-ci/run-provider.yml

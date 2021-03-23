@@ -52,16 +52,6 @@
       jobs:
         - tripleo-build-containers-centos-7-buildah-stein
 
-- project-template:
-    name: tripleo-build-containers-jobs-rocky
-    check:
-      jobs:
-        - tripleo-build-containers-centos-7-rocky
-    gate:
-      queue: tripleo
-      jobs:
-        - tripleo-build-containers-centos-7-rocky
-
 - job:
     name: tripleo-build-containers-centos-7-base
     parent: tripleo-build-containers-base-with-files
@@ -73,7 +63,7 @@
     name: tripleo-build-containers-centos-7
     parent: tripleo-build-containers-base-with-files
     nodeset: single-centos-7-node
-    branches: ^(stable/(rocky|stein|train)).*$
+    branches: ^(stable/(stein|train)).*$
     voting: true
 
 - job:
@@ -89,13 +79,6 @@
     override-checkout: stable/stein
     vars:
       branch_override: stable/stein
-
-- job:
-    name: tripleo-build-containers-centos-7-rocky
-    parent: tripleo-build-containers-centos-7-base
-    override-checkout: stable/rocky
-    vars:
-      branch_override: stable/rocky
 
 - job:
     name: tripleo-build-containers-centos-7-buildah
@@ -125,7 +108,7 @@
     name: tripleo-build-containers-centos-8
     parent: tripleo-build-containers-base-with-files
     nodeset: single-centos-8-node
-    branches: ^(?!stable/(pike|queens|rocky|stein)).*$
+    branches: ^(?!stable/(pike|queens|stein)).*$
     voting: true
     required-projects:
       - opendev.org/openstack/ansible-role-container-registry
@@ -196,5 +179,5 @@
 - job:
     name: tripleo-build-containers-ubi-8
     parent: tripleo-build-containers-ubi-8-base
-    branches: ^(?!stable/(pike|queens|rocky|stein|train|ussuri)).*$
+    branches: ^(?!stable/(pike|queens|stein|train|ussuri)).*$
     voting: true

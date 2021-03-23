@@ -44,7 +44,6 @@ RELEASES = [
     'ocata',
     'pike',
     'queens',
-    'rocky',
     'stein',
     'train',
     'ussuri',
@@ -53,7 +52,7 @@ RELEASES = [
 ]
 # Define long term releases
 LONG_TERM_SUPPORT_RELEASES = ['queens']
-UNSUPPORTED_STANDALONE = ['newton', 'ocata', 'pike', 'queens', 'rocky']
+UNSUPPORTED_STANDALONE = ['newton', 'ocata', 'pike', 'queens']
 
 # NAMED DLRN HASHES
 NEWTON_HASH_NAME = 'current-passed-ci'
@@ -182,9 +181,6 @@ def compose_releases_dictionary(
         stable_release
       * Overcloud FFWDUpgrade: as above, except deploy is set to
         tripleo-ci-testing of 3 previous releases from stable_release
-    rocky).
-      * Overcloud Update: stable_release is equal to target, but going from
-        previous-current-tripleo to current hashes.
     :param distro_name: Distro name
     :param distro_version: Distro version
     """
