@@ -13,7 +13,9 @@
             irrelevant-files: &multinode_ignored
               - ^.*\.md$
               - ^.*\.rst$
-              - .*.txt$
+              - ^lower-constraints.txt$
+              - ^test-requirements.txt$
+              - ^molecule-requirements.txt$
               - ^Puppetfile.*$
               - ^doc/.*$
               - ^docs/.*$
