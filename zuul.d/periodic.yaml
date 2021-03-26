@@ -6,7 +6,7 @@
         - tripleo-ci-centos-8-content-provider:
             vars:
               force_non_periodic: true
-        - tripleo-ci-centos-8-containers-multinode:
+        - tripleo-ci-centos-8-containers-multinode: &unbranched_vars_periodic
             vars:
               force_non_periodic: true
               consumer_job: true
@@ -15,15 +15,8 @@
                 - build
             dependencies:
               - tripleo-ci-centos-8-content-provider
-        - tripleo-ci-centos-8-standalone:
-            vars:
-              force_non_periodic: true
-              consumer_job: true
-              build_container_images: false
-              remove_tags:
-                - build
-            dependencies:
-              - tripleo-ci-centos-8-content-provider
+        - tripleo-ci-centos-8-standalone: *unbranched_vars_periodic
+        - tripleo-ci-centos-8-scenario000-multinode-oooq-container-updates: *unbranched_vars_periodic
 
 - project-template:
     name: tripleo-multinode-branchful
