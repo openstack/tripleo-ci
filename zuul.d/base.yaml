@@ -28,7 +28,7 @@
       - opendev.org/openstack/tripleo-validations
       - opendev.org/openstack/validations-common
       - name: opendev.org/openstack/openstack-virtual-baremetal
-        override-checkout: stable/1.0
+        override-checkout: stable/2.0
       - name: opendev.org/openstack/openstack-ansible-os_tempest
         override-checkout: master
       - name: opendev.org/openstack/ansible-role-python_venv_build
