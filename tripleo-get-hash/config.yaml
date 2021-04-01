@@ -1,0 +1,46 @@
+# This file is installed to the path in [options.data_files] of the project
+# setup.cfg file. It *must* contain all the keys specified in constants
+# CONFIG_KEYS or there will be explosions.
+
+dlrn_url: 'https://trunk.rdoproject.org'
+
+tripleo_releases:
+  - master
+  - wallaby
+  - victoria
+  - ussuri
+  - train
+  - osp16-2
+  - osp17
+
+tripleo_ci_components:
+  - baremetal
+  - cinder
+  - clients
+  - cloudops
+  - common
+  - compute
+  - glance
+  - manila
+  - network
+  - octavia
+  - security
+  - swift
+  - tempest
+  - tripleo
+  - ui
+  - validation
+
+rdo_named_tags:
+  - current
+  - consistent
+  - component-ci-testing
+  - promoted-components
+  - tripleo-ci-testing
+  - current-tripleo
+  - current-tripleo-rdo
+
+os_versions:
+  - centos7
+  - centos8
+  - rhel8
