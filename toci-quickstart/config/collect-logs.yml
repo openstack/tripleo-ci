@@ -48,6 +48,7 @@ artcl_collect_list:
   - /home/{{ undercloud_user }}/tripleo-*-config/
   - /home/{{ undercloud_user }}/tripleo-config/
   - /home/{{ undercloud_user }}/tripleo-config-generated-env-files/
+  - /home/{{ undercloud_user }}/tripleo-deploy/
   - /home/{{ undercloud_user }}/*-ansible-*/
   - /home/{{ undercloud_user }}/*-install-*
   - /home/{{ undercloud_user }}/browbeat/log/*
