@@ -1,5 +1,14 @@
 set -x
 
+# Disable container-tools:rhel8 module and enable
+# supported container-tools:3.0
+# for more info check: https://bugs.launchpad.net/tripleo/+bug/1922537/comments/9
+{% if ansible_distribution_version is version('8', '>=') %}
+dnf module disable container-tools:rhel8 -y;
+dnf module enable container-tools:3.0 -y;
+dnf module list --enabled;
+{% endif %}
+
 # Activate virtualenv only if exists
 if [ -d "{{ workspace }}/venv" ]; then
   source {{ workspace }}/venv/bin/activate
