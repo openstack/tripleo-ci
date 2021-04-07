@@ -8,6 +8,14 @@
 # triggering the affected jobs on far more changes than needed.
 
 - job:
+    name: tripleo-ci-centos-8-content-provider-wallaby
+    parent: tripleo-ci-centos-8-content-provider
+    override-checkout: stable/wallaby
+    branches: ^(master|stable/wallaby).*$
+    vars:
+      branch_override: stable/wallaby
+
+- job:
     name: tripleo-ci-centos-8-content-provider-victoria
     parent: tripleo-ci-centos-8-content-provider
     override-checkout: stable/victoria
