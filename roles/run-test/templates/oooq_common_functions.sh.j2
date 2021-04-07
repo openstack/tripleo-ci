@@ -19,6 +19,9 @@ function previous_release_mixed_upgrade_case {
     local release="${1:-master}"
     case "${release}" in
         ''|master|promotion-testing-hash-master)
+            echo "wallaby"
+            ;;
+        wallaby|promotion-testing-hash-wallaby)
             echo "victoria"
             ;;
         victoria|promotion-testing-hash-victoria)

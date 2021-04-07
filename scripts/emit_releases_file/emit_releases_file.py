@@ -48,6 +48,7 @@ RELEASES = [
     'train',
     'ussuri',
     'victoria',
+    'wallaby',
     'master',
 ]
 # Define long term releases
