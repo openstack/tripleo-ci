@@ -45,10 +45,6 @@ exclude_containers:
   stein:
     - opendaylight
     - neutron-server-opendaylight
-  rocky:
-    - grafana
-    - opendaylight
-    - neutron-server-opendaylight
   queens:
     - opendaylight
     - neutron-server-opendaylight

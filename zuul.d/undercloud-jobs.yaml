@@ -83,21 +83,9 @@
               - tripleo-ci-centos-7-content-provider
 
 - job:
-    name: tripleo-ci-centos-7-undercloud-containers
-    parent: tripleo-ci-base-singlenode
-    nodeset: single-centos-7-node
-    branches: ^(stable/rocky).*$
-    vars:
-      featureset: '027'
-      playbooks:
-        - quickstart.yml
-        - multinode-undercloud.yml
-        - multinode-validate.yml
-
-- job:
     name: tripleo-ci-centos-8-undercloud-containers
     parent: tripleo-ci-undercloud-content-consumer-centos-8
-    branches: ^(?!stable/(newton|ocata|pike|queens|rocky|stein)).*$
+    branches: ^(?!stable/(newton|ocata|pike|queens|stein)).*$
     voting: true
     vars:
       featureset: '027'

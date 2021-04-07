@@ -23,7 +23,7 @@ component_ci_containers: ""
 openstack_git_root: "{{ ansible_user_dir }}/src/opendev.org/openstack"
 # container prefix is generally centos for usptream and rhel for downstream
 container_name_prefix: >-
-  {% if osp_branch is not defined and ci_branch in ['queens','rocky','stein','train','ussuri'] -%}
+  {% if osp_branch is not defined and ci_branch in ['queens','stein','train','ussuri'] -%}
   {{ ansible_distribution|lower }}-binary
   {%- else -%}
   openstack

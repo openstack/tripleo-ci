@@ -33,9 +33,6 @@ function previous_release_mixed_upgrade_case {
         stein|promotion-testing-hash-stein)
             echo "rocky"
             ;;
-        rocky|promotion-testing-hash-rocky)
-            echo "queens"
-            ;;
         queens)
             echo "pike"
             ;;
