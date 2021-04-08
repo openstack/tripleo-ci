@@ -4,4 +4,5 @@ dib_yum_repo_conf:
   - /etc/yum.repos.d/CentOS*
   - /etc/yum.repos.d/delorean*
 dib_release: "7"
+dib_dnf_module_streams: ""
 tripleo_image_os: centos7
