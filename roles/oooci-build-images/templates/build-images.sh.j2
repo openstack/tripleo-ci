@@ -61,7 +61,7 @@ export DIB_YUM_REPO_CONF="/etc/yum.repos.d/delorean*"
 
 {% if dib_dnf_module_streams is defined and dib_dnf_module_streams|length > 0 %}
 
-export DIB_DNF_MODULE_STREAMS="{{ dib_dnf_module_streams }}"
+export DIB_DNF_MODULE_STREAMS='{{ dib_dnf_module_streams }}'
 
 {% endif %}
 
