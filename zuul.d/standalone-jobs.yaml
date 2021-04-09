@@ -829,3 +829,14 @@
     override-checkout: stable/train
     vars:
       branch_override: stable/train
+
+- job:
+    name: tripleo-ci-centos-8-repoclosure
+    parent: tripleo-ci-base-standalone-centos-8
+    branches: ^(?!stable/(newton|ocata|pike|queens|stein)).*$
+    vars:
+      featureset: '052'
+      repoclosure: true
+      playbooks:
+        - quickstart.yml
+        - multinode-standalone-repoclosure.yml
