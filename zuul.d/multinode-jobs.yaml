@@ -153,6 +153,10 @@
     check:
       jobs:
         - openstack-tox-linters
+        - tripleo-ci-centos-8-content-provider-wallaby:
+            irrelevant-files: *multinode_ignored
+            dependencies:
+              - openstack-tox-linters
         - tripleo-ci-centos-8-content-provider-victoria:
             irrelevant-files: *multinode_ignored
             dependencies:
@@ -165,6 +169,11 @@
             irrelevant-files: *multinode_ignored
             dependencies:
               - openstack-tox-linters
+        - tripleo-ci-centos-8-containers-multinode-wallaby: &multi_consumer_job_wallaby
+            irrelevant-files: *multinode_ignored
+            vars: *multi_consumer_vars
+            dependencies:
+              - tripleo-ci-centos-8-content-provider-wallaby
         - tripleo-ci-centos-8-containers-multinode-victoria: &multi_consumer_job_victoria
             irrelevant-files: *multinode_ignored
             vars: *multi_consumer_vars
@@ -182,12 +191,15 @@
               - tripleo-ci-centos-8-content-provider-train
     gate:
       jobs:
+        - tripleo-ci-centos-8-content-provider-wallaby:
+            irrelevant-files: *multinode_ignored
         - tripleo-ci-centos-8-content-provider-victoria:
             irrelevant-files: *multinode_ignored
         - tripleo-ci-centos-8-content-provider-ussuri:
             irrelevant-files: *multinode_ignored
         - tripleo-ci-centos-8-content-provider-train:
             irrelevant-files: *multinode_ignored
+        - tripleo-ci-centos-8-containers-multinode-wallaby: *multi_consumer_job_wallaby
         - tripleo-ci-centos-8-containers-multinode-victoria: *multi_consumer_job_victoria
         - tripleo-ci-centos-8-containers-multinode-ussuri: *multi_consumer_job_ussuri
         - tripleo-ci-centos-8-containers-multinode-train: *multi_consumer_job_train
@@ -220,6 +232,14 @@
       extra_tags:
         - undercloud-minion-setup
         - undercloud-minion-deploy
+
+- job:
+    name: tripleo-ci-centos-8-containers-multinode-wallaby
+    parent: tripleo-ci-centos-8-containers-multinode
+    branches: master
+    override-checkout: stable/wallaby
+    vars:
+      branch_override: stable/wallaby
 
 - job:
     name: tripleo-ci-centos-8-containers-multinode-victoria
