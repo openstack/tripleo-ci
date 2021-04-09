@@ -2,7 +2,7 @@
 # The MOLECULE_ vars used here are not officialy endorsed by molecule, but we
 # hope a future version will add implicit support for them.
 driver:
-  name: docker
+  name: containers
 log: true
 platforms:
 

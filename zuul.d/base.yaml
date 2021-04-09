@@ -658,6 +658,7 @@
     failure-url: "tox/reports.html"
     vars:
       bindep_profile: test molecule
+    nodeset: single-centos-8-node
     required-projects:
       - opendev.org/openstack/tripleo-repos
 
