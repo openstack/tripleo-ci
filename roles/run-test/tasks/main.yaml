@@ -29,6 +29,7 @@
           - 'tempest_services'
           - 'tempest_tempest_conf_overrides'
           - 'tempest_test_image_path'
+          - 'tempest_test_includelist'
           - 'tempest_test_whitelist'
           - 'tempest_use_skiplist'
           - 'tempest_whitelist'
