@@ -180,6 +180,7 @@
     parent: tripleo-buildimage-ironic-python-agent-centos-8
     branches: master
     override-checkout: stable/wallaby
+    voting: false
     vars:
       branch_override: stable/wallaby
 
@@ -213,6 +214,7 @@
     parent: tripleo-buildimage-overcloud-full-centos-8
     branches: master
     override-checkout: stable/wallaby
+    voting: false
     vars:
       branch_override: stable/wallaby
 
@@ -246,6 +248,7 @@
     parent: tripleo-buildimage-overcloud-hardened-full-centos-8
     branches: master
     override-checkout: stable/wallaby
+    voting: false
     vars:
       branch_override: stable/wallaby
 
