@@ -12,6 +12,7 @@
     parent: tripleo-ci-centos-8-content-provider
     override-checkout: stable/wallaby
     branches: ^(master|stable/wallaby).*$
+    voting: false
     vars:
       branch_override: stable/wallaby
 
@@ -20,6 +21,5 @@
     parent: tripleo-ci-centos-8-content-provider
     override-checkout: stable/victoria
     branches: ^(master|stable/victoria).*$
-    voting: false
     vars:
       branch_override: stable/victoria
