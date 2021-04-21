@@ -6,16 +6,13 @@ driver:
 log: true
 platforms:
 
-  - name: ${MOLECULE_PLATFORM:-centos8}
-    hostname: ${MOLECULE_PLATFORM:-centos8}
-    image: ${MOLECULE_IMAGE:-centos:8}
-    dockerfile: ../Dockerfile.j2
-    easy_install: [pip]
-    environment: &env
-      http_proxy: "{{ lookup('env', 'http_proxy') }}"
-      https_proxy: "{{ lookup('env', 'https_proxy') }}"
-    registry:
-      url: ${MOLECULE_CONTAINER_REGISTRY_URL:-docker.io}
+  - name: stream8
+    hostname: stream8
+    # image below is based on official quay.io/centos/centos:stream8 but
+    # it has python preinstalled on it.
+    image: quay.io/pycontribs/centos:stream8
+    pre_build_image: true
+    # pull: true
 
 provisioner:
   name: ansible
