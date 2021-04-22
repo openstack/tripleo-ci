@@ -25,8 +25,6 @@
       - opendev.org/x/browbeat
       - opendev.org/openstack/tripleo-ha-utils
       - opendev.org/openstack/openstack-tempest-skiplist
-      - opendev.org/openstack/tripleo-validations
-      - opendev.org/openstack/validations-common
       - name: opendev.org/openstack/openstack-virtual-baremetal
         override-checkout: stable/2.0
       - name: opendev.org/openstack/openstack-ansible-os_tempest
