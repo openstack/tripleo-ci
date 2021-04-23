@@ -117,7 +117,8 @@
         tripleo-repos \
           -b "{{ ci_branch | default('master') }}" \
           $MIRROR \
-          --rdo-mirror $RDO_MIRROR_HOST $REPO ceph opstools
+          --rdo-mirror $RDO_MIRROR_HOST $REPO ceph opstools \
+          --no-stream
     fi
   register: result
   changed_when: "'Installed:' in result.stdout_lines"
