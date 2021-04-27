@@ -40,7 +40,7 @@ directories and files copied from /var/log on the undercloud.
 If other overcloud/subnodes exist, similar $node/var/log
 directories will also exist in these logs.</li>
 <li><a href='undercloud/var/log/extra/'>undercloud/var/log/extra/</a> -
-extra system details like package list, and cpu info gathered from the
+Available on each node, extra system details like package list, and cpu info gathered from the
 undercloud</li>
 <li><a href='undercloud/var/lib/mistral'>undercloud/var/lib/mistral</a>
 - output of all ansible used by config-download to drive the overcloud deployment</li>
@@ -88,6 +88,12 @@ undercloud</li>
 - the hieradata of the deployment, service-configs, net and vip info</li>
 <lib><a href='undercloud/var/lib/container-puppet'>undercloud/var/lib/container-puppet</a>
 - puppet config for each container
+</ul>
+
+<h3>SELinux Alerts</h3>
+<ul>
+<li><a href='undercloud/var/log/extra/selinux_denials_detail.txt'>selinux_denials_detail</a>
+<li>Available on each node under /var/log/extra/selinux_denials_detail</li>
 </ul>
 
 
