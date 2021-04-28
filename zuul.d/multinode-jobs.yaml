@@ -238,7 +238,6 @@
     parent: tripleo-ci-centos-8-containers-multinode
     branches: master
     override-checkout: stable/wallaby
-    voting: false
     vars:
       branch_override: stable/wallaby
 
