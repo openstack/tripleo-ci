@@ -30,6 +30,7 @@
               - ^setup.cfg$
               - ^setup.py$
               - ^tox.ini$
+              - ^tripleo_get_hash/.*
             vars:
               tox_environment:
                 PYTEST_REQPASS: 84
