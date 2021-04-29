@@ -12,7 +12,6 @@
     parent: tripleo-ci-centos-8-content-provider
     override-checkout: stable/wallaby
     branches: ^(master|stable/wallaby).*$
-    voting: false
     vars:
       branch_override: stable/wallaby
 
