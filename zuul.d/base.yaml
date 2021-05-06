@@ -352,7 +352,6 @@
       - ^spec/.*$
       - ^Puppetfile.*$
       - tox.ini
-      - ^setup.*$
       - ^vars/sova-patterns.yml$
 
 # This job definition holds the required projects
