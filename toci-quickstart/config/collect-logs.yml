@@ -311,3 +311,5 @@ artcl_exclude_list:
   - root
   - console*primary.log
   - anaconda*
+  - standalone-install-*
+  - undercloud-install-*
