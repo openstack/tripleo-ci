@@ -236,7 +236,6 @@
 - job:
     name: tripleo-ci-centos-8-containers-multinode-wallaby
     parent: tripleo-ci-centos-8-containers-multinode
-    voting: false
     branches: master
     override-checkout: stable/wallaby
     vars:
