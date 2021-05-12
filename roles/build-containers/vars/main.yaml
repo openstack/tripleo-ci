@@ -27,6 +27,7 @@ exclude_containers:
     - sensu-base
     - influxdb
     - tempest
+  wallaby: *exclude_master_containers
   victoria: &exclude_containers
     - fluentd
     - opendaylight
