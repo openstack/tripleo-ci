@@ -34,6 +34,7 @@
       - name: opendev.org/openstack/ansible-config_template
         override-checkout: master
       - opendev.org/openstack/ansible-role-collect-logs
+      - opendev.org/openstack/tripleo-repos
 
 - job:
     name: tripleo-ci-base
