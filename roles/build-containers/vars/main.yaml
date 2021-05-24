@@ -12,6 +12,10 @@ virtualenv_python:
 
 # Current implementation assumes that any branch name not mentioned here
 # would default to the excludes defined on master branch.
+exclude_ppc_containers:
+  master: &exclude_ppc_master_containers
+    - ironic-pxe
+    - neutron-mlnx-agent
 exclude_containers:
   master: &exclude_master_containers
     - fluentd
