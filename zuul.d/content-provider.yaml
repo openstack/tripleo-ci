@@ -8,10 +8,25 @@
 # triggering the affected jobs on far more changes than needed.
 
 - job:
+    name: tripleo-ci-centos-8-content-provider
+    parent: tripleo-ci-base-standalone-centos-8
+    branches: ^(?!stable/(newton|ocata|pike|queens|stein)).*$
+    run:
+      - playbooks/tripleo-ci/run-v3.yaml
+      - playbooks/tripleo-ci/run-provider.yml
+    vars:
+      featureset: '052'
+      provider_job: true
+      build_container_images: true
+      ib_create_web_repo: true
+      playbooks:
+        - quickstart.yml
+        - multinode-standalone-pre.yml
+
+- job:
     name: tripleo-ci-centos-8-content-provider-wallaby
     parent: tripleo-ci-centos-8-content-provider
     override-checkout: stable/wallaby
-    branches: ^(master|stable/wallaby).*$
     vars:
       branch_override: stable/wallaby
 
@@ -19,6 +34,19 @@
     name: tripleo-ci-centos-8-content-provider-victoria
     parent: tripleo-ci-centos-8-content-provider
     override-checkout: stable/victoria
-    branches: ^(master|stable/victoria).*$
     vars:
       branch_override: stable/victoria
+
+- job:
+    name: tripleo-ci-centos-8-content-provider-ussuri
+    parent: tripleo-ci-centos-8-content-provider
+    override-checkout: stable/ussuri
+    vars:
+      branch_override: stable/ussuri
+
+- job:
+    name: tripleo-ci-centos-8-content-provider-train
+    parent: tripleo-ci-centos-8-content-provider
+    override-checkout: stable/train
+    vars:
+      branch_override: stable/train
