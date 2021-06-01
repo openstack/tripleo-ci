@@ -173,6 +173,7 @@
               - ^container-images/tcib/base/os/mistral.*$
               # tripleo-heat-templates
               - ^((docker|puppet)/services|deployment)/.*designate.*$
+              - ^((docker|puppet)/services|deployment)/.*unbound.*$
               - ^((docker|puppet)/services|deployment)/.*glance.*$
               - ^((docker|puppet)/services|deployment)/.*mistral.*$
               - ^((docker|puppet)/services|deployment)/.*nova.*$
@@ -188,6 +189,9 @@
               - ^tripleo_ansible/roles/tripleo_create_admin/.*
               - ^tripleo_ansible/roles/tripleo_hieradata/.*
               - ^tripleo_ansible/roles/tripleo_upgrade_hiera/.*
+              - ^tripleo_ansible/roles/tripleo_unbound/.*
+              - ^tripleo_ansible/roles/.*designate.*$
+              - ^tripleo_ansible/ansible_plugins/modules/tripleo_findif_for_ip.py
             vars: *consumer_vars
             dependencies:
               - tripleo-ci-centos-8-content-provider
