@@ -11,7 +11,7 @@ if [ "$ZUUL_BRANCH" = "stable/jewel" ]; then
     export STABLE_RELEASE="ocata"
 fi
 # For OVB repo "stable/1.0" is feature branch
-if [ "$ZUUL_BRANCH" = "stable/1.0" -a "$ZUUL_PROJECT" = "openstack/openstack-virtual-baremetal" ]; then
+if [ "$ZUUL_BRANCH" = "stable/1.0" -o "$ZUUL_BRANCH" = "stable/2.0" -a "$ZUUL_PROJECT" = "openstack/openstack-virtual-baremetal" ]; then
     export ZUUL_BRANCH="master"
 fi
 # For puppet-pacemaker "stable/1.1.x" is a centos7 support branch
