@@ -154,6 +154,11 @@
             vars: *consumer_vars
             dependencies:
               - tripleo-ci-centos-8-content-provider
+        - tripleo-ci-centos-8-scenario000-multinode-oooq-container-updates-victoria:
+            irrelevant-files: *multinode_ignored
+            vars: *consumer_vars
+            dependencies:
+              - tripleo-ci-centos-8-content-provider
 
 - project-template:
     name: tripleo-upgrades-ussuri-pipeline
@@ -177,6 +182,11 @@
               - tripleo-ci-centos-8-content-provider
               - tripleo-ci-centos-8-content-provider-train
         - tripleo-ci-centos-8-scenario000-multinode-oooq-container-upgrades-ussuri:
+            irrelevant-files: *multinode_ignored
+            vars: *consumer_vars
+            dependencies:
+              - tripleo-ci-centos-8-content-provider
+        - tripleo-ci-centos-8-scenario000-multinode-oooq-container-updates-ussuri:
             irrelevant-files: *multinode_ignored
             vars: *consumer_vars
             dependencies:
