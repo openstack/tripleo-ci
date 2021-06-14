@@ -20,7 +20,11 @@ export ELEMENTS_PATH=$ELEMENTS
 {% endif %}
 
 # the tripleo_image_type is set and passed from the ci job definition
-if [ "{{ tripleo_image_type }}" == "overcloud-hardened-full" ]; then
+if [ "{{ tripleo_image_type }}" == "overcloud-hardened-uefi-full" ]; then
+  CONFIG_FILES="--config-file \
+    {{ tripleo_common_path }}/image-yaml/overcloud-hardened-images-uefi-python3.yaml \
+    --config-file {{ tripleo_common_path }}/image-yaml/overcloud-hardened-images-uefi-{{ tripleo_image_os }}.yaml"
+elif [ "{{ tripleo_image_type }}" == "overcloud-hardened-full" ]; then
   CONFIG_FILES="--config-file \
     {{ tripleo_common_path }}/image-yaml/{{ hardened_image_config[python_v] }} \
     --config-file {{ tripleo_common_path }}/image-yaml/overcloud-hardened-images-{{ tripleo_image_os }}.yaml"

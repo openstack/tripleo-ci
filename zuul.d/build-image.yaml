@@ -50,6 +50,16 @@
             files: *build_images_hardened_files
         - tripleo-buildimage-overcloud-hardened-full-centos-8-train:
             files: *build_images_hardened_files
+        - tripleo-buildimage-overcloud-hardened-uefi-full-centos-8:
+            files: &build_images_hardened_uefi_files
+              - ^image-yaml/.*hardened-images-uefi.*
+              - ^elements/overcloud-secure
+              - ^elements/overcloud-partition-uefi
+              - ^diskimage_builder/elements/modprobe
+              - ^diskimage_builder/elements/bootloader
+              - ^diskimage_builder/elements/growvols
+        - tripleo-buildimage-overcloud-hardened-uefi-full-centos-8-wallaby:
+            files: *build_images_hardened_uefi_files
     gate:
       jobs:
         - tripleo-buildimage-overcloud-full-centos-7-train:
@@ -86,6 +96,10 @@
             files: *build_images_hardened_files
         - tripleo-buildimage-overcloud-hardened-full-centos-8-train:
             files: *build_images_hardened_files
+        - tripleo-buildimage-overcloud-hardened-uefi-full-centos-8:
+            files: *build_images_hardened_uefi_files
+        - tripleo-buildimage-overcloud-hardened-uefi-full-centos-8-wallaby:
+            files: *build_images_hardened_uefi_files
 
 - project-template:
     name: tripleo-buildimage-jobs
@@ -103,6 +117,8 @@
             files: *build_images_hardened_files
         - tripleo-buildimage-overcloud-hardened-full-centos-8:
             files: *build_images_hardened_files
+        - tripleo-buildimage-overcloud-hardened-uefi-full-centos-8:
+            files: *build_images_hardened_uefi_files
     gate:
       jobs:
         - tripleo-buildimage-overcloud-full-centos-7:
@@ -117,6 +133,8 @@
             files: *build_images_hardened_files
         - tripleo-buildimage-overcloud-hardened-full-centos-8:
             files: *build_images_hardened_files
+        - tripleo-buildimage-overcloud-hardened-uefi-full-centos-8:
+            files: *build_images_hardened_uefi_files
 
 - project-template:
     name: tripleo-buildimage-jobs-centos-8
@@ -126,12 +144,16 @@
         - tripleo-buildimage-ironic-python-agent-centos-8
         - tripleo-buildimage-overcloud-hardened-full-centos-8:
             files: *build_images_hardened_files
+        - tripleo-buildimage-overcloud-hardened-uefi-full-centos-8:
+            files: *build_images_hardened_uefi_files
     gate:
       jobs:
         - tripleo-buildimage-overcloud-full-centos-8
         - tripleo-buildimage-ironic-python-agent-centos-8
         - tripleo-buildimage-overcloud-hardened-full-centos-8:
             files: *build_images_hardened_files
+        - tripleo-buildimage-overcloud-hardened-uefi-full-centos-8:
+            files: *build_images_hardened_uefi_files
     experimental:
       jobs:
         - tripleo-buildimage-ironic-python-agent-centos-8
@@ -163,6 +185,15 @@
     branches: ^(?!stable/(queens|stein)).*$
     vars:
       tripleo_image_type: overcloud-hardened-full
+    irrelevant-files:
+      - ^.*\.rst$
+      - ^releasenotes/.*$
+
+- job:
+    name: tripleo-buildimage-overcloud-hardened-uefi-full-centos-8
+    parent: tripleo-build-images-base-centos-8
+    vars:
+      tripleo_image_type: overcloud-hardened-uefi-full
     irrelevant-files:
       - ^.*\.rst$
       - ^releasenotes/.*$
@@ -266,6 +297,13 @@
     override-checkout: stable/train
     vars:
       branch_override: stable/train
+
+- job:
+    name: tripleo-buildimage-overcloud-hardened-uefi-full-centos-8-wallaby
+    parent: tripleo-buildimage-overcloud-hardened-uefi-full-centos-8
+    override-checkout: stable/wallaby
+    vars:
+      branch_override: stable/wallaby
 
 - job:
     name: tripleo-buildimage-overcloud-full-centos-7-train
