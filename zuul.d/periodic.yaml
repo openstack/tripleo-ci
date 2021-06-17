@@ -203,3 +203,35 @@
             vars: *consumer_vars
             dependencies:
               - tripleo-ci-centos-8-content-provider
+
+- project-template:
+    name: tripleo-upgrades-wallaby-pipeline
+    periodic:
+      jobs:
+        - tripleo-ci-centos-8-content-provider-wallaby:
+            vars:
+              force_non_periodic: true
+        - tripleo-ci-centos-8-content-provider-victoria:
+            vars:
+              force_non_periodic: true
+        - tripleo-ci-centos-8-standalone-upgrade-wallaby:
+            vars: *consumer_vars
+            dependencies:
+              - tripleo-ci-centos-8-content-provider-wallaby
+              - tripleo-ci-centos-8-content-provider-victoria
+        - tripleo-ci-centos-8-undercloud-upgrade-wallaby:
+            vars: *consumer_vars
+            irrelevant-files: *undercloud_ignored
+            dependencies:
+              - tripleo-ci-centos-8-content-provider-wallaby
+              - tripleo-ci-centos-8-content-provider-victoria
+        - tripleo-ci-centos-8-scenario000-multinode-oooq-container-upgrades-wallaby:
+            irrelevant-files: *multinode_ignored
+            vars: *consumer_vars
+            dependencies:
+              - tripleo-ci-centos-8-content-provider-wallaby
+        - tripleo-ci-centos-8-scenario000-multinode-oooq-container-updates-wallaby:
+            irrelevant-files: *multinode_ignored
+            vars: *consumer_vars
+            dependencies:
+              - tripleo-ci-centos-8-content-provider-wallaby
