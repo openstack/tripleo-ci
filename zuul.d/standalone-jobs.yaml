@@ -613,12 +613,15 @@
         tempest_services:
           - mistral
           - sahara
+          - designate
         tempest_tempest_conf_overrides:
           auth.tempest_roles: "Member"
         tempest_test_whitelist:
           - 'tempest.scenario.test_network_basic_ops.TestNetworkBasicOps.test_network_basic_ops'
           - 'sahara_tempest_plugin.tests.api.test_data_sources.DataSourceTest'
           - 'mistral_tempest_tests.tests.api.v2.test_actions.ActionTestsV2'
+          - 'designate_tempest_plugin.tests.api.v2.test_recordset.RecordsetsTest'
+          - 'designate_tempest_plugin.tests.api.v2.test_zones.ZonesTest'
 
 - job:
     name: tripleo-ci-centos-8-scenario003-standalone
