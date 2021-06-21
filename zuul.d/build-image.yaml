@@ -58,6 +58,7 @@
               - ^diskimage_builder/elements/modprobe
               - ^diskimage_builder/elements/bootloader
               - ^diskimage_builder/elements/growvols
+              - ^roles/oooci-build-images/.*$
         - tripleo-buildimage-overcloud-hardened-uefi-full-centos-8-wallaby:
             files: *build_images_hardened_uefi_files
     gate:
@@ -192,6 +193,7 @@
 - job:
     name: tripleo-buildimage-overcloud-hardened-uefi-full-centos-8
     parent: tripleo-build-images-base-centos-8
+    branches: ^(master|stable/wallaby).*$
     vars:
       tripleo_image_type: overcloud-hardened-uefi-full
     irrelevant-files:
