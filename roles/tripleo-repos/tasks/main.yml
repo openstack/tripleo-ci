@@ -63,6 +63,7 @@
 
 - name: Get /etc/os-release name
   shell: 'source /etc/os-release && echo -e -n "$NAME"'
+  changed_when: false
   register: os_name_output
 
 - name: Set stream false

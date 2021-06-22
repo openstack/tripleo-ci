@@ -18,9 +18,3 @@ provisioner:
   name: ansible
   env:
     ANSIBLE_STDOUT_CALLBACK: yaml
-scenario:
-  test_sequence:
-    - destroy
-    - create
-    - converge
-    - destroy
