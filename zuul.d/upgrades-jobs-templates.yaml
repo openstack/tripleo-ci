@@ -166,6 +166,12 @@
             dependencies:
               - tripleo-ci-centos-8-content-provider
               - tripleo-ci-centos-8-content-provider-train
+        - tripleo-ci-centos-8-undercloud-upgrade-ussuri:
+            vars: *consumer_vars
+            irrelevant-files: *undercloud_ignored
+            dependencies:
+              - tripleo-ci-centos-8-content-provider
+              - tripleo-ci-centos-8-content-provider-train
         - tripleo-ci-centos-8-scenario000-multinode-oooq-container-updates-ussuri:
             irrelevant-files: *multinode_ignored
             vars: *consumer_vars
@@ -349,7 +355,7 @@
     name: tripleo-ci-centos-8-undercloud-upgrade-ussuri
     parent: tripleo-ci-base-singlenode-centos-8
     branches: ^stable/ussuri$
-    voting: false
+    voting: true
     vars:
       featureset: '050'
       featureset_override:
