@@ -76,6 +76,11 @@
         path: "{{ workspace }}/overcloud-full.qcow2"
       register: overcloud_stat_result
 
+    - name: check if overcloud-hardened-uefi-full images were built
+      stat:
+        path: "{{ workspace }}/overcloud-hardened-uefi-full.qcow2"
+      register: overcloud_hardened_uefi_stat_result
+
     - name: check if ipa images were built
       stat:
         path: "{{ workspace }}/ironic-python-agent.kernel"
@@ -115,6 +120,20 @@
           shell:
             cmd: |
               md5sum overcloud-full.tar > overcloud-full.tar.md5
+          args:
+            chdir: "{{ ansible_user_dir }}"
+
+    - when: overcloud_hardened_uefi_stat_result.stat.exists|bool
+      block:
+
+        - name: Move image to {{ ansible_user_dir }}
+          command: "mv {{ workspace }}/overcloud-hardened-uefi-full.qcow2 {{ ansible_user_dir }}"
+          when: workspace != ansible_user_dir
+
+        - name: Create md5sums
+          shell:
+            cmd: |
+              md5sum overcloud-hardened-uefi-full.qcow2 > overcloud-hardened-uefi-full.qcow2.md5
           args:
             chdir: "{{ ansible_user_dir }}"
 
