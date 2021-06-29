@@ -254,6 +254,7 @@
               - ^config_tempest/services/octavia.*$
               # tripleo-ansible
               - ^tripleo_ansible/roles/octavia_.*/.*
+              - ^tripleo_ansible/playbooks/octavia.*$
             vars:
               consumer_job: true
               build_container_images: false
