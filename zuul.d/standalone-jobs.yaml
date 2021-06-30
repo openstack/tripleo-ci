@@ -797,36 +797,6 @@
           service-clients.http_timeout: '120'
 
 - job:
-    name: tripleo-ci-centos-8-content-provider
-    parent: tripleo-ci-base-standalone-centos-8
-    branches: ^(?!stable/(newton|ocata|pike|queens|stein)).*$
-    run:
-      - playbooks/tripleo-ci/run-v3.yaml
-      - playbooks/tripleo-ci/run-provider.yml
-    vars:
-      featureset: '052'
-      provider_job: true
-      build_container_images: true
-      ib_create_web_repo: true
-      playbooks:
-        - quickstart.yml
-        - multinode-standalone-pre.yml
-
-- job:
-    name: tripleo-ci-centos-8-content-provider-ussuri
-    parent: tripleo-ci-centos-8-content-provider
-    override-checkout: stable/ussuri
-    vars:
-      branch_override: stable/ussuri
-
-- job:
-    name: tripleo-ci-centos-8-content-provider-train
-    parent: tripleo-ci-centos-8-content-provider
-    override-checkout: stable/train
-    vars:
-      branch_override: stable/train
-
-- job:
     name: tripleo-ci-centos-8-repoclosure
     parent: tripleo-ci-base-standalone-centos-8
     branches: ^(?!stable/(newton|ocata|pike|queens|stein)).*$
