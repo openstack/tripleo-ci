@@ -262,7 +262,43 @@
                 - build
             dependencies:
               - tripleo-ci-centos-8-content-provider
+        - tripleo-ci-centos-8-scenario010-standalone-train:
+            files: *scen10_files
+            vars:
+              consumer_job: true
+              build_container_images: false
+              remove_tags:
+                - build
+            dependencies:
+              - tripleo-ci-centos-8-content-provider
         - tripleo-ci-centos-8-scenario010-ovn-provider-standalone:
+            files: *scen10_files
+            vars:
+              consumer_job: true
+              build_container_images: false
+              remove_tags:
+                - build
+            dependencies:
+              - tripleo-ci-centos-8-content-provider
+        - tripleo-ci-centos-8-scenario010-ovn-provider-standalone-train:
+            files: *scen10_files
+            vars:
+              consumer_job: true
+              build_container_images: false
+              remove_tags:
+                - build
+            dependencies:
+              - tripleo-ci-centos-8-content-provider
+        - tripleo-ci-centos-8-scenario010-standalone-ussuri:
+            files: *scen10_files
+            vars:
+              consumer_job: true
+              build_container_images: false
+              remove_tags:
+                - build
+            dependencies:
+              - tripleo-ci-centos-8-content-provider
+        - tripleo-ci-centos-8-scenario010-ovn-provider-standalone-ussuri:
             files: *scen10_files
             vars:
               consumer_job: true
@@ -681,58 +717,42 @@
 - job:
     name: tripleo-ci-centos-8-scenario010-standalone
     voting: false
-    parent: tripleo-ci-base-standalone-centos-8
-    branches: ^(?!stable/(newton|ocata|pike|queens|stein)).*$
-    vars:
-      tags:
-        - build
-        - standalone
-        - octavia
-      # using featureset062 is tech debt and should be addressed at a future sprint
-      featureset: '062'
-      standalone_ceph: true
-      featureset_override:
-        validate_services: false
-        standalone_environment_files:
-          - 'environments/low-memory-usage.yaml'
-          - 'ci/environments/scenario010-standalone.yaml'
+    parent: tripleo-ci-centos-8-scenario010-standalone-base
+    branches: ^(?!stable/(stein|train|ussuri)).*$
 
 - job:
     name: tripleo-ci-centos-8-scenario010-ovn-provider-standalone
     voting: false
-    parent: tripleo-ci-base-standalone-centos-8
-    branches: ^(?!stable/(newton|ocata|pike|queens|stein)).*$
-    vars:
-      tags:
-        - build
-        - standalone
-        - octavia
-      featureset: '062'
-      standalone_ceph: true
-      featureset_override:
-        validate_services: false
-        tempest_tempestconf_profile_overrides:
-          load_balancer.provider: 'ovn'
-          load_balancer.member_role: '"Member"'
-          load_balancer.test_reuse_connection: false
-          load_balancer.load_balancing_algorithm: 'SOURCE_IP_PORT'
-          load_balancer.test_flavors: false
-          loadbalancer-feature-enabled.health_monitor_enabled: false
-          loadbalancer-feature-enabled.pool_algorithms_enabled: false
-          loadbalancer-feature-enabled.l7_protocol_enabled: false
-          loadbalancer-feature-enabled.l4_protocol: 'TCP'
-          loadbalancer-feature-enabled.session_persistence_enabled: false
-          loadbalancer-feature-enabled.not_implemented_is_error: false
-          network-feature-enabled.port_security: true
-          load_balancer.test_server_path: >-
-            "/usr/lib/python{{ [ansible_python.version.major, ansible_python.version.minor] | join('.') }}/site-packages/octavia_tempest_plugin/contrib/test_server/test_server.bin"
-        tempest_test_whitelist:
-          # The parent class runs *smoke, which only runs HTTP tests that
-          # the ovn-provider doesn't support, so run some it does.
-          - '^octavia_tempest_plugin.tests.scenario.v2.test_load_balancer.LoadBalancerScenarioTest'
-        standalone_environment_files:
-          - 'environments/low-memory-usage.yaml'
-          - 'ci/environments/scenario010-standalone.yaml'
+    parent: tripleo-ci-centos-8-scenario010-ovn-provider-standalone-base
+    branches: ^(?!stable/(stein|train|ussuri)).*$
+
+# branched scenario010 based jobs - this will enable the tripleo-ci team
+# to enable voting / gating on scenario010 jobs on a per branch basis.
+
+- job:
+    name: tripleo-ci-centos-8-scenario010-standalone-train
+    voting: false
+    parent: tripleo-ci-centos-8-scenario010-standalone-base
+    branches: stable/train
+
+- job:
+    name: tripleo-ci-centos-8-scenario010-ovn-provider-standalone-train
+    voting: false
+    parent: tripleo-ci-centos-8-scenario010-ovn-provider-standalone-base
+    branches: stable/train
+
+- job:
+    name: tripleo-ci-centos-8-scenario010-standalone-ussuri
+    voting: false
+    parent: tripleo-ci-centos-8-scenario010-standalone-base
+    branches: stable/ussuri
+
+- job:
+    name: tripleo-ci-centos-8-scenario010-ovn-provider-standalone-ussuri
+    voting: false
+    parent: tripleo-ci-centos-8-scenario010-standalone-base
+    branches: stable/ussuri
+
 
 - project-template:
     name: tripleo-standalone-multinode-ipa-pipeline
