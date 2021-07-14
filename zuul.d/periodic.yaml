@@ -37,9 +37,6 @@
         - tripleo-ci-centos-7-content-provider-train:
             vars:
               force_non_periodic: true
-        - tripleo-ci-centos-7-content-provider-queens:
-            vars:
-              force_non_periodic: true
         - tripleo-ci-centos-8-containers-multinode-ussuri:
             vars: &multi_consumer_vars_periodic
               force_non_periodic: true
@@ -65,13 +62,6 @@
             vars: *multi_consumer_vars_periodic
             dependencies:
               - tripleo-ci-centos-7-content-provider-train
-        - tripleo-ci-centos-7-containers-multinode-stein:
-            vars:
-              force_non_periodic: true
-        - tripleo-ci-centos-7-containers-multinode-queens:
-            vars: *multi_consumer_vars_periodic
-            dependencies:
-              - tripleo-ci-centos-7-content-provider-queens
 
 - project-template:
     name: tripleo-upgrades-victoria-pipeline
