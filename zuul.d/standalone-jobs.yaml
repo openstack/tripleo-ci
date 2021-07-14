@@ -146,6 +146,7 @@
               - ^((docker|puppet)/services|deployment)/.*ec2-api.*$
               - ^((docker|puppet)/services|deployment)/.*glance.*$
               - ^((docker|puppet)/services|deployment)/.*gnocchi.*$
+              - ^((docker|puppet)/services|deployment)/.*iscsid.*$
               - ^((docker|puppet)/services|deployment)/.*panko.*$
               - ^((docker|puppet)/services|deployment)/.*swift.*$
               - ^((docker|puppet)/services|deployment)/.*zaqar.*$
@@ -158,6 +159,7 @@
               - ^manifests/profile/(base|pacemaker)/cinder.*$
               - ^manifests/profile/(base|pacemaker)/glance.*$
               - ^manifests/profile/(base|pacemaker)/gnocchi.*$
+              - ^manifests/profile/(base|pacemaker)/iscsid.*$
               - ^manifests/profile/(base|pacemaker)/nova/ec2.*$
               - ^manifests/profile/(base|pacemaker)/panko.*$
               - ^manifests/profile/(base|pacemaker)/swift.*$
