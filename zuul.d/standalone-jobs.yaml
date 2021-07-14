@@ -286,6 +286,7 @@
               # puppet-tripleo
               - ^manifests/haproxy.*$
               - ^manifests/profile/(base|pacemaker)/glance.*$
+              - ^manifests/profile/(base|pacemaker)/ironic.*$
             vars: *consumer_vars
             dependencies:
               - tripleo-ci-centos-8-content-provider
