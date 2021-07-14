@@ -224,18 +224,6 @@
       # like parent but with requirements.txt and setup.py removed
 
 - job:
-    name: tripleo-ci-centos-8-undercloud-upgrade
-    parent: tripleo-ci-base-singlenode-centos-8
-    branches: ^master$
-    voting: false
-    vars:
-      featureset: '050'
-      featureset_override:
-        validate_services: false
-      extra_tags:
-        - undercloud-upgrade
-
-- job:
     name: tripleo-ci-centos-8-scenario000-multinode-oooq-container-upgrades
     parent: tripleo-ci-base-multinode-centos-8
     voting: false
