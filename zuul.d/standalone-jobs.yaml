@@ -248,7 +248,7 @@
               # It may be sensible to expand this list after it has proven itself.
               - ^(docker/services|deployment)/octavia.*$
               - ci/environments/scenario010-standalone.yaml
-              - ^environments\services/octavia.*.yaml
+              - ^environments/services/octavia.*.yaml
               - ^deployment/ceph-ansible.*$
               # python-tempestconf
               - ^config_tempest/services/octavia.*$
