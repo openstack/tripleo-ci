@@ -453,7 +453,7 @@
     name: tripleo-ci-centos-8-undercloud-upgrade-wallaby
     parent: tripleo-ci-base-singlenode-centos-8
     branches: ^stable/wallaby$
-    voting: false
+    voting: true
     vars:
       featureset: '050'
       featureset_override:
