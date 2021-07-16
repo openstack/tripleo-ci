@@ -67,7 +67,7 @@
     name: tripleo-upgrades-victoria-pipeline
     periodic:
       jobs:
-        - tripleo-ci-centos-8-content-provider:
+        - tripleo-ci-centos-8-content-provider-victoria:
             vars:
               force_non_periodic: true
         - tripleo-ci-centos-8-content-provider-ussuri:
@@ -81,7 +81,7 @@
               remove_tags:
                 - build
             dependencies:
-              - tripleo-ci-centos-8-content-provider
+              - tripleo-ci-centos-8-content-provider-victoria
               - tripleo-ci-centos-8-content-provider-ussuri
         - tripleo-ci-centos-8-undercloud-upgrade-victoria:
             vars: *consumer_vars
@@ -110,7 +110,7 @@
               - zuul.d/undercloud-jobs.yaml
               - zuul.d/multinode-jobs.yaml
             dependencies:
-              - tripleo-ci-centos-8-content-provider
+              - tripleo-ci-centos-8-content-provider-victoria
               - tripleo-ci-centos-8-content-provider-ussuri
         - tripleo-ci-centos-8-scenario000-multinode-oooq-container-upgrades-victoria:
             irrelevant-files: &multinode_ignored
@@ -143,18 +143,18 @@
               - roles/standalone-upgrade/.*
             vars: *consumer_vars
             dependencies:
-              - tripleo-ci-centos-8-content-provider
+              - tripleo-ci-centos-8-content-provider-victoria
         - tripleo-ci-centos-8-scenario000-multinode-oooq-container-updates-victoria:
             irrelevant-files: *multinode_ignored
             vars: *consumer_vars
             dependencies:
-              - tripleo-ci-centos-8-content-provider
+              - tripleo-ci-centos-8-content-provider-victoria
 
 - project-template:
     name: tripleo-upgrades-ussuri-pipeline
     periodic:
       jobs:
-        - tripleo-ci-centos-8-content-provider:
+        - tripleo-ci-centos-8-content-provider-ussuri:
             vars:
               force_non_periodic: true
         - tripleo-ci-centos-8-content-provider-train:
@@ -163,21 +163,21 @@
         - tripleo-ci-centos-8-standalone-upgrade-ussuri:
             vars: *consumer_vars
             dependencies:
-              - tripleo-ci-centos-8-content-provider
+              - tripleo-ci-centos-8-content-provider-ussuri
               - tripleo-ci-centos-8-content-provider-train
         - tripleo-ci-centos-8-undercloud-upgrade-ussuri:
             vars: *consumer_vars
             irrelevant-files: *undercloud_ignored
             dependencies:
-              - tripleo-ci-centos-8-content-provider
+              - tripleo-ci-centos-8-content-provider-ussuri
               - tripleo-ci-centos-8-content-provider-train
         - tripleo-ci-centos-8-scenario000-multinode-oooq-container-upgrades-ussuri:
             irrelevant-files: *multinode_ignored
             vars: *consumer_vars
             dependencies:
-              - tripleo-ci-centos-8-content-provider
+              - tripleo-ci-centos-8-content-provider-ussuri
         - tripleo-ci-centos-8-scenario000-multinode-oooq-container-updates-ussuri:
             irrelevant-files: *multinode_ignored
             vars: *consumer_vars
             dependencies:
-              - tripleo-ci-centos-8-content-provider
+              - tripleo-ci-centos-8-content-provider-ussuri
