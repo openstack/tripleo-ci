@@ -19,6 +19,7 @@
           - 'standalone_environment_files'
           - 'standalone_upgrade'
           - 'standalone_virt_type'
+          - 'tempest_allowed_group'
           - 'tempest_cloud_name'
           - 'tempest_extra_config'
           - 'tempest_format'
