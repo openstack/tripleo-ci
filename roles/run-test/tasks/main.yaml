@@ -58,7 +58,8 @@
               default([]) |
               map('regex_replace', '^', tht_dir ) | list }}
       when: featureset_override['standalone_environment_files'] is defined
-    - include_role:
+    - name: include role ceph-loop-device
+      include_role:
         name: ceph-loop-device
       when: standalone_ceph is defined and standalone_ceph
     - name: Generate featureset overriding file

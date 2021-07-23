@@ -29,18 +29,14 @@ repos:
     hooks:
       - id: flake8
   - repo: https://github.com/ansible/ansible-lint.git
-    rev: v5.0.0
+    rev: v5.1.2
     hooks:
       - id: ansible-lint
         always_run: true
         pass_filenames: false
-        # do not add file filters here as ansible-lint does not give reliable
-        # results when called with individual files.
-        # https://github.com/ansible/ansible-lint/issues/611
-        verbose: true
-        entry: ansible-lint --force-color -p -v .
         additional_dependencies:
-          - 'ansible<2.10'
+          - ansible-core
+          - yamllint
   - repo: https://github.com/openstack-dev/bashate.git
     rev: 2.0.0
     hooks:

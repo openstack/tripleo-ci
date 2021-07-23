@@ -1,4 +1,6 @@
 ---
+collections:
+  - community.general  # for ini_file
 galaxy_info:
   author: Alex Schultz
   description: Role to run tripleo-repos

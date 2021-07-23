@@ -7,7 +7,7 @@
       become: true
       args:
         chdir: "{{ workspace }}"
-      ignore_errors: true
+      failed_when: false
 
     - name: Set ci_branch for building containers check jobs
       include_tasks: set_ci_branch.yml

@@ -16,5 +16,3 @@ platforms:
 
 provisioner:
   name: ansible
-  env:
-    ANSIBLE_STDOUT_CALLBACK: yaml

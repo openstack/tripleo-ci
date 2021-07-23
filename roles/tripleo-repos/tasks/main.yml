@@ -11,6 +11,7 @@
         section: epel
         option: enabled
         value: '1'
+        mode: 0644
   become: true
   when: ansible_distribution_major_version|int == 7
 
@@ -35,16 +36,15 @@
   vars:
     ansible_python_interpreter: /usr/bin/python3
 
-- name: Disable epel (centos7/rhel7)
-  block:
-    - name: Ensure EPEL repo is disabled
-      ini_file:
-        dest: /etc/yum.repos.d/epel.repo
-        section: epel
-        option: enabled
-        value: '0'
+- name: Ensure EPEL repo is disabled
   become: true
   when: ansible_distribution_major_version|int == 7
+  ini_file:
+    dest: /etc/yum.repos.d/epel.repo
+    section: epel
+    option: enabled
+    value: '0'
+    mode: 0644
 
 - name: Set branch for building containers check jobs
   set_fact:
