@@ -11,6 +11,7 @@
       - tripleo-multinode-branchful
       - tripleo-multinode-container-full-pipeline
       - tripleo-standalone-scenarios-pipeline
+      - tripleo-standalone-multinode-ipa-pipeline
       - tripleo-undercloud-jobs-pipeline
       - tripleo-periodic
     check:
