@@ -168,7 +168,7 @@
               - tripleo-ci-centos-8-content-provider
         - tripleo-ci-centos-8-scenario003-standalone:
             files: &scen3_files
-              #tripleo-common
+              # tripleo-common
               - ^container-images/tcib/base/os/designate.*$
               - ^container-images/tcib/base/os/mistral.*$
               # tripleo-heat-templates

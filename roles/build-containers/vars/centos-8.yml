@@ -19,6 +19,6 @@ source_items:
   - decorator
 
 volume_mounts:
-   - "/etc/yum.repos.d:/etc/distro.repos.d:z"
-   - "/etc/pki/rpm-gpg:/etc/pki/rpm-gpg:z"
-   - "/etc/dnf/vars:/etc/dnf/vars:z"
+  - "/etc/yum.repos.d:/etc/distro.repos.d:z"
+  - "/etc/pki/rpm-gpg:/etc/pki/rpm-gpg:z"
+  - "/etc/dnf/vars:/etc/dnf/vars:z"

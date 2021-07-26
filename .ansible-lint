@@ -1,3 +1,4 @@
+---
 exclude_paths:
     - roles/validate-ui/.travis.yml
 parseable: true
