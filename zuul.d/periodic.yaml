@@ -64,7 +64,7 @@
               - tripleo-ci-centos-7-content-provider-train
 
 - project-template:
-    name: tripleo-upgrades-victoria-pipeline
+    name: tripleo-periodic-upgrades-victoria-pipeline
     periodic:
       jobs:
         - tripleo-ci-centos-8-content-provider-victoria:
@@ -151,7 +151,7 @@
               - tripleo-ci-centos-8-content-provider-victoria
 
 - project-template:
-    name: tripleo-upgrades-ussuri-pipeline
+    name: tripleo-periodic-upgrades-ussuri-pipeline
     periodic:
       jobs:
         - tripleo-ci-centos-8-content-provider-ussuri:
@@ -183,7 +183,7 @@
               - tripleo-ci-centos-8-content-provider-ussuri
 
 - project-template:
-    name: tripleo-upgrades-master-pipeline
+    name: tripleo-periodic-upgrades-master-pipeline
     periodic:
       jobs:
         - tripleo-ci-centos-8-content-provider:
@@ -205,7 +205,7 @@
               - tripleo-ci-centos-8-content-provider
 
 - project-template:
-    name: tripleo-upgrades-wallaby-pipeline
+    name: tripleo-periodic-upgrades-wallaby-pipeline
     periodic:
       jobs:
         - tripleo-ci-centos-8-content-provider-wallaby:
