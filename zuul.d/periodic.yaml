@@ -181,3 +181,25 @@
             vars: *consumer_vars
             dependencies:
               - tripleo-ci-centos-8-content-provider-ussuri
+
+- project-template:
+    name: tripleo-upgrades-master-pipeline
+    periodic:
+      jobs:
+        - tripleo-ci-centos-8-content-provider:
+            vars:
+              force_non_periodic: true
+        - tripleo-ci-centos-8-content-provider-wallaby:
+            vars:
+              force_non_periodic: true
+        - tripleo-ci-centos-8-undercloud-upgrade:
+            vars: *consumer_vars
+            irrelevant-files: *undercloud_ignored
+            dependencies:
+              - tripleo-ci-centos-8-content-provider
+              - tripleo-ci-centos-8-content-provider-wallaby
+        - tripleo-ci-centos-8-scenario000-multinode-oooq-container-updates:
+            irrelevant-files: *multinode_ignored
+            vars: *consumer_vars
+            dependencies:
+              - tripleo-ci-centos-8-content-provider
