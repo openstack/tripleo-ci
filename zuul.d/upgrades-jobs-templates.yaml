@@ -357,6 +357,19 @@
       extra_tags:
         - overcloud-upgrade
 
+- job:
+    name: tripleo-ci-centos-8-scenario000-multinode-oooq-container-upgrades-wallaby
+    parent: tripleo-ci-base-multinode-centos-8
+    voting: true
+    branches: ^stable/wallaby$
+    override-checkout: 'stable/wallaby'
+    vars:
+      branch_override: 'stable/wallaby'
+      nodes: 1ctlr
+      featureset: '051'
+      extra_tags:
+        - overcloud-upgrade
+
 #
 # Standalone upgrade jobs
 #
@@ -401,6 +414,20 @@
     parent: tripleo-ci-base-standalone-upgrade-centos-8
     voting: true
     branches: ^stable/ussuri$
+    vars:
+      featureset: '056'
+      featureset_override:
+        standalone_environment_files:
+          - 'environments/low-memory-usage.yaml'
+          - 'environments/docker-ha.yaml'
+          - 'environments/podman.yaml'
+    irrelevant-files: *upgrade_irrelevant
+
+- job:
+    name: tripleo-ci-centos-8-standalone-upgrade-wallaby
+    parent: tripleo-ci-base-standalone-upgrade-centos-8
+    voting: false
+    branches: ^stable/wallaby$
     vars:
       featureset: '056'
       featureset_override:
