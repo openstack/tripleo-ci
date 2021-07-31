@@ -239,7 +239,7 @@
 - job:
     name: tripleo-ci-centos-8-containers-undercloud-minion
     parent: tripleo-ci-base-multinode-centos-8
-    branches: ^(?!stable/(newton|ocata|pike|queens|stein)).*$
+    branches: ^(stable/(train|ussuri|victoria)).*$
     vars:
       nodes: 1minion
       featureset: '061'
