@@ -98,6 +98,7 @@
               - ^((docker|puppet)/services|deployment)/.*metrics.*$
               - ^((docker|puppet)/services|deployment)/.*monitoring.*$
               - ^((docker|puppet)/services|deployment)/.*panko.*$
+              - ^((docker|puppet)/services|deployment)/.*placement.*$
               - ^((docker|puppet)/services|deployment)/database/redis.*$
               - ci/environments/scenario001-standalone.yaml
               # tripleo-quickstart
@@ -114,6 +115,7 @@
               - ^manifests/profile/(base|pacemaker)/metrics.*$
               - ^manifests/profile/(base|pacemaker)/monitoring.*$
               - ^manifests/profile/(base|pacemaker)/panko.*$
+              - ^manifests/profile/(base|pacemaker)/placement.*$
               # tripleo-quickstart-extras
               - roles/standalone/.*
               - roles/validate-tempest/.*
