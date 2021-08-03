@@ -32,6 +32,10 @@ QUICKSTART_VENV_CMD="
     ./quickstart.sh
     --bootstrap
     --no-clone
+{% if environment_type == 'baremetal' -%}
+{# It needs to be installed on zuul node to drive deployment #}
+    --url-requirements git+https://opendev.org/openstack/tripleo-operator-ansible/#egg=tripleo-operator-ansible
+{% endif %}
     --working-dir $LOCAL_WORKING_DIR
     --playbook noop.yml
     --retain-inventory
