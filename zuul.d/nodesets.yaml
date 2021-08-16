@@ -48,17 +48,6 @@
         nodes: []
 
 - nodeset:
-    name: single-centos-8-node-standalone
-    nodes:
-      - name: primary
-        label: centos-8-stream
-    groups:
-      - name: switch
-        nodes: []
-      - name: peers
-        nodes: []
-
-- nodeset:
     name: single-centos-7-node
     nodes:
       - name: primary
