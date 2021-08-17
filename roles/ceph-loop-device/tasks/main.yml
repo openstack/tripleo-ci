@@ -28,13 +28,11 @@
     - ["{{ ceph_loop_device_file }}", "{{ ceph_loop_device_file_legacy }}"]
     - ["{{ ceph_loop_device }}", "{{ ceph_loop_device_legacy }}"]
 
-- name: Use {pv,vg,lv}create to create logical volumes on one loop device
+- name: Use {pv,vg,lv}create to create logical volume on one loop device
   become: true
   shell: |
     pvcreate {{ ceph_loop_device }}
     vgcreate {{ ceph_logical_volume_group }} {{ ceph_loop_device }}
-    lvcreate -n {{ ceph_logical_volume_wal }} -l 375 {{ ceph_logical_volume_group }}
-    lvcreate -n {{ ceph_logical_volume_db }} -l 375 {{ ceph_logical_volume_group }}
-    lvcreate -n {{ ceph_logical_volume_data }} -l 2041 {{ ceph_logical_volume_group }}
+    lvcreate -n {{ ceph_logical_volume_data }} -l +100%FREE {{ ceph_logical_volume_group }}
     lvs
   changed_when: true
