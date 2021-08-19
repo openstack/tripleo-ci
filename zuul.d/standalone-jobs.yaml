@@ -573,6 +573,32 @@
 
 # CentOS 8 Jobs
 - job:
+    name: tripleo-ci-centos-8-scenario000-standalone
+    voting: true
+    parent: tripleo-ci-base-standalone-centos-8
+    branches: ^(?!stable/(newton|ocata|pike|queens|stein|ussuri|victoria)).*$
+
+- job:
+    name: tripleo-ci-centos-8-scenario000-standalone-options
+    vars:
+      featureset: '052'
+      featureset_override:
+        standalone_environment_files:
+          - 'environments/low-memory-usage.yaml'
+          - 'ci/environments/scenario000-standalone.yaml'
+        tempest_services:
+          - keystone
+        tempest_run_concurrency: 1
+        tempest_tempest_conf_overrides:
+          'auth.tempest_roles': "Member"
+        tempest_test_whitelist:
+          - 'keystone_tempest_plugin.tests.api.identity.v3'
+
+- job:
+    name: tripleo-ci-centos-8-scenario000-standalone
+    parent: tripleo-ci-centos-8-scenario000-standalone-options
+
+- job:
     name: tripleo-ci-centos-8-scenario001-standalone
     voting: true
     parent: tripleo-ci-base-standalone-centos-8
