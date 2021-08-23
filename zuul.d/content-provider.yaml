@@ -11,6 +11,8 @@
     name: tripleo-ci-centos-8-content-provider
     parent: tripleo-ci-base-standalone-centos-8
     branches: ^(?!stable/(newton|ocata|pike|queens|stein)).*$
+    required-projects:
+      - opendev.org/openstack/tripleo-common
     run:
       - playbooks/tripleo-ci/run-v3.yaml
       - playbooks/tripleo-ci/run-provider.yml
