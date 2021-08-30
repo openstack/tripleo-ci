@@ -26,6 +26,17 @@
         override_repos: "{{ buildcontainers_override_repos | default('') }}"
         tripleo_repos_repository: "{{ ansible_user_dir }}/{{ zuul.projects['opendev.org/openstack/tripleo-repos'].src_dir }}"
 
+    # TODO: Move this setting to tripleo-repos yum module
+    - name: Enable supported container tools version
+      become: true
+      shell: |
+         {{ ansible_pkg_mgr }} module disable container-tools:rhel8 -y;
+         {{ ansible_pkg_mgr }} module enable container-tools:3.0 -y;
+         {{ ansible_pkg_mgr }} clean metadata
+      when:
+        - ansible_distribution_major_version|int >= 8
+        - ansible_distribution_major_version|int < 9
+
     - name: Include bindep role
       include_role:
         name: bindep

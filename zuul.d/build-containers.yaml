@@ -12,13 +12,9 @@
               - ^roles/build-containers/.*$
               - zuul.d/layout.yaml
               - zuul.d/build-containers.yaml
-        - tripleo-build-containers-centos-7-buildah-stein:
-            files: *build_container_files
     gate:
       queue: tripleo
       jobs:
-        - tripleo-build-containers-centos-7-buildah-stein:
-            files: *build_container_files
         - tripleo-build-containers-centos-7-buildah-train:
             files: *build_container_files
 
