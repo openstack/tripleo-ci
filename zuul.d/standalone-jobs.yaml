@@ -50,6 +50,7 @@
       - ^test-requirements.txt$
       - ^vars/sova-patterns.yml$
       - tox.ini
+      - ^scripts/.*
       # like parent but with requirements.txt and setup.py removed
 
 - job:

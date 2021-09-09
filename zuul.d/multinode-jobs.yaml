@@ -64,6 +64,7 @@
               # tripleo-ansible
               - ^_skeleton_role_/.*
               - ^scripts/.*
+              - ^scripts/tripleo-critical-bugs/.*
               - ^tox.ini$
               - ^tripleo_ansible/playbooks/docker-vfs-setup.yml$
               - ^tripleo_ansible/.*molecule.*
@@ -173,6 +174,7 @@
               - ^playbooks/tripleo-buildcontainers/.*$
               - ^playbooks/tripleo-buildimages/.*$
               - ^vars/sova-patterns.yml$
+              - ^scripts/tripleo-critical-bugs/.*
             dependencies:
               - openstack-tox-linters
         - tripleo-ci-centos-8-content-provider-victoria:
