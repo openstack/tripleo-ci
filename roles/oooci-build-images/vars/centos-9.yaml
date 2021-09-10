@@ -1,0 +1,8 @@
+---
+tripleo_image_source: https://cloud.centos.org/centos/9-stream/x86_64/images/CentOS-Stream-GenericCloud-9-20210830.0.x86_64.qcow2
+dib_yum_repo_conf:
+  - /etc/yum.repos.d/CentOS-Stream-9-*
+  - /etc/yum.repos.d/delorean*
+dib_release: "9"
+dib_dnf_module_streams: "container-tools:latest"
+tripleo_image_os: centos9

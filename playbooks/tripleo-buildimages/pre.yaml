@@ -19,6 +19,10 @@
       when:
         - ansible_pkg_mgr == "yum"
 
+    - name: Include EL9 taks
+      when: ansible_distribution_major_version is version(9, '==')
+      include: pre9.yaml
+
     - name: Include tripleo-repos
       include_role:
         name: tripleo-repos
