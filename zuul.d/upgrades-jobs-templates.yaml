@@ -70,6 +70,23 @@
               - zuul.d/standalone-jobs.yaml
               - zuul.d/undercloud-jobs.yaml
               - zuul.d/multinode-jobs.yaml
+              # standalone featuresets
+              - ^config/general_config/featureset052.yml
+              - ^config/general_config/featureset056.yml
+              - ^config/general_config/featureset062.yml
+              - ^config/general_config/featureset060.yml
+              # ovb featuresets
+              - ^config/general_config/featureset001.yml
+              - ^config/general_config/featureset002.yml
+              - ^config/general_config/featureset024.yml
+              - ^config/general_config/featureset035.yml
+              - ^config/general_config/featureset039.yml
+              - ^config/general_config/featureset041.yml
+              - ^config/general_config/featureset042.yml
+              - ^config/general_config/featureset063.yml
+              # upgrade/update featuresets
+              - ^config/general_config/featureset037.yml
+              - ^config/general_config/featureset051.yml
             dependencies:
               - tripleo-ci-centos-8-content-provider
               - tripleo-ci-centos-8-content-provider-wallaby
