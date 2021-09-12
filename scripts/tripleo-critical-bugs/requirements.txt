@@ -1,0 +1,7 @@
+click
+configparser
+launchpadlib==1.10.5
+python-dateutil
+#pytz==2015.7
+pytz
+requests
