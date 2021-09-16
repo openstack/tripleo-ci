@@ -790,6 +790,7 @@
               - environments/services/haproxy-public-tls-inject.yaml
               - environments/ssl/enable-internal-tls.yaml
               - environments/ssl/enable-internal-tls.j2.yaml
+              - environments/ssl/enable-memcached-tls.yaml
               - environments/ssl/enable-tls.yaml
               - ci/environments/standalone-ipa.yaml
               - deployment/ipa/ipaservices-baremetal-ansible.yaml
@@ -845,6 +846,7 @@
           - environments/ssl/tls-everywhere-endpoints-dns.yaml
           - environments/services/haproxy-public-tls-certmonger.yaml
           - environments/ssl/enable-internal-tls.yaml
+          - environments/ssl/enable-memcached-tls.yaml
           - ci/environments/standalone-ipa.yaml
         tempest_tempest_conf_overrides:
           service-clients.http_timeout: '120'
