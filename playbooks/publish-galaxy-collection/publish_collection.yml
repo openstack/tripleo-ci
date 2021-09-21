@@ -1,0 +1,75 @@
+---
+- hosts: all
+  vars:
+    build_collection_path: /tmp/collection_built/
+    ansible_galaxy_path: "~/.local/bin/ansible-galaxy"
+
+  tasks:
+
+    - name: Include role for pip
+      include_role:
+        name: ensure-pip
+
+    - name: Install ansible
+      pip:
+        name: ansible-core<2.12
+
+    - name: Discover tag version
+      set_fact:
+        version_tag: "{{ zuul.tag|default('no_version', true) }}"
+
+    - name: Fail if no tag version found
+      fail:
+        msg: "No tag was found in Zuul vars!"
+      when: version_tag == 'no_version'
+
+    - name: Create a directory for collection
+      file:
+        state: "{{ item }}"
+        path: "{{ build_collection_path }}"
+        mode: 0644
+      loop:
+        - absent
+        - directory
+
+    - name: Set galaxy.yml for right version from tag
+      lineinfile:
+        path: '{{ collection_path }}/galaxy.yml'
+        regexp: '^version:.*'
+        line: 'version: {{ version_tag }}'
+
+    - name: Build collection
+      command: "{{ ansible_galaxy_path }} collection build --output-path {{ build_collection_path }} --force"
+      args:
+        chdir: "{{ collection_path }}"
+
+    - name: Publish content to Ansible Galaxy
+      block:
+        - name: Create ansible.cfg configuration file tempfile
+          tempfile:
+            state: file
+            suffix: .cfg
+          register: _ansiblecfg_tmp
+
+        - name: Create ansible.cfg configuration file
+          copy:
+            dest: "{{ _ansiblecfg_tmp.path }}"
+            mode: 0600
+            content: |
+              [galaxy]
+              server_list = release_galaxy
+
+              [galaxy_server.release_galaxy]
+              url = {{ ansible_galaxy_secret.url }}
+              token = {{ ansible_galaxy_secret.token }}
+
+        - name: Publish collection to Ansible Galaxy / Automation Hub
+          environment:
+            ANSIBLE_CONFIG: "{{ _ansiblecfg_tmp.path }}"
+          shell: >-
+            {{ ansible_galaxy_path }} collection publish -vvv
+            {{ build_collection_path }}/{{ collection_name_prefix }}-{{ version_tag }}.tar.gz
+
+      always:
+        - name: Shred ansible-galaxy credentials
+          command: "shred {{ _ansiblecfg_tmp.path }}"
