@@ -63,15 +63,6 @@
       featureset: '028'
 
 - job:
-    name: tripleo-ci-centos-7-scenario008-multinode-oooq
-    parent: tripleo-ci-deprecated
-    voting: false
-    branches: none/deprecated
-    vars:
-      nodes: 1ctlr
-      featureset: '031'
-
-- job:
     name: tripleo-ci-centos-7-containers-multinode-queens
     parent: tripleo-ci-base-multinode
     voting: false
@@ -118,15 +109,6 @@
       featureset: '026'
 
 - job:
-    name: tripleo-ci-centos-7-scenario009-multinode-oooq
-    parent: tripleo-ci-deprecated
-    voting: false
-    branches: ^(?!stable/(newton|ocata)).*$
-    vars:
-      nodes: 1ctlr
-      featureset: '033'
-
-- job:
     name: tripleo-ci-centos-7-containers-multinode-pike
     parent: tripleo-ci-deprecated
     branches: master
@@ -137,58 +119,6 @@
       featureset: '010'
       playbooks:
         - multinode.yml
-
-- job:
-    name: tripleo-ci-centos-7-scenario012-standalone
-    voting: false
-    parent: tripleo-ci-base-standalone
-    nodeset: single-centos-7-node
-    branches: ^(?!stable/(newton|ocata|pike|queens|stein|train)).*$
-    vars:
-      featureset: '060'
-      standalone_ceph: true
-
-- job:
-    name: tripleo-ci-centos-7-scenario009-multinode-oooq-container
-    parent: tripleo-ci-base-multinode
-    voting: false
-    branches: ^(stable/(queens|stein|train)).*$
-    vars:
-      nodes: 1ctlr
-      featureset: '033'
-
-- job:
-    name: tripleo-ci-centos-7-containers-undercloud-minion
-    parent: tripleo-ci-deprecated
-    branches: none/deprecated
-    vars:
-      nodes: 1minion
-      featureset: '061'
-      playbooks:
-        - multinode-minion.yml
-      extra_tags:
-        - undercloud-minion-setup
-        - undercloud-minion-deploy
-
-- job:
-    name: tripleo-ci-centos-7-scenario007-standalone
-    voting: true
-    parent: tripleo-ci-deprecated
-    nodeset: single-centos-7-node
-    branches: none/deprecated
-    vars:
-      featureset: '052'
-      featureset_override:
-        run_tempest: false
-        standalone_environment_files:
-          - 'environments/low-memory-usage.yaml'
-          - 'ci/environments/scenario007-standalone.yaml'
-        tempest_services:
-          - neutron
-        tempest_test_whitelist:
-          - 'tempest.scenario.test_network_basic_ops.TestNetworkBasicOps.test_network_basic_ops'
-        tempest_private_net_provider_type: 'vxlan'
-        use_os_tempest: true
 
 - job:
     name: tripleo-ci-centos-8-standalone-upgrade
@@ -754,8 +684,6 @@
         - tripleo-ci-centos-7-undercloud-containers:
             irrelevant-files: *undercloud_ignored
         - tripleo-ci-centos-8-undercloud-containers:
-            irrelevant-files: *undercloud_ignored
-        - tripleo-ci-centos-7-containers-undercloud-minion:
             irrelevant-files: *undercloud_ignored
         - tripleo-ci-centos-8-undercloud-upgrade-ussuri:
             irrelevant-files: *undercloud_ignored
