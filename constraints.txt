@@ -8,7 +8,7 @@ ansi2html==1.6.0
     # via
     #   -r test-requirements.txt
     #   molecule
-ansible==2.9.23
+ansible==4.2.0
     # via -r test-requirements.txt
 ansible-lint==5.0.12
     # via molecule
