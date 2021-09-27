@@ -3,7 +3,7 @@
 cloudenv: "vexxhost"
 undercloud_user: "{{ lookup('env','USER') }}"
 non_root_user: "{{ undercloud_user }}"
-extra_args: >
+workers_args: >
     -e {{ tripleo_root }}/tripleo-ci/test-environments/worker-config.yaml
     -e /usr/share/openstack-tripleo-heat-templates/environments/debug.yaml
     --overcloud-ssh-user {{ undercloud_user }}
