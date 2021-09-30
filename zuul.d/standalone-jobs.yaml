@@ -129,6 +129,7 @@
               - ^tripleo_ansible/roles/tripleo_ceph_.*/.*
               - ^tripleo_ansible/roles/tripleo_hieradata/.*
               - ^tripleo_ansible/roles/tripleo_upgrade_hiera/.*
+              - ^tripleo_ansible/roles/tripleo_lvmfilter/.*
               - ^setup.*
             vars: &consumer_vars
               consumer_job: true
@@ -168,6 +169,7 @@
               # tripleo-ansible
               - ^tripleo_ansible/roles/tripleo_hieradata/.*
               - ^tripleo_ansible/roles/tripleo_upgrade_hiera/.*
+              - ^tripleo_ansible/roles/tripleo_lvmfilter/.*
             vars: *consumer_vars
             dependencies:
               - tripleo-ci-centos-8-content-provider
