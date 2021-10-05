@@ -117,6 +117,7 @@
               - ^manifests/profile/(base|pacemaker)/monitoring.*$
               - ^manifests/profile/(base|pacemaker)/panko.*$
               - ^manifests/profile/(base|pacemaker)/placement.*$
+              - ^manifests/profile/(base|pacemaker)/database/redis.*$
               # tripleo-quickstart-extras
               - roles/standalone/.*
               - roles/validate-tempest/.*
@@ -166,6 +167,7 @@
               - ^manifests/profile/(base|pacemaker)/panko.*$
               - ^manifests/profile/(base|pacemaker)/swift.*$
               - ^manifests/profile/(base|pacemaker)/zaqar.*$
+              - ^manifests/profile/(base|pacemaker)/database/redis.*$
               # tripleo-ansible
               - ^tripleo_ansible/roles/tripleo_hieradata/.*
               - ^tripleo_ansible/roles/tripleo_upgrade_hiera/.*
