@@ -6,6 +6,10 @@ centos_mirror_host: "http://mirror.centos.org"
 fedora_mirror_host: "https://mirrors.fedoraproject.org"
 rdo_mirror_host: "https://trunk.rdoproject.org"
 override_repos: ""
+# Url for the CentOS Compose for tripleo yum config module
+compose_url: "https://composes.stream.centos.org/production/{{ compose_id }}/compose"
+# Particular compose id to use
+compose_id: "latest-CentOS-Stream"
 rpm_packages:
   - git
   - python3-libselinux

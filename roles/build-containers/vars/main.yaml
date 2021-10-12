@@ -9,6 +9,7 @@ kolla_rhel8_patch:
 virtualenv_python:
   7: python
   8: python3
+  9: python3
 
 # Current implementation assumes that any branch name not mentioned here
 # would default to the excludes defined on master branch.

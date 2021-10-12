@@ -45,6 +45,18 @@
         option: registries
         value:
           - "localhost:{{ push_registry_port | default('5001') }}"
+      when: ansible_distribution_major_version is version(8, '==')
+
+    - name: Configure unqualified-search-registries
+      lineinfile:
+        path: /etc/containers/registries.conf
+        regexp: '^unqualified-search-registries'
+        line: "unqualified-search-registries = ['{{ push_registry }}',
+                                                'registry.access.redhat.com',
+                                                'registry.fedoraproject.org',
+                                                'registry.centos.org',
+                                                'docker.io']"
+      when: ansible_distribution_major_version is version(9, '==')
 
 - name: Setup repo web service
   become: true
@@ -77,9 +89,11 @@
           set -ex
           find /etc/yum.repos.d/ -name delorean\* -o -name quickstart-centos\* | xargs -I {} cp {} /var/www/html/
 
+      # TODO(chandan): Fix No chain/target/match by that name issue for EL9
     - name: Add http iptables rules from containers
       command: iptables -I openstack-INPUT 1 -p tcp --dport 80 -s 172.17.0.0/16 -j ACCEPT
       become: true
+      when: ansible_distribution_major_version is version(9, '<')
 
 - name: Setup tripleo registry
   when:

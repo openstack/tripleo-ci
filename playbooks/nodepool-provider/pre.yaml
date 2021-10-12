@@ -10,6 +10,13 @@
           for backwards compatibility purposes. The variables provided by this
           file are now available through Ansible under hostvars[$HOST]['nodepool'].
 
+    - name: Create /etc/nodepool it if does not exist
+      become: true
+      file:
+        path: /etc/nodepool
+        state: directory
+        mode: '0777'
+
     - name: Create /etc/nodepool/provider file
       copy:
         content: |

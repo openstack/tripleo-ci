@@ -19,31 +19,36 @@
       when:
         - ansible_pkg_mgr == "yum"
 
-    - name: Include tripleo-repos
-      include_role:
-        name: tripleo-repos
-      vars:
-        override_repos: "{{ buildcontainers_override_repos | default('') }}"
-        tripleo_repos_repository: "{{ ansible_user_dir }}/{{ zuul.projects['opendev.org/openstack/tripleo-repos'].src_dir }}"
+    - name: Container Build for 8 specific distros
+      when: ansible_distribution_major_version is version(8, '<=')
+      block:
+        - name: Include tripleo-repos
+          include_role:
+            name: tripleo-repos
+          vars:
+            override_repos: "{{ buildcontainers_override_repos | default('') }}"
+            tripleo_repos_repository: "{{ ansible_user_dir }}/{{ zuul.projects['opendev.org/openstack/tripleo-repos'].src_dir }}"
 
-    # TODO: Move this setting to tripleo-repos yum module
-    - name: Enable supported container tools version
-      become: true
-      shell: |
-         {{ ansible_pkg_mgr }} module disable container-tools:rhel8 -y;
-         {{ ansible_pkg_mgr }} module enable container-tools:3.0 -y;
-         {{ ansible_pkg_mgr }} clean metadata
-      when:
-        - ansible_distribution_major_version|int >= 8
-        - ansible_distribution_major_version|int < 9
+        # TODO: Move this setting to tripleo-repos yum module
+        - name: Enable supported container tools version
+          become: true
+          shell: |
+             {{ ansible_pkg_mgr }} module disable container-tools:rhel8 -y;
+             {{ ansible_pkg_mgr }} module enable container-tools:3.0 -y;
+             {{ ansible_pkg_mgr }} clean metadata
+          when: ansible_distribution_major_version is version(8, '==')
 
-    - name: Include bindep role
-      include_role:
-        name: bindep
-      vars:
-        bindep_dir: "{{ ansible_user_dir }}/{{ zuul.projects['opendev.org/openstack/python-tripleoclient'].src_dir }}"
+        - name: Include bindep role
+          include_role:
+            name: bindep
+          vars:
+            bindep_dir: "{{ ansible_user_dir }}/{{ zuul.projects['opendev.org/openstack/python-tripleoclient'].src_dir }}"
 
-    - name: Run build containers pre tasks
-      include_role:
-        name: build-containers
-        tasks_from: pre
+        - name: Run build containers pre tasks
+          include_role:
+            name: build-containers
+            tasks_from: pre
+
+    - name: Container Build for 9 specific distros
+      when: ansible_distribution_major_version is version(9, '==')
+      include: pre9.yaml

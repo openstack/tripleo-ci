@@ -122,9 +122,27 @@
           --no-stream
     fi
   register: result
+  when: ansible_distribution_major_version is version(8, '<=')
   changed_when: "'Installed:' in result.stdout_lines"
   args:
     warn: false
+
+- name: Install repos on EL9
+  become: true
+  shell: |
+    set -exo pipefail
+    source {{ workspace }}/venv/bin/activate
+    rm -fr /etc/yum.repos.d/centos9.repo
+    tripleo-yum-config enable-compose-repos \
+      --disable-all-conflicting \
+      --release centos-stream-9 \
+      --compose-url {{ compose_url }}
+  register: result
+  when: ansible_distribution_major_version is version(8, '>')
+
+- name: Print out the stdout of result
+  debug:
+    msg: "{{ result }}"
 
 - name: Update all installed packages after new repos are setup  # noqa package-latest
   become: true

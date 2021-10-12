@@ -22,12 +22,12 @@
 - name: Assure src folder has safe permissions
   # Workaround for https://bugs.launchpad.net/tripleo/+bug/1807703
   file:
-    path: /home/zuul/src/
+    path: "{{ ansible_user_dir }}/src/"
     state: directory
     mode: u=rwX,g=rX,o=rX
     recurse: true
 
-- name: "set zull_dump"
+- name: "set zuul_dump"
   set_fact:
     zuul_dump: "{{ {'zuul': zuul} }}"
 
