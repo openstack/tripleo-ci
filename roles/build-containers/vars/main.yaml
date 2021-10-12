@@ -14,48 +14,60 @@ virtualenv_python:
 # Current implementation assumes that any branch name not mentioned here
 # would default to the excludes defined on master branch.
 exclude_ppc_containers:
-  master: &exclude_ppc_master_containers
-    - ironic-pxe
-    - neutron-mlnx-agent
+  master:
+    centos8: &exclude_ppc_master_containers
+      - ironic-pxe
+      - neutron-mlnx-agent
 exclude_containers:
-  master: &exclude_master_containers
-    - fluentd
-    - opendaylight
-    - neutron-server-opendaylight
-    - neutron-mlnx-agent
-    - nova-serialproxy
-    - sahara-api
-    - sahara-engine
-    - skydive-agent
-    - skydive-analyzer
-    - sensu-client
-    - sensu-base
-    - influxdb
-    - tempest
-  wallaby: *exclude_master_containers
-  victoria: &exclude_containers
-    - fluentd
-    - opendaylight
-    - neutron-server-opendaylight
-    - neutron-mlnx-agent
-    - nova-serialproxy
-    - sahara-api
-    - sahara-engine
-    - skydive-agent
-    - skydive-analyzer
-    - sensu-client
-    - sensu-base
-    - influxdb
-  ussuri: *exclude_containers
-  train: *exclude_containers
+  master:
+    centos8: &exclude_master_containers
+      - fluentd
+      - opendaylight
+      - neutron-server-opendaylight
+      - neutron-mlnx-agent
+      - nova-serialproxy
+      - sahara-api
+      - sahara-engine
+      - skydive-agent
+      - skydive-analyzer
+      - sensu-client
+      - sensu-base
+      - influxdb
+      - tempest
+    centos9: *exclude_master_containers
+  wallaby:
+    centos8: *exclude_master_containers
+  victoria:
+    centos8: &exclude_containers
+      - fluentd
+      - opendaylight
+      - neutron-server-opendaylight
+      - neutron-mlnx-agent
+      - nova-serialproxy
+      - sahara-api
+      - sahara-engine
+      - skydive-agent
+      - skydive-analyzer
+      - sensu-client
+      - sensu-base
+      - influxdb
+  ussuri:
+    centos8: *exclude_containers
+  train:
+    centos7: *exclude_containers
+    centos8: *exclude_containers
   stein:
-    - opendaylight
-    - neutron-server-opendaylight
+    centos7:
+      - opendaylight
+      - neutron-server-opendaylight
   queens:
-    - opendaylight
-    - neutron-server-opendaylight
-  rhos-17: *exclude_master_containers
-  rhos-16.2: *exclude_containers
+    centos7:
+      - opendaylight
+      - neutron-server-opendaylight
+  rhos-17:
+    redhat8: *exclude_master_containers
+  rhos-16.2:
+    redhat8: *exclude_containers
 
 timestamper_cmd: >-
     | awk '{ print strftime("%Y-%m-%d %H:%M:%S |"), $0; fflush(); }'

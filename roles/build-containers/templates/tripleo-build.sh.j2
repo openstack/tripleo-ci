@@ -65,7 +65,7 @@ openstack tripleo container image build \
 {%   endif %}
 {%   set branch = osp_branch|default(ci_branch) %}
 {%   if branch in exclude_containers %}
-{%   for item in exclude_containers[branch] %}
+{%   for item in exclude_containers[branch][container_exclude_distro] %}
      --exclude {{ item }} \
 {%   endfor %}
 {%   endif %}
