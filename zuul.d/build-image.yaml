@@ -139,6 +139,58 @@
       jobs:
         - tripleo-buildimage-ironic-python-agent-centos-8
 
+# CentOS 9 Image Build Jobs
+- job:
+    name: tripleo-buildimage-ironic-python-agent-centos-9
+    parent: tripleo-build-images-base-centos-9
+    branches: ^(?!stable/(train|ussuri|victoria)).*$
+    vars:
+      tripleo_image_type: ironic-python-agent
+    irrelevant-files: &build_image_irrelevant
+      - ^.*\.rst$
+      - ^releasenotes/.*$
+
+- job:
+    name: tripleo-buildimage-overcloud-full-centos-9
+    parent: tripleo-build-images-base-centos-9
+    branches: ^(?!stable/(train|ussuri|victoria)).*$
+    vars:
+      tripleo_image_type: overcloud-full
+    irrelevant-files: *build_image_irrelevant
+
+- job:
+    name: tripleo-buildimage-overcloud-hardened-uefi-full-centos-9
+    parent: tripleo-build-images-base-centos-9
+    branches: ^(?!stable/(train|ussuri|victoria)).*$
+    vars:
+      tripleo_image_type: overcloud-hardened-uefi-full
+    irrelevant-files: *build_image_irrelevant
+
+# Centos9 Branchful jobs for the CIP repos (branch always master)
+
+- job:
+    name: tripleo-buildimage-ironic-python-agent-centos-9-wallaby
+    parent: tripleo-buildimage-ironic-python-agent-centos-9
+    branches: master
+    override-checkout: stable/wallaby
+    vars:
+      branch_override: stable/wallaby
+
+- job:
+    name: tripleo-buildimage-overcloud-full-centos-9-wallaby
+    parent: tripleo-buildimage-overcloud-full-centos-9
+    branches: master
+    override-checkout: stable/wallaby
+    vars:
+      branch_override: stable/wallaby
+
+- job:
+    name: tripleo-buildimage-overcloud-hardened-uefi-full-centos-9-wallaby
+    parent: tripleo-buildimage-overcloud-hardened-uefi-full-centos-9
+    override-checkout: stable/wallaby
+    vars:
+      branch_override: stable/wallaby
+
 # CentOS 8 Image Build Jobs
 - job:
     name: tripleo-buildimage-ironic-python-agent-centos-8
