@@ -63,7 +63,7 @@ ara_graphite_prefix: "tripleo.{{ lookup('env', 'STABLE_RELEASE')|default('master
 ara_graphite_server: 66.187.229.172
 
 # build-test packages
-artg_repos_dir: /home/zuul/src/opendev.org/openstack
+artg_repos_dir: "{{ ansible_user_dir }}/src/opendev.org/openstack"
 
 # https://bugs.launchpad.net/tripleo/+bug/1799895
 undercloud_workers: 1

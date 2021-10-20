@@ -44,7 +44,7 @@ update_containers: >-
   {%- endif -%}
 
 # build-test packages
-artg_repos_dir: /home/zuul/src/opendev.org/openstack
+artg_repos_dir: "{{ ansible_user_dir }}/src/opendev.org/openstack"
 # InfluxDB module settings
 influxdb_only_successful_tasks: true
 influxdb_measurement: job
