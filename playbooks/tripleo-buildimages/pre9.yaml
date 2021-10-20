@@ -1,0 +1,22 @@
+---
+- name: get extra repos delorean and deps
+  become: true
+  shell:
+    cmd: |
+      dnf config-manager --add-repo {{ item }}
+  loop:
+    - "https://trunk.rdoproject.org/centos9-{{ release }}/{{ promote_source | default('consistent') }}/delorean.repo"
+    - https://trunk.rdoproject.org/centos9-{{ release }}/delorean-deps.repo
+  changed_when: true
+
+- name: Enable supported container tools version
+  become: true
+  shell: |
+     {{ ansible_pkg_mgr }} module switch-to container-tools:latest -y;
+     {{ ansible_pkg_mgr }} clean metadata
+
+- name: Install vitualenv
+  become: true
+  package:
+    name: python3-virtualenv
+    state: latest

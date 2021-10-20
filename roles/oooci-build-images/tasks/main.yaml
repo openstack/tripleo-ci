@@ -2,11 +2,12 @@
 - name: Get python_v fact for py2 or py3 common vars
   include_tasks: check_set_py3.yaml
 
-- name: Include OS specific variables
-  include_vars: centos-7.yaml
+- name: Include OS specific variables for C7 or C9
+  include_vars: "centos-{{ ansible_distribution_major_version }}.yaml"
   when:
     - ansible_distribution == "CentOS"
-    - ansible_distribution_major_version == '7'
+    - ansible_distribution_major_version is version('7', '==') or
+      ansible_distribution_major_version is version('9', '==')
 
 - name: Make sure logs directory exists
   file:

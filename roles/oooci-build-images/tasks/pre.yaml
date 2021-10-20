@@ -97,7 +97,7 @@
       pip:
         name: setuptools
         virtualenv: "{{ workspace }}/.tmp"
-        virtualenv_command: "virtualenv-3"
+        virtualenv_command: "{{ 'virtualenv' if ansible_distribution_major_version is version('9', '==') else 'virtualenv-3' }}"
 
     - name: Borrow activate_this.py
       copy:
