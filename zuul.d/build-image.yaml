@@ -57,6 +57,12 @@
               - ^roles/oooci-build-images/.*$
         - tripleo-buildimage-overcloud-hardened-uefi-full-centos-8-wallaby:
             files: *build_images_hardened_uefi_files
+        - tripleo-buildimage-overcloud-full-centos-9:
+            files: *build_images_files
+        - tripleo-buildimage-ironic-python-agent-centos-9:
+            files: *build_images_files
+        - tripleo-buildimage-overcloud-hardened-uefi-full-centos-9:
+            files: *build_images_hardened_uefi_files
     gate:
       jobs:
         - tripleo-buildimage-overcloud-full-centos-7-train:
@@ -93,6 +99,12 @@
             files: *build_images_hardened_uefi_files
         - tripleo-buildimage-overcloud-hardened-uefi-full-centos-8-wallaby:
             files: *build_images_hardened_uefi_files
+        - tripleo-buildimage-overcloud-full-centos-9:
+            files: *build_images_files
+        - tripleo-buildimage-ironic-python-agent-centos-9:
+            files: *build_images_files
+        - tripleo-buildimage-overcloud-hardened-uefi-full-centos-9:
+            files: *build_images_hardened_uefi_files
 
 - project-template:
     name: tripleo-buildimage-jobs
@@ -108,6 +120,12 @@
             files: *build_images_files
         - tripleo-buildimage-overcloud-hardened-uefi-full-centos-8:
             files: *build_images_hardened_uefi_files
+        - tripleo-buildimage-overcloud-full-centos-9:
+            files: *build_images_files
+        - tripleo-buildimage-ironic-python-agent-centos-9:
+            files: *build_images_files
+        - tripleo-buildimage-overcloud-hardened-uefi-full-centos-9:
+            files: *build_images_hardened_uefi_files
     gate:
       jobs:
         - tripleo-buildimage-overcloud-full-centos-7:
@@ -119,6 +137,12 @@
         - tripleo-buildimage-ironic-python-agent-centos-8:
             files: *build_images_files
         - tripleo-buildimage-overcloud-hardened-uefi-full-centos-8:
+            files: *build_images_hardened_uefi_files
+        - tripleo-buildimage-overcloud-full-centos-9:
+            files: *build_images_files
+        - tripleo-buildimage-ironic-python-agent-centos-9:
+            files: *build_images_files
+        - tripleo-buildimage-overcloud-hardened-uefi-full-centos-9:
             files: *build_images_hardened_uefi_files
 
 - project-template:
@@ -140,10 +164,11 @@
         - tripleo-buildimage-ironic-python-agent-centos-8
 
 # CentOS 9 Image Build Jobs
+# TODO(marios): enable wallaby in branches when ready
 - job:
     name: tripleo-buildimage-ironic-python-agent-centos-9
     parent: tripleo-build-images-base-centos-9
-    branches: ^(?!stable/(train|ussuri|victoria)).*$
+    branches: ^(?!stable/(train|ussuri|victoria|wallaby)).*$
     vars:
       tripleo_image_type: ironic-python-agent
     irrelevant-files: &build_image_irrelevant
@@ -153,15 +178,16 @@
 - job:
     name: tripleo-buildimage-overcloud-full-centos-9
     parent: tripleo-build-images-base-centos-9
-    branches: ^(?!stable/(train|ussuri|victoria)).*$
+    branches: ^(?!stable/(train|ussuri|victoria|wallaby)).*$
     vars:
       tripleo_image_type: overcloud-full
+      image_sanity: false  # https://bugs.launchpad.net/tripleo/+bug/1950453
     irrelevant-files: *build_image_irrelevant
 
 - job:
     name: tripleo-buildimage-overcloud-hardened-uefi-full-centos-9
     parent: tripleo-build-images-base-centos-9
-    branches: ^(?!stable/(train|ussuri|victoria)).*$
+    branches: ^(?!stable/(train|ussuri|victoria|wallaby)).*$
     vars:
       tripleo_image_type: overcloud-hardened-uefi-full
     irrelevant-files: *build_image_irrelevant

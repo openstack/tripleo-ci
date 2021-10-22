@@ -788,6 +788,6 @@
     description: |
         Base abstract job for tripleo-buildimage-* centos-9 jobs
     parent: tripleo-build-images-base-centos-8
-    # nodeset: single-centos-9-node # TODO(marios) uncomment when available!
+    nodeset: single-centos-9-node
     vars:
       tripleo_image_os: centos9
