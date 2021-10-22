@@ -132,7 +132,6 @@
   shell: |
     set -exo pipefail
     source {{ workspace }}/venv/bin/activate
-    rm -fr /etc/yum.repos.d/centos9.repo
     tripleo-yum-config enable-compose-repos \
       --disable-all-conflicting \
       --release centos-stream-9 \
