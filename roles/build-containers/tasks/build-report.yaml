@@ -43,7 +43,7 @@
       shell: |
         set -eux
         echo {{ item }} >> {{ workspace }}/containers-excluded.log
-      with_items: "{{ exclude_containers[branch] }}"
+      with_items: "{{ exclude_containers[branch][container_exclude_distro] }}"
       when: exclude_containers is defined and branch in exclude_containers
 
     - name: Write containers-expected.log

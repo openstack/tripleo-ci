@@ -42,3 +42,4 @@ registry_namespace: >-
   {%- endif -%}
 container_registry_image: quay.io/tripleoci/registry:2
 provider_registry_port: 5001
+container_exclude_distro: "{{ ansible_distribution|lower }}{{ ansible_distribution_major_version}}"
