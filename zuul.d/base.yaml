@@ -778,3 +778,13 @@
       - opendev.org/openstack/tripleo-repos
       - opendev.org/openstack/requirements
     irrelevant-files: *irrelevant_build_img
+
+- job:
+    name: tripleo-build-images-base-centos-9
+    abstract: true
+    description: |
+        Base abstract job for tripleo-buildimage-* centos-9 jobs
+    parent: tripleo-build-images-base-centos-8
+    # nodeset: single-centos-9-node # TODO(marios) uncomment when available!
+    vars:
+      tripleo_image_os: centos9
