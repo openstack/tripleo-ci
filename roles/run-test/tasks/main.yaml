@@ -43,6 +43,8 @@
           - 'validate_ha_overcloud'
           - 'validate_services'
           - 'tempest_tempestconf_profile_overrides'
+          - 'composable_roles'
+          - 'overcloud_roles'
       fail:
         msg: "ERROR: {{ item }} is not overridable."
       when: item not in allowed_overrides
