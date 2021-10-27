@@ -183,6 +183,21 @@ class Members(object):
         else:
             raise TypeError()
 
+    def get_member_cards(self, memberId):
+        # get all the open cards from a particular member
+        membersUrl = '{0}/members/{1}/cards/open'.format(self._api.ApiRootUrl, memberId)
+        response = requests.get(membersUrl, params=self._api.Payload)
+        response.raise_for_status()
+
+        # scrub trello cards for blacklisted boards
+        data = json.loads(response.text)
+        remove_list = []
+        # create a list of cards that are blacklisted
+        for i in range(len(data)):
+            if BOARD_BLACKLIST == data[i]['idBoard'].encode("ascii"):
+                remove_list.append(i)
+        return data
+
 
 #
 # CARDS
@@ -261,5 +276,12 @@ class Cards(object):
             self._api.ApiRootUrl, listId, filterArg
         )
         response = requests.get(getCardsUrl, params=self._api.Payload)
+        response.raise_for_status()
+        return json.loads(response.text)
+
+    def update(self, card_id, desc):
+        "update card"
+        url = "%s/cards/%s" % (self._api.ApiRootUrl, card_id)
+        response = requests.put(url, params=self._api.Payload, data=dict(desc=desc))
         response.raise_for_status()
         return json.loads(response.text)

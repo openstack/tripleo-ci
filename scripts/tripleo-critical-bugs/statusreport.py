@@ -27,13 +27,12 @@ then compares the list to cards on the cix trello board.  If there
 is a lp bug that does not have a card it will open a trello card
 """
 
+import click
 import configparser
 
-import click
-
-import reports.trello as trello
-from reports.erhealth import get_health_link
+from reports.erhealth import get_health_link, add_health_link, is_health_link_in_desc
 from reports.launchpad import LaunchpadReport
+import reports.trello as trello
 
 
 class StatusReport(object):
@@ -127,7 +126,7 @@ class StatusReport(object):
                 trello_api_context = trello.ApiContext(config)
                 trello_cards = trello.Cards(trello_api_context)
                 trello_cards.create(
-                    card_title, trello_list, desc=bug_link + "\n" + health_link
+                    card_title, trello_list, desc=bug_link + health_link
                 )
 
 
@@ -158,7 +157,6 @@ def main(config_file, trello_token, trello_api_key, trello_board_id):
     bugs_with_alerts_open, bugs_with_alerts_closed = report.summarise_launchpad_bugs()
 
     print("*** open critical bugs ***")
-    report.print_report(bugs_with_alerts_open)
     print("*** closed critical bugs ***")
     report.print_report(bugs_with_alerts_closed)
 
@@ -172,6 +170,15 @@ def main(config_file, trello_token, trello_api_key, trello_board_id):
 
     all_cards_on_board = trello_boards.get_cards(config.get('TrelloConfig', 'board_id'))
     print("all cards " + str(len(all_cards_on_board)))
+
+    # Add health link if available to card without health link
+    for card in all_cards_on_board:
+        if not is_health_link_in_desc(card):
+            desc = add_health_link(card)
+            trello_api_context = trello.ApiContext(config)
+            trello_cards = trello.Cards(trello_api_context)
+            trello_cards.update(card["id"], desc)
+            print("Updated card " + card["name"])
     cards_outtage = all_cards_on_board
 
     critical_bugs_with_out_escalation_cards = report.compare_bugs_with_cards(
