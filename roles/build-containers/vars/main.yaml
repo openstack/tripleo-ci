@@ -35,18 +35,7 @@ exclude_containers:
       - influxdb
       - tempest
     centos9: &exclude_cs9_master_containers
-      - fluentd
-      - opendaylight
-      - neutron-server-opendaylight
       - neutron-mlnx-agent
-      - nova-serialproxy
-      - sahara-api
-      - sahara-engine
-      - skydive-agent
-      - skydive-analyzer
-      - sensu-client
-      - sensu-base
-      - influxdb
       - tempest
       - collectd
   wallaby:
