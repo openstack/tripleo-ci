@@ -26,7 +26,6 @@ exclude_containers:
     centos9: &exclude_cs9_master_containers
       - neutron-mlnx-agent
       - tempest
-      - collectd
   wallaby:
     centos8: *exclude_master_containers
   victoria:
