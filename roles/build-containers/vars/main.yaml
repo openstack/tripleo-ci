@@ -42,7 +42,15 @@ exclude_containers:
       - sahara-api
       - sahara-engine
       - sensu-client
-    centos8: *exclude_containers_train
+    centos8:
+      - fluentd
+      - opendaylight
+      - neutron-server-opendaylight
+      - neutron-mlnx-agent
+      - nova-serialproxy
+      - sahara-api
+      - sahara-engine
+      - sensu-client
   rhos-17:
     redhat8: *exclude_master_containers
   rhos-16.2:
