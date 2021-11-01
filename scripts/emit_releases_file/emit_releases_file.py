@@ -166,6 +166,7 @@ def compose_releases_dictionary(
     is_periodic=False,
     distro_name='centos',
     distro_version='7',
+    hash_override=None,
 ):
     """Compose the release dictionary for stable_release and featureset
 
@@ -244,9 +245,12 @@ def compose_releases_dictionary(
             stable_release, PROMOTION_HASH_NAME, distro_name, distro_version
         )
     else:
-        current_hash = get_dlrn_hash(
-            stable_release, CURRENT_HASH_NAME, distro_name, distro_version
-        )
+        if hash_override:
+            current_hash = hash_override
+        else:
+            current_hash = get_dlrn_hash(
+                stable_release, CURRENT_HASH_NAME, distro_name, distro_version
+            )
 
     releases_dictionary = {
         'undercloud_install_release': stable_release,
@@ -470,6 +474,11 @@ if __name__ == '__main__':
         help='Specify if the current running job is periodic',
     )
 
+    parser.add_argument(
+        '--hash-override',
+        help='Force an specific hash instead of current-tripleo',
+    )
+
     args = parser.parse_args()
 
     setup_logging(args.log_file)
@@ -484,6 +493,7 @@ if __name__ == '__main__':
         args.is_periodic,
         args.distro_name,
         args.distro_version,
+        args.hash_override,
     )
 
     releases_dictionary = shim_convert_old_release_names(

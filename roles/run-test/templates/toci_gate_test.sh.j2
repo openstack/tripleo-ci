@@ -111,6 +111,11 @@ PERIODIC=1
 QUICKSTART_RELEASE="promotion-testing-hash-${QUICKSTART_RELEASE}"
 EMIT_RELEASES_EXTRA_ARGS="$EMIT_RELEASES_EXTRA_ARGS --is-periodic"
 {% endif %}
+{% if job is defined %}
+{% if job.provider_dlrn_hash_tag_branch[release] | default(omit) %}
+EMIT_RELEASES_EXTRA_ARGS="$EMIT_RELEASES_EXTRA_ARGS --hash-override={{ job.provider_dlrn_hash_tag_branch[release] }}"
+{% endif %}
+{% endif %}
 
 if [[ -f "$RELEASES_SCRIPT" ]] && [[ {{ featureset }} =~ 011|037|047|050|056 ]]; then
 
