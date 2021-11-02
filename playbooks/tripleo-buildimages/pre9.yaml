@@ -9,12 +9,6 @@
     - https://trunk.rdoproject.org/centos9-{{ release }}/delorean-deps.repo
   changed_when: true
 
-- name: Enable supported container tools version
-  become: true
-  shell: |
-     {{ ansible_pkg_mgr }} module switch-to container-tools:latest -y;
-     {{ ansible_pkg_mgr }} clean metadata
-
 - name: Install vitualenv
   become: true
   package:
