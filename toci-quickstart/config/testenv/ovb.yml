@@ -13,8 +13,12 @@ workers_args: >-
     -e {{ overcloud_templates_path }}/environments/low-memory-usage.yaml
     -e {{ tripleo_root }}/tripleo-ci/test-environments/worker-config.yaml
     -e {{ overcloud_templates_path }}/environments/debug.yaml
+
 # Undercloud setup
 undercloud_ironic_ipxe_port: 3816
+# set power state timeout to 180s in train, 60s will remain the default
+# for more details, see https://bugs.launchpad.net/tripleo/+bug/1947403
+undercloud_ironic_power_state_change_timeout: "{{ '180' if release is defined and release in ['train'] else '60' }}"
 non_root_user_setup: false
 step_set_undercloud_hostname: true
 undercloud_hostname: undercloud
