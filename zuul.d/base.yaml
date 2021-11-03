@@ -405,12 +405,14 @@
 - job:
     name: tripleo-ci-centos-8-scenario010-standalone-base
     parent: tripleo-ci-base-standalone-centos-8
+    nodeset: single-centos-8-node-nested-virt
     abstract: true
     vars:
       tags:
         - build
         - standalone
         - octavia
+        - nested-virt
       # using featureset062 is tech debt and should be addressed at a future sprint
       featureset: '062'
       standalone_ceph: true
@@ -419,6 +421,7 @@
         standalone_environment_files:
           - 'environments/low-memory-usage.yaml'
           - 'ci/environments/scenario010-standalone.yaml'
+          - 'ci/environments/octavia-kvm.yaml'
 
 - job:
     name: tripleo-ci-centos-8-scenario010-ovn-provider-standalone-base
