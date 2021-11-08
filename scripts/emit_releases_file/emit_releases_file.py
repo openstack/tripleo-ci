@@ -171,7 +171,9 @@ def compose_releases_dictionary(
     is_periodic=False,
     distro_name='centos',
     distro_version='7',
-    hash_override=None,
+    target_branch_override=None,
+    install_branch_override=None,
+    content_provider_hashes=None,
 ):
     """Compose the release dictionary for stable_release and featureset
 
@@ -249,13 +251,19 @@ def compose_releases_dictionary(
         current_hash = get_dlrn_hash(
             stable_release, PROMOTION_HASH_NAME, distro_name, distro_version
         )
-    else:
-        if hash_override:
-            current_hash = hash_override
-        else:
-            current_hash = get_dlrn_hash(
-                stable_release, CURRENT_HASH_NAME, distro_name, distro_version
+    elif content_provider_hashes is not None and content_provider_hashes.get(
+        target_branch_override
+    ):
+        current_hash = content_provider_hashes[target_branch_override]
+        logger.info(
+            "Using hash override {} for branch {}".format(
+                current_hash, target_branch_override
             )
+        )
+    else:
+        current_hash = get_dlrn_hash(
+            stable_release, CURRENT_HASH_NAME, distro_name, distro_version
+        )
 
     releases_dictionary = {
         'undercloud_install_release': stable_release,
@@ -306,9 +314,20 @@ def compose_releases_dictionary(
     elif featureset.get('undercloud_upgrade'):
         logger.info('Doing an undercloud upgrade')
         install_release = get_relative_release(stable_release, -1)
-        install_hash = get_dlrn_hash(
-            install_release, CURRENT_HASH_NAME, distro_name, distro_version
-        )
+        install_hash = ''
+        if content_provider_hashes is not None and content_provider_hashes.get(
+            install_branch_override
+        ):
+            install_hash = content_provider_hashes[install_branch_override]
+            logger.info(
+                "Using hash override {} for branch {}".format(
+                    install_hash, install_branch_override
+                )
+            )
+        else:
+            install_hash = get_dlrn_hash(
+                install_release, CURRENT_HASH_NAME, distro_name, distro_version
+            )
         releases_dictionary['undercloud_install_release'] = install_release
         releases_dictionary['undercloud_install_hash'] = install_hash
 
@@ -480,16 +499,59 @@ if __name__ == '__main__':
     )
 
     parser.add_argument(
-        '--hash-override',
-        help='Force an specific hash instead of current-tripleo',
+        '--target-branch-override',
+        help='Override to use this branch for the target version - required\n'
+        'with the --content-provider-hashes argument',
     )
 
+    parser.add_argument(
+        '--install-branch-override',
+        help='Override to use this branch for the install version - required\n'
+        'with the --content-provider-hashes argument',
+    )
+
+    parser.add_argument(
+        '--content-provider-hashes',
+        help='A string representing the content provider branches and hashes\n'
+        'e.g. master:abcd;wallaby:defg i.e. branch1:hash1;branch2:hash2',
+    )
     args = parser.parse_args()
 
     setup_logging(args.log_file)
     logger = logging.getLogger('emit-releases')
 
     featureset = load_featureset_file(args.featureset_file)
+
+    _content_provider_hashes = None
+    # when overriding with content-provider-hashes we expect to have
+    # --install-branch-override and --target-branch-override in args
+    # and that these branches exist in the passed content-provider-hashes
+    if args.content_provider_hashes:
+        if args.target_branch_override is None or args.install_branch_override is None:
+            raise RuntimeError(
+                "Missing --target-branch-override or --install-branch-override"
+                ". These are required when using --content-provider-hashes"
+            )
+        if (
+            args.target_branch_override not in args.content_provider_hashes
+            or args.install_branch_override not in args.content_provider_hashes
+        ):
+            raise RuntimeError(
+                "The passed content provider hashes ({}) does not contain"
+                " the branches specified by --target-branch-override ({}) or"
+                " --install-branch-override ({})".format(
+                    args.content_provider_hashes,
+                    args.target_branch_override,
+                    args.install_branch_override,
+                )
+            )
+
+        _content_provider_hashes = {}
+        # args.content_provider_hashes 'master:1;wallaby:2'
+        for keyval in args.content_provider_hashes.split(';'):
+            dict_key = keyval.split(':')[0]
+            dict_val = keyval.split(':')[1]
+            _content_provider_hashes.update({dict_key: dict_val})
 
     releases_dictionary = compose_releases_dictionary(
         args.stable_release,
@@ -498,7 +560,9 @@ if __name__ == '__main__':
         args.is_periodic,
         args.distro_name,
         args.distro_version,
-        args.hash_override,
+        args.target_branch_override,
+        args.install_branch_override,
+        _content_provider_hashes,
     )
 
     releases_dictionary = shim_convert_old_release_names(
