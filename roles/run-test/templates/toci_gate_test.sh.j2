@@ -117,7 +117,7 @@ EMIT_RELEASES_EXTRA_ARGS="$EMIT_RELEASES_EXTRA_ARGS --hash-override={{ job.provi
 {% endif %}
 {% endif %}
 
-if [[ -f "$RELEASES_SCRIPT" ]] && [[ {{ featureset }} =~ 011|037|047|050|056 ]]; then
+if [[ -f "$RELEASES_SCRIPT" ]] && [[ {{ featureset }} =~ 037|047|050|056 ]]; then
 
     if [[  -f "$RELEASES_FILE_OUTPUT" ]]; then
         echo "Importing ready releases.sh file - skipping releases.sh file generation."
