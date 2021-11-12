@@ -56,3 +56,12 @@
   with_items:
     - /etc/yum.conf
     - /etc/dnf/dnf.conf
+
+- name: Ensure /dev/pts/ptmx have proper permission
+  # Workaround for https://launchpad.net/bugs/1950176
+  become: true
+  file:
+    path: /dev/pts/ptmx
+    state: file
+    mode: u=rw,g=rw,o=rw
+  when: ansible_distribution_major_version is version(9, '>=')
