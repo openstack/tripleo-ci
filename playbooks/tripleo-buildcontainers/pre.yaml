@@ -38,6 +38,21 @@
              {{ ansible_pkg_mgr }} clean metadata
           when: ansible_distribution_major_version is version(8, '==')
 
+        # workaround for LP #1950916
+        - name: Check if /etc/yum.repos.d/CentOS-Stream-AppStream.repo exists
+          stat:
+            path: /etc/yum.repos.d/CentOS-Stream-AppStream.repo
+          register: stat_appstream
+
+        - name: Exclude libvirt/qemu from AppStream repo
+          become: true
+          lineinfile:
+            dest: /etc/yum.repos.d/CentOS-Stream-AppStream.repo
+            line: "exclude=libvirt*,python*libvirt*,qemu*"
+          when:
+            - stat_appstream.stat.exists
+            - release is defined and release in ['master', 'wallaby']
+
         - name: Include bindep role
           include_role:
             name: bindep
