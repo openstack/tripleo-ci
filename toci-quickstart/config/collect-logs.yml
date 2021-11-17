@@ -55,6 +55,7 @@ artcl_collect_list:
   - /home/{{ undercloud_user }}/.config/
   - /home/{{ undercloud_user }}/.tobiko/
   - /home/{{ undercloud_user }}/overcloud-deploy/
+  - /home/{{ undercloud_user }}/validations/
   - /tmp/ansible-*/
   - /tmp/ansible-*
   - /etc/ansible/
@@ -289,6 +290,7 @@ artcl_collect_list:
   - /var/log/tripleo-container-image-prepare-ansible.log
   - /var/log/trove/
   - /var/log/vitrage/
+  - /var/log/validations/
   - /var/log/watcher/
   - /var/log/zaqar/
   - /var/named/
