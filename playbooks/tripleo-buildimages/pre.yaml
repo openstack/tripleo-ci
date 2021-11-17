@@ -19,11 +19,13 @@
       when:
         - ansible_pkg_mgr == "yum"
 
-    - name: Include EL9 taks
-      when: ansible_distribution_major_version is version(9, '==')
-      include: pre9.yaml
+    - name: Setup repos using repo-setup role and release file
+      when: ansible_distribution_major_version is version(9, '>=')
+      include_role:
+        name: tripleo-build-jobs-repos
 
     - name: Include tripleo-repos
+      when: ansible_distribution_major_version is version(8, '<=')
       include_role:
         name: tripleo-repos
       vars:

@@ -59,11 +59,12 @@
           vars:
             bindep_dir: "{{ ansible_user_dir }}/{{ zuul.projects['opendev.org/openstack/python-tripleoclient'].src_dir }}"
 
-        - name: Run build containers pre tasks
-          include_role:
-            name: build-containers
-            tasks_from: pre
+    - name: Setup repos using repo-setup role and release file
+      when: ansible_distribution_major_version is version(9, '>=')
+      include_role:
+        name: tripleo-build-jobs-repos
 
-    - name: Container Build for 9 specific distros
-      when: ansible_distribution_major_version is version(9, '==')
-      include: pre9.yaml
+    - name: Run build containers pre tasks
+      include_role:
+        name: build-containers
+        tasks_from: pre
