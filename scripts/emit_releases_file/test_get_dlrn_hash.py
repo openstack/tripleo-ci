@@ -45,6 +45,7 @@ def test_get_dlrn_hash_ok(mock_get, mock_logging):
     mock_log_warning.assert_not_called()
     mock_log_exception.assert_not_called()
 
+    # centos8 test scenario
     mock_get.reset_mock()
     mock_log_info.reset_mock()
     mock_response.text = '7e8e0fc03b54164921f49fdb4103202c'
@@ -58,6 +59,31 @@ def test_get_dlrn_hash_ok(mock_get, mock_logging):
     )
     assert (
         get_dlrn_hash(release, hash_name, distro_name='centos', distro_version='8')
+        == dlrn_hash
+    )
+    mock_get.assert_called_once_with(repo_url, timeout=8)
+    mock_log_info.assert_called_once_with(
+        "Got DLRN hash: {} for the named "
+        "hash: {} on the {} "
+        "release".format(dlrn_hash, hash_name, release)
+    )
+    mock_log_warning.assert_not_called()
+    mock_log_exception.assert_not_called()
+
+    # centos9 test scenario
+    mock_get.reset_mock()
+    mock_log_info.reset_mock()
+    mock_response.text = '1b28380bbbe279159578da5c60e567492cbb599d'
+    mock_get.return_value = mock_response
+    release = 'master'
+    hash_name = 'current-tripleo'
+    dlrn_hash = '1b28380bbbe279159578da5c60e567492cbb599d'
+    repo_url = 'https://trunk.rdoproject.org/centos9-%s/%s/delorean.repo.md5' % (
+        release,
+        hash_name,
+    )
+    assert (
+        get_dlrn_hash(release, hash_name, distro_name='centos', distro_version='9')
         == dlrn_hash
     )
     mock_get.assert_called_once_with(repo_url, timeout=8)
