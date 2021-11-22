@@ -35,6 +35,19 @@
         override-checkout: master
       - opendev.org/openstack/ansible-role-collect-logs
       - opendev.org/openstack/tripleo-repos
+      # Ansible collections for quickstart
+      - name: github.com/ansible-collections/ansible.utils
+        override-checkout: 2.4.2
+      - name: github.com/ansible-collections/ansible.posix
+        override-checkout: 1.3.0
+      - name: github.com/ansible-collections/ansible.netcommon
+        override-checkout: 2.4.0
+      - name: github.com/ansible-collections/community.general
+        override-checkout: 4.0.2
+      - name: github.com/ansible-collections/community.libvirt
+        override-checkout: 1.0.2
+      - name: github.com/ansible-collections/openvswitch.openvswitch
+        override-checkout: 2.0.2
 
 - job:
     name: tripleo-ci-base
