@@ -649,7 +649,7 @@
       - ^(playbooks|roles)/tripleo-buildcontainers/.*$
       - ^roles/build-containers/.*$
       - ^roles/prepare-node/.*$
-      - ^roles/common/.*$
+      - ^roles/ci-common-vars/.*$
       - ^(playbooks|roles)/tripleo-repos/.*$
       - ^zuul.d/build-containers.yaml$
       - ^zuul.d/base.yaml$
@@ -685,7 +685,7 @@
       - ^(playbooks|roles)/tripleo-buildcontainers/.*$
       - ^roles/build-containers/.*$
       - ^roles/prepare-node/.*$
-      - ^roles/common/.*$
+      - ^roles/ci-common-vars/.*$
       - ^(playbooks|roles)/tripleo-repos/.*$
       - ^zuul.d/build-containers.yaml$
       - ^zuul.d/base.yaml$
