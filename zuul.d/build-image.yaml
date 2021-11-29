@@ -59,10 +59,13 @@
             files: *build_images_hardened_uefi_files
         - tripleo-buildimage-overcloud-full-centos-9:
             files: *build_images_files
+            voting: false
         - tripleo-buildimage-ironic-python-agent-centos-9:
             files: *build_images_files
+            voting: false
         - tripleo-buildimage-overcloud-hardened-uefi-full-centos-9:
             files: *build_images_hardened_uefi_files
+            voting: false
     gate:
       jobs:
         - tripleo-buildimage-overcloud-full-centos-7-train:
@@ -99,12 +102,7 @@
             files: *build_images_hardened_uefi_files
         - tripleo-buildimage-overcloud-hardened-uefi-full-centos-8-wallaby:
             files: *build_images_hardened_uefi_files
-        - tripleo-buildimage-overcloud-full-centos-9:
-            files: *build_images_files
-        - tripleo-buildimage-ironic-python-agent-centos-9:
-            files: *build_images_files
-        - tripleo-buildimage-overcloud-hardened-uefi-full-centos-9:
-            files: *build_images_hardened_uefi_files
+
 
 - project-template:
     name: tripleo-buildimage-jobs
@@ -122,10 +120,13 @@
             files: *build_images_hardened_uefi_files
         - tripleo-buildimage-overcloud-full-centos-9:
             files: *build_images_files
+            voting: false
         - tripleo-buildimage-ironic-python-agent-centos-9:
             files: *build_images_files
+            voting: false
         - tripleo-buildimage-overcloud-hardened-uefi-full-centos-9:
             files: *build_images_hardened_uefi_files
+            voting: false
     gate:
       jobs:
         - tripleo-buildimage-overcloud-full-centos-7:
@@ -137,12 +138,6 @@
         - tripleo-buildimage-ironic-python-agent-centos-8:
             files: *build_images_files
         - tripleo-buildimage-overcloud-hardened-uefi-full-centos-8:
-            files: *build_images_hardened_uefi_files
-        - tripleo-buildimage-overcloud-full-centos-9:
-            files: *build_images_files
-        - tripleo-buildimage-ironic-python-agent-centos-9:
-            files: *build_images_files
-        - tripleo-buildimage-overcloud-hardened-uefi-full-centos-9:
             files: *build_images_hardened_uefi_files
 
 - project-template:
