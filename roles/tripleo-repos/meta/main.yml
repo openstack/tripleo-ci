@@ -4,6 +4,8 @@ collections:
 galaxy_info:
   author: Alex Schultz
   description: Role to run tripleo-repos
+  role_name: tripleo_repos
+  namespace: tripleo
 
   # If the issue tracker for your role is not on github, uncomment the
   # next line and provide a value
