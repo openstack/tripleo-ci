@@ -124,7 +124,7 @@
               - roles/validate-tempest/.*
               # tripleo-ci
               - roles/run-test/.*
-              - roles/common/.*
+              - roles/ci-common-vars/.*
               - roles/prepare-node/.*
               - roles/ceph-loop-device/.*  # scen1/4 ceph
               # tripleo-ansible
