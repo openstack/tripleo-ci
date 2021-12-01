@@ -18,7 +18,6 @@
       jobs:
         - openstack-tox-linters
         - tripleo-tox-molecule:
-            voting: false
             vars:
               tox_environment:
                 PYTEST_REQPASS: 1
@@ -45,5 +44,6 @@
         # Don't put a files section on the linters job, otherwise no
         # jobs might be defined and nothing can merge in this repo.
         - openstack-tox-linters
+        - tripleo-tox-molecule
         - openstack-tox-py36: *tox-py
         - openstack-tox-py39: *tox-py
