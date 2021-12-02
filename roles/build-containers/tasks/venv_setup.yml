@@ -18,7 +18,7 @@
     extra_args: "-c {{ openstack_git_root }}/requirements/upper-constraints.txt"
     requirements: "{{ openstack_git_root }}/{{ item }}/requirements.txt"
     virtualenv: "{{ workspace }}/venv_build"
-    virtualenv_python: "{{ virtualenv_python[ansible_distribution_major_version|int] }}"
+    virtualenv_command: "{{ ensure_pip_virtualenv_command }}"
   with_items: "{{ upper_constraints_items }}"
 
 - name: Install deps from requirements
@@ -26,14 +26,14 @@
   pip:
     requirements: "{{ openstack_git_root }}/{{ item }}/requirements.txt"
     virtualenv: "{{ workspace }}/venv_build"
-    virtualenv_python: "{{ virtualenv_python[ansible_distribution_major_version|int] }}"
+    virtualenv_command: "{{ ensure_pip_virtualenv_command }}"
   with_items: "{{ requirements_items }}"
 
 - name: Installation from source
   pip:
     name: "{{ source_items }}"
     virtualenv: "{{ workspace }}/venv_build"
-    virtualenv_python: "{{ virtualenv_python[ansible_distribution_major_version|int] }}"
+    virtualenv_command: "{{ ensure_pip_virtualenv_command }}"
 
 - name: set template override
   set_fact:

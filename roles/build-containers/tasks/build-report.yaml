@@ -78,7 +78,7 @@
       pip:
         name: "{{ item }}"
         virtualenv: "{{ workspace }}/venv_build"
-        virtualenv_python: "{{ virtualenv_python[ansible_distribution_major_version|int] }}"
+        virtualenv_command: '{{ ensure_pip_virtualenv_command }}'
       with_items:
         - pytest
         - pytest-html
@@ -92,8 +92,7 @@
     - name: Execute build-report
       shell: |
         source "venv_build/bin/activate"
-        {{ virtualenv_python[ansible_distribution_major_version|int] }} -m pytest \
-            --html=logs/report.html --self-contained-html {{ images_args }} build-report.py
+        pytest --html=logs/report.html --self-contained-html {{ images_args }} build-report.py
       args:
         chdir: "{{ workspace }}"
       become: true

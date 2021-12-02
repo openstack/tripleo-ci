@@ -7,27 +7,21 @@
     path: '{{ workspace }}'
     state: directory
 
-- name: Install pip
-  become: true
-  package:
-    name: "python3-pip"
-    state: present
+- name: Install pip with ensure-pip role
+  include_role:
+    name: ensure-pip
 
-- name: Install virtualenv/pyyaml from epel
+- name: Install pyyaml from epel
   yum:
-    name:
-      - python36-virtualenv
-      - python36-PyYAML
+    name: "python36-PyYAML"
     enablerepo: epel
     state: present
   become: true
   when: ansible_distribution_major_version|int == 7
 
-- name: Install PyYAML and virtualenv
+- name: Install PyYAML
   package:
-    name:
-      - "python3-virtualenv"
-      - "python3-pyyaml"
+    name: "python3-pyyaml"
     state: present
   become: true
   when: ansible_distribution_major_version|int >= 8
@@ -66,7 +60,7 @@
   pip:
     name: "pip>=19.1.1"
     virtualenv: "{{ workspace }}/venv"
-    virtualenv_command: "/usr/bin/python3 -m venv"
+    virtualenv_command: "{{ ensure_pip_virtualenv_command }}"
 
 - name: Install deps from upper-constraints
   when: ansible_distribution == 'CentOS'
@@ -74,7 +68,7 @@
     extra_args: "-c {{ openstack_git_root }}/requirements/upper-constraints.txt"
     requirements: "{{ openstack_git_root }}/{{ item }}/requirements.txt"
     virtualenv: "{{ workspace }}/venv"
-    virtualenv_command: "/usr/bin/python3 -m venv"
+    virtualenv_command: "{{ ensure_pip_virtualenv_command }}"
   with_items:
     - diskimage-builder
     - tripleo-common
@@ -86,21 +80,4 @@
     name: "{{ tripleo_pip_projects }}"
     state: present
     virtualenv: "{{ workspace }}/venv"
-    virtualenv_command: "/usr/bin/python3 -m venv"
-
-# Workaround for https://bugs.launchpad.net/diskimage-builder/+bug/1745626
-# venv created with 'python3 -m venv' does not have activate_this.py
-# TODO(rfolco): Remove this workaround when bug #1745626 is fixed
-- name: "Workaround for bug #1745626"
-  block:
-    - name: Create temp venv w/ virtualenv command
-      pip:
-        name: setuptools
-        virtualenv: "{{ workspace }}/.tmp"
-        virtualenv_command: "{{ 'virtualenv' if ansible_distribution_major_version is version('9', '==') else 'virtualenv-3' }}"
-
-    - name: Borrow activate_this.py
-      copy:
-        src: "{{ workspace }}/.tmp/bin/activate_this.py"
-        dest: "{{ workspace }}/venv/bin/"
-        remote_src: true
+    virtualenv_command: "{{ ensure_pip_virtualenv_command }}"
