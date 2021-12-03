@@ -110,8 +110,13 @@ def get_dlrn_hash(
     logger.error("distro %s version %s", distro_name, distro_version)
     if distro_name == 'centos' and distro_version == '7':
         repo_url = '%s/centos7-%s/%s/delorean.repo' % (rdo_url, release, hash_name)
-    elif distro_name == 'centos' and distro_version == '8':
-        repo_url = '%s/centos8-%s/%s/delorean.repo.md5' % (rdo_url, release, hash_name)
+    elif distro_name == 'centos' and distro_version in ['8', '9']:
+        repo_url = '%s/centos%s-%s/%s/delorean.repo.md5' % (
+            rdo_url,
+            distro_version,
+            release,
+            hash_name,
+        )
     logger.debug(
         "distro_name {} distro_version {} repo_url {}"
         "".format(distro_name, distro_version, repo_url)
@@ -131,7 +136,7 @@ def get_dlrn_hash(
             if distro_name == 'centos' and distro_version == '7':
                 print(repo_file.text)
                 full_hash = full_hash_pattern.findall(repo_file.text)[0]
-            elif distro_name == 'centos' and distro_version == '8':
+            elif distro_name == 'centos' and distro_version in ['8', '9']:
                 full_hash = repo_file.text
             break
 
@@ -435,7 +440,7 @@ if __name__ == '__main__':
     )
     parser.add_argument(
         '--distro-version',
-        choices=['7', '8'],
+        choices=['7', '8', '9'],
         required=True,
         help='Distribution version',
     )
