@@ -1,6 +1,21 @@
 ---
 - hosts: all
   tasks:
+
+  - name: Re-run the repo-setup role for c9 (after rdo mirror setup in pre)
+    when: ansible_distribution_major_version is version('9', '>=')
+    block:
+      - name: Load vars from release file and set facts needed for repo-setup
+        include_role:
+          name: tripleo-build-jobs-repos
+          tasks_from: load-vars
+      - name: Run repo-setup again to pickup c9 mirrors
+        include_role:
+          name: repo-setup
+        vars:
+          repo_setup_dir: "{{ workspace }}"
+          repo_setup_use_collections: false
+
   - name: Run image build using the build-images role
     include_role:
       name: oooci-build-images
