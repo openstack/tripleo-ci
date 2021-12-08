@@ -177,14 +177,6 @@
               - ^scripts/tripleo-critical-bugs/.*
             dependencies:
               - openstack-tox-linters
-        - tripleo-ci-centos-8-content-provider-victoria:
-            irrelevant-files: *branchful_ignored
-            dependencies:
-              - openstack-tox-linters
-        - tripleo-ci-centos-8-content-provider-ussuri:
-            irrelevant-files: *branchful_ignored
-            dependencies:
-              - openstack-tox-linters
         - tripleo-ci-centos-8-content-provider-train:
             irrelevant-files: *branchful_ignored
             dependencies:
@@ -194,16 +186,6 @@
             vars: *multi_consumer_vars
             dependencies:
               - tripleo-ci-centos-8-content-provider-wallaby
-        - tripleo-ci-centos-8-containers-multinode-victoria: &multi_consumer_job_victoria
-            irrelevant-files: *branchful_ignored
-            vars: *multi_consumer_vars
-            dependencies:
-              - tripleo-ci-centos-8-content-provider-victoria
-        - tripleo-ci-centos-8-containers-multinode-ussuri: &multi_consumer_job_ussuri
-            irrelevant-files: *branchful_ignored
-            vars: *multi_consumer_vars
-            dependencies:
-              - tripleo-ci-centos-8-content-provider-ussuri
         - tripleo-ci-centos-8-containers-multinode-train: &multi_consumer_job_train
             irrelevant-files: *branchful_ignored
             vars: *multi_consumer_vars
@@ -213,15 +195,9 @@
       jobs:
         - tripleo-ci-centos-8-content-provider-wallaby:
             irrelevant-files: *branchful_ignored
-        - tripleo-ci-centos-8-content-provider-victoria:
-            irrelevant-files: *branchful_ignored
-        - tripleo-ci-centos-8-content-provider-ussuri:
-            irrelevant-files: *branchful_ignored
         - tripleo-ci-centos-8-content-provider-train:
             irrelevant-files: *branchful_ignored
         - tripleo-ci-centos-8-containers-multinode-wallaby: *multi_consumer_job_wallaby
-        - tripleo-ci-centos-8-containers-multinode-victoria: *multi_consumer_job_victoria
-        - tripleo-ci-centos-8-containers-multinode-ussuri: *multi_consumer_job_ussuri
         - tripleo-ci-centos-8-containers-multinode-train: *multi_consumer_job_train
     experimental:
       jobs:
