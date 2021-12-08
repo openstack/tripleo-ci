@@ -12,6 +12,12 @@
       - six>=1.14.0
     extra_args: --user
 
+- name: Ensure a recent version of pip is installed
+  pip:
+    name: "pip>=19.1.1"
+    virtualenv: "{{ workspace }}/venv_build"
+    virtualenv_command: "{{ ensure_pip_virtualenv_command }}"
+
 - name: Install deps from upper-constraints
   when: zuul_internal is undefined
   pip:
