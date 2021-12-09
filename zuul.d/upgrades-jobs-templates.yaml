@@ -173,6 +173,11 @@
       jobs:
         - tripleo-ci-centos-8-content-provider
         - tripleo-ci-centos-8-content-provider-ussuri
+        - tripleo-ci-centos-8-standalone-upgrade-victoria:
+            vars: *consumer_vars
+            dependencies:
+              - tripleo-ci-centos-8-content-provider
+              - tripleo-ci-centos-8-content-provider-ussuri
         - tripleo-ci-centos-8-undercloud-upgrade-victoria:
             vars: *consumer_vars
             irrelevant-files: *undercloud_ignored
@@ -222,6 +227,11 @@
       jobs:
         - tripleo-ci-centos-8-content-provider
         - tripleo-ci-centos-8-content-provider-train
+        - tripleo-ci-centos-8-standalone-upgrade-ussuri:
+            vars: *consumer_vars
+            dependencies:
+              - tripleo-ci-centos-8-content-provider
+              - tripleo-ci-centos-8-content-provider-train
         - tripleo-ci-centos-8-undercloud-upgrade-ussuri:
             vars: *consumer_vars
             irrelevant-files: *undercloud_ignored
@@ -385,7 +395,7 @@
 - job:
     name: tripleo-ci-centos-8-standalone-upgrade-victoria
     parent: tripleo-ci-base-standalone-upgrade-centos-8
-    voting: false
+    voting: true
     branches: ^stable/victoria$
     vars:
       featureset: '056'
@@ -420,7 +430,7 @@
 - job:
     name: tripleo-ci-centos-8-standalone-upgrade-ussuri
     parent: tripleo-ci-base-standalone-upgrade-centos-8
-    voting: false
+    voting: true
     branches: ^stable/ussuri$
     vars:
       featureset: '056'
