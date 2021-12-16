@@ -54,6 +54,13 @@
       # like parent but with requirements.txt and setup.py removed
 
 - job:
+    name: tripleo-ci-centos-9-standalone
+    parent: tripleo-ci-centos-8-standalone
+    branches: ^(?!stable/(train|ussuri|victoria|wallaby)).*$
+    nodeset: single-centos-9-node
+    voting: false
+
+- job:
     name: tripleo-ci-centos-8-standalone-build
     parent: tripleo-ci-centos-8-standalone
     vars:
