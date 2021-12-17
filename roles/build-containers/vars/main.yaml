@@ -21,6 +21,7 @@ exclude_containers:
       - neutron-mlnx-agent
   wallaby:
     centos8: *exclude_master_containers
+    centos9: *exclude_cs9_master_containers
   victoria:
     centos8: &exclude_containers
       - neutron-mlnx-agent
@@ -46,6 +47,7 @@ exclude_containers:
       - sensu-client
   rhos-17:
     redhat8: *exclude_master_containers
+    redhat9: *exclude_cs9_master_containers
   rhos-16.2:
     redhat8: *exclude_containers
 
