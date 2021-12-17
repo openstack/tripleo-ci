@@ -195,10 +195,18 @@
         - tripleo-ci-centos-9-content-provider:
             dependencies:
               - openstack-tox-linters
-        - tripleo-ci-centos-9-standalone:
+        - tripleo-ci-centos-9-standalone: &cs9_vars
             vars: *multi_consumer_vars
             dependencies:
               - tripleo-ci-centos-9-content-provider
+        - tripleo-ci-centos-9-scenario001-standalone: *cs9_vars
+        - tripleo-ci-centos-9-scenario002-standalone: *cs9_vars
+        - tripleo-ci-centos-9-scenario003-standalone: *cs9_vars
+        - tripleo-ci-centos-9-scenario004-standalone: *cs9_vars
+        - tripleo-ci-centos-9-scenario007-standalone: *cs9_vars
+        - tripleo-ci-centos-9-scenario010-standalone: *cs9_vars
+        - tripleo-ci-centos-9-scenario010-ovn-provider-standalone: *cs9_vars
+        - tripleo-ci-centos-9-scenario012-standalone: *cs9_vars
     gate:
       jobs:
         - tripleo-ci-centos-8-content-provider-wallaby:
