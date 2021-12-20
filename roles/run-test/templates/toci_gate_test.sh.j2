@@ -99,6 +99,9 @@ elif  is_featureset mixed_upgrade "{{ job_featureset_file }}"; then
 elif is_featureset undercloud_upgrade "{{ job_featureset_file }}"; then
     export UPGRADE_RELEASE=$QUICKSTART_RELEASE
     export QUICKSTART_RELEASE=$(previous_release_mixed_upgrade_case "${UPGRADE_RELEASE}")
+    {% if provider_dlrn_hash_tag_branch is defined %}
+    EMIT_RELEASES_EXTRA_ARGS="$EMIT_RELEASES_EXTRA_ARGS --content-provider-hashes={{ provider_dlrn_hash_tag_branch.keys()|zip(provider_dlrn_hash_tag_branch.values())|map('join',':')|join(';') }} --target-branch-override=$UPGRADE_RELEASE --install-branch-override=$QUICKSTART_RELEASE"
+    {% endif %}
 fi
 # Set UPGRADE_RELEASE if applicable
 if [ -n "${MIXED_UPGRADE_TYPE}" ]; then
@@ -110,11 +113,6 @@ fi
 PERIODIC=1
 QUICKSTART_RELEASE="promotion-testing-hash-${QUICKSTART_RELEASE}"
 EMIT_RELEASES_EXTRA_ARGS="$EMIT_RELEASES_EXTRA_ARGS --is-periodic"
-{% endif %}
-{% if job is defined %}
-{% if job.provider_dlrn_hash_tag_branch[release] | default(omit) %}
-EMIT_RELEASES_EXTRA_ARGS="$EMIT_RELEASES_EXTRA_ARGS --hash-override={{ job.provider_dlrn_hash_tag_branch[release] }}"
-{% endif %}
 {% endif %}
 
 if [[ -f "$RELEASES_SCRIPT" ]] && [[ {{ featureset }} =~ 037|047|050|056 ]]; then
