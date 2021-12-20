@@ -211,6 +211,15 @@
       jobs:
         - tripleo-ci-centos-7-containers-multinode-stein
 
+## CentOS 9 jobs
+- job:
+    name: tripleo-ci-centos-9-containers-multinode
+    parent: tripleo-ci-centos-8-containers-multinode
+    branches: ^(?!stable/(train|ussuri|victoria|wallaby)).*$
+    nodeset: two-centos-9-nodes
+    irrelevant-files: *multinode_ignored
+    voting: false
+
 ## CentOS 8 jobs
 - job:
     name: tripleo-ci-centos-8-containers-multinode

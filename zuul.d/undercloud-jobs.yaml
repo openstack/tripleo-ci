@@ -95,6 +95,14 @@
         - multinode-validate.yml
 
 - job:
+    name: tripleo-ci-centos-9-undercloud-containers
+    parent: tripleo-ci-centos-8-undercloud-containers
+    branches: ^(?!stable/(train|ussuri|victoria|wallaby)).*$
+    nodeset: single-centos-9-node
+    irrelevant-files: *undercloud_ignored
+    voting: false
+
+- job:
     name: tripleo-ci-centos-7-undercloud-oooq
     parent: tripleo-ci-base-singlenode
     nodeset: single-centos-7-node
