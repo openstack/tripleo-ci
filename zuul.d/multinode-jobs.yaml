@@ -207,6 +207,9 @@
         - tripleo-ci-centos-9-scenario010-standalone: *cs9_vars
         - tripleo-ci-centos-9-scenario010-ovn-provider-standalone: *cs9_vars
         - tripleo-ci-centos-9-scenario012-standalone: *cs9_vars
+        - tripleo-ci-centos-9-undercloud-containers: *cs9_vars
+        - tripleo-ci-centos-9-containers-multinode: *cs9_vars
+
     gate:
       jobs:
         - tripleo-ci-centos-8-content-provider-wallaby:
