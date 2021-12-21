@@ -102,7 +102,13 @@ elif is_featureset undercloud_upgrade "{{ job_featureset_file }}"; then
     {% if provider_dlrn_hash_tag_branch is defined %}
     EMIT_RELEASES_EXTRA_ARGS="$EMIT_RELEASES_EXTRA_ARGS --content-provider-hashes={{ provider_dlrn_hash_tag_branch.keys()|zip(provider_dlrn_hash_tag_branch.values())|map('join',':')|join(';') }} --target-branch-override=$UPGRADE_RELEASE --install-branch-override=$QUICKSTART_RELEASE"
     {% endif %}
+elif is_featureset overcloud_update "{{ job_featureset_file }}"; then
+    echo ""
+    {% if provider_dlrn_hash_tag_branch is defined %}
+    EMIT_RELEASES_EXTRA_ARGS="$EMIT_RELEASES_EXTRA_ARGS --content-provider-hashes={{ provider_dlrn_hash_tag_branch.keys()|zip(provider_dlrn_hash_tag_branch.values())|map('join',':')|join(';') }} --target-branch-override=$QUICKSTART_RELEASE"
+    {% endif %}
 fi
+
 # Set UPGRADE_RELEASE if applicable
 if [ -n "${MIXED_UPGRADE_TYPE}" ]; then
     export UPGRADE_RELEASE=$(previous_release_from "${STABLE_RELEASE}" "${MIXED_UPGRADE_TYPE}")

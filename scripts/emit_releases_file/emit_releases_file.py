@@ -524,17 +524,18 @@ if __name__ == '__main__':
 
     _content_provider_hashes = None
     # when overriding with content-provider-hashes we expect to have
-    # --install-branch-override and --target-branch-override in args
-    # and that these branches exist in the passed content-provider-hashes
+    # --install-branch-override and --target-branch-override when doing
+    # undercloud upgrade, and --target only when doing minor update,
+    # and that these branches exist in the passed content-provider-hashes.
     if args.content_provider_hashes:
-        if args.target_branch_override is None or args.install_branch_override is None:
+        if args.target_branch_override is None:
             raise RuntimeError(
                 "Missing --target-branch-override or --install-branch-override"
-                ". These are required when using --content-provider-hashes"
+                "At least --target is required with --content-provider-hashes"
             )
         if (
             args.target_branch_override not in args.content_provider_hashes
-            or args.install_branch_override not in args.content_provider_hashes
+            and args.install_branch_override not in args.content_provider_hashes
         ):
             raise RuntimeError(
                 "The passed content provider hashes ({}) does not contain"
