@@ -14,6 +14,11 @@
     ci_branch: "{{ release }}"
   when: release is defined
 
+- name: Set ci_branch for Downstream
+  set_fact:
+    ci_branch: "{{ osp_branch }}"
+  when: osp_branch is defined
+
 - name: Fail if we did not set ci_branch fact
   fail:
     msg: >-
