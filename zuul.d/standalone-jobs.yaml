@@ -866,6 +866,7 @@
       jobs:
         - tripleo-ci-centos-8-content-provider
         - tripleo-ci-centos-8-standalone-on-multinode-ipa:
+            voting: false
             files: &tls_ipa_files
               # tripleo-quickstart-extras
               - ^roles/.*multinode-ipa.*$
@@ -899,15 +900,6 @@
               build_container_images: false
               remove_tags:
                 - build
-            dependencies:
-              - tripleo-ci-centos-8-content-provider
-    gate:
-      queue: tripleo
-      jobs:
-        - tripleo-ci-centos-8-content-provider
-        - tripleo-ci-centos-8-standalone-on-multinode-ipa:
-            files: *tls_ipa_files
-            vars: *ipa_consumer_vars
             dependencies:
               - tripleo-ci-centos-8-content-provider
 
