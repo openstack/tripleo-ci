@@ -30,7 +30,9 @@ QUICKSTART_PREPARE_CMD="
 
 QUICKSTART_VENV_CMD="
     ./quickstart.sh
+{% if teardown|default(true)|bool %}
     --bootstrap
+{% endif %}
     --no-clone
 {% if environment_type == 'baremetal' -%}
 {# It needs to be installed on zuul node to drive deployment #}
