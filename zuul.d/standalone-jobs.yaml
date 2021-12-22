@@ -79,6 +79,7 @@
     check:
       jobs:
         - tripleo-ci-centos-8-content-provider
+        - tripleo-ci-centos-9-content-provider
         - tripleo-ci-centos-8-scenario001-standalone:
             files: &scen1_files
               # tripleo-common
@@ -322,6 +323,19 @@
             files: *scen3_files
         - tripleo-ci-centos-7-scenario004-standalone:
             files: *scen4_files
+        # CentOS 9 jobs
+        - tripleo-ci-centos-9-standalone: &cs9_vars
+            vars: *consumer_vars
+            dependencies:
+              - tripleo-ci-centos-9-content-provider
+        - tripleo-ci-centos-9-scenario001-standalone: *cs9_vars
+        - tripleo-ci-centos-9-scenario002-standalone: *cs9_vars
+        - tripleo-ci-centos-9-scenario003-standalone: *cs9_vars
+        - tripleo-ci-centos-9-scenario004-standalone: *cs9_vars
+        - tripleo-ci-centos-9-scenario007-standalone: *cs9_vars
+        - tripleo-ci-centos-9-scenario010-standalone: *cs9_vars
+        - tripleo-ci-centos-9-scenario010-ovn-provider-standalone: *cs9_vars
+        - tripleo-ci-centos-9-scenario012-standalone: *cs9_vars
 
     gate:
       queue: tripleo
