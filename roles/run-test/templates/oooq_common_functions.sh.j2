@@ -5,7 +5,7 @@ function previous_release_from {
     case "${type}" in
         'mixed_upgrade')
             previous_version=$(previous_release_mixed_upgrade_case "${release}");;
-        'ffu_upgrade')
+        'ffu_upgrade'|'ffu_undercloud_upgrade')
             previous_version=$(previous_release_ffu_upgrade_case "${release}");;
         *)
             echo "UNKNOWN_TYPE"
@@ -56,6 +56,9 @@ function previous_release_ffu_upgrade_case {
         ''|master)
             # NOTE: we need to update this when we cut a stable branch
             echo "newton"
+            ;;
+        wallaby)
+            echo "train"
             ;;
         queens)
             echo "newton"

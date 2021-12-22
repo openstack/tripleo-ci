@@ -102,6 +102,7 @@
       jobs:
         - tripleo-ci-centos-8-content-provider
         - tripleo-ci-centos-8-content-provider-victoria
+        - tripleo-ci-centos-8-content-provider-train
         - tripleo-ci-centos-8-scenario000-multinode-oooq-container-updates-wallaby:
             irrelevant-files: *multinode_ignored
             vars: *consumer_vars
@@ -113,6 +114,12 @@
             dependencies:
               - tripleo-ci-centos-8-content-provider
               - tripleo-ci-centos-8-content-provider-victoria
+        - tripleo-ci-centos-8-undercloud-ffu-wallaby:
+            vars: *consumer_vars
+            irrelevant-files: *undercloud_ignored
+            dependencies:
+              - tripleo-ci-centos-8-content-provider
+              - tripleo-ci-centos-8-content-provider-train
     gate:
       queue: tripleo
       jobs:
@@ -468,6 +475,18 @@
     voting: true
     vars:
       featureset: '050'
+      featureset_override:
+        validate_services: false
+      extra_tags:
+        - undercloud-upgrade
+
+- job:
+    name: tripleo-ci-centos-8-undercloud-ffu-wallaby
+    parent: tripleo-ci-base-singlenode-centos-8
+    branches: ^stable/wallaby$
+    voting: false
+    vars:
+      featureset: '065'
       featureset_override:
         validate_services: false
       extra_tags:
