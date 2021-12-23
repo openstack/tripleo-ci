@@ -907,6 +907,7 @@
               - deployment/octavia/*
               - deployment/ovn/*
               - deployment/rabbitmq/*
+              - deployment/timesync/*
               # puppet
               - manifests/profile/base/rabbitmq.pp
             vars: &ipa_consumer_vars
