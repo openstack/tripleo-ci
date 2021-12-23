@@ -7,6 +7,7 @@
     name: tripleo-undercloud-jobs-pipeline
     check:
       jobs:
+        - tripleo-ci-centos-9-content-provider
         - tripleo-ci-centos-8-content-provider
         - tripleo-ci-centos-7-content-provider
         - tripleo-ci-centos-8-undercloud-containers:
@@ -55,6 +56,11 @@
             irrelevant-files: *undercloud_ignored
             dependencies:
               - tripleo-ci-centos-7-content-provider
+        - tripleo-ci-centos-9-undercloud-containers:
+            vars: *undercloud_consumer_vars
+            irrelevant-files: *undercloud_ignored
+            dependencies:
+              - tripleo-ci-centos-9-content-provider
         - tripleo-ci-centos-7-undercloud-containers:
             vars: *undercloud_consumer_vars
             irrelevant-files: *undercloud_ignored
