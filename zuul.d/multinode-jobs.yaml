@@ -80,11 +80,13 @@
                 - build
             dependencies:
               - tripleo-ci-centos-8-content-provider
-        - tripleo-ci-centos-9-containers-multinode:
+        - tripleo-ci-centos-9-containers-multinode: &cs9_multinode_all
             irrelevant-files: *multinode_ignored
             vars: *multi_consumer_vars
             dependencies:
               - tripleo-ci-centos-9-content-provider
+        - tripleo-ci-centos-9-scenario007-multinode-oooq-container: *cs9_multinode_all
+        - tripleo-ci-centos-9-scenario000-multinode-oooq-container-updates: *cs9_multinode_all
         - tripleo-ci-centos-7-containers-multinode:
             irrelevant-files: *multinode_ignored
             vars: *multi_consumer_vars
@@ -133,7 +135,8 @@
             vars: *multi_consumer_vars
             dependencies:
               - tripleo-ci-centos-9-content-provider
-
+        - tripleo-ci-centos-9-scenario007-multinode-oooq-container: *cs9_multinode_all
+        - tripleo-ci-centos-9-scenario000-multinode-oooq-container-updates: *cs9_multinode_all
         - tripleo-ci-centos-7-containers-multinode:
             irrelevant-files: *multinode_ignored
 
