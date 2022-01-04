@@ -225,6 +225,22 @@
     irrelevant-files: *multinode_ignored
     voting: false
 
+- job:
+    name: tripleo-ci-centos-9-scenario007-multinode-oooq-container
+    parent: tripleo-ci-centos-8-scenario007-multinode-oooq-container
+    branches: ^(?!stable/(train|ussuri|victoria|wallaby)).*$
+    nodeset: two-centos-9-nodes
+    irrelevant-files: *multinode_ignored
+    voting: false
+
+- job:
+    name: tripleo-ci-centos-9-scenario000-multinode-oooq-container-updates
+    parent: tripleo-ci-centos-8-scenario000-multinode-oooq-container-updates
+    branches: ^(?!stable/(train|ussuri|victoria|wallaby)).*$
+    nodeset: two-centos-9-nodes
+    irrelevant-files: *multinode_ignored
+    voting: false
+
 ## CentOS 8 jobs
 - job:
     name: tripleo-ci-centos-8-containers-multinode
