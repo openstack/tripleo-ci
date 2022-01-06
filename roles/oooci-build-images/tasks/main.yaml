@@ -108,6 +108,15 @@
     - when: overcloud_stat_result.stat.exists|bool
       block:
 
+        # TODO akahat Remove once lp https://bugs.launchpad.net/tripleo/+bug/1956441 fixed.
+        - name: Include remove_redfish.yaml
+          include_tasks: remove_redfish.yaml
+          args:
+            apply:
+              become: true
+          vars:
+            overcloud_image_customize: overcloud-full.qcow2
+
         - name: overcloud-full
           archive:
             path:
@@ -126,6 +135,15 @@
 
     - when: overcloud_hardened_uefi_stat_result.stat.exists|bool
       block:
+
+        # TODO akahat Remove once lp https://bugs.launchpad.net/tripleo/+bug/1956441 fixed.
+        - name: Include remove_redfish.yaml
+          include_tasks: remove_redfish.yaml
+          args:
+            apply:
+              become: true
+          vars:
+            overcloud_image_customize: overcloud-hardened-uefi-full.qcow2
 
         - name: Move image to {{ ansible_user_dir }}
           command: "mv {{ workspace }}/overcloud-hardened-uefi-full.qcow2 {{ ansible_user_dir }}"
