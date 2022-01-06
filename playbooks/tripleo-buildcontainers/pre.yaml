@@ -19,8 +19,8 @@
       when:
         - ansible_pkg_mgr == "yum"
 
-    - name: Container Build for 8 specific distros
-      when: ansible_distribution_major_version is version(8, '<=')
+    - name: Container Build for 7 specific distros
+      when: ansible_distribution_major_version is version(7, '==')
       block:
         - name: Include tripleo-repos
           include_role:
@@ -60,7 +60,7 @@
             bindep_dir: "{{ ansible_user_dir }}/{{ zuul.projects['opendev.org/openstack/python-tripleoclient'].src_dir }}"
 
     - name: Setup repos using repo-setup role and release file
-      when: ansible_distribution_major_version is version(9, '>=')
+      when: ansible_distribution_major_version is version(8, '>=')
       include_role:
         name: tripleo-build-jobs-repos
 

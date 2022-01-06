@@ -2,8 +2,8 @@
 - hosts: all
   tasks:
 
-  - name: Re-run the repo-setup role for c9 (after rdo mirror setup in pre)
-    when: ansible_distribution_major_version is version('9', '>=')
+  - name: Re-run the repo-setup role for c8 and c9 (after rdo mirror setup in pre)
+    when: ansible_distribution_major_version is version('8', '>=')
     block:
       - name: Load vars from release file and set facts needed for repo-setup
         include_role:
