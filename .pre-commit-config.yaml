@@ -30,7 +30,7 @@ repos:
     hooks:
       - id: flake8
   - repo: https://github.com/ansible/ansible-lint.git
-    rev: v5.1.2
+    rev: v5.3.2
     hooks:
       - id: ansible-lint
         always_run: true
