@@ -96,8 +96,10 @@
     gate:
       queue: tripleo
       jobs:
+        - tripleo-ci-centos-9-content-provider
         - tripleo-ci-centos-8-content-provider
         - tripleo-ci-centos-7-content-provider
+        - tripleo-ci-centos-9-containers-multinode: *cs9_multinode_all
         - tripleo-ci-centos-8-containers-multinode:
             irrelevant-files: *multinode_ignored
             vars: *multi_consumer_vars
@@ -130,11 +132,7 @@
             vars: *multi_consumer_vars
             dependencies:
               - tripleo-ci-centos-8-content-provider
-        - tripleo-ci-centos-9-containers-multinode:
-            irrelevant-files: *multinode_ignored
-            vars: *multi_consumer_vars
-            dependencies:
-              - tripleo-ci-centos-9-content-provider
+        - tripleo-ci-centos-9-containers-multinode: *cs9_multinode_all
         - tripleo-ci-centos-9-scenario007-multinode-oooq-container: *cs9_multinode_all
         - tripleo-ci-centos-9-scenario000-multinode-oooq-container-updates: *cs9_multinode_all
         - tripleo-ci-centos-7-containers-multinode:
@@ -143,7 +141,11 @@
     gate:
       queue: tripleo
       jobs:
+        - tripleo-ci-centos-9-content-provider
         - tripleo-ci-centos-8-content-provider
+        - tripleo-ci-centos-9-containers-multinode: *cs9_multinode_all
+        - tripleo-ci-centos-9-scenario007-multinode-oooq-container: *cs9_multinode_all
+        - tripleo-ci-centos-9-scenario000-multinode-oooq-container-updates: *cs9_multinode_all
         - tripleo-ci-centos-8-containers-multinode:
             irrelevant-files: *multinode_ignored
             vars: *multi_consumer_vars
@@ -226,7 +228,6 @@
     branches: ^(?!stable/(train|ussuri|victoria|wallaby)).*$
     nodeset: two-centos-9-nodes
     irrelevant-files: *multinode_ignored
-    voting: false
 
 - job:
     name: tripleo-ci-centos-9-scenario007-multinode-oooq-container
@@ -234,7 +235,6 @@
     branches: ^(?!stable/(train|ussuri|victoria|wallaby)).*$
     nodeset: two-centos-9-nodes
     irrelevant-files: *multinode_ignored
-    voting: false
 
 - job:
     name: tripleo-ci-centos-9-scenario000-multinode-oooq-container-updates
@@ -242,7 +242,6 @@
     branches: ^(?!stable/(train|ussuri|victoria|wallaby)).*$
     nodeset: two-centos-9-nodes
     irrelevant-files: *multinode_ignored
-    voting: false
 
 ## CentOS 8 jobs
 - job:
