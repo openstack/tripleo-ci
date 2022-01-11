@@ -56,7 +56,7 @@
             irrelevant-files: *undercloud_ignored
             dependencies:
               - tripleo-ci-centos-7-content-provider
-        - tripleo-ci-centos-9-undercloud-containers:
+        - tripleo-ci-centos-9-undercloud-containers: &c9_vars
             vars: *undercloud_consumer_vars
             irrelevant-files: *undercloud_ignored
             dependencies:
@@ -70,6 +70,7 @@
     gate:
       queue: tripleo
       jobs:
+        - tripleo-ci-centos-9-content-provider
         - tripleo-ci-centos-8-content-provider
         - tripleo-ci-centos-7-content-provider
         - tripleo-ci-centos-8-undercloud-containers:
@@ -87,6 +88,7 @@
             vars: *undercloud_consumer_vars
             dependencies:
               - tripleo-ci-centos-7-content-provider
+        - tripleo-ci-centos-9-undercloud-containers: *c9_vars
 
 - job:
     name: tripleo-ci-centos-8-undercloud-containers
@@ -106,7 +108,6 @@
     branches: ^(?!stable/(train|ussuri|victoria|wallaby)).*$
     nodeset: single-centos-9-node
     irrelevant-files: *undercloud_ignored
-    voting: false
 
 - job:
     name: tripleo-ci-centos-7-undercloud-oooq
