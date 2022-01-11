@@ -1,6 +1,8 @@
 ansible<2.10
+ansible-compat<=0.5.0 # (reference: https://bugs.launchpad.net/tripleo/+bug/1957116)
 PyYAML
 ansi2html  # GPL (soft-dependency of pytest-html)
+identify<=2.4.2 # (reference: https://bugs.launchpad.net/tripleo/+bug/1957116)
 molecule>=3.5.2
 molecule-docker>=1.1.0
 paramiko>=2.5.0  # LGPL (soft-dependency of docker that enables ssh protocol)
