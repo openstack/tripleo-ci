@@ -1,5 +1,5 @@
-ansible<2.10
-ansible-compat<=0.5.0 # (reference: https://bugs.launchpad.net/tripleo/+bug/1957116)
+ansible<6.0
+ansible-compat<=1.0.0
 PyYAML
 ansi2html  # GPL (soft-dependency of pytest-html)
 identify<=2.4.2 # (reference: https://bugs.launchpad.net/tripleo/+bug/1957116)
