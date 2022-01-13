@@ -58,7 +58,6 @@
     parent: tripleo-ci-centos-8-standalone
     branches: ^(?!stable/(train|ussuri|victoria|wallaby)).*$
     nodeset: single-centos-9-node
-    voting: false
 
 - job:
     name: tripleo-ci-centos-8-standalone-build
@@ -341,6 +340,7 @@
       queue: tripleo
       jobs:
         - tripleo-ci-centos-8-content-provider
+        - tripleo-ci-centos-9-content-provider
         - tripleo-ci-centos-8-scenario001-standalone:
             files: *scen1_files
             vars: *consumer_vars
@@ -397,6 +397,16 @@
         - tripleo-ci-centos-7-standalone
         - tripleo-ci-centos-7-scenario010-standalone:
             files: *scen10_files
+        # CentOS 9 jobs
+        - tripleo-ci-centos-9-standalone: *cs9_vars
+        - tripleo-ci-centos-9-scenario001-standalone: *cs9_vars
+        - tripleo-ci-centos-9-scenario002-standalone: *cs9_vars
+        - tripleo-ci-centos-9-scenario003-standalone: *cs9_vars
+        - tripleo-ci-centos-9-scenario004-standalone: *cs9_vars
+        - tripleo-ci-centos-9-scenario007-standalone: *cs9_vars
+        - tripleo-ci-centos-9-scenario010-standalone: *cs9_vars
+        - tripleo-ci-centos-9-scenario010-ovn-provider-standalone: *cs9_vars
+        - tripleo-ci-centos-9-scenario012-standalone: *cs9_vars
 
 - job:
     name: tripleo-ci-centos-7-scenario001-standalone
@@ -561,7 +571,6 @@
     parent: tripleo-ci-centos-8-scenario012-standalone
     branches: ^(?!stable/(train|ussuri|victoria|wallaby)).*$
     nodeset: single-centos-9-node
-    voting: false
     files: *scen12_files
 
 - job:
@@ -644,7 +653,6 @@
     parent: tripleo-ci-centos-8-scenario001-standalone
     branches: ^(?!stable/(train|ussuri|victoria|wallaby)).*$
     nodeset: single-centos-9-node
-    voting: false
     files: *scen1_files
 
 - job:
@@ -687,7 +695,6 @@
     parent: tripleo-ci-centos-8-scenario002-standalone
     branches: ^(?!stable/(train|ussuri|victoria|wallaby)).*$
     nodeset: single-centos-9-node
-    voting: false
     files: *scen2_files
 
 - job:
@@ -726,7 +733,6 @@
     parent: tripleo-ci-centos-8-scenario003-standalone
     branches: ^(?!stable/(train|ussuri|victoria|wallaby)).*$
     nodeset: single-centos-9-node
-    voting: false
     files: *scen3_files
 
 - job:
@@ -764,7 +770,6 @@
     parent: tripleo-ci-centos-8-scenario004-standalone
     branches: ^(?!stable/(train|ussuri|victoria|wallaby)).*$
     nodeset: single-centos-9-node
-    voting: false
     files: *scen4_files
 
 - job:
@@ -792,7 +797,6 @@
     parent: tripleo-ci-centos-8-scenario007-standalone
     branches: ^(?!stable/(train|ussuri|victoria|wallaby)).*$
     nodeset: single-centos-9-node
-    voting: false
     files: *scen7_files
 
 - job:
@@ -806,7 +810,6 @@
     parent: tripleo-ci-centos-8-scenario010-standalone
     branches: ^(?!stable/(train|ussuri|victoria|wallaby)).*$
     nodeset: single-centos-9-node
-    voting: false
     files: *scen10_files
 
 - job:
@@ -820,7 +823,6 @@
     parent: tripleo-ci-centos-8-scenario010-ovn-provider-standalone
     branches: ^(?!stable/(train|ussuri|victoria|wallaby)).*$
     nodeset: single-centos-9-node
-    voting: false
     files: *scen10_files
 
 # branched scenario010 based jobs - this will enable the tripleo-ci team
