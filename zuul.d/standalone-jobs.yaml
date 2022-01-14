@@ -921,6 +921,7 @@
             dependencies:
               - tripleo-ci-centos-8-content-provider
         - tripleo-ci-centos-9-standalone-on-multinode-ipa:
+            voting: false
             vars: *ipa_consumer_vars
             dependencies:
               - tripleo-ci-centos-9-content-provider
@@ -957,7 +958,6 @@
     parent: tripleo-ci-centos-8-standalone-on-multinode-ipa
     branches: ^(?!stable/(train|ussuri|victoria|wallaby)).*$
     nodeset: two-centos-9-nodes
-    voting: false
     files: *tls_ipa_files
 
 - job:
