@@ -56,3 +56,13 @@
   with_items:
     - /etc/yum.conf
     - /etc/dnf/dnf.conf
+
+- name: Workaround for LP1955792/RHBZ2030107
+  become: true
+  block:
+    - name: Set net.ipv4.ping_group_range
+      sysctl:
+        name: net.ipv4.ping_group_range
+        value: '0 2147483647'
+        state: present
+        sysctl_file: /etc/sysctl.d/99-workarounds.conf
