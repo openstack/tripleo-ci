@@ -12,6 +12,9 @@
               - ^roles/build-containers/.*$
               - zuul.d/layout.yaml
               - zuul.d/build-containers.yaml
+              - ^roles/tripleo-build-jobs-repos/.*$
+        - tripleo-build-containers-centos-9:
+            files: *build_container_files
     gate:
       queue: tripleo
       jobs:
@@ -177,3 +180,19 @@
     parent: tripleo-build-containers-ubi-8-base
     branches: ^(?!stable/(pike|queens|stein|train|ussuri)).*$
     voting: true
+
+
+- job:
+    # TODO update branch after branching
+    name: tripleo-build-containers-centos-9
+    parent: tripleo-build-containers-base-with-files
+    nodeset: single-centos-9-node
+    branches: master
+    voting: false
+    vars:
+      containers_base_image: quay.io/centos/centos:stream9
+      registry_namespace: tripleomastercentos9
+      push_containers: false
+      push_containers_podman: false
+      use_kolla: false
+      use_buildah: true
