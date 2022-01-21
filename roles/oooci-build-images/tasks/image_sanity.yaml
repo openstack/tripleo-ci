@@ -1,23 +1,6 @@
 ---
-- name: Install libguestfs packages
-  package:
-    name:
-      - libvirt
-      - libvirt-daemon
-      - qemu-kvm-common
-      - qemu-kvm
-      - libvirt-daemon-kvm
-      - libvirt-daemon-driver-network
-      - libvirt-daemon-driver-qemu
-      - libguestfs-tools
-      - libguestfs-tools-c
-    state: present
-
-- name: Start libvirtd service
-  service:
-    name: libvirtd
-    state: started
-    enabled: true
+- name: Install guestfs
+  include_tasks: guestfs.yaml
 
 - name: Run sanity command on overcloud images
   shell: |

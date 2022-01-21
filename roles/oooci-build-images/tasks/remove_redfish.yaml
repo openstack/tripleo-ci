@@ -1,25 +1,9 @@
 ---
-- name: Install libguestfs packages
-  package:
-    name:
-      - libvirt
-      - libvirt-daemon
-      - qemu-kvm-common
-      - qemu-kvm
-      - libvirt-daemon-kvm
-      - libvirt-daemon-driver-network
-      - libvirt-daemon-driver-qemu
-      - libguestfs-tools
-      - libguestfs-tools-c
-    state: present
+# TODO akahat Delete file once lp https://bugs.launchpad.net/tripleo/+bug/1956441 fixed.
+- name: Install guestfs
+  include_tasks: guestfs.yaml
 
-- name: Start libvirtd service
-  service:
-    name: libvirtd
-    state: started
-    enabled: true
-
-# TODO akahat Remove once lp https://bugs.launchpad.net/tripleo/+bug/1956441 fixed.
+# TODO akahat https://bugs.launchpad.net/tripleo/+bug/1956441
 - name: Remove fwupd-redfish.conf file from {{ overcloud_image_customize }}
   shell: |
     virt-customize -a {{ overcloud_image_customize }} --run-command 'rm -f /usr/lib/modules-load.d/fwupd-redfish.conf'
