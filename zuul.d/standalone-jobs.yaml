@@ -809,7 +809,7 @@
     name: tripleo-ci-centos-9-scenario010-standalone
     parent: tripleo-ci-centos-8-scenario010-standalone
     branches: ^(?!stable/(train|ussuri|victoria|wallaby)).*$
-    nodeset: single-centos-9-node
+    nodeset: single-centos-9-node-nested-virt
     files: *scen10_files
 
 - job:
