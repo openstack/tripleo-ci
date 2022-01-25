@@ -90,6 +90,18 @@
         nodes: []
 
 - nodeset:
+    name: single-centos-9-node-nested-virt
+    nodes:
+      - name: primary
+        label: nested-virt-centos-9-stream
+    groups:
+      - name: switch
+        nodes:
+          - primary
+      - name: peers
+        nodes: []
+
+- nodeset:
     name: single-centos-7-node
     nodes:
       - name: primary
