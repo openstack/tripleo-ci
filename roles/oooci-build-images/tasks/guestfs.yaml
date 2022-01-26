@@ -1,0 +1,8 @@
+---
+- name: Install libguestfs packages
+  package:
+    name:
+      - libguestfs
+      - libguestfs-tools
+      - libguestfs-tools-c
+    state: present

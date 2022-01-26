@@ -45,6 +45,13 @@
     state: present
   become: true
 
+- name: virt-customize to add cert
+  include_tasks: add_cert.yaml
+  args:
+    apply:
+      become: true
+  when: ansible_distribution|lower  == "redhat"
+
 - name: Install python3-devel
   package:
     name: python3-devel  # required for python-tripleoclient pip install

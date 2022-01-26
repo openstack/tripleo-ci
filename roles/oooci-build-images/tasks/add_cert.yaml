@@ -1,0 +1,69 @@
+---
+- name: Check if cert exits
+  stat:
+    path: /etc/pki/ca-trust/source/anchors/rh.crt
+  register: cert_path
+
+- name: Install neccessary rpm and customize image to push correct certs in Image.
+  when: cert_path.stat.exists|bool
+  block:
+    - name: Install libguestfs packages
+      include_tasks: guestfs.yaml
+
+    - name: Add cert if it exists
+      shell: >
+        virt-customize -a {{ tripleo_image_source | urlsplit('path') | basename }}
+        --upload /etc/pki/ca-trust/source/anchors/rh.crt:/etc/pki/ca-trust/source/anchors/rh.crt
+        --run-command 'update-ca-trust'
+      args:
+        chdir: "{{ workspace }}"
+      environment:
+        LIBGUESTFS_BACKEND_SETTINGS: force_tcg
+        LIBGUESTFS_BACKEND: direct
+
+- name: Install downstream cert rpm
+  when:
+    - not cert_path.stat.exists|bool
+    - downstream_cert_install_command is defined
+  block:
+    - name: Install libguestfs packages
+      include_tasks: guestfs.yaml
+
+    - name: find the needed repos to pull deps
+      find:
+        paths: /etc/yum.repos.d
+        patterns: "rhos*.repo"
+        file_type: file
+      register: found_repos
+
+    - name: Upload repos to image
+      shell: >
+        virt-customize -a {{ tripleo_image_source | urlsplit('path') | basename }}
+        --upload {{ item.path }}:{{ item.path }}
+      args:
+        chdir: "{{ workspace }}"
+      environment:
+        LIBGUESTFS_BACKEND_SETTINGS: force_tcg
+        LIBGUESTFS_BACKEND: direct
+      with_items: "{{ found_repos.files }}"
+
+    - name: Install cert rpm
+      shell: >
+        virt-customize -a {{ tripleo_image_source | urlsplit('path') | basename }}
+        --run-command '{{ downstream_cert_install_command }}'
+      args:
+        chdir: "{{ workspace }}"
+      environment:
+        LIBGUESTFS_BACKEND_SETTINGS: force_tcg
+        LIBGUESTFS_BACKEND: direct
+
+    - name: Remove repos which we installed earlier
+      shell: >
+        virt-customize -a {{ tripleo_image_source | urlsplit('path') | basename }}
+        --run-command 'rm {{ item.path }}'
+      args:
+        chdir: "{{ workspace }}"
+      environment:
+        LIBGUESTFS_BACKEND_SETTINGS: force_tcg
+        LIBGUESTFS_BACKEND: direct
+      with_items: "{{ found_repos.files }}"

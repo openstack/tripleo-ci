@@ -17,3 +17,6 @@ source_items:
   - "file://{{ openstack_git_root }}/python-tripleoclient"
   - "file://{{ openstack_git_root }}/tripleo-ansible"
   - decorator
+
+volume_mounts:
+  - "/etc/pki/ca-trust:/etc/pki/ca-trust:z"
