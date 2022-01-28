@@ -1,8 +1,8 @@
 ---
-- name: Copy files from {{ ansible_user_dir }}/workspace/ on node
+- name: Copy files from {{ workspace }}/ on node
   no_log: true
   synchronize:
-    src: '{{ ansible_user_dir }}/workspace/'
+    src: '{{ workspace }}/'
     dest: '{{ zuul.executor.log_root }}'
     mode: pull
     copy_links: true
@@ -26,10 +26,10 @@
       - --include=/**
       - --exclude=*
 
-- name: Copy files from {{ ansible_user_dir }}/workspace/ on node
+- name: Copy files from {{ workspace }}/ on node
   no_log: true
   synchronize:
-    src: '{{ ansible_user_dir }}/workspace/'
+    src: '{{ workspace }}/'
     dest: '{{ zuul.executor.log_root }}'
     mode: pull
     copy_links: true

@@ -95,7 +95,7 @@
             path:
               - "{{ workspace }}/ironic-python-agent.initramfs"
               - "{{ workspace }}/ironic-python-agent.kernel"
-            dest: "{{ ansible_user_dir }}/ironic-python-agent.tar"
+            dest: "{{ oooci_image_build_archive_dest }}/ironic-python-agent.tar"
             format: tar
 
         - name: Create md5sums
@@ -103,7 +103,7 @@
             cmd: |
               md5sum ironic-python-agent.tar > ironic-python-agent.tar.md5
           args:
-            chdir: "{{ ansible_user_dir }}"
+            chdir: "{{ oooci_image_build_archive_dest }}"
 
     - when: overcloud_stat_result.stat.exists|bool
       block:
@@ -123,7 +123,7 @@
               - "{{ workspace }}/overcloud-full.qcow2"
               - "{{ workspace }}/overcloud-full.initrd"
               - "{{ workspace }}/overcloud-full.vmlinuz"
-            dest: "{{ ansible_user_dir }}/overcloud-full.tar"
+            dest: "{{ oooci_image_build_archive_dest }}/overcloud-full.tar"
             format: tar
 
         - name: Create md5sums
@@ -131,7 +131,7 @@
             cmd: |
               md5sum overcloud-full.tar > overcloud-full.tar.md5
           args:
-            chdir: "{{ ansible_user_dir }}"
+            chdir: "{{ oooci_image_build_archive_dest }}"
 
     - when: overcloud_hardened_uefi_stat_result.stat.exists|bool
       block:
@@ -145,16 +145,16 @@
           vars:
             overcloud_image_customize: overcloud-hardened-uefi-full.qcow2
 
-        - name: Move image to {{ ansible_user_dir }}
-          command: "mv {{ workspace }}/overcloud-hardened-uefi-full.qcow2 {{ ansible_user_dir }}"
-          when: workspace != ansible_user_dir
+        - name: "Move image to {{ oooci_image_build_archive_dest }}"
+          command: "mv {{ workspace }}/overcloud-hardened-uefi-full.qcow2 {{ oooci_image_build_archive_dest }}"
+          when: workspace != oooci_image_build_archive_dest
 
         - name: Create md5sums
           shell:
             cmd: |
               md5sum overcloud-hardened-uefi-full.qcow2 > overcloud-hardened-uefi-full.qcow2.md5
           args:
-            chdir: "{{ ansible_user_dir }}"
+            chdir: "{{ oooci_image_build_archive_dest }}"
 
 - block:
     - name: Run Image sanity on overcloud image
