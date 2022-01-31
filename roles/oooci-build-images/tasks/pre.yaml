@@ -58,6 +58,7 @@
 
 - name: Ensure a recent version of pip is installed
   pip:
+    extra_args: '--upgrade'
     name: "pip>=19.1.1"
     virtualenv: "{{ workspace }}/venv"
     virtualenv_command: "{{ ensure_pip_virtualenv_command }}"
@@ -65,7 +66,7 @@
 - name: Install deps from upper-constraints
   when: ansible_distribution == 'CentOS'
   pip:
-    extra_args: "-c {{ openstack_git_root }}/requirements/upper-constraints.txt"
+    extra_args: "--upgrade -c {{ openstack_git_root }}/requirements/upper-constraints.txt"
     requirements: "{{ openstack_git_root }}/{{ item }}/requirements.txt"
     virtualenv: "{{ workspace }}/venv"
     virtualenv_command: "{{ ensure_pip_virtualenv_command }}"
@@ -78,6 +79,7 @@
 - name: pip install tripleo items
   pip:
     name: "{{ tripleo_pip_projects }}"
+    extra_args: "--upgrade"
     state: present
     virtualenv: "{{ workspace }}/venv"
     virtualenv_command: "{{ ensure_pip_virtualenv_command }}"
