@@ -883,7 +883,6 @@
         - tripleo-ci-centos-8-content-provider
         - tripleo-ci-centos-9-content-provider
         - tripleo-ci-centos-8-standalone-on-multinode-ipa:
-            voting: false
             files: &tls_ipa_files
               # tripleo-quickstart-extras
               - ^roles/.*multinode-ipa.*$
@@ -922,9 +921,20 @@
               - tripleo-ci-centos-8-content-provider
         - tripleo-ci-centos-9-standalone-on-multinode-ipa:
             voting: false
+            files: *tls_ipa_files
             vars: *ipa_consumer_vars
             dependencies:
               - tripleo-ci-centos-9-content-provider
+    gate:
+      queue: tripleo
+      jobs:
+        - tripleo-ci-centos-8-content-provider
+        - tripleo-ci-centos-8-standalone-on-multinode-ipa:
+            files: *tls_ipa_files
+            vars: *ipa_consumer_vars
+            dependencies:
+              - tripleo-ci-centos-8-content-provider
+
 
 - job:
     name: tripleo-ci-centos-8-standalone-on-multinode-ipa
@@ -958,7 +968,6 @@
     parent: tripleo-ci-centos-8-standalone-on-multinode-ipa
     branches: ^(?!stable/(train|ussuri|victoria|wallaby)).*$
     nodeset: two-centos-9-nodes
-    files: *tls_ipa_files
 
 - job:
     name: tripleo-ci-centos-8-repoclosure
