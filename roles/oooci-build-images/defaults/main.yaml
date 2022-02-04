@@ -36,9 +36,8 @@ dib_yum_repo_conf: >-
   {{ dib_yum_repo_conf_centos }}
   {%- endif %}
 dib_yum_repo_conf_centos:
-  - /etc/yum.repos.d/tripleo-centos*
+  - /etc/yum.repos.d/quickstart-centos*
   - /etc/yum.repos.d/delorean*
-  - /etc/yum.repos.d/CentOS*
 dib_yum_repo_conf_rhel:
   - /etc/yum.repos.d/rh-cloud.repo
   - /etc/yum.repos.d/delorean*

@@ -1,0 +1,7 @@
+---
+rpm_packages:
+  - git
+  - python3
+  - python3-libselinux
+  - python3-setuptools
+#  - python3-venv

@@ -3,8 +3,8 @@
   name: TripleO container image building job
   tasks:
 
-    - name: Re-run repo-setup and build for c9 (pickup mirrors set in pre)
-      when: ansible_distribution_major_version is version('9', '>=')
+    - name: Re-run repo-setup and build for c8 and c9 (pickup mirrors set in pre)
+      when: ansible_distribution_major_version is version('8', '>=')
       block:
         - name: Load vars from release file and set facts needed for repo-setup
           include_role:
@@ -16,7 +16,7 @@
           vars:
             repo_setup_dir: "{{ workspace }}"
             repo_setup_use_collections: false
-        - name: "build containers C9 for hash: {{ buildcontainers_version_hash }}"
+        - name: "build containers C8 and C9 for hash: {{ buildcontainers_version_hash }}"
           include_role:
             name: build-containers
           vars:
@@ -25,7 +25,7 @@
     - name: Run build containers tasks
       include_role:
         name: build-containers
-      when: ansible_distribution_major_version is version('8', '<=')
+      when: ansible_distribution_major_version is version('7', '==')
 
     - name: Fail job if it's configured
       fail:
