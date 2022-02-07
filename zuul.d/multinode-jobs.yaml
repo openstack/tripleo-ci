@@ -86,7 +86,6 @@
             dependencies:
               - tripleo-ci-centos-9-content-provider
         - tripleo-ci-centos-9-scenario007-multinode-oooq-container: *cs9_multinode_all
-        - tripleo-ci-centos-9-scenario000-multinode-oooq-container-updates: *cs9_multinode_all
         - tripleo-ci-centos-7-containers-multinode:
             irrelevant-files: *multinode_ignored
             vars: *multi_consumer_vars
@@ -134,7 +133,6 @@
               - tripleo-ci-centos-8-content-provider
         - tripleo-ci-centos-9-containers-multinode: *cs9_multinode_all
         - tripleo-ci-centos-9-scenario007-multinode-oooq-container: *cs9_multinode_all
-        - tripleo-ci-centos-9-scenario000-multinode-oooq-container-updates: *cs9_multinode_all
         - tripleo-ci-centos-7-containers-multinode:
             irrelevant-files: *multinode_ignored
 
@@ -145,7 +143,6 @@
         - tripleo-ci-centos-8-content-provider
         - tripleo-ci-centos-9-containers-multinode: *cs9_multinode_all
         - tripleo-ci-centos-9-scenario007-multinode-oooq-container: *cs9_multinode_all
-        - tripleo-ci-centos-9-scenario000-multinode-oooq-container-updates: *cs9_multinode_all
         - tripleo-ci-centos-8-containers-multinode:
             irrelevant-files: *multinode_ignored
             vars: *multi_consumer_vars
@@ -232,13 +229,6 @@
 - job:
     name: tripleo-ci-centos-9-scenario007-multinode-oooq-container
     parent: tripleo-ci-centos-8-scenario007-multinode-oooq-container
-    branches: ^(?!stable/(train|ussuri|victoria|wallaby)).*$
-    nodeset: two-centos-9-nodes
-    irrelevant-files: *multinode_ignored
-
-- job:
-    name: tripleo-ci-centos-9-scenario000-multinode-oooq-container-updates
-    parent: tripleo-ci-centos-8-scenario000-multinode-oooq-container-updates
     branches: ^(?!stable/(train|ussuri|victoria|wallaby)).*$
     nodeset: two-centos-9-nodes
     irrelevant-files: *multinode_ignored

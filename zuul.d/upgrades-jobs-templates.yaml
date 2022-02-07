@@ -5,9 +5,8 @@
     name: tripleo-upgrades-master-pipeline
     check:
       jobs:
-        - tripleo-ci-centos-8-content-provider
-        - tripleo-ci-centos-8-content-provider-wallaby
-        - tripleo-ci-centos-8-scenario000-multinode-oooq-container-updates:
+        - tripleo-ci-centos-9-content-provider
+        - tripleo-ci-centos-9-scenario000-multinode-oooq-container-updates: &cs9_update_all
             irrelevant-files: &multinode_ignored
               - ^.*\.md$
               - ^.*\.rst$
@@ -43,8 +42,25 @@
               remove_tags:
                 - build
             dependencies:
+              - tripleo-ci-centos-9-content-provider
+    gate:
+      queue: tripleo
+      jobs:
+        - tripleo-ci-centos-9-content-provider
+        - tripleo-ci-centos-9-scenario000-multinode-oooq-container-updates: *cs9_update_all
+
+- project-template:
+    name: tripleo-upgrades-wallaby-pipeline
+    check:
+      jobs:
+        - tripleo-ci-centos-8-content-provider
+        - tripleo-ci-centos-8-content-provider-victoria
+        - tripleo-ci-centos-8-scenario000-multinode-oooq-container-updates-wallaby:
+            irrelevant-files: *multinode_ignored
+            vars: *consumer_vars
+            dependencies:
               - tripleo-ci-centos-8-content-provider
-        - tripleo-ci-centos-8-undercloud-upgrade:
+        - tripleo-ci-centos-8-undercloud-upgrade-wallaby:
             vars: *consumer_vars
             irrelevant-files: &undercloud_ignored
               - ^.*\.md$
@@ -87,40 +103,6 @@
               # upgrade/update featuresets
               - ^config/general_config/featureset037.yml
               - ^config/general_config/featureset051.yml
-            dependencies:
-              - tripleo-ci-centos-8-content-provider
-              - tripleo-ci-centos-8-content-provider-wallaby
-    gate:
-      queue: tripleo
-      jobs:
-        - tripleo-ci-centos-8-content-provider
-        - tripleo-ci-centos-8-content-provider-wallaby
-        - tripleo-ci-centos-8-scenario000-multinode-oooq-container-updates:
-            irrelevant-files: *multinode_ignored
-            vars: *consumer_vars
-            dependencies:
-              - tripleo-ci-centos-8-content-provider
-        - tripleo-ci-centos-8-undercloud-upgrade:
-            vars: *consumer_vars
-            irrelevant-files: *undercloud_ignored
-            dependencies:
-              - tripleo-ci-centos-8-content-provider
-              - tripleo-ci-centos-8-content-provider-wallaby
-
-- project-template:
-    name: tripleo-upgrades-wallaby-pipeline
-    check:
-      jobs:
-        - tripleo-ci-centos-8-content-provider
-        - tripleo-ci-centos-8-content-provider-victoria
-        - tripleo-ci-centos-8-scenario000-multinode-oooq-container-updates-wallaby:
-            irrelevant-files: *multinode_ignored
-            vars: *consumer_vars
-            dependencies:
-              - tripleo-ci-centos-8-content-provider
-        - tripleo-ci-centos-8-undercloud-upgrade-wallaby:
-            vars: *consumer_vars
-            irrelevant-files: *undercloud_ignored
             dependencies:
               - tripleo-ci-centos-8-content-provider
               - tripleo-ci-centos-8-content-provider-victoria
@@ -274,22 +256,6 @@
 #
 
 - job:
-    name: tripleo-ci-centos-8-scenario000-multinode-oooq-container-updates
-    description: |
-      Basic tripleo update job for centos-8, this is not an upgrade job.
-    parent: tripleo-ci-base-multinode-centos-8
-    voting: true
-    branches: ^master$
-    vars:
-      nodes: 1ctlr
-      featureset: '037'
-      # Note (dmsimard): This enforces a minimum TTL for DNS records, see
-      # https://review.opendev.org/#/c/523178/ for context
-      unbound_cache_min_ttl: 900
-      extra_tags:
-        - overcloud-update
-
-- job:
     name: tripleo-ci-centos-8-scenario000-multinode-oooq-container-updates-wallaby
     description: |
       wallaby tripleo minor update job for centos-8, this is not an upgrade job.
@@ -344,6 +310,12 @@
       unbound_cache_min_ttl: 900
       extra_tags:
         - overcloud-update
+
+- job:
+    name: tripleo-ci-centos-9-scenario000-multinode-oooq-container-updates
+    parent: tripleo-ci-centos-8-scenario000-multinode-oooq-container-updates
+    branches: ^(?!stable/(train|ussuri|victoria|wallaby)).*$
+    nodeset: two-centos-9-nodes
 
 #
 # Major Upgrade jobs
@@ -457,18 +429,6 @@
 
 #
 # Undercloud upgrade jobs
-
-- job:
-    name: tripleo-ci-centos-8-undercloud-upgrade
-    parent: tripleo-ci-base-singlenode-centos-8
-    branches: ^master$
-    voting: true
-    vars:
-      featureset: '050'
-      featureset_override:
-        validate_services: false
-      extra_tags:
-        - undercloud-upgrade
 
 - job:
     name: tripleo-ci-centos-8-undercloud-upgrade-ussuri
