@@ -237,7 +237,7 @@
 - job:
     name: tripleo-ci-centos-8-containers-multinode
     parent: tripleo-ci-base-multinode-centos-8
-    branches: ^(?!stable/(queens|stein)).*$
+    branches: ^(stable/(train|ussuri|victoria|wallaby)).*$
     voting: true
     vars:
       nodes: 1ctlr
@@ -318,7 +318,7 @@
 - job:
     name: tripleo-ci-centos-8-scenario007-multinode-oooq-container
     parent: tripleo-ci-base-multinode-centos-8
-    branches: ^(?!stable/(queens|stein|train|ussuri)).*$
+    branches: ^(stable/(victoria|wallaby)).*$
     vars:
       nodes: 1ctlr
       featureset: '030'

@@ -33,7 +33,7 @@
 - job:
     name: tripleo-ci-centos-8-standalone
     parent: tripleo-ci-base-standalone-centos-8
-    branches: ^(?!stable/(newton|ocata|pike|queens|stein)).*$
+    branches: ^(stable/(train|ussuri|victoria|wallaby)).*$
     vars:
       featureset: '052'
     irrelevant-files:
@@ -82,6 +82,7 @@
         - tripleo-ci-centos-8-content-provider
         - tripleo-ci-centos-9-content-provider
         - tripleo-ci-centos-8-scenario001-standalone:
+            branches: &no_master_c8 ^(stable/(train|ussuri|victoria|wallaby)).*$
             files: &scen1_files
               # tripleo-common
               - ^container-images/tcib/base/collectd.*$
@@ -150,6 +151,7 @@
             dependencies:
               - tripleo-ci-centos-8-content-provider
         - tripleo-ci-centos-8-scenario002-standalone:
+            branches: *no_master_c8
             files: &scen2_files
               # tripleo-heat-templates
               - ^((docker|puppet)/services|deployment)/.*aodh.*$
@@ -186,6 +188,7 @@
             dependencies:
               - tripleo-ci-centos-8-content-provider
         - tripleo-ci-centos-8-scenario003-standalone:
+            branches: *no_master_c8
             files: &scen3_files
               # tripleo-common
               - ^container-images/tcib/base/os/designate.*$
@@ -215,6 +218,7 @@
             dependencies:
               - tripleo-ci-centos-8-content-provider
         - tripleo-ci-centos-8-scenario004-standalone:
+            branches: *no_master_c8
             files: &scen4_files
               # tripleo-common
               - ^container-images/tcib/base/os/manila.*$
@@ -236,6 +240,7 @@
             dependencies:
               - tripleo-ci-centos-8-content-provider
         - tripleo-ci-centos-8-scenario007-standalone:
+            branches: *no_master_c8
             files: &scen7_files
               # tripleo-common
               - ^container-images/tcib/base/os/neutron.*$
@@ -248,6 +253,7 @@
             dependencies:
               - tripleo-ci-centos-8-content-provider
         - tripleo-ci-centos-8-scenario010-standalone: &scen10_all
+            branches: *no_master_c8
             files: &scen10_files
               # tripleo-common
               - ^container-images/tcib/base/os/octavia.*$
@@ -292,6 +298,7 @@
         - tripleo-ci-centos-8-scenario010-ovn-provider-standalone-victoria: *scen10_all
         - tripleo-ci-centos-8-scenario010-ovn-provider-standalone-wallaby: *scen10_all
         - tripleo-ci-centos-8-scenario012-standalone:
+            branches: *no_master_c8
             files: &scen12_files
               # tripleo-heat-templates
               - ^(docker/services|deployment)/glance.*$
@@ -344,26 +351,31 @@
         - tripleo-ci-centos-8-content-provider
         - tripleo-ci-centos-9-content-provider
         - tripleo-ci-centos-8-scenario001-standalone:
+            branches: *no_master_c8
             files: *scen1_files
             vars: *consumer_vars
             dependencies:
               - tripleo-ci-centos-8-content-provider
         - tripleo-ci-centos-8-scenario002-standalone:
+            branches: *no_master_c8
             files: *scen2_files
             vars: *consumer_vars
             dependencies:
               - tripleo-ci-centos-8-content-provider
         - tripleo-ci-centos-8-scenario003-standalone:
+            branches: *no_master_c8
             files: *scen3_files
             vars: *consumer_vars
             dependencies:
               - tripleo-ci-centos-8-content-provider
         - tripleo-ci-centos-8-scenario004-standalone:
+            branches: *no_master_c8
             files: *scen4_files
             vars: *consumer_vars
             dependencies:
               - tripleo-ci-centos-8-content-provider
         - tripleo-ci-centos-8-scenario007-standalone:
+            branches: *no_master_c8
             files: *scen7_files
             vars: *consumer_vars
             dependencies:
@@ -379,6 +391,7 @@
         - tripleo-ci-centos-8-scenario010-ovn-provider-standalone-victoria: *scen10_all
         - tripleo-ci-centos-8-scenario010-ovn-provider-standalone-wallaby: *scen10_all
         - tripleo-ci-centos-8-scenario012-standalone:
+            branches: *no_master_c8
             files: *scen12_files
             vars: *consumer_vars
             dependencies:
@@ -558,7 +571,7 @@
     name: tripleo-ci-centos-8-scenario012-standalone
     voting: true
     parent: tripleo-ci-base-standalone-centos-8
-    branches: ^(?!stable/(newton|ocata|pike|queens|stein)).*$
+    branches: ^(stable/(train|ussuri|victoria|wallaby)).*$
     vars:
       featureset: '060'
       standalone_ceph: true
@@ -597,7 +610,7 @@
     name: tripleo-ci-centos-8-scenario000-standalone
     voting: true
     parent: tripleo-ci-base-standalone-centos-8
-    branches: ^(?!stable/(newton|ocata|pike|queens|stein|ussuri|victoria)).*$
+    branches: ^(stable/(train|wallaby)).*$
 
 - job:
     name: tripleo-ci-centos-8-scenario000-standalone-options
@@ -943,7 +956,7 @@
     parent: tripleo-ci-base-standalone-centos-8
     voting: true
     nodeset: two-centos-8-nodes
-    branches: ^(?!stable/(newton|ocata|pike|queens|stein|train)).*$
+    branches: ^(stable/(ussuri|victoria|wallaby)).*$
     required-projects:
       - opendev.org/x/tripleo-ipa
     roles:
@@ -974,7 +987,7 @@
 - job:
     name: tripleo-ci-centos-8-repoclosure
     parent: tripleo-ci-base-standalone-centos-8
-    branches: ^(?!stable/(newton|ocata|pike|queens|stein)).*$
+    branches: master  # this is only wired up in t-q-e
     vars:
       featureset: '052'
       repoclosure: true

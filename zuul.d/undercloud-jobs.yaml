@@ -93,7 +93,7 @@
 - job:
     name: tripleo-ci-centos-8-undercloud-containers
     parent: tripleo-ci-undercloud-content-consumer-centos-8
-    branches: ^(?!stable/(newton|ocata|pike|queens|stein)).*$
+    branches: ^(stable/(train|ussuri|victoria|wallaby)).*$
     voting: true
     vars:
       featureset: '027'

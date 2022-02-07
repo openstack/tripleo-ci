@@ -178,7 +178,7 @@
 - job:
     name: tripleo-build-containers-ubi-8
     parent: tripleo-build-containers-ubi-8-base
-    branches: ^(?!stable/(pike|queens|stein|train|ussuri)).*$
+    branches: master  # only wired up for tripleo-repos
     voting: true
 
 

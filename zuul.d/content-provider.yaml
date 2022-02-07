@@ -10,6 +10,7 @@
 - job:
     name: tripleo-ci-centos-8-content-provider
     parent: tripleo-ci-base-standalone-centos-8
+    # branches: ^(stable/(train|ussuri|victoria|wallaby)).*$
     branches: ^(?!stable/(newton|ocata|pike|queens|stein)).*$
     required-projects:
       - opendev.org/openstack/tripleo-common

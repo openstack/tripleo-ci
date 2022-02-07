@@ -35,9 +35,6 @@
               tox_environment:
                 PYTEST_REQPASS: 84
         - openstack-tox-py39: *tox-py
-        - tripleo-ci-centos-8-content-provider:
-            dependencies:
-              - openstack-tox-linters
         - tripleo-ci-centos-9-content-provider:
             dependencies:
               - openstack-tox-linters
