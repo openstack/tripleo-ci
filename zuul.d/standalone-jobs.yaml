@@ -83,7 +83,7 @@
     parent: tripleo-ci-centos-8-standalone
     vars:
       build_container_images: true
-    files:
+    files: &sa_build_files
       - config/release/tripleo-ci/.*
       - roles/standalone/.*
       - roles/build-containers/.*
@@ -91,6 +91,13 @@
       - roles/container-prep/.*
       - roles/container-update/.*
       - roles/extras-common/.*
+
+- job:
+    name: tripleo-ci-centos-9-standalone-build
+    parent: tripleo-ci-centos-9-standalone
+    vars:
+      build_container_images: true
+    files: *sa_build_files
 
 - project-template:
     name: tripleo-standalone-scenarios-pipeline
