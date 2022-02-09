@@ -959,7 +959,6 @@
             dependencies:
               - tripleo-ci-centos-8-content-provider
         - tripleo-ci-centos-9-standalone-on-multinode-ipa:
-            voting: false
             files: *tls_ipa_files
             vars: *ipa_consumer_vars
             dependencies:
@@ -968,11 +967,17 @@
       queue: tripleo
       jobs:
         - tripleo-ci-centos-8-content-provider
+        - tripleo-ci-centos-9-content-provider
         - tripleo-ci-centos-8-standalone-on-multinode-ipa:
             files: *tls_ipa_files
             vars: *ipa_consumer_vars
             dependencies:
               - tripleo-ci-centos-8-content-provider
+        - tripleo-ci-centos-9-standalone-on-multinode-ipa:
+            files: *tls_ipa_files
+            vars: *ipa_consumer_vars
+            dependencies:
+              - tripleo-ci-centos-9-content-provider
 
 
 - job:
