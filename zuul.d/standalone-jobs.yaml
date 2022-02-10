@@ -58,6 +58,8 @@
     parent: tripleo-ci-centos-8-standalone
     branches: ^(?!stable/(train|ussuri|victoria|wallaby)).*$
     nodeset: single-centos-9-node
+    vars:
+      containers_base_image: quay.io/centos/centos:stream9
 
 - job:
     name: tripleo-ci-centos-8-standalone-build
