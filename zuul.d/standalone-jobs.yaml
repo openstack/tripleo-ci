@@ -600,10 +600,17 @@
 
 - job:
     name: tripleo-ci-centos-9-scenario012-standalone
-    parent: tripleo-ci-centos-8-scenario012-standalone
+    parent: tripleo-ci-base-standalone-centos-8
     branches: ^(?!stable/(train|ussuri|victoria|wallaby)).*$
     nodeset: single-centos-9-node
-    files: *scen12_files
+    vars:
+      featureset: '060'
+      standalone_ceph: true
+      featureset_override:
+        validate_services: false
+        standalone_environment_files:
+          - 'environments/low-memory-usage.yaml'
+          - 'ci/environments/scenario012-standalone.yaml'
 
 - job:
     name: tripleo-ci-centos-7-standalone-os-tempest
