@@ -10,8 +10,7 @@
 - job:
     name: tripleo-ci-centos-8-content-provider
     parent: tripleo-ci-base-standalone-centos-8
-    # branches: ^(stable/(train|ussuri|victoria|wallaby)).*$
-    branches: ^(?!stable/(newton|ocata|pike|queens|stein)).*$
+    branches: ^(stable/(train|ussuri|victoria|wallaby)).*$
     required-projects:
       - opendev.org/openstack/tripleo-common
     run:
@@ -28,11 +27,23 @@
 
 - job:
     name: tripleo-ci-centos-9-content-provider
-    parent: tripleo-ci-centos-8-content-provider
+    parent: tripleo-ci-base-standalone-centos-8
     branches: ^(?!stable/(train|ussuri|victoria|wallaby)).*$
     nodeset: single-centos-9-node
+    required-projects:
+      - opendev.org/openstack/tripleo-common
+    run:
+      - playbooks/tripleo-ci/run-v3.yaml
+      - playbooks/tripleo-ci/run-provider.yml
     vars:
       containers_base_image: quay.io/centos/centos:stream9
+      featureset: '052'
+      provider_job: true
+      build_container_images: true
+      ib_create_web_repo: true
+      playbooks:
+        - quickstart.yml
+        - multinode-standalone-pre.yml
 
 - job:
     name: tripleo-ci-centos-8-content-provider-wallaby

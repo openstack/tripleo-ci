@@ -221,17 +221,28 @@
 ## CentOS 9 jobs
 - job:
     name: tripleo-ci-centos-9-containers-multinode
-    parent: tripleo-ci-centos-8-containers-multinode
+    parent: tripleo-ci-base-multinode-centos-8
     branches: ^(?!stable/(train|ussuri|victoria|wallaby)).*$
     nodeset: two-centos-9-nodes
     irrelevant-files: *multinode_ignored
+    voting: true
+    vars:
+      nodes: 1ctlr
+      featureset: '010'
+      playbooks:
+        - multinode.yml
 
 - job:
     name: tripleo-ci-centos-9-scenario007-multinode-oooq-container
-    parent: tripleo-ci-centos-8-scenario007-multinode-oooq-container
+    parent: tripleo-ci-base-multinode-centos-8
     branches: ^(?!stable/(train|ussuri|victoria|wallaby)).*$
     nodeset: two-centos-9-nodes
     irrelevant-files: *multinode_ignored
+    vars:
+      nodes: 1ctlr
+      featureset: '030'
+      playbooks:
+        - multinode.yml
 
 ## CentOS 8 jobs
 - job:

@@ -104,10 +104,16 @@
 
 - job:
     name: tripleo-ci-centos-9-undercloud-containers
-    parent: tripleo-ci-centos-8-undercloud-containers
+    parent: tripleo-ci-undercloud-content-consumer-centos-8
     branches: ^(?!stable/(train|ussuri|victoria|wallaby)).*$
     nodeset: single-centos-9-node
     irrelevant-files: *undercloud_ignored
+    vars:
+      featureset: '027'
+      playbooks:
+        - quickstart.yml
+        - multinode-undercloud.yml
+        - multinode-validate.yml
 
 - job:
     name: tripleo-ci-centos-7-undercloud-oooq

@@ -55,11 +55,28 @@
 
 - job:
     name: tripleo-ci-centos-9-standalone
-    parent: tripleo-ci-centos-8-standalone
+    parent: tripleo-ci-base-standalone-centos-8
     branches: ^(?!stable/(train|ussuri|victoria|wallaby)).*$
     nodeset: single-centos-9-node
     vars:
       containers_base_image: quay.io/centos/centos:stream9
+      featureset: '052'
+    irrelevant-files:
+      - .*molecule.*
+      - ^.*\.md$
+      - ^.*\.rst$
+      - ^Puppetfile.*$
+      - ^doc/.*$
+      - ^etc/.*$
+      - ^lower-constraints.txt$
+      - ^metadata.json$
+      - ^releasenotes/.*$
+      - ^spec/.*$
+      - ^test-requirements.txt$
+      - ^vars/sova-patterns.yml$
+      - tox.ini
+      - ^scripts/.*
+      # like parent but with requirements.txt and setup.py removed
 
 - job:
     name: tripleo-ci-centos-8-standalone-build
@@ -980,9 +997,29 @@
 
 - job:
     name: tripleo-ci-centos-9-standalone-on-multinode-ipa
-    parent: tripleo-ci-centos-8-standalone-on-multinode-ipa
+    parent: tripleo-ci-base-standalone-centos-8
     branches: ^(?!stable/(train|ussuri|victoria|wallaby)).*$
     nodeset: two-centos-9-nodes
+    required-projects:
+      - opendev.org/x/tripleo-ipa
+    roles:
+      - zuul: opendev.org/x/tripleo-ipa
+    vars:
+      featureset: '052'
+      enable_tls: true
+      playbooks:
+        - quickstart.yml
+        - multinode-standalone-ipa.yml
+        - multinode-standalone.yml
+      featureset_override:
+        standalone_environment_files:
+          - environments/ssl/tls-everywhere-endpoints-dns.yaml
+          - environments/services/haproxy-public-tls-certmonger.yaml
+          - environments/ssl/enable-internal-tls.yaml
+          - environments/ssl/enable-memcached-tls.yaml
+          - ci/environments/standalone-ipa.yaml
+        tempest_tempest_conf_overrides:
+          service-clients.http_timeout: '120'
 
 - job:
     name: tripleo-ci-centos-8-repoclosure
