@@ -8,9 +8,9 @@
 # triggering the affected jobs on far more changes than needed.
 
 - job:
-    name: tripleo-ci-centos-8-content-provider
+    name: tripleo-ci-content-provider-options
     parent: tripleo-ci-base-standalone-centos-8
-    branches: ^(stable/(train|ussuri|victoria|wallaby)).*$
+    abstract: true
     required-projects:
       - opendev.org/openstack/tripleo-common
     run:
@@ -26,24 +26,17 @@
         - multinode-standalone-pre.yml
 
 - job:
+    name: tripleo-ci-centos-8-content-provider
+    parent: tripleo-ci-content-provider-options
+    branches: ^(stable/(train|ussuri|victoria|wallaby)).*$
+
+- job:
     name: tripleo-ci-centos-9-content-provider
-    parent: tripleo-ci-base-standalone-centos-8
+    parent: tripleo-ci-content-provider-options
     branches: ^(?!stable/(train|ussuri|victoria|wallaby)).*$
     nodeset: single-centos-9-node
-    required-projects:
-      - opendev.org/openstack/tripleo-common
-    run:
-      - playbooks/tripleo-ci/run-v3.yaml
-      - playbooks/tripleo-ci/run-provider.yml
     vars:
       containers_base_image: quay.io/centos/centos:stream9
-      featureset: '052'
-      provider_job: true
-      build_container_images: true
-      ib_create_web_repo: true
-      playbooks:
-        - quickstart.yml
-        - multinode-standalone-pre.yml
 
 - job:
     name: tripleo-ci-centos-8-content-provider-wallaby
