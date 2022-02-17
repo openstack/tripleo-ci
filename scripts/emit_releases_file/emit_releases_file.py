@@ -306,9 +306,15 @@ def compose_releases_dictionary(
         releases_dictionary['undercloud_install_release'] = install_release
         releases_dictionary['undercloud_install_hash'] = install_hash
 
-    elif featureset.get('standalone_upgrade'):
-        logger.info('Doing an standalone upgrade')
-        install_release = get_relative_release(stable_release, -1)
+    elif featureset.get('standalone_upgrade') or featureset.get(
+        'ffu_standalone_upgrade'
+    ):
+        if featureset.get('standalone_upgrade'):
+            logger.info('Doing an standalone upgrade')
+            install_release = get_relative_release(stable_release, -1)
+        else:
+            logger.info('Doing an ffu standalone upgrade')
+            install_release = get_relative_release(stable_release, -3)
         install_hash = get_dlrn_hash(
             install_release, CURRENT_HASH_NAME, distro_name, distro_version
         )
