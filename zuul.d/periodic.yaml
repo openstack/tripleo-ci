@@ -22,6 +22,9 @@
     name: tripleo-multinode-branchful
     periodic:
       jobs:
+        - tripleo-ci-centos-9-content-provider-wallaby:
+            vars:
+              force_non_periodic: true
         - tripleo-ci-centos-8-content-provider-wallaby:
             vars:
               force_non_periodic: true
@@ -186,6 +189,9 @@
     name: tripleo-periodic-upgrades-master-pipeline
     periodic:
       jobs:
+        - tripleo-ci-centos-9-content-provider-wallaby:
+            vars:
+              force_non_periodic: true
         - tripleo-ci-centos-8-content-provider:
             vars:
               force_non_periodic: true
@@ -208,6 +214,9 @@
     name: tripleo-periodic-upgrades-wallaby-pipeline
     periodic:
       jobs:
+        - tripleo-ci-centos-9-content-provider-wallaby:
+            vars:
+              force_non_periodic: true
         - tripleo-ci-centos-8-content-provider-wallaby:
             vars:
               force_non_periodic: true
