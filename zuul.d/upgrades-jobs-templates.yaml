@@ -314,7 +314,7 @@
 - job:
     name: tripleo-ci-centos-9-scenario000-multinode-oooq-container-updates
     parent: tripleo-ci-centos-8-scenario000-multinode-oooq-container-updates
-    branches: ^(?!stable/(train|ussuri|victoria|wallaby)).*$
+    branches: ^(?!stable/(train|ussuri|victoria)).*$
     nodeset: two-centos-9-nodes
 
 #

@@ -33,7 +33,7 @@
 - job:
     name: tripleo-ci-centos-9-content-provider
     parent: tripleo-ci-content-provider-options
-    branches: ^(?!stable/(train|ussuri|victoria|wallaby)).*$
+    branches: ^(?!stable/(train|ussuri|victoria)).*$
     nodeset: single-centos-9-node
     vars:
       containers_base_image: quay.io/centos/centos:stream9
