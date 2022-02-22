@@ -35,9 +35,19 @@ dib_yum_repo_conf: >-
   {%- else -%}
   {{ dib_yum_repo_conf_centos }}
   {%- endif %}
+centos_compose_dib_yum_repos: >-
+  {% if job is defined and
+  job.dependency is defined and
+  job.dependency == "centos-compose" or
+  dependency|default("") == "centos-compose" -%}
+  {{ true|bool }}
+  {%- else -%}
+  {{ false|bool }}
+  {%- endif -%}
 dib_yum_repo_conf_centos:
   - /etc/yum.repos.d/quickstart-centos*
   - /etc/yum.repos.d/delorean*
+  - "{{ centos_compose_dib_yum_repos | ternary('/etc/yum.repos.d/CentOS-Stream-*','') }}"
 dib_yum_repo_conf_rhel:
   - /etc/yum.repos.d/rh-cloud.repo
   - /etc/yum.repos.d/delorean*

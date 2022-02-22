@@ -30,13 +30,22 @@
   failed_when: false
   changed_when: true
 
+- name: install tripleo-repos as superuser to be available for yum-config module
+  become: true
+  shell: |
+    pushd "{{ ansible_user_dir }}/{{ zuul.projects['opendev.org/openstack/tripleo-repos'].src_dir }}"
+    python3 setup.py install
+    popd
+  failed_when: false
+  changed_when: true
+  when: use_yum_config_module is defined and use_yum_config_module|bool
+
 - name: Include repo-setup role
   include_role:
     name: repo-setup
   vars:
     repo_setup_dir: "{{ workspace }}"
     repo_setup_use_collections: false
-    use_yum_config_module: false
 
 - name: Install python3-tripleoclient python3-virtualenv
   become: true

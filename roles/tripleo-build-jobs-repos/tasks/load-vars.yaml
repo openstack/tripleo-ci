@@ -25,3 +25,20 @@
 - name: Load vars from release file
   include_vars:
     file: "{{ zuul.executor.work_root }}/{{ release_file_name }}"
+
+- name: "Load dependency-ci vars when 'dependency' is defined"
+  block:
+    - name: Set dependency facts
+      set_fact:
+        t_q_dependency_dir: "{{ tripleo_quickstart_dir }}/config/release/dependency_ci/{{ job.dependency|default(dependency) }}"
+
+    - name: "fetch dependency {{ job.dependency }} file into ansible executor work_root"
+      fetch:
+        src: "{{ t_q_dependency_dir }}/repo_config.yaml"
+        dest: "{{ zuul.executor.work_root }}/"
+        flat: true
+
+    - name: Load vars from dependency file
+      include_vars:
+        file: "{{ zuul.executor.work_root }}/repo_config.yaml"
+  when: job.dependency is defined or dependency is defined

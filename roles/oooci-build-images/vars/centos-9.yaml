@@ -3,6 +3,7 @@ tripleo_image_source: https://cloud.centos.org/centos/9-stream/x86_64/images/Cen
 dib_yum_repo_conf:
   - /etc/yum.repos.d/quickstart-centos*
   - /etc/yum.repos.d/delorean*
+  - "{{ centos_compose_dib_yum_repos | ternary('/etc/yum.repos.d/CentOS-Stream-9*','') }}"
 dib_release: "9-stream"
 dib_dnf_module_streams: ""
 tripleo_image_os: centos9
