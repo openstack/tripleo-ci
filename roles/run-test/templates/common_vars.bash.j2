@@ -19,7 +19,10 @@ if [ "$ZUUL_BRANCH" = "stable/1.1.x" -a "$ZUUL_PROJECT" = "openstack/puppet-pace
     export ZUUL_BRANCH="stable/train"
     export STABLE_RELEASE="train"
 fi
-
+# For Ansible collection repo "stable/1.0.0" is a feature branch
+if [ "$ZUUL_BRANCH" = "stable/1.0.0" -a "$ZUUL_PROJECT" = "openstack/ansible-collections-openstack" ]; then
+    export ZUUL_BRANCH="master"
+fi
 
 export OVERRIDE_ZUUL_BRANCH=${OVERRIDE_ZUUL_BRANCH:-""}
 export STABLE_RELEASE=${STABLE_RELEASE:-""}
@@ -37,6 +40,9 @@ if [[ -z $STABLE_RELEASE ]]; then
     fi
     if [[ $OVERRIDE_ZUUL_BRANCH =~ ^stable/ ]]; then
         export STABLE_RELEASE=${OVERRIDE_ZUUL_BRANCH#stable/}
+        export REVIEW_RELEASE=${OVERRIDE_ZUUL_BRANCH#stable/}
+        export UPPER_CONSTRAINTS_FILE=https://releases.openstack.org/constraints/upper/${STABLE_RELEASE}
+        export PIP_CONSTRAINT=https://releases.openstack.org/constraints/upper/${STABLE_RELEASE}
     fi
     if [[ $OVERRIDE_ZUUL_BRANCH == stable/rhos* ]]; then
         export UPPER_CONSTRAINTS_FILE=https://releases.openstack.org/constraints/upper/{{ release|default("master") }}
