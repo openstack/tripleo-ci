@@ -1,0 +1,64 @@
+---
+# zuul.d/basei-upstream.yaml
+# This file contains parent layouts for all TripleO jobs.
+# Do not add children specific layout here.
+
+# tripleo-ci base common required projects
+# It contains a minimum set of common projects which needs to be
+# clonned in upstream, rdo and downstream to perform the deployment
+- job:
+    name: tripleo-ci-base-common-required-projects
+    description: |
+        Base abstract job to add common required-projects for tripleo-ci-base
+    abstract: true
+    parent: multinode
+    required-projects:
+      - opendev.org/openstack/tripleo-ci
+      - opendev.org/openstack/tripleo-quickstart
+      - opendev.org/openstack/tripleo-quickstart-extras
+      - opendev.org/openstack/ansible-collections-openstack
+      - opendev.org/openstack/tripleo-upgrade
+      - opendev.org/x/browbeat
+      - opendev.org/openstack/tripleo-ha-utils
+      - opendev.org/openstack/openstack-tempest-skiplist
+      - name: opendev.org/openstack/openstack-virtual-baremetal
+        override-checkout: stable/2.0
+      - name: opendev.org/openstack/openstack-ansible-os_tempest
+        override-checkout: master
+      - name: opendev.org/openstack/ansible-role-python_venv_build
+        override-checkout: master
+      - opendev.org/openstack/ansible-role-collect-logs
+      - opendev.org/openstack/tripleo-repos
+      # Ansible collections for quickstart
+      - name: github.com/ansible-collections/ansible.utils
+        override-checkout: 2.4.2
+      - name: github.com/ansible-collections/ansible.posix
+        override-checkout: 1.3.0
+      - name: github.com/ansible-collections/ansible.netcommon
+        override-checkout: 2.4.0
+      - name: github.com/ansible-collections/community.general
+        override-checkout: 4.0.2
+      - name: github.com/ansible-collections/community.libvirt
+        override-checkout: 1.0.2
+      - name: github.com/ansible-collections/openvswitch.openvswitch
+        override-checkout: 2.0.2
+    roles:
+      - zuul: opendev.org/openstack/tripleo-quickstart
+      - zuul: opendev.org/openstack/tripleo-quickstart-extras
+
+# This job definition holds the required projects
+# for upstream CI. The required projects are separated
+# out to allow for this job to be shadowed in another repo
+# and the required projects overwritten for other environments
+- job:
+    name: tripleo-ci-base-required-projects-upstream
+    description: |
+        Base abstract job to add required-projects for Upstream Jobs
+    abstract: true
+    parent: tripleo-ci-base-common-required-projects
+    required-projects:
+      - opendev.org/openstack/tripleo-ansible
+      - opendev.org/openstack/tripleo-common
+      - opendev.org/openstack/tripleo-operator-ansible
+      - name: opendev.org/openstack/ansible-config_template
+        override-checkout: master
