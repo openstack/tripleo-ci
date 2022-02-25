@@ -3,18 +3,57 @@
 # Zuul layout for TripleO standalone jobs.
 # It contains all the jobs related to standalone installer testing.
 
+- job:
+    name: tripleo-ci-base-required-projects-standalone-upstream
+    description: |
+      Base abstract job to add required-projects for Upstream Standalone jobs
+    abstract: true
+    parent: tripleo-ci-base-standalone-standard
+    required-projects:
+      - opendev.org/openstack/tripleo-ansible
+      - opendev.org/openstack/tripleo-operator-ansible
+      - name: opendev.org/openstack/ansible-config_template
+        override-checkout: master
+
+# Centos 7 base job
+- job:
+    name: tripleo-ci-base-standalone-centos-7
+    abstract: true
+    description: |
+      Base abstract job for standalone Tripleo CI Centos-8 zuulv3 jobs.
+    parent: tripleo-ci-base-required-projects-standalone-upstream
+    nodeset: single-centos-7-node
+
+# Centos 8 base jobs
+- job:
+    name: tripleo-ci-base-standalone-centos-8
+    abstract: true
+    description: |
+      Base abstract job for standalone TripleO CI Centos-8 zuulv3 jobs.
+    parent: tripleo-ci-base-required-projects-standalone-upstream
+    nodeset: single-centos-8-node
+
+# CentOS - 9 base jobs
+- job:
+    name: tripleo-ci-base-standalone-centos-9
+    abstract: true
+    description: |
+      Base abstract job for standalone TripleO CI Centos-9 zuulv3 jobs.
+    parent: tripleo-ci-base-required-projects-standalone-upstream
+    nodeset: single-centos-9-node
+
+
 # ATTENTION: Try to avoid adding irrelevant-files inside templates
 # or project because it does override values defined at job level.
 # An attempt to optimize at this level can have the exactly opposite effect,
 # triggering the affected jobs on far more changes than needed.
 - job:
     name: tripleo-ci-centos-7-standalone
-    parent: tripleo-ci-base-standalone
-    nodeset: single-centos-7-node
+    parent: tripleo-ci-base-standalone-centos-7
     branches: ^(stable/(stein)).*$
     vars:
       featureset: '052'
-    irrelevant-files:
+    irrelevant-files: &irrelevant_files
       - .*molecule.*
       - ^.*\.md$
       - ^.*\.rst$
@@ -28,6 +67,7 @@
       - ^test-requirements.txt$
       - ^vars/sova-patterns.yml$
       - tox.ini
+      - ^scripts/.*
       # like parent but with requirements.txt and setup.py removed
 
 - job:
@@ -36,47 +76,16 @@
     branches: ^(stable/(train|ussuri|victoria|wallaby)).*$
     vars:
       featureset: '052'
-    irrelevant-files:
-      - .*molecule.*
-      - ^.*\.md$
-      - ^.*\.rst$
-      - ^Puppetfile.*$
-      - ^doc/.*$
-      - ^etc/.*$
-      - ^lower-constraints.txt$
-      - ^metadata.json$
-      - ^releasenotes/.*$
-      - ^spec/.*$
-      - ^test-requirements.txt$
-      - ^vars/sova-patterns.yml$
-      - tox.ini
-      - ^scripts/.*
-      # like parent but with requirements.txt and setup.py removed
+    irrelevant-files: *irrelevant_files
 
 - job:
     name: tripleo-ci-centos-9-standalone
-    parent: tripleo-ci-base-standalone-centos-8
+    parent: tripleo-ci-base-standalone-centos-9
     branches: ^(?!stable/(train|ussuri|victoria)).*$
-    nodeset: single-centos-9-node
     vars:
       containers_base_image: quay.io/centos/centos:stream9
       featureset: '052'
-    irrelevant-files:
-      - .*molecule.*
-      - ^.*\.md$
-      - ^.*\.rst$
-      - ^Puppetfile.*$
-      - ^doc/.*$
-      - ^etc/.*$
-      - ^lower-constraints.txt$
-      - ^metadata.json$
-      - ^releasenotes/.*$
-      - ^spec/.*$
-      - ^test-requirements.txt$
-      - ^vars/sova-patterns.yml$
-      - tox.ini
-      - ^scripts/.*
-      # like parent but with requirements.txt and setup.py removed
+    irrelevant-files: *irrelevant_files
 
 - job:
     name: tripleo-ci-centos-8-standalone-build
@@ -450,8 +459,7 @@
 - job:
     name: tripleo-ci-centos-7-scenario001-standalone
     voting: true
-    parent: tripleo-ci-base-standalone
-    nodeset: single-centos-7-node
+    parent: tripleo-ci-base-standalone-centos-7
     branches: ^(stable/(stein)).*$
     vars:
       featureset: '052'
@@ -474,8 +482,7 @@
 - job:
     name: tripleo-ci-centos-7-scenario002-standalone
     voting: true
-    parent: tripleo-ci-base-standalone
-    nodeset: single-centos-7-node
+    parent: tripleo-ci-base-standalone-centos-7
     branches: ^(stable/(stein)).*$
     vars:
       featureset: '052'
@@ -503,8 +510,7 @@
 - job:
     name: tripleo-ci-centos-7-scenario003-standalone
     voting: true
-    parent: tripleo-ci-base-standalone
-    nodeset: single-centos-7-node
+    parent: tripleo-ci-base-standalone-centos-7
     branches: ^(stable/(stein)).*$
     vars:
       featureset: '052'
@@ -523,8 +529,7 @@
 - job:
     name: tripleo-ci-centos-7-scenario004-standalone
     voting: true
-    parent: tripleo-ci-base-standalone
-    nodeset: single-centos-7-node
+    parent: tripleo-ci-base-standalone-centos-7
     branches: ^(stable/(stein)).*$
     vars:
       featureset: '052'
@@ -543,8 +548,7 @@
 - job:
     name: tripleo-ci-centos-7-scenario010-standalone
     voting: true
-    parent: tripleo-ci-base-standalone
-    nodeset: single-centos-7-node
+    parent: tripleo-ci-base-standalone-centos-7
     branches: ^(stable/(stein)).*$
     vars:
       tags:
@@ -563,8 +567,7 @@
 - job:
     name: tripleo-ci-centos-7-scenario010-ovn-provider-standalone
     voting: false
-    parent: tripleo-ci-base-standalone
-    nodeset: single-centos-7-node
+    parent: tripleo-ci-base-standalone-centos-7
     branches: ^(stable/(stein)).*$
     vars:
       tags:
@@ -621,8 +624,7 @@
 
 - job:
     name: tripleo-ci-centos-7-standalone-os-tempest
-    parent: tripleo-ci-base-standalone
-    nodeset: single-centos-7-node
+    parent: tripleo-ci-base-standalone-centos-7
     branches: ^stable/stein$
     vars:
       featureset: '052'
