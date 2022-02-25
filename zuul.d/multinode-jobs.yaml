@@ -222,7 +222,7 @@
 - job:
     name: tripleo-ci-centos-9-containers-multinode
     parent: tripleo-ci-base-multinode-centos-8
-    branches: ^(?!stable/(train|ussuri|victoria|wallaby)).*$
+    branches: ^(?!stable/(train|ussuri|victoria)).*$
     nodeset: two-centos-9-nodes
     irrelevant-files: *multinode_ignored
     voting: true
@@ -235,7 +235,7 @@
 - job:
     name: tripleo-ci-centos-9-scenario007-multinode-oooq-container
     parent: tripleo-ci-base-multinode-centos-8
-    branches: ^(?!stable/(train|ussuri|victoria|wallaby)).*$
+    branches: ^(?!stable/(train|ussuri|victoria)).*$
     nodeset: two-centos-9-nodes
     irrelevant-files: *multinode_ignored
     vars:

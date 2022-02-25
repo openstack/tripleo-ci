@@ -105,7 +105,7 @@
 - job:
     name: tripleo-ci-centos-9-undercloud-containers
     parent: tripleo-ci-undercloud-content-consumer-centos-8
-    branches: ^(?!stable/(train|ussuri|victoria|wallaby)).*$
+    branches: ^(?!stable/(train|ussuri|victoria)).*$
     nodeset: single-centos-9-node
     irrelevant-files: *undercloud_ignored
     vars:

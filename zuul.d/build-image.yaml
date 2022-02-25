@@ -164,11 +164,11 @@
         - tripleo-buildimage-ironic-python-agent-centos-8
 
 # CentOS 9 Image Build Jobs
-# TODO(marios): enable wallaby in branches when ready
+
 - job:
     name: tripleo-buildimage-ironic-python-agent-centos-9
     parent: tripleo-build-images-base-centos-9
-    branches: ^(?!stable/(train|ussuri|victoria|wallaby)).*$
+    branches: ^(?!stable/(train|ussuri|victoria)).*$
     vars:
       tripleo_image_type: ironic-python-agent
     irrelevant-files: &build_image_irrelevant
@@ -178,7 +178,7 @@
 - job:
     name: tripleo-buildimage-overcloud-full-centos-9
     parent: tripleo-build-images-base-centos-9
-    branches: ^(?!stable/(train|ussuri|victoria|wallaby)).*$
+    branches: ^(?!stable/(train|ussuri|victoria)).*$
     vars:
       tripleo_image_type: overcloud-full
       image_sanity: false  # https://bugs.launchpad.net/tripleo/+bug/1950453
@@ -187,7 +187,7 @@
 - job:
     name: tripleo-buildimage-overcloud-hardened-uefi-full-centos-9
     parent: tripleo-build-images-base-centos-9
-    branches: ^(?!stable/(train|ussuri|victoria|wallaby)).*$
+    branches: ^(?!stable/(train|ussuri|victoria)).*$
     vars:
       tripleo_image_type: overcloud-hardened-uefi-full
     irrelevant-files: *build_image_irrelevant

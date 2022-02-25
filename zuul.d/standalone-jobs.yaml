@@ -56,7 +56,7 @@
 - job:
     name: tripleo-ci-centos-9-standalone
     parent: tripleo-ci-base-standalone-centos-8
-    branches: ^(?!stable/(train|ussuri|victoria|wallaby)).*$
+    branches: ^(?!stable/(train|ussuri|victoria)).*$
     nodeset: single-centos-9-node
     vars:
       containers_base_image: quay.io/centos/centos:stream9
@@ -601,7 +601,7 @@
 - job:
     name: tripleo-ci-centos-9-scenario012-standalone
     parent: tripleo-ci-base-standalone-centos-8
-    branches: ^(?!stable/(train|ussuri|victoria|wallaby)).*$
+    branches: ^(?!stable/(train|ussuri|victoria)).*$
     nodeset: single-centos-9-node
     vars:
       featureset: '060'
@@ -690,7 +690,7 @@
 - job:
     name: tripleo-ci-centos-9-scenario001-standalone
     parent: tripleo-ci-centos-8-scenario001-standalone
-    branches: ^(?!stable/(train|ussuri|victoria|wallaby)).*$
+    branches: ^(?!stable/(train|ussuri|victoria)).*$
     nodeset: single-centos-9-node
     files: *scen1_files
 
@@ -732,7 +732,7 @@
 - job:
     name: tripleo-ci-centos-9-scenario002-standalone
     parent: tripleo-ci-centos-8-scenario002-standalone
-    branches: ^(?!stable/(train|ussuri|victoria|wallaby)).*$
+    branches: ^(?!stable/(train|ussuri|victoria)).*$
     nodeset: single-centos-9-node
     files: *scen2_files
 
@@ -770,7 +770,7 @@
 - job:
     name: tripleo-ci-centos-9-scenario003-standalone
     parent: tripleo-ci-centos-8-scenario003-standalone
-    branches: ^(?!stable/(train|ussuri|victoria|wallaby)).*$
+    branches: ^(?!stable/(train|ussuri|victoria)).*$
     nodeset: single-centos-9-node
     files: *scen3_files
 
@@ -807,7 +807,7 @@
 - job:
     name: tripleo-ci-centos-9-scenario004-standalone
     parent: tripleo-ci-centos-8-scenario004-standalone
-    branches: ^(?!stable/(train|ussuri|victoria|wallaby)).*$
+    branches: ^(?!stable/(train|ussuri|victoria)).*$
     nodeset: single-centos-9-node
     files: *scen4_files
 
@@ -834,7 +834,7 @@
 - job:
     name: tripleo-ci-centos-9-scenario007-standalone
     parent: tripleo-ci-centos-8-scenario007-standalone
-    branches: ^(?!stable/(train|ussuri|victoria|wallaby)).*$
+    branches: ^(?!stable/(train|ussuri|victoria)).*$
     nodeset: single-centos-9-node
     files: *scen7_files
 
@@ -847,7 +847,7 @@
 - job:
     name: tripleo-ci-centos-9-scenario010-standalone
     parent: tripleo-ci-centos-8-scenario010-standalone
-    branches: ^(?!stable/(train|ussuri|victoria|wallaby)).*$
+    branches: ^(?!stable/(train|ussuri|victoria)).*$
     nodeset: single-centos-9-node-nested-virt
     files: *scen10_files
 
@@ -860,7 +860,7 @@
 - job:
     name: tripleo-ci-centos-9-scenario010-ovn-provider-standalone
     parent: tripleo-ci-centos-8-scenario010-ovn-provider-standalone
-    branches: ^(?!stable/(train|ussuri|victoria|wallaby)).*$
+    branches: ^(?!stable/(train|ussuri|victoria)).*$
     nodeset: single-centos-9-node
     files: *scen10_files
 
@@ -1010,7 +1010,7 @@
 - job:
     name: tripleo-ci-centos-9-standalone-on-multinode-ipa
     parent: tripleo-ci-base-standalone-centos-8
-    branches: ^(?!stable/(train|ussuri|victoria|wallaby)).*$
+    branches: ^(?!stable/(train|ussuri|victoria)).*$
     nodeset: two-centos-9-nodes
     required-projects:
       - opendev.org/x/tripleo-ipa
