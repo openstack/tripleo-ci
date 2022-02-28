@@ -169,7 +169,7 @@
     check:
       jobs:
         - openstack-tox-linters
-        - tripleo-ci-centos-8-content-provider-wallaby:
+        - tripleo-ci-centos-9-content-provider-wallaby:
             irrelevant-files: &branchful_ignored
               - ^.*\.md$
               - ^.*\.rst$
@@ -191,6 +191,10 @@
               - ^scripts/tripleo-critical-bugs/.*
             dependencies:
               - openstack-tox-linters
+        - tripleo-ci-centos-8-content-provider-wallaby:
+            irrelevant-files: *branchful_ignored
+            dependencies:
+              - openstack-tox-linters
         - tripleo-ci-centos-8-content-provider-train:
             irrelevant-files: *branchful_ignored
             dependencies:
@@ -208,6 +212,8 @@
 
     gate:
       jobs:
+        - tripleo-ci-centos-9-content-provider-wallaby:
+            irrelevant-files: *branchful_ignored
         - tripleo-ci-centos-8-content-provider-wallaby:
             irrelevant-files: *branchful_ignored
         - tripleo-ci-centos-8-content-provider-train:

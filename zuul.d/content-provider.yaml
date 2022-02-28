@@ -39,6 +39,13 @@
       containers_base_image: quay.io/centos/centos:stream9
 
 - job:
+    name: tripleo-ci-centos-9-content-provider-wallaby
+    parent: tripleo-ci-centos-9-content-provider
+    override-checkout: stable/wallaby
+    vars:
+      branch_override: stable/wallaby
+
+- job:
     name: tripleo-ci-centos-8-content-provider-wallaby
     parent: tripleo-ci-centos-8-content-provider
     override-checkout: stable/wallaby
