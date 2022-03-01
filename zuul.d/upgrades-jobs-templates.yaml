@@ -6,6 +6,7 @@
     check:
       jobs:
         - tripleo-ci-centos-9-content-provider
+        - tripleo-ci-centos-9-content-provider-wallaby
         - tripleo-ci-centos-9-scenario000-multinode-oooq-container-updates: &cs9_update_all
             irrelevant-files: &multinode_ignored
               - ^.*\.md$
@@ -43,24 +44,7 @@
                 - build
             dependencies:
               - tripleo-ci-centos-9-content-provider
-    gate:
-      queue: tripleo
-      jobs:
-        - tripleo-ci-centos-9-content-provider
-        - tripleo-ci-centos-9-scenario000-multinode-oooq-container-updates: *cs9_update_all
-
-- project-template:
-    name: tripleo-upgrades-wallaby-pipeline
-    check:
-      jobs:
-        - tripleo-ci-centos-8-content-provider
-        - tripleo-ci-centos-8-content-provider-victoria
-        - tripleo-ci-centos-8-scenario000-multinode-oooq-container-updates-wallaby:
-            irrelevant-files: *multinode_ignored
-            vars: *consumer_vars
-            dependencies:
-              - tripleo-ci-centos-8-content-provider
-        - tripleo-ci-centos-8-undercloud-upgrade-wallaby:
+        - tripleo-ci-centos-9-undercloud-upgrade:
             vars: *consumer_vars
             irrelevant-files: &undercloud_ignored
               - ^.*\.md$
@@ -103,6 +87,29 @@
               # upgrade/update featuresets
               - ^config/general_config/featureset037.yml
               - ^config/general_config/featureset051.yml
+            dependencies:
+              - tripleo-ci-centos-9-content-provider
+              - tripleo-ci-centos-9-content-provider-wallaby
+    gate:
+      queue: tripleo
+      jobs:
+        - tripleo-ci-centos-9-content-provider
+        - tripleo-ci-centos-9-scenario000-multinode-oooq-container-updates: *cs9_update_all
+
+- project-template:
+    name: tripleo-upgrades-wallaby-pipeline
+    check:
+      jobs:
+        - tripleo-ci-centos-8-content-provider
+        - tripleo-ci-centos-8-content-provider-victoria
+        - tripleo-ci-centos-8-scenario000-multinode-oooq-container-updates-wallaby:
+            irrelevant-files: *multinode_ignored
+            vars: *consumer_vars
+            dependencies:
+              - tripleo-ci-centos-8-content-provider
+        - tripleo-ci-centos-8-undercloud-upgrade-wallaby:
+            vars: *consumer_vars
+            irrelevant-files: *undercloud_ignored
             dependencies:
               - tripleo-ci-centos-8-content-provider
               - tripleo-ci-centos-8-content-provider-victoria
@@ -459,6 +466,20 @@
     parent: tripleo-ci-base-singlenode-centos-8
     branches: ^stable/wallaby$
     voting: true
+    vars:
+      featureset: '050'
+      featureset_override:
+        validate_services: false
+      extra_tags:
+        - undercloud-upgrade
+
+## CentOS 9 Undercloud Upgrade
+- job:
+    name: tripleo-ci-centos-9-undercloud-upgrade
+    parent: tripleo-ci-base-singlenode-centos-8
+    nodeset: single-centos-9-node
+    branches: ^master$
+    voting: false
     vars:
       featureset: '050'
       featureset_override:

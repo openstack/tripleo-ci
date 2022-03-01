@@ -3,10 +3,10 @@
     name: tripleo-periodic
     periodic:
       jobs:
-        - tripleo-ci-centos-8-content-provider:
+        - tripleo-ci-centos-9-content-provider:
             vars:
               force_non_periodic: true
-        - tripleo-ci-centos-8-containers-multinode: &unbranched_vars_periodic
+        - tripleo-ci-centos-9-containers-multinode: &unbranched_vars_periodic
             vars:
               force_non_periodic: true
               consumer_job: true
@@ -14,9 +14,9 @@
               remove_tags:
                 - build
             dependencies:
-              - tripleo-ci-centos-8-content-provider
-        - tripleo-ci-centos-8-standalone: *unbranched_vars_periodic
-        - tripleo-ci-centos-8-scenario000-multinode-oooq-container-updates: *unbranched_vars_periodic
+              - tripleo-ci-centos-9-content-provider
+        - tripleo-ci-centos-9-standalone: *unbranched_vars_periodic
+        - tripleo-ci-centos-9-scenario000-multinode-oooq-container-updates: *unbranched_vars_periodic
 
 - project-template:
     name: tripleo-multinode-branchful
@@ -192,23 +192,20 @@
         - tripleo-ci-centos-9-content-provider-wallaby:
             vars:
               force_non_periodic: true
-        - tripleo-ci-centos-8-content-provider:
+        - tripleo-ci-centos-9-content-provider:
             vars:
               force_non_periodic: true
-        - tripleo-ci-centos-8-content-provider-wallaby:
-            vars:
-              force_non_periodic: true
-        - tripleo-ci-centos-8-undercloud-upgrade:
+        - tripleo-ci-centos-9-undercloud-upgrade:
             vars: *consumer_vars
             irrelevant-files: *undercloud_ignored
             dependencies:
-              - tripleo-ci-centos-8-content-provider
-              - tripleo-ci-centos-8-content-provider-wallaby
-        - tripleo-ci-centos-8-scenario000-multinode-oooq-container-updates:
+              - tripleo-ci-centos-9-content-provider
+              - tripleo-ci-centos-9-content-provider-wallaby
+        - tripleo-ci-centos-9-scenario000-multinode-oooq-container-updates:
             irrelevant-files: *multinode_ignored
             vars: *consumer_vars
             dependencies:
-              - tripleo-ci-centos-8-content-provider
+              - tripleo-ci-centos-9-content-provider
 
 - project-template:
     name: tripleo-periodic-upgrades-wallaby-pipeline
