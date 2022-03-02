@@ -729,3 +729,10 @@
         - quickstart.yml
         - multinode-undercloud.yml
         - multinode-validate.yml
+
+# Deprecated C8 jobs
+- job:
+    name: tripleo-ci-centos-8-scenario010-standalone
+    voting: true
+    parent: tripleo-ci-centos-8-scenario010-standalone-base
+    branches: ^(?!stable/(train|ussuri|victoria|wallaby)).*$
