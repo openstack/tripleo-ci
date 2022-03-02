@@ -3,6 +3,58 @@
 # Zuul layout for TripleO multinode jobs.
 # It contains all the jobs using deployed-servers in nodepool.
 
+###########################################################
+#                                                         #
+#         UPSTREAM MULTINODE PARENTING                    #
+#                                                         #
+###########################################################
+
+# This job definition holds the required projects
+# for upstream CI. The required projects are separated
+# out to allow for this job to be shadowed in another repo
+# and the required projects overwritten for other environments
+- job:
+    name: tripleo-ci-base-required-projects-multinode-upstream
+    description: |
+        Base abstract job to add required-projects for Upstream Multinode Jobs
+    abstract: true
+    parent: tripleo-ci-base-multinode-standard
+    required-projects:
+      - opendev.org/openstack/tripleo-ansible
+      - opendev.org/openstack/tripleo-common
+      - opendev.org/openstack/tripleo-operator-ansible
+      - name: opendev.org/openstack/ansible-config_template
+        override-checkout: master
+
+# CentOS 7 version
+# Distro specific upstream base for multinode jobs
+
+- job:
+    name: tripleo-ci-base-multinode
+    abstract: true
+    description: |
+        Base abstract job for multinode TripleO CI C7 zuulv3 jobs
+    parent: tripleo-ci-base-required-projects-multinode-upstream
+    nodeset: two-centos-7-nodes
+
+# CentOS 8 version
+- job:
+    name: tripleo-ci-base-multinode-centos-8
+    abstract: true
+    description: |
+        Base abstract job for multinode TripleO CI centos-8 zuulv3 jobs
+    parent: tripleo-ci-base-required-projects-multinode-upstream
+    nodeset: two-centos-8-nodes
+
+# CentOS 9 version
+- job:
+    name: tripleo-ci-base-multinode-centos-9
+    abstract: true
+    description: |
+        Base abstract job for multinode TripleO CI centos-9 zuulv3 jobs
+    parent: tripleo-ci-base-required-projects-multinode-upstream
+    nodeset: two-centos-9-nodes
+
 - project-template:
     name: tripleo-multinode-container-minimal-pipeline
     check:
@@ -227,9 +279,8 @@
 ## CentOS 9 jobs
 - job:
     name: tripleo-ci-centos-9-containers-multinode
-    parent: tripleo-ci-base-multinode-centos-8
+    parent: tripleo-ci-base-multinode-centos-9
     branches: ^(?!stable/(train|ussuri|victoria)).*$
-    nodeset: two-centos-9-nodes
     irrelevant-files: *multinode_ignored
     voting: true
     vars:
@@ -240,9 +291,8 @@
 
 - job:
     name: tripleo-ci-centos-9-scenario007-multinode-oooq-container
-    parent: tripleo-ci-base-multinode-centos-8
+    parent: tripleo-ci-base-multinode-centos-9
     branches: ^(?!stable/(train|ussuri|victoria)).*$
-    nodeset: two-centos-9-nodes
     irrelevant-files: *multinode_ignored
     vars:
       nodes: 1ctlr
