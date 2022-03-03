@@ -1,5 +1,99 @@
 ---
 # zuul.d/build-containers.yaml
+
+#################################################################
+#                                                               #
+#         UPSTREAM BUILD CONTAINER PARENTING                    #
+#                                                               #
+#################################################################
+
+- job:
+    name: tripleo-ci-build-containers-required-projects-upstream
+    abstract: true
+    description: |
+                Base job to provide required-projects for standalone TripleO CI build-containers jobs
+    parent: tripleo-ci-base-containers-standard
+    roles:
+      - zuul: opendev.org/openstack/ansible-role-container-registry
+      - zuul: opendev.org/openstack/tripleo-ansible
+    required-projects:
+      - opendev.org/openstack/ansible-role-container-registry
+      - opendev.org/openstack/kolla
+      - opendev.org/openstack/python-tripleoclient
+      - opendev.org/openstack/requirements
+      - opendev.org/openstack/tripleo-ansible
+      - opendev.org/openstack/tripleo-common
+    pre-run: playbooks/tripleo-buildcontainers/pre.yaml
+    irrelevant-files:
+      - ^.*\.rst$
+      - ^releasenotes/.*$
+    files:
+      # generic:
+      - ^bindep.txt$
+      - ^requirements.txt$
+      - ^setup.cfg$
+      - ^setup.py$
+      # kolla
+      - ^docker/.*$
+      - kolla.*$
+      # tripleo-ci
+      - ^playbooks/.*$
+      - ^(playbooks|roles)/tripleo-buildcontainers/.*$
+      - ^roles/build-containers/.*$
+      - ^roles/prepare-node/.*$
+      - ^roles/ci-common-vars/.*$
+      - ^(playbooks|roles)/tripleo-repos/.*$
+      - ^zuul.d/build-containers.yaml$
+      - ^zuul.d/base.yaml$
+      # tripleo-common
+      - ^container-images/.*$
+      - ^healthcheck/.*$
+      - ^tripleo_common/image/.*$
+      # tripleo-repos
+      - ^tripleo_repos/.*$
+      # python-tripleoclient
+      - ^tripleoclient/v1/container.*$
+
+# Note: It merges tripleo-build-containers-base-with-files and
+# tripleo-build-containers-base.
+
+# CentOS 7 Distro based Job
+- job:
+    name: tripleo-build-containers-base
+    abstract: true
+    description: |
+                Base abstract job for standalone TripleO CI build-containers jobs running repo setup
+    parent: tripleo-ci-build-containers-required-projects-upstream
+    nodeset: single-centos-7-node
+
+# CentOS 8 Distro based Job
+- job:
+    name: tripleo-build-containers-base-centos-8
+    parent: tripleo-ci-build-containers-required-projects-upstream
+    nodeset: single-centos-8-node
+    vars:
+      use_buildah: true
+      kolla_base: centos
+      kolla_base_pull: true
+      buildcontainers_override_repos: current-tripleo
+      kolla_base_image: centos
+      kolla_base_tag: 8
+      push_containers: false
+      push_containers_podman: false
+
+# CentOS 9 Distro based Job
+- job:
+    name: tripleo-build-containers-base-centos-9
+    parent: tripleo-ci-build-containers-required-projects-upstream
+    nodeset: single-centos-9-node
+    vars:
+      containers_base_image: quay.io/centos/centos:stream9
+      registry_namespace: tripleomastercentos9
+      push_containers: false
+      push_containers_podman: false
+      use_kolla: false
+      use_buildah: true
+
 # Zuul layout for TripleO Build Containers jobs.
 
 - project-template:
@@ -53,15 +147,13 @@
 
 - job:
     name: tripleo-build-containers-centos-7-base
-    parent: tripleo-build-containers-base-with-files
-    nodeset: single-centos-7-node
+    parent: tripleo-build-containers-base
     branches: ^(?!stable/(pike|queens)).*$
     voting: true
 
 - job:
     name: tripleo-build-containers-centos-7
-    parent: tripleo-build-containers-base-with-files
-    nodeset: single-centos-7-node
+    parent: tripleo-build-containers-base
     branches: ^(stable/(stein|train)).*$
     voting: true
 
@@ -103,28 +195,12 @@
       branch_override: stable/stein
       use_buildah: true
 
+# CentOS 8
 - job:
     name: tripleo-build-containers-centos-8
-    parent: tripleo-build-containers-base-with-files
-    nodeset: single-centos-8-node
+    parent: tripleo-build-containers-base-centos-8
     branches: ^(?!stable/(pike|queens|stein)).*$
     voting: true
-    required-projects:
-      - opendev.org/openstack/ansible-role-container-registry
-      - opendev.org/openstack/kolla
-      - opendev.org/openstack/python-tripleoclient
-      - opendev.org/openstack/requirements
-      - opendev.org/openstack/tripleo-common
-      - opendev.org/openstack/tripleo-repos
-    vars:
-      use_buildah: true
-      kolla_base: centos
-      kolla_base_pull: true
-      buildcontainers_override_repos: current-tripleo
-      kolla_base_image: centos
-      kolla_base_tag: 8
-      push_containers: false
-      push_containers_podman: false
 
 # Branchful job to run on CI branchless repos which have master only
 - job:
@@ -143,56 +219,28 @@
     vars:
       branch_override: stable/train
 
-# This job definition holds the required projects
-# for tripleo-build-containers-ubi-8-base. The required projects are
-# separated out to allow for this job to be shadowed in another repo
-# and the required projects overwritten for other environments
-- job:
-    name: tripleo-build-containers-ubi-8-base-required-projects
-    parent: tripleo-build-containers-base-with-files
-    abstract: true
-    roles:
-      - zuul: opendev.org/openstack/tripleo-ansible
-    required-projects:
-      - opendev.org/openstack/ansible-role-container-registry
-      - opendev.org/openstack/kolla
-      - opendev.org/openstack/python-tripleoclient
-      - opendev.org/openstack/requirements
-      - opendev.org/openstack/tripleo-ansible
-      - opendev.org/openstack/tripleo-common
-      - opendev.org/openstack/tripleo-repos
+# CentOS 8 UBI jobs
 
 - job:
-    name: tripleo-build-containers-ubi-8-base
-    parent: tripleo-build-containers-ubi-8-base-required-projects
-    nodeset: single-centos-8-node
+    name: tripleo-build-containers-base-ubi-8
+    parent: tripleo-build-containers-base-centos-8
     vars:
-      use_buildah: true
       use_kolla: false
-      buildcontainers_override_repos: current-tripleo
-      push_containers: false
-      push_containers_podman: false
 
 # containers-ubi-8 is exercised via the content-provider jobs
 # excluding train as tripleo-repos + train + current is blocked
 - job:
     name: tripleo-build-containers-ubi-8
-    parent: tripleo-build-containers-ubi-8-base
+    parent: tripleo-build-containers-base-ubi-8
     branches: master  # only wired up for tripleo-repos
     voting: true
 
 
+# CentOS 9 jobs
+
 - job:
     # TODO update branch after branching
     name: tripleo-build-containers-centos-9
-    parent: tripleo-build-containers-base-with-files
-    nodeset: single-centos-9-node
+    parent: tripleo-build-containers-base-centos-9
     branches: master
     voting: false
-    vars:
-      containers_base_image: quay.io/centos/centos:stream9
-      registry_namespace: tripleomastercentos9
-      push_containers: false
-      push_containers_podman: false
-      use_kolla: false
-      use_buildah: true
