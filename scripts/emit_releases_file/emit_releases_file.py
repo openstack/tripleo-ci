@@ -10,6 +10,7 @@ It supports:
  - undercloud-upgrade from stable_release ocata.
  - fast forward upgrade;
    - newton->queens;
+   - Undercloud upgrade from train->wallaby
  - standalone-upgrade from stable_release stein.
 
 It exports those environmental variables in the OUTPUT_FILE:
@@ -53,7 +54,7 @@ RELEASES = [
     'master',
 ]
 # Define long term releases
-LONG_TERM_SUPPORT_RELEASES = ['queens']
+LONG_TERM_SUPPORT_RELEASES = ['queens', 'train', 'wallaby']
 UNSUPPORTED_STANDALONE = ['newton', 'ocata', 'pike', 'queens']
 
 # NAMED DLRN HASHES
@@ -217,6 +218,14 @@ def compose_releases_dictionary(
             "undercloud OR the overcloud NOT both."
         )
 
+    if featureset.get('ffu_undercloud_upgrade') and featureset.get(
+        'undercloud_upgrade'
+    ):
+        raise RuntimeError(
+            "Only Fast Forward Undercloud upgrade or single release undercloud "
+            "upgrade is supported, NOT both at the same time."
+        )
+
     if (
         featureset.get('overcloud_upgrade') or featureset.get('ffu_overcloud_upgrade')
     ) and not featureset.get('mixed_upgrade'):
@@ -232,8 +241,8 @@ def compose_releases_dictionary(
 
     if (
         featureset.get('ffu_overcloud_upgrade')
-        and stable_release not in LONG_TERM_SUPPORT_RELEASES
-    ):
+        or featureset.get('ffu_undercloud_upgrade')
+    ) and stable_release not in LONG_TERM_SUPPORT_RELEASES:
         raise RuntimeError(
             "{} is not a long-term support release, and cannot be "
             "used in a fast forward upgrade. Current long-term support "
@@ -311,9 +320,16 @@ def compose_releases_dictionary(
             releases_dictionary['overcloud_deploy_release'] = deploy_release
             releases_dictionary['overcloud_deploy_hash'] = deploy_hash
 
-    elif featureset.get('undercloud_upgrade'):
-        logger.info('Doing an undercloud upgrade')
-        install_release = get_relative_release(stable_release, -1)
+    elif featureset.get('undercloud_upgrade') or featureset.get(
+        'ffu_undercloud_upgrade'
+    ):
+        if featureset.get('undercloud_upgrade'):
+            logger.info('Doing an undercloud upgrade')
+            install_release = get_relative_release(stable_release, -1)
+        else:
+            logger.info('Doing an undercloud fast forward upgrade')
+            install_release = get_relative_release(stable_release, -3)
+
         install_hash = ''
         if content_provider_hashes is not None and content_provider_hashes.get(
             install_branch_override

@@ -94,6 +94,12 @@ MIXED_UPGRADE_TYPE=''
 # Order matters.  ffu featureset has both mixed version and ffu_overcloud_upgrade.
 if is_featureset ffu_overcloud_upgrade "{{ job_featureset_file }}"; then
     MIXED_UPGRADE_TYPE='ffu_upgrade'
+elif is_featureset ffu_undercloud_upgrade "{{ job_featureset_file }}"; then
+    export UPGRADE_RELEASE=$QUICKSTART_RELEASE
+    export QUICKSTART_RELEASE=$(previous_release_from "${STABLE_RELEASE}" 'ffu_undercloud_upgrade')
+    {% if provider_dlrn_hash_tag_branch is defined %}
+    EMIT_RELEASES_EXTRA_ARGS="$EMIT_RELEASES_EXTRA_ARGS --content-provider-hashes={{ provider_dlrn_hash_tag_branch.keys()|zip(provider_dlrn_hash_tag_branch.values())|map('join',':')|join(';') }} --target-branch-override=$UPGRADE_RELEASE --install-branch-override=$QUICKSTART_RELEASE"
+    {% endif %}
 elif  is_featureset mixed_upgrade "{{ job_featureset_file }}"; then
     MIXED_UPGRADE_TYPE='mixed_upgrade'
 elif is_featureset undercloud_upgrade "{{ job_featureset_file }}"; then
@@ -121,7 +127,7 @@ QUICKSTART_RELEASE="promotion-testing-hash-${QUICKSTART_RELEASE}"
 EMIT_RELEASES_EXTRA_ARGS="$EMIT_RELEASES_EXTRA_ARGS --is-periodic"
 {% endif %}
 
-if [[ -f "$RELEASES_SCRIPT" ]] && [[ {{ featureset }} =~ 037|047|050|056 ]]; then
+if [[ -f "$RELEASES_SCRIPT" ]] && [[ {{ featureset }} =~ 037|047|050|056|065 ]]; then
 
     if [[  -f "$RELEASES_FILE_OUTPUT" ]]; then
         echo "Importing ready releases.sh file - skipping releases.sh file generation."
