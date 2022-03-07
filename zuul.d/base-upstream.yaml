@@ -103,7 +103,6 @@
                 Base abstract job for multinode TripleO CI centos-8 zuulv3 jobs
     parent: tripleo-ci-base-standard
     pre-run: playbooks/tripleo-ci/install-built-repo.yml
-    post-run: playbooks/tripleo-ci/post-artifact-mult.yml
     vars:
       undercloud: 127.0.0.2
       environment_infra: osinfra
