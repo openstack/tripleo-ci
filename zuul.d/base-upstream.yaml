@@ -253,25 +253,22 @@
       tags:
         - all
 
-###########################################################
-#                                                         #
-#         UPSTREAM MULTINODE PARENTING                    #
-#                                                         #
-###########################################################
-
-# This job definition holds the required projects
-# for upstream CI. The required projects are separated
-# out to allow for this job to be shadowed in another repo
-# and the required projects overwritten for other environments
 - job:
-    name: tripleo-ci-base-required-projects-multinode-upstream
-    description: |
-        Base abstract job to add required-projects for Upstream Multinode Jobs
+    name: tripleo-ci-base-containers-standard
     abstract: true
-    parent: tripleo-ci-base-multinode-standard
-    required-projects:
-      - opendev.org/openstack/tripleo-ansible
-      - opendev.org/openstack/tripleo-common
-      - opendev.org/openstack/tripleo-operator-ansible
-      - name: opendev.org/openstack/ansible-config_template
-        override-checkout: master
+    description: |
+                Base abstract job for container build TripleO CI zuulv3 jobs
+    parent: tripleo-ci-base-singlenode-standard
+    run: playbooks/tripleo-buildcontainers/run.yaml
+    post-run: playbooks/tripleo-buildcontainers/post.yaml
+    timeout: 7200
+
+- job:
+    name: tripleo-ci-base-images-standard
+    abstract: true
+    description: |
+                Base abstract job for Image build TripleO CI zuulv3 jobs
+    parent: tripleo-ci-base-singlenode-standard
+    pre-run: playbooks/tripleo-buildimages/pre.yaml
+    run: playbooks/tripleo-buildimages/run-v3.yaml
+    timeout: 5400
