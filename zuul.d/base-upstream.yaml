@@ -271,4 +271,5 @@
     parent: tripleo-ci-base-singlenode-standard
     pre-run: playbooks/tripleo-buildimages/pre.yaml
     run: playbooks/tripleo-buildimages/run-v3.yaml
+    post-run: playbooks/tripleo-buildimages/post.yaml
     timeout: 5400
