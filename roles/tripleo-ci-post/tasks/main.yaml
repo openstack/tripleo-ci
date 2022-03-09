@@ -1,0 +1,10 @@
+---
+- import_tasks: post-artifact-mult.yml
+  when:
+    - environment_type is defined and environment_type == "multinode"
+    - ansible_distribution_major_version is version(8, '>=')
+
+- import_tasks: post-artifact-sa.yml
+  when:
+    - environment_type is defined and environment_type == "standalone"
+    - ansible_distribution_major_version is version(8, '>=')

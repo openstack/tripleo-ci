@@ -198,7 +198,6 @@
         Base abstract job for multinode TripleO CI centos-8 zuulv3 jobs
     parent: tripleo-ci-base-centos-8
     pre-run: playbooks/tripleo-ci/install-built-repo.yml
-    post-run: playbooks/tripleo-ci/post-artifact-mult.yml
     vars:
       undercloud: 127.0.0.2
       environment_infra: osinfra
@@ -395,7 +394,6 @@
     parent: tripleo-ci-base-standalone-required-projects-centos-8
     nodeset: single-centos-8-node
     pre-run: playbooks/tripleo-ci/install-built-repo.yml
-    post-run: playbooks/tripleo-ci/post-artifact-sa.yml
     vars:
       # for standalone we don't need the multinode network configuration but
       # we do want the interface to be created. So let's create br-ex but

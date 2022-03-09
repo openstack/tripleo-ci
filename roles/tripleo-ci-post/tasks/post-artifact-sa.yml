@@ -1,0 +1,24 @@
+---
+- name: Return artifacts for standalone jobs
+  zuul_return:
+    data:
+      zuul:
+        artifacts:
+          - name: Standalone deploy log
+            url: logs/undercloud/home/zuul/standalone_deploy.log
+          - name: All logs file in home dir
+            url: logs/undercloud/home/zuul/
+          - name: Tempest results
+            url: logs/stackviz/index.html#/testrepository.subunit
+          - name: Extra logs
+            url: logs/undercloud/var/log/extra/index.html
+          - name: Errors file
+            url: logs/undercloud/var/log/extra/errors.txt
+          - name: Delorean build logs
+            url: logs/delorean_logs/
+          - name: System logs for each container
+            url: logs/undercloud/var/log/containers/
+          - name: Podman container setup configuration and setup logs
+            url: logs/undercloud/var/log/extra/podman/
+          - name: Container download, container update and provision log
+            url: logs/undercloud/var/log/tripleo-container-image-prepare.log

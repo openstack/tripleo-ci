@@ -1,4 +1,9 @@
 ---
+- name: Return Zuul artifacts
+  hosts: primary
+  roles:
+    - tripleo-ci-post
+
 - name: Write console log to localhost as fact zuul_console_json
   hosts: localhost
   tasks:
