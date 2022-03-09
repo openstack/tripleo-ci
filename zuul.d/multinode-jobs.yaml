@@ -247,19 +247,15 @@
               - ^scripts/tripleo-critical-bugs/.*
             dependencies:
               - openstack-tox-linters
-        - tripleo-ci-centos-8-content-provider-wallaby:
-            irrelevant-files: *branchful_ignored
-            dependencies:
-              - openstack-tox-linters
         - tripleo-ci-centos-8-content-provider-train:
             irrelevant-files: *branchful_ignored
             dependencies:
               - openstack-tox-linters
-        - tripleo-ci-centos-8-containers-multinode-wallaby: &multi_consumer_job_wallaby
+        - tripleo-ci-centos-9-containers-multinode-wallaby: &multi_consumer_job_wallaby
             irrelevant-files: *branchful_ignored
             vars: *multi_consumer_vars
             dependencies:
-              - tripleo-ci-centos-8-content-provider-wallaby
+              - tripleo-ci-centos-9-content-provider-wallaby
         - tripleo-ci-centos-8-containers-multinode-train: &multi_consumer_job_train
             irrelevant-files: *branchful_ignored
             vars: *multi_consumer_vars
@@ -270,11 +266,9 @@
       jobs:
         - tripleo-ci-centos-9-content-provider-wallaby:
             irrelevant-files: *branchful_ignored
-        - tripleo-ci-centos-8-content-provider-wallaby:
-            irrelevant-files: *branchful_ignored
         - tripleo-ci-centos-8-content-provider-train:
             irrelevant-files: *branchful_ignored
-        - tripleo-ci-centos-8-containers-multinode-wallaby: *multi_consumer_job_wallaby
+        - tripleo-ci-centos-9-containers-multinode-wallaby: *multi_consumer_job_wallaby
         - tripleo-ci-centos-8-containers-multinode-train: *multi_consumer_job_train
     experimental:
       jobs:
@@ -284,7 +278,7 @@
 - job:
     name: tripleo-ci-centos-9-containers-multinode
     parent: tripleo-ci-base-multinode-centos-9
-    branches: ^(?!stable/(train|ussuri|victoria)).*$
+    branches: &c9_branches ^(?!stable/(train|ussuri|victoria)).*$
     irrelevant-files: *multinode_ignored
     voting: true
     vars:
@@ -296,7 +290,7 @@
 - job:
     name: tripleo-ci-centos-9-scenario007-multinode-oooq-container
     parent: tripleo-ci-base-multinode-centos-9
-    branches: ^(?!stable/(train|ussuri|victoria)).*$
+    branches: *c9_branches
     irrelevant-files: *multinode_ignored
     vars:
       nodes: 1ctlr
@@ -308,7 +302,7 @@
 - job:
     name: tripleo-ci-centos-8-containers-multinode
     parent: tripleo-ci-base-multinode-centos-8
-    branches: ^(stable/(train|ussuri|victoria|wallaby)).*$
+    branches: &c8_branches ^(stable/(train|ussuri|victoria)).*$
     voting: true
     vars:
       nodes: 1ctlr
@@ -319,7 +313,7 @@
 - job:
     name: tripleo-ci-centos-8-containers-undercloud-minion
     parent: tripleo-ci-base-multinode-centos-8
-    branches: ^(stable/(train|ussuri|victoria)).*$
+    branches: *c8_branches
     vars:
       nodes: 1minion
       featureset: '061'
@@ -330,8 +324,8 @@
         - undercloud-minion-deploy
 
 - job:
-    name: tripleo-ci-centos-8-containers-multinode-wallaby
-    parent: tripleo-ci-centos-8-containers-multinode
+    name: tripleo-ci-centos-9-containers-multinode-wallaby
+    parent: tripleo-ci-centos-9-containers-multinode
     branches: master
     override-checkout: stable/wallaby
     vars:
@@ -389,7 +383,7 @@
 - job:
     name: tripleo-ci-centos-8-scenario007-multinode-oooq-container
     parent: tripleo-ci-base-multinode-centos-8
-    branches: ^(stable/(victoria|wallaby)).*$
+    branches: stable/victoria
     vars:
       nodes: 1ctlr
       featureset: '030'
