@@ -100,7 +100,7 @@
     name: tripleo-ci-base-multinode-standard
     abstract: true
     description: |
-                Base abstract job for multinode TripleO CI centos-8 zuulv3 jobs
+                Base abstract job for multinode TripleO CI zuulv3 jobs
     parent: tripleo-ci-base-standard
     pre-run: playbooks/tripleo-ci/install-built-repo.yml
     vars:
@@ -135,7 +135,7 @@
     name: tripleo-ci-base-singlenode-standard
     abstract: true
     description: |
-                Base abstract job for singlenode TripleO CI centos-8 zuulv3 jobs
+                Base abstract job for singlenode TripleO CI zuulv3 jobs
     parent: tripleo-ci-base-standard
     pre-run: playbooks/tripleo-ci/install-built-repo.yml
     vars:
@@ -239,7 +239,7 @@
     name: tripleo-ci-base-ovb-standard
     abstract: true
     description: |
-                Base abstract job for OVB TripleO CI centos-8 zuulv3 jobs
+                Base abstract job for OVB TripleO CI zuulv3 jobs
     # min version to use
     ansible-version: 2.9
     parent: tripleo-ci-base-standard
