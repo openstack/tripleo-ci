@@ -263,6 +263,15 @@
     timeout: 7200
 
 - job:
+    name: tripleo-ci-containers-rdo-upstream-pre
+    abstract: true
+    description: |
+                Base abstract job for container build TripleO CI zuulv3 jobs
+                to run pre playbook in RDO and Upstream
+    parent: tripleo-ci-base-containers-standard
+    pre-run: playbooks/tripleo-buildcontainers/pre.yaml
+
+- job:
     name: tripleo-ci-base-images-standard
     abstract: true
     description: |
