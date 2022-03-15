@@ -135,6 +135,7 @@
     pre-run:
       - playbooks/nodepool-provider/pre.yaml
       - playbooks/openstack-zuul-jobs/legacy/pre.yaml
+      - playbooks/tripleo-ci/centos-compose-repos.yml
       - playbooks/tripleo-ci/ceph.yaml
       - playbooks/tripleo-ci/pre.yaml
     run: playbooks/tripleo-ci/run-v3.yaml
@@ -566,6 +567,7 @@
         Base abstract job for standalone TripleO CI build-containers jobs running repo setup
     parent: tripleo-build-containers-base-noreposetup
     pre-run:
+      - playbooks/tripleo-ci/centos-compose-repos.yml
       - playbooks/tripleo-buildcontainers/pre.yaml
 
 - job:

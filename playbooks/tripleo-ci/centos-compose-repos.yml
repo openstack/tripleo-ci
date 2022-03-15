@@ -1,0 +1,92 @@
+---
+- hosts: all
+  vars:
+    workspace: "{{ ansible_user_dir }}"
+    tripleo_repos_repository: "{{ ansible_user_dir }}/{{ zuul.projects['opendev.org/openstack/tripleo-repos'].src_dir }}"
+    default_compose_url: >-
+      {%- if (ansible_distribution_major_version is version('8','==')) -%}
+      https://composes.centos.org/latest-CentOS-Stream-8/compose/
+      {%- else -%}
+      https://odcs.stream.centos.org/production/latest-CentOS-Stream/compose/
+      {%- endif -%}
+    compose_url: >-
+      {{
+        centos_compose_url |
+          default(job.centos_compose_url) |
+          default(default_compose_url)
+      }}
+    rpm_packages:
+      - dnf-utils
+      - git
+      - python3-libselinux
+      - python3-pip
+      - python3-setuptools
+
+  tasks:
+    - when: (job.dependency is defined and job.dependency == "centos-compose") or
+            (dependency is defined and dependency == "centos-compose")
+      block:
+        - name: Install system packages
+          become: true
+          package:
+            name: "{{ rpm_packages }}"
+            state: present
+
+        - name: Include dependency-related vars
+          include_vars: >-
+            {{ zuul.executor.work_root }}/{{
+                  zuul.projects[
+                    'opendev.org/openstack/tripleo-quickstart'
+                  ].src_dir
+                }}/config/release/dependency_ci/{{ dependency }}/repo_config.yaml
+
+        - name: Install tripleo-repos
+          vars:
+            ansible_python_interpreter: /usr/bin/python3
+          become: true
+          pip:
+            name: "{{ tripleo_repos_repository }}"
+            virtualenv: "{{ workspace }}/venv"
+            # https://github.com/ansible/ansible/issues/52275
+            virtualenv_command: "{{ ansible_python_interpreter }} -m venv"
+            virtualenv_site_packages: true
+
+        - name: Configure repos for CentOS Compose job
+          become: true
+          shell: |
+            set -exo pipefail
+            source {{ workspace }}/venv/bin/activate
+            # Populate CentOS compose repos
+            tripleo-yum-config enable-compose-repos \
+              --disable-all-conflicting \
+              --release centos-stream-{{ ansible_distribution_major_version }} \
+              --compose-url {{ compose_url }} \
+              --variants \
+                AppStream BaseOS HighAvailability \
+                {% if ansible_distribution_major_version is version("8", "==") -%}
+                PowerTools \
+                {% else -%}
+                CRB \
+                {% endif -%}
+              --disable-repos quickstart-centos-appstreams.repo quickstart-centos-base.repo \
+                quickstart-centos-highavailability.repo \
+                {% if ansible_distribution_major_version is version("8", "==") -%}
+                quickstart-centos-powertools.repo
+                {% else -%}
+                quickstart-centos-crb.repo
+                {% endif -%}
+          register: result
+
+        - name: Rebuild package database
+          become: true
+          command: rpm --rebuilddb
+
+        - name: Print out the stdout of result
+          debug:
+            msg: "{{ result }}"
+
+        - name: Update all installed packages after new repos are setup  # noqa package-latest
+          become: true
+          package:
+            name: '*'
+            state: latest
