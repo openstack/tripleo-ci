@@ -736,3 +736,15 @@
     voting: true
     parent: tripleo-ci-centos-8-scenario010-standalone-base
     branches: ^(?!stable/(train|ussuri|victoria|wallaby)).*$
+
+# Centos8 jobs no longer running for tripleo/wallaby. This is used by DIB:
+# https://opendev.org/openstack/diskimage-builder/src/commit/94fab70e5834a8deaa03ca32957e37586951743d/.zuul.d/project.yaml#L9
+- job:
+    name: tripleo-buildimage-overcloud-hardened-uefi-full-centos-8
+    parent: tripleo-build-images-base-centos-8
+    branches: ^stable/wallaby$
+    vars:
+      tripleo_image_type: overcloud-hardened-uefi-full
+    irrelevant-files:
+      - ^.*\.rst$
+      - ^releasenotes/.*$
