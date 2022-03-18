@@ -224,36 +224,22 @@
     name: tripleo-periodic-upgrades-wallaby-pipeline
     periodic:
       jobs:
-        - tripleo-ci-centos-9-content-provider-wallaby:
+        - tripleo-ci-centos-9-content-provider-wallaby: &force_non_periodic
             vars:
               force_non_periodic: true
-        - tripleo-ci-centos-8-content-provider-wallaby:
-            vars:
-              force_non_periodic: true
-        - tripleo-ci-centos-8-content-provider-victoria:
-            vars:
-              force_non_periodic: true
-        - tripleo-ci-centos-8-standalone-upgrade-wallaby:
+        - tripleo-ci-centos-8-content-provider-wallaby: *force_non_periodic
+        - tripleo-ci-centos-8-content-provider-train: *force_non_periodic
+        - tripleo-ci-centos-9-scenario000-multinode-oooq-container-updates:
+            irrelevant-files: *multinode_ignored
             vars: *consumer_vars
             dependencies:
-              - tripleo-ci-centos-8-content-provider-wallaby
-              - tripleo-ci-centos-8-content-provider-victoria
-        - tripleo-ci-centos-8-undercloud-upgrade-wallaby:
+              - tripleo-ci-centos-9-content-provider-wallaby
+        - tripleo-ci-centos-8-undercloud-ffu-wallaby:
             vars: *consumer_vars
             irrelevant-files: *undercloud_ignored
             dependencies:
               - tripleo-ci-centos-8-content-provider-wallaby
-              - tripleo-ci-centos-8-content-provider-victoria
-        - tripleo-ci-centos-8-scenario000-multinode-oooq-container-upgrades-wallaby:
-            irrelevant-files: *multinode_ignored
-            vars: *consumer_vars
-            dependencies:
-              - tripleo-ci-centos-8-content-provider-wallaby
-        - tripleo-ci-centos-8-scenario000-multinode-oooq-container-updates-wallaby:
-            irrelevant-files: *multinode_ignored
-            vars: *consumer_vars
-            dependencies:
-              - tripleo-ci-centos-8-content-provider-wallaby
+              - tripleo-ci-centos-8-content-provider-train
 
 - project-template:
     name: tripleo-ceph-periodic
