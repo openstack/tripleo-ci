@@ -23,6 +23,16 @@ fi
 if [ "$ZUUL_BRANCH" = "stable/1.0.0" -a "$ZUUL_PROJECT" = "openstack/ansible-collections-openstack" ]; then
     export ZUUL_BRANCH="master"
 fi
+# For validations-libs repo "stable/1.6.0" is a support branch
+if [ "$ZUUL_BRANCH" = "stable/1.6.0" -a "$ZUUL_PROJECT" = "openstack/validations-libs" ]; then
+    export ZUUL_BRANCH="stable/train"
+    export STABLE_RELEASE="train"
+fi
+# For validations-common repo "stable/1.6.0" is a support branch
+if [ "$ZUUL_BRANCH" = "stable/1.6.0" -a "$ZUUL_PROJECT" = "openstack/validations-common" ]; then
+    export ZUUL_BRANCH="stable/train"
+    export STABLE_RELEASE="train"
+fi
 
 export OVERRIDE_ZUUL_BRANCH=${OVERRIDE_ZUUL_BRANCH:-""}
 export STABLE_RELEASE=${STABLE_RELEASE:-""}
