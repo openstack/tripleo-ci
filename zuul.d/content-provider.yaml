@@ -9,13 +9,13 @@
 
 - job:
     name: tripleo-ci-content-provider-options
-    parent: tripleo-ci-base-standalone-centos-8
+    parent: tripleo-ci-base-required-projects-standalone-upstream
     abstract: true
-    required-projects:
-      - opendev.org/openstack/tripleo-common
     run:
       - playbooks/tripleo-ci/run-v3.yaml
       - playbooks/tripleo-ci/run-provider.yml
+    description: |
+      Base abstract content provider job
     vars:
       featureset: '052'
       provider_job: true
@@ -25,10 +25,13 @@
         - quickstart.yml
         - multinode-standalone-pre.yml
 
+
 - job:
     name: tripleo-ci-centos-8-content-provider
     parent: tripleo-ci-content-provider-options
     branches: ^(stable/(train|ussuri|victoria|wallaby)).*$
+    nodeset: single-centos-8-node
+
 
 - job:
     name: tripleo-ci-centos-9-content-provider

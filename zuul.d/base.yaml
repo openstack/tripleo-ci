@@ -318,38 +318,6 @@
     roles:
       - zuul: opendev.org/openstack/tripleo-ansible
 
-
-- job:
-    name: tripleo-ci-base-standalone-centos-8
-    abstract: true
-    description: |
-        Base abstract job for standalone TripleO CI centos-8 zuulv3 jobs
-    parent: tripleo-ci-base-standalone-required-projects-centos-8
-    nodeset: single-centos-8-node
-    pre-run: playbooks/tripleo-ci/install-built-repo.yml
-    vars:
-      # for standalone we don't need the multinode network configuration but
-      # we do want the interface to be created. So let's create br-ex but
-      # configure it with a different network than what we use for standalone.
-      # any jobs that need this network configuration for multinode need to
-      # adjust their configuration to us 172.16.1.0/24
-      bridge_name: br-ex
-      bridge_address_prefix: 172.16.1
-      bridge_address_subnet: 24
-      bridge_address_offset: 2
-      bridge_mtu: 1350
-      undercloud: 127.0.0.2
-      environment_infra: osinfra
-      environment_type: standalone
-      common_featureset: featureset-multinode-common.yml
-      playbooks:
-        - quickstart.yml
-        - multinode-standalone.yml
-      tags:
-        - build
-        - standalone
-    irrelevant-files: *irrelevant_base_standalone
-
 - job:
     name: tripleo-ci-centos-8-scenario010-standalone-base
     parent: tripleo-ci-base-standalone-centos-8
