@@ -256,6 +256,10 @@
     description: |
                 Base abstract job for container build TripleO CI zuulv3 jobs
                 to run pre playbook in RDO and Upstream
+    required-projects:
+      - opendev.org/openstack/tripleo-ansible
+    roles:
+      - zuul: opendev.org/openstack/tripleo-ansible
     parent: tripleo-ci-base-containers-standard
     pre-run: playbooks/tripleo-buildcontainers/pre.yaml
 
