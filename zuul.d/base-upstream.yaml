@@ -269,3 +269,22 @@
     run: playbooks/tripleo-buildimages/run-v3.yaml
     post-run: playbooks/tripleo-buildimages/post.yaml
     timeout: 5400
+
+# Content provider
+- job:
+    name: tripleo-ci-content-provider-standard
+    parent: tripleo-ci-base-standalone-standard
+    abstract: true
+    run:
+      - playbooks/tripleo-ci/run-v3.yaml
+      - playbooks/tripleo-ci/run-provider.yml
+    description: |
+      Base abstract conent provider job
+    vars:
+      featureset: '052'
+      provider_job: true
+      build_container_images: true
+      ib_create_web_repo: true
+      playbooks:
+        - quickstart.yml
+        - multinode-standalone-pre.yml
