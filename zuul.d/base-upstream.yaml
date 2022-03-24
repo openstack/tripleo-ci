@@ -258,8 +258,12 @@
                 to run pre playbook in RDO and Upstream
     required-projects:
       - opendev.org/openstack/tripleo-ansible
+      # Note: Remove ansible-role-container-registry reference
+      # on removal of CentOS 7 jobs
+      - opendev.org/openstack/ansible-role-container-registry
     roles:
       - zuul: opendev.org/openstack/tripleo-ansible
+      - zuul: opendev.org/openstack/ansible-role-container-registry
     parent: tripleo-ci-base-containers-standard
     pre-run: playbooks/tripleo-buildcontainers/pre.yaml
 
