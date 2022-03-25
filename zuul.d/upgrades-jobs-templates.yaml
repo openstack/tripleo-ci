@@ -17,7 +17,7 @@
               - ^metadata.json$
               - ^releasenotes/.*$
               - ^test-requirements.txt$
-              - setup.cfg
+              - ^setup.*$
               - ^spec/.*$
               - ^Puppetfile.*$
               - tox.ini
@@ -58,6 +58,7 @@
               - ^spec/.*$
               - ^Puppetfile.*$
               - tox.ini
+              - ^setup.*$
               - ^roles/build-containers/.*$
               - ^roles/oooci-build-images/.*$
               - ^playbooks/deprecated/.*$

@@ -23,6 +23,7 @@
               - ^spec/.*$
               - ^Puppetfile.*$
               - tox.ini
+              - ^setup.*$
               - ^roles/build-containers/.*$
               - ^roles/oooci-build-images/.*$
               - ^roles/tripleo-repos/.*$

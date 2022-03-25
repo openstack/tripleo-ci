@@ -81,7 +81,7 @@
               - ^roles/build-containers/.*$
               - ^roles/oooci-build-images/.*$
               - ^roles/tripleo-repos/.*$
-              - setup.cfg
+              - ^setup.*$
               - ^spec/.*$
               - ^vars/sova-patterns.yml$
               - playbooks/quickstart-extras-standalone.yml  # tripleo-quickstart-extras
