@@ -241,3 +241,21 @@
             vars: *consumer_vars
             dependencies:
               - tripleo-ci-centos-8-content-provider-wallaby
+
+- project-template:
+    name: tripleo-ceph-periodic
+    periodic:
+      jobs:
+        - tripleo-ci-centos-9-content-provider:
+            vars:
+              force_non_periodic: true
+        - tripleo-ci-centos-9-scenario001-ceph-nightly: &ceph_vars_periodic
+            vars:
+              force_non_periodic: true
+              consumer_job: true
+              build_container_images: false
+              remove_tags:
+                - build
+            dependencies:
+              - tripleo-ci-centos-9-content-provider
+        - tripleo-ci-centos-9-scenario004-ceph-nightly: *ceph_vars_periodic
