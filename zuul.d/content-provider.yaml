@@ -20,14 +20,14 @@
 - job:
     name: tripleo-ci-centos-8-content-provider
     parent: tripleo-ci-content-provider-required-projects-upstream
-    branches: ^(stable/(train|ussuri|victoria|wallaby)).*$
+    branches: ^(stable/(train|victoria|wallaby)).*$
     nodeset: single-centos-8-node
 
 
 - job:
     name: tripleo-ci-centos-9-content-provider
     parent: tripleo-ci-content-provider-required-projects-upstream
-    branches: ^(?!stable/(train|ussuri|victoria)).*$
+    branches: ^(?!stable/(train|victoria)).*$
     nodeset: single-centos-9-node
     vars:
       containers_base_image: quay.io/centos/centos:stream9
@@ -52,13 +52,6 @@
     override-checkout: stable/victoria
     vars:
       branch_override: stable/victoria
-
-- job:
-    name: tripleo-ci-centos-8-content-provider-ussuri
-    parent: tripleo-ci-centos-8-content-provider
-    override-checkout: stable/ussuri
-    vars:
-      branch_override: stable/ussuri
 
 - job:
     name: tripleo-ci-centos-8-content-provider-train

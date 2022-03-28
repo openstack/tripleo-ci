@@ -79,15 +79,11 @@
               - ^image-yaml/.*
         - tripleo-buildimage-overcloud-full-centos-8-victoria:
             files: *build_images_files
-        - tripleo-buildimage-overcloud-full-centos-8-ussuri:
-            files: *build_images_files
         - tripleo-buildimage-overcloud-full-centos-8-train:
             files: *build_images_files
         - tripleo-buildimage-ironic-python-agent-centos-8:
             files: *build_images_files
         - tripleo-buildimage-ironic-python-agent-centos-8-victoria:
-            files: *build_images_files
-        - tripleo-buildimage-ironic-python-agent-centos-8-ussuri:
             files: *build_images_files
         - tripleo-buildimage-ironic-python-agent-centos-8-train:
             files: *build_images_files
@@ -97,8 +93,6 @@
               - ^elements/overcloud-secure
               - ^elements/overcloud-partition
               - ^diskimage_builder/elements/modprobe
-        - tripleo-buildimage-overcloud-hardened-full-centos-8-ussuri:
-            files: *build_images_hardened_files
         - tripleo-buildimage-overcloud-hardened-full-centos-8-train:
             files: *build_images_hardened_files
         - tripleo-buildimage-overcloud-full-centos-9:
@@ -120,21 +114,15 @@
             files: *build_images_files
         - tripleo-buildimage-overcloud-full-centos-8-victoria:
             files: *build_images_files
-        - tripleo-buildimage-overcloud-full-centos-8-ussuri:
-            files: *build_images_files
         - tripleo-buildimage-overcloud-full-centos-8-train:
             files: *build_images_files
         - tripleo-buildimage-ironic-python-agent-centos-8:
             files: *build_images_files
         - tripleo-buildimage-ironic-python-agent-centos-8-victoria:
             files: *build_images_files
-        - tripleo-buildimage-ironic-python-agent-centos-8-ussuri:
-            files: *build_images_files
         - tripleo-buildimage-ironic-python-agent-centos-8-train:
             files: *build_images_files
         - tripleo-buildimage-overcloud-hardened-full-centos-8-victoria:
-            files: *build_images_hardened_files
-        - tripleo-buildimage-overcloud-hardened-full-centos-8-ussuri:
             files: *build_images_hardened_files
         - tripleo-buildimage-overcloud-hardened-full-centos-8-train:
             files: *build_images_hardened_files
@@ -195,7 +183,7 @@
 - job:
     name: tripleo-buildimage-ironic-python-agent-centos-9
     parent: tripleo-build-images-base-centos-9
-    branches: &c9_branches ^(?!stable/(train|ussuri|victoria)).*$
+    branches: &c9_branches ^(?!stable/(train|victoria)).*$
     vars:
       tripleo_image_type: ironic-python-agent
     irrelevant-files: &build_image_irrelevant
@@ -249,7 +237,7 @@
 - job:
     name: tripleo-buildimage-ironic-python-agent-centos-8
     parent: tripleo-build-images-base-centos-8
-    branches: ^(stable/(train|ussuri|victoria|wallaby)).*$
+    branches: ^(stable/(train|victoria|wallaby)).*$
     vars:
       tripleo_image_type: ironic-python-agent
     irrelevant-files:
@@ -259,7 +247,7 @@
 - job:
     name: tripleo-buildimage-overcloud-full-centos-8
     parent: tripleo-build-images-base-centos-8
-    branches: ^(stable/(train|ussuri|victoria|wallaby)).*$
+    branches: ^(stable/(train|victoria|wallaby)).*$
     vars:
       tripleo_image_type: overcloud-full
     irrelevant-files:
@@ -269,7 +257,7 @@
 - job:
     name: tripleo-buildimage-overcloud-hardened-full-centos-8
     parent: tripleo-build-images-base-centos-8
-    branches: ^(stable/(train|ussuri|victoria)).*$
+    branches: ^(stable/(train|victoria)).*$
     vars:
       tripleo_image_type: overcloud-hardened-full
     irrelevant-files:
@@ -285,14 +273,6 @@
       branch_override: stable/victoria
 
 # Branchful job to run on CI branchless repos which have master only
-- job:
-    name: tripleo-buildimage-ironic-python-agent-centos-8-ussuri
-    parent: tripleo-buildimage-ironic-python-agent-centos-8
-    branches: master
-    override-checkout: stable/ussuri
-    vars:
-      branch_override: stable/ussuri
-
 - job:
     name: tripleo-buildimage-ironic-python-agent-centos-8-train
     parent: tripleo-buildimage-ironic-python-agent-centos-8
@@ -311,14 +291,6 @@
 
 # Branchful job to run on CI branchless repos which have master only
 - job:
-    name: tripleo-buildimage-overcloud-full-centos-8-ussuri
-    parent: tripleo-buildimage-overcloud-full-centos-8
-    branches: master
-    override-checkout: stable/ussuri
-    vars:
-      branch_override: stable/ussuri
-
-- job:
     name: tripleo-buildimage-overcloud-full-centos-8-train
     parent: tripleo-buildimage-overcloud-full-centos-8
     branches: master
@@ -333,15 +305,6 @@
     override-checkout: stable/victoria
     vars:
       branch_override: stable/victoria
-
-# Branchful job to run on CI branchless repos which have master only
-- job:
-    name: tripleo-buildimage-overcloud-hardened-full-centos-8-ussuri
-    parent: tripleo-buildimage-overcloud-hardened-full-centos-8
-    branches: master
-    override-checkout: stable/ussuri
-    vars:
-      branch_override: stable/ussuri
 
 # Branchful job to run on CI branchless repos which have master only
 - job:

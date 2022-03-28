@@ -257,7 +257,7 @@
 - job:
     name: tripleo-ci-centos-9-containers-multinode
     parent: tripleo-ci-base-multinode-centos-9
-    branches: &c9_branches ^(?!stable/(train|ussuri|victoria)).*$
+    branches: &c9_branches ^(?!stable/(train|victoria)).*$
     irrelevant-files: *multinode_ignored
     voting: true
     vars:
@@ -281,7 +281,7 @@
 - job:
     name: tripleo-ci-centos-8-containers-multinode
     parent: tripleo-ci-base-multinode-centos-8
-    branches: &c8_branches ^(stable/(train|ussuri|victoria)).*$
+    branches: &c8_branches ^(stable/(train|victoria)).*$
     voting: true
     vars:
       nodes: 1ctlr
@@ -317,14 +317,6 @@
     override-checkout: stable/victoria
     vars:
       branch_override: stable/victoria
-
-- job:
-    name: tripleo-ci-centos-8-containers-multinode-ussuri
-    parent: tripleo-ci-centos-8-containers-multinode
-    branches: master
-    override-checkout: stable/ussuri
-    vars:
-      branch_override: stable/ussuri
 
 - job:
     name: tripleo-ci-centos-8-containers-multinode-train

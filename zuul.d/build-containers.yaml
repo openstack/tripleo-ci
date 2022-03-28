@@ -107,13 +107,6 @@
     voting: true
 # Branchful job to run on CI branchless repos which have master only
 - job:
-    name: tripleo-build-containers-centos-8-ussuri
-    parent: tripleo-build-containers-centos-8
-    branches: master
-    override-checkout: stable/ussuri
-    vars:
-      branch_override: stable/ussuri
-- job:
     name: tripleo-build-containers-centos-8-train
     parent: tripleo-build-containers-centos-8
     branches: master
