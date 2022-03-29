@@ -44,7 +44,7 @@
                 - build
             dependencies:
               - tripleo-ci-centos-9-content-provider
-        - tripleo-ci-centos-9-undercloud-upgrade:
+        - tripleo-ci-centos-9-undercloud-upgrade: &cs9_undercloud_upgrade
             vars: *consumer_vars
             irrelevant-files: &undercloud_ignored
               - ^.*\.md$
@@ -95,6 +95,8 @@
       queue: tripleo
       jobs:
         - tripleo-ci-centos-9-content-provider
+        - tripleo-ci-centos-9-content-provider-wallaby
+        - tripleo-ci-centos-9-undercloud-upgrade: *cs9_undercloud_upgrade
         - tripleo-ci-centos-9-scenario000-multinode-oooq-container-updates: *cs9_update_all
 
 - project-template:
@@ -518,7 +520,7 @@
     parent: tripleo-ci-base-singlenode-centos-8
     nodeset: single-centos-9-node
     branches: ^master$
-    voting: false
+    voting: true
     vars:
       featureset: '050'
       featureset_override:
