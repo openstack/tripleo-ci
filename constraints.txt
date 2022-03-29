@@ -121,7 +121,7 @@ packaging==20.9
     #   ansible-lint
     #   molecule
     #   pytest
-paramiko==2.7.2
+paramiko==2.10.1
     # via
     #   -r test-requirements.txt
     #   molecule
