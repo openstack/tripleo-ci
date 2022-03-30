@@ -973,7 +973,6 @@
             dependencies:
               - tripleo-ci-centos-8-content-provider
         - tripleo-ci-centos-9-standalone-on-multinode-ipa:
-            voting: false
             files: *tls_ipa_files
             vars: *ipa_consumer_vars
             dependencies:
@@ -988,7 +987,11 @@
             vars: *ipa_consumer_vars
             dependencies:
               - tripleo-ci-centos-8-content-provider
-              # Removing till https://bugs.launchpad.net/tripleo/+bug/1963675 fixes
+        - tripleo-ci-centos-9-standalone-on-multinode-ipa:
+            files: *tls_ipa_files
+            vars: *ipa_consumer_vars
+            dependencies:
+              - tripleo-ci-centos-9-content-provider
 
 
 - job:

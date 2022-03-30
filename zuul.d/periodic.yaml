@@ -4,6 +4,22 @@
     periodic:
       jobs:
         - tripleo-ci-centos-9-content-provider:
+            irrelevant-files:
+              - .*molecule.*
+              - ^.*\.md$
+              - ^.*\.rst$
+              - ^Puppetfile.*$
+              - ^doc/.*$
+              - ^etc/.*$
+              - ^lower-constraints.txt$
+              - ^metadata.json$
+              - ^releasenotes/.*$
+              - ^spec/.*$
+              - ^test-requirements.txt$
+              - ^vars/sova-patterns.yml$
+              - tox.ini
+              - ^setup.*$
+              - ^scripts/.*
             vars:
               force_non_periodic: true
         - tripleo-ci-centos-9-containers-multinode: &unbranched_vars_periodic
