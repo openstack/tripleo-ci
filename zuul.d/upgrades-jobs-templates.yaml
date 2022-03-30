@@ -146,8 +146,29 @@
     name: tripleo-upgrades-victoria-pipeline
     check:
       jobs:
-        - tripleo-ci-centos-8-content-provider
-        - tripleo-ci-centos-8-content-provider-ussuri
+        - tripleo-ci-centos-8-content-provider:
+            irrelevant-files: &upgrade_irrelevant
+              - .*molecule.*
+              - ^.*\.md$
+              - ^.*\.rst$
+              - ^Puppetfile.*$
+              - ^doc/.*$
+              - ^etc/.*$
+              - ^lower-constraints.txt$
+              - ^metadata.json$
+              - ^releasenotes/.*$
+              - ^spec/.*$
+              - ^test-requirements.txt$
+              - ^vars/sova-patterns.yml$
+              - tox.ini
+              - zuul.d/ansible.yaml
+              - zuul.d/build-containers.yaml
+              - zuul.d/build-image.yaml
+              - zuul.d/multinode-jobs.yaml
+              - zuul.d/undercloud-jobs.yaml
+              - zuul.d/standalone-jobs.yaml
+        - tripleo-ci-centos-8-content-provider-ussuri:
+            irrelevant-files: *upgrade_irrelevant
         - tripleo-ci-centos-8-standalone-upgrade-victoria:
             vars: *consumer_vars
             dependencies:
@@ -172,8 +193,10 @@
     gate:
       queue: tripleo
       jobs:
-        - tripleo-ci-centos-8-content-provider
-        - tripleo-ci-centos-8-content-provider-ussuri
+        - tripleo-ci-centos-8-content-provider:
+            irrelevant-files: *upgrade_irrelevant
+        - tripleo-ci-centos-8-content-provider-ussuri:
+            irrelevant-files: *upgrade_irrelevant
         - tripleo-ci-centos-8-standalone-upgrade-victoria:
             vars: *consumer_vars
             dependencies:
@@ -200,8 +223,10 @@
     name: tripleo-upgrades-ussuri-pipeline
     check:
       jobs:
-        - tripleo-ci-centos-8-content-provider
-        - tripleo-ci-centos-8-content-provider-train
+        - tripleo-ci-centos-8-content-provider:
+            irrelevant-files: *upgrade_irrelevant
+        - tripleo-ci-centos-8-content-provider-train:
+            irrelevant-files: *upgrade_irrelevant
         - tripleo-ci-centos-8-standalone-upgrade-ussuri:
             vars: *consumer_vars
             dependencies:
@@ -226,8 +251,10 @@
     gate:
       queue: tripleo
       jobs:
-        - tripleo-ci-centos-8-content-provider
-        - tripleo-ci-centos-8-content-provider-train
+        - tripleo-ci-centos-8-content-provider:
+            irrelevant-files: *upgrade_irrelevant
+        - tripleo-ci-centos-8-content-provider-train:
+            irrelevant-files: *upgrade_irrelevant
         - tripleo-ci-centos-8-standalone-upgrade-ussuri:
             vars: *consumer_vars
             dependencies:
@@ -403,27 +430,7 @@
           - 'environments/low-memory-usage.yaml'
           - 'environments/docker-ha.yaml'
           - 'environments/podman.yaml'
-    irrelevant-files: &upgrade_irrelevant
-      - .*molecule.*
-      - ^.*\.md$
-      - ^.*\.rst$
-      - ^Puppetfile.*$
-      - ^doc/.*$
-      - ^etc/.*$
-      - ^lower-constraints.txt$
-      - ^metadata.json$
-      - ^releasenotes/.*$
-      - ^spec/.*$
-      - ^test-requirements.txt$
-      - ^vars/sova-patterns.yml$
-      - tox.ini
-      - zuul.d/ansible.yaml
-      - zuul.d/build-containers.yaml
-      - zuul.d/build-image.yaml
-      - zuul.d/multinode-jobs.yaml
-      - zuul.d/undercloud-jobs.yaml
-      - zuul.d/standalone-jobs.yaml
-      # like parent but with requirements.txt and setup.py removed
+    irrelevant-files: *upgrade_irrelevant
 
 # docker-ha, podman env files https://bugs.launchpad.net/tripleo/+bug/1887159
 - job:

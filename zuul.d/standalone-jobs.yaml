@@ -113,8 +113,10 @@
     name: tripleo-standalone-scenarios-pipeline
     check:
       jobs:
-        - tripleo-ci-centos-8-content-provider
-        - tripleo-ci-centos-9-content-provider
+        - tripleo-ci-centos-8-content-provider:
+            irrelevant-files: *irrelevant_files
+        - tripleo-ci-centos-9-content-provider:
+            irrelevant-files: *irrelevant_files
         - tripleo-ci-centos-8-scenario001-standalone:
             branches: &no_master_c8 ^(stable/(train|ussuri|victoria|wallaby)).*$
             files: &scen1_files
@@ -382,8 +384,10 @@
     gate:
       queue: tripleo
       jobs:
-        - tripleo-ci-centos-8-content-provider
-        - tripleo-ci-centos-9-content-provider
+        - tripleo-ci-centos-8-content-provider:
+            irrelevant-files: *irrelevant_files
+        - tripleo-ci-centos-9-content-provider:
+            irrelevant-files: *irrelevant_files
         - tripleo-ci-centos-8-scenario001-standalone:
             branches: *no_master_c8
             files: *scen1_files
