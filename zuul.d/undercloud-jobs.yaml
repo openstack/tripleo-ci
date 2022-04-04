@@ -91,9 +91,47 @@
               - tripleo-ci-centos-7-content-provider
         - tripleo-ci-centos-9-undercloud-containers: *c9_vars
 
+
+# Undercloud Jobs
+
+- job:
+    name: tripleo-ci-undercloud-required-projects-upstream
+    abstract: true
+    description: |
+      Base abstract job for undercloud in TripleO CI zuulv3 jobs
+    parent: tripleo-ci-base-singlenode-standard
+
+# Distribution Jobs
+# Centos 7 base job
+- job:
+    name: tripleo-ci-base-undercloud-centos-7
+    abstract: true
+    description: |
+            Base abstract job for standalone Tripleo CI CentOS 7 zuulv3 jobs.
+    parent: tripleo-ci-undercloud-required-projects-upstream
+    nodeset: single-centos-7-node
+
+# Centos 8 base jobs
+- job:
+    name: tripleo-ci-base-undercloud-centos-8
+    abstract: true
+    description: |
+            Base abstract job for standalone TripleO CI CentOS 8 zuulv3 jobs.
+    parent: tripleo-ci-undercloud-required-projects-upstream
+    nodeset: single-centos-8-node
+
+# CentOS - 9 base jobs
+- job:
+    name: tripleo-ci-base-undercloud-centos-9
+    abstract: true
+    description: |
+            Base abstract job for standalone TripleO CI CentOS 9 zuulv3 jobs.
+    parent: tripleo-ci-undercloud-required-projects-upstream
+    nodeset: single-centos-9-node
+
 - job:
     name: tripleo-ci-centos-8-undercloud-containers
-    parent: tripleo-ci-undercloud-content-consumer-centos-8
+    parent: tripleo-ci-base-undercloud-centos-8
     branches: ^(stable/(train|ussuri|victoria|wallaby)).*$
     voting: true
     vars:
@@ -105,9 +143,8 @@
 
 - job:
     name: tripleo-ci-centos-9-undercloud-containers
-    parent: tripleo-ci-undercloud-content-consumer-centos-8
+    parent: tripleo-ci-base-undercloud-centos-9
     branches: ^(?!stable/(train|ussuri|victoria)).*$
-    nodeset: single-centos-9-node
     irrelevant-files: *undercloud_ignored
     vars:
       featureset: '027'
@@ -118,8 +155,7 @@
 
 - job:
     name: tripleo-ci-centos-7-undercloud-oooq
-    parent: tripleo-ci-base-singlenode
-    nodeset: single-centos-7-node
+    parent: tripleo-ci-base-undercloud-centos-7
     branches: ^(stable/queens).*$
     vars:
       featureset: '003'
@@ -130,7 +166,8 @@
 
 - job:
     name: tripleo-ci-centos-7-content-provider-base
-    parent: tripleo-ci-base-singlenode
+    parent: tripleo-ci-base-singlenode-standard
+    nodeset: single-centos-7-node
     run:
       - playbooks/tripleo-buildcontainers/docker.yaml
       - playbooks/tripleo-ci/run-v3.yaml
