@@ -6,7 +6,7 @@
 # TODO akahat https://bugs.launchpad.net/tripleo/+bug/1956441
 - name: Remove fwupd-redfish.conf file from {{ overcloud_image_customize }}
   shell: |
-    virt-customize -a {{ overcloud_image_customize }} --run-command 'rm -f /usr/lib/modules-load.d/fwupd-redfish.conf'
+    virt-customize -a {{ overcloud_image_customize }} --delete /usr/lib/modules-load.d/fwupd-redfish.conf --truncate /etc/machine-id
   args:
     chdir: "{{ workspace }}"
   environment:
