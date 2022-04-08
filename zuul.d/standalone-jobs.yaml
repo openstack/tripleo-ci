@@ -750,7 +750,6 @@
     name: tripleo-ci-centos-8-scenario004-standalone
     voting: true
     parent: tripleo-ci-base-standalone-centos-8
-    branches: *c8_branches
 
 - job:
     name: tripleo-ci-centos-8-scenario004-standalone-options
