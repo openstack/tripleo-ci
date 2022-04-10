@@ -132,9 +132,9 @@
 - job:
     name: tripleo-ci-centos-8-undercloud-containers
     parent: tripleo-ci-base-undercloud-centos-8
-    branches: ^(stable/(train|ussuri|victoria|wallaby)).*$
+    branches: ^(stable/(train|ussuri|victoria)).*$
     voting: true
-    vars:
+    vars: &undercloud_job_vars
       featureset: '027'
       playbooks:
         - quickstart.yml
@@ -146,12 +146,7 @@
     parent: tripleo-ci-base-undercloud-centos-9
     branches: ^(?!stable/(train|ussuri|victoria)).*$
     irrelevant-files: *undercloud_ignored
-    vars:
-      featureset: '027'
-      playbooks:
-        - quickstart.yml
-        - multinode-undercloud.yml
-        - multinode-validate.yml
+    vars: *undercloud_job_vars
 
 - job:
     name: tripleo-ci-centos-7-undercloud-oooq
