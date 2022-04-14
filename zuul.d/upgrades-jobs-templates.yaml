@@ -373,7 +373,7 @@
 
 - job:
     name: tripleo-ci-centos-8-standalone-upgrade-victoria
-    parent: tripleo-ci-base-standalone-upgrade-centos-8
+    parent: tripleo-ci-standalone-upgrade-centos-8
     voting: true
     branches: ^stable/victoria$
     vars:
