@@ -625,28 +625,6 @@
     parent: tripleo-ci-base-standalone-centos-8
     branches: *c8_branches
 
-# TODO(marios) remove after https://review.rdoproject.org/r/c/rdo-jobs/+/40842
-- job:
-    name: tripleo-ci-centos-8-scenario001-standalone-options
-    vars:
-      featureset: '052'
-      standalone_ceph: true
-      featureset_override:
-        standalone_environment_files:
-          - 'environments/low-memory-usage.yaml'
-          - 'ci/environments/scenario001-standalone.yaml'
-        tempest_services:
-          - aodh
-        tempest_run_concurrency: 1
-        tempest_tempest_conf_overrides:
-          'telemetry.alarm_granularity': '60'
-          'auth.tempest_roles': "Member"
-        tempest_test_whitelist:
-          - 'tempest.api.identity.v3'
-          - 'tempest.scenario.test_volume_boot_pattern.TestVolumeBootPattern.test_volume_boot_pattern'
-          - 'tempest.scenario.test_snapshot_pattern.TestSnapshotPattern.test_snapshot_pattern'
-          - 'telemetry_tempest_plugin.scenario.test_telemetry_integration.TestTelemetryIntegration'
-
 - job:
     name: tripleo-ci-scenario001-standalone-options
     vars:
@@ -687,32 +665,6 @@
     voting: true
     parent: tripleo-ci-base-standalone-centos-8
     branches: *c8_branches
-
-# TODO(marios) remove after https://review.rdoproject.org/r/c/rdo-jobs/+/40842
-- job:
-    name: tripleo-ci-centos-8-scenario002-standalone-options
-    vars:
-      featureset: '052'
-      featureset_override:
-        standalone_environment_files:
-          - 'environments/low-memory-usage.yaml'
-          - 'ci/environments/scenario002-standalone.yaml'
-        tempest_services:
-          - barbican
-          - ceilometer
-          - aodh
-        tempest_tempest_conf_overrides:
-          auth.tempest_roles: "'Member, creator'"
-          telemetry.alarm_granularity: '60'
-        tempest_extra_config:
-          auth.tempest_roles: "'Member, creator'"
-          telemetry.alarm_granularity: '60'
-        tempest_test_whitelist:
-          - 'tempest.api.object_storage.test_object_services.ObjectTest'
-          - 'barbican_tempest_plugin.tests.scenario.test_volume_encryption.VolumeEncryptionTest'
-          - 'barbican_tempest_plugin.tests.scenario.test_image_signing.ImageSigningSnapshotTest'
-          - 'barbican_tempest_plugin.tests.scenario.test_image_signing.ImageSigningTest.test_signed_image_upload_and_boot'
-          - 'telemetry_tempest_plugin.scenario.test_telemetry_integration.TestTelemetryIntegration'
 
 - job:
     name: tripleo-ci-scenario002-standalone-options
@@ -759,28 +711,6 @@
     parent: tripleo-ci-base-standalone-centos-8
     branches: *c8_branches
 
-# TODO(marios) remove after https://review.rdoproject.org/r/c/rdo-jobs/+/40842
-- job:
-    name: tripleo-ci-centos-8-scenario003-standalone-options
-    vars:
-      featureset: '052'
-      featureset_override:
-        standalone_environment_files:
-          - 'environments/low-memory-usage.yaml'
-          - 'ci/environments/scenario003-standalone.yaml'
-        tempest_services:
-          - mistral
-          - sahara
-          - designate
-        tempest_tempest_conf_overrides:
-          auth.tempest_roles: "Member"
-        tempest_test_whitelist:
-          - 'tempest.scenario.test_network_basic_ops.TestNetworkBasicOps.test_network_basic_ops'
-          - 'sahara_tempest_plugin.tests.api.test_data_sources.DataSourceTest'
-          - 'mistral_tempest_tests.tests.api.v2.test_actions.ActionTestsV2'
-          - 'designate_tempest_plugin.tests.api.v2.test_recordset.RecordsetsTest'
-          - 'designate_tempest_plugin.tests.api.v2.test_zones.ZonesTest'
-
 - job:
     name: tripleo-ci-scenario003-standalone-options
     vars:
@@ -820,27 +750,6 @@
     name: tripleo-ci-centos-8-scenario004-standalone
     voting: true
     parent: tripleo-ci-base-standalone-centos-8
-
-# TODO(marios) remove after https://review.rdoproject.org/r/c/rdo-jobs/+/40842
-- job:
-    name: tripleo-ci-centos-8-scenario004-standalone-options
-    vars:
-      featureset: '052'
-      standalone_ceph: true
-      featureset_override:
-        standalone_container_cli: podman
-        standalone_environment_files:
-          - 'environments/low-memory-usage.yaml'
-          - 'ci/environments/scenario004-standalone.yaml'
-          - 'environments/podman.yaml'
-        tempest_services:
-          - manila
-        tempest_tempest_conf_overrides:
-          'auth.tempest_roles': 'Member'
-        tempest_test_whitelist:
-          - 'tempest.scenario.test_network_basic_ops.TestNetworkBasicOps.test_network_basic_ops'
-          - 'manila_tempest_tests.tests.api.test_shares.SharesNFSTest.test_create_get_delete_share'
-          - 'tempest.scenario.test_object_storage_basic_ops'
 
 - job:
     name: tripleo-ci-scenario004-standalone-options
