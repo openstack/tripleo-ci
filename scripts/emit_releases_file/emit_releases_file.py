@@ -4,15 +4,6 @@ Helper script that generates environmental variables for upgrade/update.
 From the stable-release parameter it calculate environmental variables
 for mixed release.
 
-It supports:
- - overcloud-upgrade from stable_release ocata.
- - overcloud-update, all releases.
- - undercloud-upgrade from stable_release ocata.
- - fast forward upgrade;
-   - newton->queens;
-   - Undercloud upgrade from train->wallaby
- - standalone-upgrade from stable_release stein.
-
 It exports those environmental variables in the OUTPUT_FILE:
 
  - UNDERCLOUD_INSTALL_RELEASE
@@ -42,11 +33,6 @@ from typing import Dict
 
 # Define releases
 RELEASES = [
-    'newton',
-    'ocata',
-    'pike',
-    'queens',
-    'stein',
     'train',
     'ussuri',
     'victoria',
@@ -54,11 +40,9 @@ RELEASES = [
     'master',
 ]
 # Define long term releases
-LONG_TERM_SUPPORT_RELEASES = ['queens', 'train', 'wallaby']
-UNSUPPORTED_STANDALONE = ['newton', 'ocata', 'pike', 'queens']
+LONG_TERM_SUPPORT_RELEASES = ['train', 'wallaby']
 
 # NAMED DLRN HASHES
-NEWTON_HASH_NAME = 'current-passed-ci'
 CURRENT_HASH_NAME = 'current-tripleo'
 NEWEST_HASH_NAME = 'current'
 PROMOTION_HASH_NAME = 'tripleo-ci-testing'
@@ -207,11 +191,6 @@ def compose_releases_dictionary(
     ) and stable_release == RELEASES[0]:
         raise RuntimeError("Cannot upgrade to {}".format(RELEASES[0]))
 
-    if featureset.get('undercloud_upgrade') and stable_release == 'ocata':
-        raise RuntimeError(
-            "Undercloud upgrades are not supported from " "newton to ocata"
-        )
-
     if featureset.get('overcloud_upgrade') and featureset.get('undercloud_upgrade'):
         raise RuntimeError(
             "This tool currently only supports upgrading the "
@@ -232,14 +211,6 @@ def compose_releases_dictionary(
         raise RuntimeError("Overcloud upgrade has to be mixed upgrades")
 
     if (
-        featureset.get('standalone_upgrade')
-        and stable_release in UNSUPPORTED_STANDALONE
-    ):
-        raise RuntimeError(
-            "Standalone upgrade doesn't support {}".format(stable_release)
-        )
-
-    if (
         featureset.get('ffu_overcloud_upgrade')
         or featureset.get('ffu_undercloud_upgrade')
     ) and stable_release not in LONG_TERM_SUPPORT_RELEASES:
@@ -252,11 +223,7 @@ def compose_releases_dictionary(
     newest_hash = get_dlrn_hash(
         stable_release, NEWEST_HASH_NAME, distro_name, distro_version
     )
-    if stable_release == 'newton':
-        current_hash = get_dlrn_hash(
-            stable_release, NEWTON_HASH_NAME, distro_name, distro_version
-        )
-    elif is_periodic:
+    if is_periodic:
         current_hash = get_dlrn_hash(
             stable_release, PROMOTION_HASH_NAME, distro_name, distro_version
         )
@@ -295,28 +262,18 @@ def compose_releases_dictionary(
         if featureset.get('overcloud_upgrade'):
             logger.info('Doing an overcloud upgrade')
             deploy_release = get_relative_release(stable_release, -1)
-            if deploy_release == 'newton':
-                deploy_hash = get_dlrn_hash(
-                    deploy_release, NEWTON_HASH_NAME, distro_name, distro_version
-                )
-            else:
-                deploy_hash = get_dlrn_hash(
-                    deploy_release, CURRENT_HASH_NAME, distro_name, distro_version
-                )
+            deploy_hash = get_dlrn_hash(
+                deploy_release, CURRENT_HASH_NAME, distro_name, distro_version
+            )
             releases_dictionary['overcloud_deploy_release'] = deploy_release
             releases_dictionary['overcloud_deploy_hash'] = deploy_hash
 
         elif featureset.get('ffu_overcloud_upgrade'):
             logger.info('Doing an overcloud fast forward upgrade')
             deploy_release = get_relative_release(stable_release, -3)
-            if deploy_release == 'newton':
-                deploy_hash = get_dlrn_hash(
-                    deploy_release, NEWTON_HASH_NAME, distro_name, distro_version
-                )
-            else:
-                deploy_hash = get_dlrn_hash(
-                    deploy_release, CURRENT_HASH_NAME, distro_name, distro_version
-                )
+            deploy_hash = get_dlrn_hash(
+                deploy_release, CURRENT_HASH_NAME, distro_name, distro_version
+            )
             releases_dictionary['overcloud_deploy_release'] = deploy_release
             releases_dictionary['overcloud_deploy_hash'] = deploy_hash
 

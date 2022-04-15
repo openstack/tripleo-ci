@@ -30,18 +30,6 @@ function previous_release_mixed_upgrade_case {
         ussuri|promotion-testing-hash-ussuri)
             echo "train"
             ;;
-        train|promotion-testing-hash-train)
-            echo "stein"
-            ;;
-        queens)
-            echo "pike"
-            ;;
-        pike)
-            echo "ocata"
-            ;;
-        ocata)
-            echo "newton"
-            ;;
         *)
             echo "UNKNOWN_RELEASE"
             return 1
@@ -54,14 +42,10 @@ function previous_release_ffu_upgrade_case {
 
     case "${release}" in
         ''|master)
-            # NOTE: we need to update this when we cut a stable branch
-            echo "newton"
+            echo "wallaby"
             ;;
         wallaby)
             echo "train"
-            ;;
-        queens)
-            echo "newton"
             ;;
         *)
             echo "INVALID_RELEASE_FOR_FFU"
