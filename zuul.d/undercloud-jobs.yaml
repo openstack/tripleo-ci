@@ -9,7 +9,6 @@
       jobs:
         - tripleo-ci-centos-9-content-provider
         - tripleo-ci-centos-8-content-provider
-        - tripleo-ci-centos-7-content-provider
         - tripleo-ci-centos-8-undercloud-containers:
             irrelevant-files: &undercloud_ignored
               - ^.*\.md$
@@ -52,43 +51,22 @@
                 - build
             dependencies:
               - tripleo-ci-centos-8-content-provider
-        - tripleo-ci-centos-7-undercloud-oooq:
-            vars: *undercloud_consumer_vars
-            irrelevant-files: *undercloud_ignored
-            dependencies:
-              - tripleo-ci-centos-7-content-provider
         - tripleo-ci-centos-9-undercloud-containers: &c9_vars
             vars: *undercloud_consumer_vars
             irrelevant-files: *undercloud_ignored
             dependencies:
               - tripleo-ci-centos-9-content-provider
-        - tripleo-ci-centos-7-undercloud-containers:
-            vars: *undercloud_consumer_vars
-            irrelevant-files: *undercloud_ignored
-            dependencies:
-              - tripleo-ci-centos-7-content-provider
 
     gate:
       queue: tripleo
       jobs:
         - tripleo-ci-centos-9-content-provider
         - tripleo-ci-centos-8-content-provider
-        - tripleo-ci-centos-7-content-provider
         - tripleo-ci-centos-8-undercloud-containers:
             irrelevant-files: *undercloud_ignored
             vars: *undercloud_consumer_vars
             dependencies:
               - tripleo-ci-centos-8-content-provider
-        - tripleo-ci-centos-7-undercloud-oooq:
-            irrelevant-files: *undercloud_ignored
-            vars: *undercloud_consumer_vars
-            dependencies:
-              - tripleo-ci-centos-7-content-provider
-        - tripleo-ci-centos-7-undercloud-containers:
-            irrelevant-files: *undercloud_ignored
-            vars: *undercloud_consumer_vars
-            dependencies:
-              - tripleo-ci-centos-7-content-provider
         - tripleo-ci-centos-9-undercloud-containers: *c9_vars
 
 
@@ -102,14 +80,6 @@
     parent: tripleo-ci-base-singlenode-standard
 
 # Distribution Jobs
-# Centos 7 base job
-- job:
-    name: tripleo-ci-base-undercloud-centos-7
-    abstract: true
-    description: |
-            Base abstract job for standalone Tripleo CI CentOS 7 zuulv3 jobs.
-    parent: tripleo-ci-undercloud-required-projects-upstream
-    nodeset: single-centos-7-node
 
 # Centos 8 base jobs
 - job:
@@ -149,17 +119,6 @@
     vars: *undercloud_job_vars
 
 - job:
-    name: tripleo-ci-centos-7-undercloud-oooq
-    parent: tripleo-ci-base-undercloud-centos-7
-    branches: ^(stable/queens).*$
-    vars:
-      featureset: '003'
-      playbooks:
-        - quickstart.yml
-        - multinode-undercloud.yml
-        - multinode-validate.yml
-
-- job:
     name: tripleo-ci-centos-7-content-provider-base
     parent: tripleo-ci-base-singlenode-standard
     nodeset: single-centos-7-node
@@ -182,17 +141,8 @@
 - job:
     name: tripleo-ci-centos-7-content-provider
     parent: tripleo-ci-centos-7-content-provider-base
-    branches: ^(stable/(queens|train)).*$
+    branches: stable/train
     voting: true
-
-
-- job:
-    name: tripleo-ci-centos-7-content-provider-queens
-    parent: tripleo-ci-centos-7-content-provider-base
-    branches: master
-    override-checkout: stable/queens
-    vars:
-      branch_override: stable/queens
 
 - job:
     name: tripleo-ci-centos-7-content-provider-train

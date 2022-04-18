@@ -270,9 +270,6 @@
             irrelevant-files: *branchful_ignored
         - tripleo-ci-centos-9-containers-multinode-wallaby: *multi_consumer_job_wallaby
         - tripleo-ci-centos-8-containers-multinode-train: *multi_consumer_job_train
-    experimental:
-      jobs:
-        - tripleo-ci-centos-7-containers-multinode-stein
 
 ## CentOS 9 jobs
 - job:
@@ -359,22 +356,8 @@
 - job:
     name: tripleo-ci-centos-7-containers-multinode
     parent: tripleo-ci-base-multinode
-    branches: ^(stable/(queens|train)).*$
+    branches: stable/train
     vars:
-      nodes: 1ctlr
-      featureset: '010'
-      playbooks:
-        - multinode.yml
-
-- job:
-    name: tripleo-ci-centos-7-containers-multinode-stein
-    parent: tripleo-ci-base-multinode
-    timeout: 10800
-    voting: true
-    branches: master
-    override-checkout: 'stable/stein'
-    vars:
-      branch_override: 'stable/stein'
       nodes: 1ctlr
       featureset: '010'
       playbooks:

@@ -135,16 +135,6 @@
       jobs:
         - tripleo-build-containers-centos-7-train
 
-- project-template:
-    name: tripleo-build-containers-jobs-stein
-    check:
-      jobs:
-        - tripleo-build-containers-centos-7-buildah-stein
-    gate:
-      queue: tripleo
-      jobs:
-        - tripleo-build-containers-centos-7-buildah-stein
-
 - job:
     name: tripleo-build-containers-centos-7-base
     parent: tripleo-build-containers-base
@@ -154,7 +144,7 @@
 - job:
     name: tripleo-build-containers-centos-7
     parent: tripleo-build-containers-base
-    branches: ^(stable/(stein|train)).*$
+    branches: stable/train
     voting: true
 
 - job:
@@ -163,13 +153,6 @@
     override-checkout: stable/train
     vars:
       branch_override: stable/train
-
-- job:
-    name: tripleo-build-containers-centos-7-stein
-    parent: tripleo-build-containers-centos-7-base
-    override-checkout: stable/stein
-    vars:
-      branch_override: stable/stein
 
 - job:
     name: tripleo-build-containers-centos-7-buildah
@@ -187,21 +170,12 @@
       branch_override: stable/train
       use_buildah: true
 
-- job:
-    name: tripleo-build-containers-centos-7-buildah-stein
-    parent: tripleo-build-containers-centos-7-base
-    override-checkout: stable/stein
-    vars:
-      branch_override: stable/stein
-      use_buildah: true
-
 # CentOS 8
 - job:
     name: tripleo-build-containers-centos-8
     parent: tripleo-build-containers-base-centos-8
     branches: ^(?!stable/(pike|queens|stein)).*$
     voting: true
-
 # Branchful job to run on CI branchless repos which have master only
 - job:
     name: tripleo-build-containers-centos-8-ussuri
@@ -210,7 +184,6 @@
     override-checkout: stable/ussuri
     vars:
       branch_override: stable/ussuri
-
 - job:
     name: tripleo-build-containers-centos-8-train
     parent: tripleo-build-containers-centos-8

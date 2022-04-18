@@ -15,15 +15,6 @@
       - name: opendev.org/openstack/ansible-config_template
         override-checkout: master
 
-# Centos 7 base job
-- job:
-    name: tripleo-ci-base-standalone-centos-7
-    abstract: true
-    description: |
-      Base abstract job for standalone Tripleo CI Centos-8 zuulv3 jobs.
-    parent: tripleo-ci-base-required-projects-standalone-upstream
-    nodeset: single-centos-7-node
-
 # Centos 8 base jobs
 - job:
     name: tripleo-ci-base-standalone-centos-8
@@ -47,10 +38,11 @@
 # or project because it does override values defined at job level.
 # An attempt to optimize at this level can have the exactly opposite effect,
 # triggering the affected jobs on far more changes than needed.
+# Keep vanilla standalone during c8/wallaby teardown
 - job:
-    name: tripleo-ci-centos-7-standalone
-    parent: tripleo-ci-base-standalone-centos-7
-    branches: ^(stable/(stein)).*$
+    name: tripleo-ci-centos-8-standalone
+    parent: tripleo-ci-base-standalone-centos-8
+    branches: ^(stable/(train|ussuri|victoria|wallaby)).*$
     vars:
       featureset: '052'
     irrelevant-files: &irrelevant_files
@@ -69,16 +61,6 @@
       - tox.ini
       - ^setup.*$
       - ^scripts/.*
-      # like parent but with requirements.txt and setup.py removed
-
-# Keep vanilla standalone during c8/wallaby teardown
-- job:
-    name: tripleo-ci-centos-8-standalone
-    parent: tripleo-ci-base-standalone-centos-8
-    branches: ^(stable/(train|ussuri|victoria|wallaby)).*$
-    vars:
-      featureset: '052'
-    irrelevant-files: *irrelevant_files
 
 - job:
     name: tripleo-ci-centos-9-standalone
@@ -328,20 +310,6 @@
             vars: *consumer_vars
             dependencies:
               - tripleo-ci-centos-8-content-provider
-        # Keep CentOS 7 job as usual
-        - tripleo-ci-centos-7-scenario010-standalone:
-            files: *scen10_files
-        - tripleo-ci-centos-7-scenario010-ovn-provider-standalone:
-            files: *scen10_files
-        - tripleo-ci-centos-7-standalone
-        - tripleo-ci-centos-7-scenario001-standalone:
-            files: *scen1_files
-        - tripleo-ci-centos-7-scenario002-standalone:
-            files: *scen2_files
-        - tripleo-ci-centos-7-scenario003-standalone:
-            files: *scen3_files
-        - tripleo-ci-centos-7-scenario004-standalone:
-            files: *scen4_files
         # CentOS 9 jobs
         - tripleo-ci-centos-9-standalone: &cs9_vars
             vars: *consumer_vars
@@ -395,18 +363,6 @@
             vars: *consumer_vars
             dependencies:
               - tripleo-ci-centos-8-content-provider
-        # Keep CentOS 7 jobs as usual
-        - tripleo-ci-centos-7-scenario001-standalone:
-            files: *scen1_files
-        - tripleo-ci-centos-7-scenario002-standalone:
-            files: *scen2_files
-        - tripleo-ci-centos-7-scenario003-standalone:
-            files: *scen3_files
-        - tripleo-ci-centos-7-scenario004-standalone:
-            files: *scen4_files
-        - tripleo-ci-centos-7-standalone
-        - tripleo-ci-centos-7-scenario010-standalone:
-            files: *scen10_files
         # CentOS 9 jobs
         - tripleo-ci-centos-9-standalone: *cs9_vars
         - tripleo-ci-centos-9-scenario001-standalone: *c9_scen1
@@ -417,144 +373,6 @@
         - tripleo-ci-centos-9-scenario010-standalone: *c9_scen10
         - tripleo-ci-centos-9-scenario010-ovn-provider-standalone: *c9_scen10
         - tripleo-ci-centos-9-scenario012-standalone: *c9_scen12
-
-- job:
-    name: tripleo-ci-centos-7-scenario001-standalone
-    voting: true
-    parent: tripleo-ci-base-standalone-centos-7
-    branches: ^(stable/(stein)).*$
-    vars:
-      featureset: '052'
-      standalone_ceph: true
-      featureset_override:
-        standalone_environment_files:
-          - 'environments/low-memory-usage.yaml'
-          - 'ci/environments/scenario001-standalone.yaml'
-        tempest_services:
-          - aodh
-        tempest_run_concurrency: 1
-        tempest_tempest_conf_overrides:
-          'telemetry.alarm_granularity': '60'
-        tempest_test_whitelist:
-          - 'tempest.api.identity.v3'
-          - 'tempest.scenario.test_volume_boot_pattern.TestVolumeBootPattern.test_volume_boot_pattern'
-          - 'tempest.scenario.test_snapshot_pattern.TestSnapshotPattern.test_snapshot_pattern'
-          - 'telemetry_tempest_plugin.scenario.test_telemetry_integration.TestTelemetryIntegration'
-
-- job:
-    name: tripleo-ci-centos-7-scenario002-standalone
-    voting: true
-    parent: tripleo-ci-base-standalone-centos-7
-    branches: ^(stable/(stein)).*$
-    vars:
-      featureset: '052'
-      featureset_override:
-        standalone_environment_files:
-          - 'environments/low-memory-usage.yaml'
-          - 'ci/environments/scenario002-standalone.yaml'
-        tempest_services:
-          - barbican
-          - ceilometer
-          - aodh
-        tempest_tempest_conf_overrides:
-          auth.tempest_roles: "'Member, creator'"
-          telemetry.alarm_granularity: '60'
-        tempest_extra_config:
-          auth.tempest_roles: "'Member, creator'"
-          telemetry.alarm_granularity: '60'
-        tempest_test_whitelist:
-          - 'tempest.api.object_storage.test_object_services.ObjectTest'
-          - 'barbican_tempest_plugin.tests.scenario.test_volume_encryption.VolumeEncryptionTest'
-          - 'barbican_tempest_plugin.tests.scenario.test_image_signing.ImageSigningSnapshotTest'
-          - 'barbican_tempest_plugin.tests.scenario.test_image_signing.ImageSigningTest.test_signed_image_upload_and_boot'
-          - 'telemetry_tempest_plugin.scenario.test_telemetry_integration.TestTelemetryIntegration'
-
-- job:
-    name: tripleo-ci-centos-7-scenario003-standalone
-    voting: true
-    parent: tripleo-ci-base-standalone-centos-7
-    branches: ^(stable/(stein)).*$
-    vars:
-      featureset: '052'
-      featureset_override:
-        standalone_environment_files:
-          - 'environments/low-memory-usage.yaml'
-          - 'ci/environments/scenario003-standalone.yaml'
-        tempest_services:
-          - mistral
-          - sahara
-        tempest_test_whitelist:
-          - 'tempest.scenario.test_network_basic_ops.TestNetworkBasicOps.test_network_basic_ops'
-          - 'sahara_tempest_plugin.tests.api.test_data_sources.DataSourceTest'
-          - 'mistral_tempest_tests.tests.api.v2.test_actions.ActionTestsV2'
-
-- job:
-    name: tripleo-ci-centos-7-scenario004-standalone
-    voting: true
-    parent: tripleo-ci-base-standalone-centos-7
-    branches: ^(stable/(stein)).*$
-    vars:
-      featureset: '052'
-      standalone_ceph: true
-      featureset_override:
-        standalone_container_cli: docker
-        standalone_environment_files:
-          - 'environments/low-memory-usage.yaml'
-          - 'ci/environments/scenario004-standalone.yaml'
-        tempest_services:
-          - manila
-        tempest_test_whitelist:
-          - 'tempest.scenario.test_network_basic_ops.TestNetworkBasicOps.test_network_basic_ops'
-          - 'manila_tempest_tests.tests.api.test_shares.SharesCephFSTest.test_create_get_delete_share'
-
-- job:
-    name: tripleo-ci-centos-7-scenario010-standalone
-    voting: true
-    parent: tripleo-ci-base-standalone-centos-7
-    branches: ^(stable/(stein)).*$
-    vars:
-      tags:
-        - build
-        - standalone
-        - octavia
-      featureset: '062'
-      standalone_ceph: true
-      tempest_workers: 1
-      featureset_override:
-        validate_services: false
-        standalone_environment_files:
-          - 'environments/low-memory-usage.yaml'
-          - 'ci/environments/scenario010-standalone.yaml'
-
-- job:
-    name: tripleo-ci-centos-7-scenario010-ovn-provider-standalone
-    voting: false
-    parent: tripleo-ci-base-standalone-centos-7
-    branches: ^(stable/(stein)).*$
-    vars:
-      tags:
-        - build
-        - standalone
-        - octavia
-      featureset: '062'
-      standalone_ceph: true
-      featureset_override:
-        validate_services: false
-        tempest_tempestconf_profile_overrides:
-          load_balancer.provider: 'ovn'
-          load_balancer.member_role: '"Member"'
-          load_balancer.test_with_ipv6: false
-          load_balancer.test_reuse_connection: false
-          load_balancer.load_balancing_algorithm: 'SOURCE_IP_PORT'
-          load_balancer.test_flavors: false
-          loadbalancer-feature-enabled.health_monitor_enabled: false
-          loadbalancer-feature-enabled.pool_algorithms_enabled: false
-          loadbalancer-feature-enabled.l7_protocol_enabled: false
-          loadbalancer-feature-enabled.l4_protocol: 'TCP'
-          loadbalancer-feature-enabled.session_persistence_enabled: false
-        standalone_environment_files:
-          - 'environments/low-memory-usage.yaml'
-          - 'ci/environments/scenario010-standalone.yaml'
 
 - job:
     name: tripleo-ci-centos-8-scenario012-standalone
@@ -575,22 +393,6 @@
     parent: tripleo-ci-base-standalone-centos-9
     branches: *c9_branches
     vars: *scen12_job_vars
-
-- job:
-    name: tripleo-ci-centos-7-standalone-os-tempest
-    parent: tripleo-ci-base-standalone-centos-7
-    branches: ^stable/stein$
-    vars:
-      featureset: '052'
-      featureset_override:
-        use_os_tempest: true
-        tempest_tempest_conf_overrides:
-          auth.use_dynamic_credentials: true
-        tempest_test_whitelist:
-          - 'tempest.api.identity.v3'
-          - 'tempest.scenario.test_server_basic_ops'
-          - 'tempest.api.volume.admin.test_multi_backend'
-          - 'tempest.scenario.test_object_storage_basic_ops'
 
 # CentOS 8 Jobs
 - job:
