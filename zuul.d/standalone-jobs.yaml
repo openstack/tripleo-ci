@@ -381,7 +381,7 @@
     branches: *c8_branches
     vars: &scen12_job_vars
       featureset: '060'
-      standalone_ceph: true
+      standalone_ceph: false
       featureset_override:
         validate_services: false
         standalone_environment_files:
