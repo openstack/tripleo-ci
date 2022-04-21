@@ -24,7 +24,7 @@ def test_empty_releases_dictionary_fails(caplog):
 @pytest.fixture
 def releases_dictionary():
     return {
-        'undercloud_install_release': 'queens',
+        'undercloud_install_release': 'wallaby',
         'undercloud_install_hash': 'current-tripleo',
         'undercloud_target_release': 'master',
         'undercloud_target_hash': 'current-tripleo',

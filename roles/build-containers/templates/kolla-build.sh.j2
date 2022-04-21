@@ -10,7 +10,7 @@ TRIPLEO_CI_PATH="{{ ansible_user_dir }}/src/opendev.org/openstack/tripleo-ci"
 
 ### build
 openstack overcloud container image build {{ container_config }}\
-    {% if ci_branch not in ['queens'] and ci_branch in exclude_containers %}
+    {% if ci_branch in exclude_containers %}
     {% for item in exclude_containers[ci_branch][container_exclude_distro] %}
         --exclude {{ item }} \
     {% endfor %}
@@ -18,9 +18,7 @@ openstack overcloud container image build {{ container_config }}\
     {% if use_buildah is defined and use_buildah %}
         --use-buildah \
     {% endif %}
-    {% if ci_branch not in ['queens', 'stein'] %}
         --work-dir {{ ansible_user_dir }}/container-builds \
-    {% endif %}
     {% if build_timeout is defined %}
         --build-timeout {{ build_timeout }} \
     {% endif %}

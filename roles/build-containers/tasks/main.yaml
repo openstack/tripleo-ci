@@ -135,11 +135,6 @@
     container_cli: "{% if use_buildah|bool %}buildah{% else %}docker{% endif %}"
     cacheable: true
 
-- name: Set config-file
-  set_fact:
-    container_config: "--config-file $TRIPLEO_COMMON_PATH/container-images/overcloud_containers.yaml"
-  when: ci_branch in ['pike', 'queens', 'rocky']
-
 - name: Set --config-file for component-ci if component_ci_containers is specified
   set_fact:
     container_config: "--config-file {{ component_ci_configs[component_ci_containers] }}"

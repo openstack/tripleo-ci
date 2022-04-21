@@ -3,13 +3,6 @@
 # cases we need to set STABLE_RELEASE to match for tripleo.sh
 export ZUUL_BRANCH=${ZUUL_BRANCH:-""}
 
-# puppet-ceph has stable/jewel branch where we want to test the latest
-# version of TripleO where puppet-ceph is actually used.
-# Since we switched to ceph-ansible during Pike, we're testing
-# TripleO with Ocata version which is probably fine.
-if [ "$ZUUL_BRANCH" = "stable/jewel" ]; then
-    export STABLE_RELEASE="ocata"
-fi
 # For OVB repo "stable/1.0" is feature branch
 if [ "$ZUUL_BRANCH" = "stable/1.0" -o "$ZUUL_BRANCH" = "stable/2.0" -a "$ZUUL_PROJECT" = "openstack/openstack-virtual-baremetal" ]; then
     export ZUUL_BRANCH="master"

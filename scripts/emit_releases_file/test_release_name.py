@@ -109,25 +109,6 @@ def hash_mock_setup():
                 'standalone_target_hash': 'current-tripleo',
             },
         ),
-        (
-            'train',
-            {
-                'undercloud_install_release': 'train',
-                'undercloud_install_hash': 'current-tripleo',
-                'undercloud_target_release': 'train',
-                'undercloud_target_hash': 'current-tripleo',
-                'overcloud_deploy_release': 'stein',
-                'overcloud_deploy_hash': 'previous-current-tripleo',
-                'overcloud_target_release': 'train',
-                'overcloud_target_hash': 'current-tripleo',
-                'standalone_deploy_release': 'train',
-                'standalone_deploy_newest_hash': 'current',
-                'standalone_deploy_hash': 'current-tripleo',
-                'standalone_target_release': 'train',
-                'standalone_target_newest_hash': 'current',
-                'standalone_target_hash': 'current-tripleo',
-            },
-        ),
     ],
 )
 def test_overcloud_upgrade_is_n_minus_one_to_n(
@@ -237,25 +218,6 @@ def test_overcloud_upgrade_is_n_minus_one_to_n(
                 'standalone_target_hash': 'current-tripleo',
             },
         ),
-        (
-            'train',
-            {
-                'undercloud_install_release': 'train',
-                'undercloud_install_hash': 'current-tripleo',
-                'undercloud_target_release': 'train',
-                'undercloud_target_hash': 'current-tripleo',
-                'overcloud_deploy_release': 'stein',
-                'overcloud_deploy_hash': 'previous-current-tripleo',
-                'overcloud_target_release': 'train',
-                'overcloud_target_hash': 'current-tripleo',
-                'standalone_deploy_release': 'train',
-                'standalone_deploy_newest_hash': 'current',
-                'standalone_deploy_hash': 'current-tripleo',
-                'standalone_target_release': 'train',
-                'standalone_target_newest_hash': 'current',
-                'standalone_target_hash': 'current-tripleo',
-            },
-        ),
     ],
 )
 def test_period_overcloud_upgrade_is_n_minus_one_to_n(
@@ -277,117 +239,6 @@ def test_period_overcloud_upgrade_is_n_minus_one_to_n(
     featureset = {
         'mixed_upgrade': True,
         'overcloud_upgrade': True,
-    }
-    upgrade_from = False
-    assert (
-        compose_releases_dictionary(
-            stable_release, featureset, upgrade_from, is_periodic=True
-        )
-        == expected_releases
-    )
-
-
-@mock.patch('emit_releases_file.get_dlrn_hash')
-@pytest.mark.parametrize(
-    'stable_release,expected_releases',
-    [
-        (
-            'queens',
-            {
-                'undercloud_install_release': 'queens',
-                'undercloud_install_hash': 'current-tripleo',
-                'undercloud_target_release': 'queens',
-                'undercloud_target_hash': 'current-tripleo',
-                'overcloud_deploy_release': 'newton',
-                'overcloud_deploy_hash': 'previous-current-tripleo',
-                'overcloud_target_release': 'queens',
-                'overcloud_target_hash': 'current-tripleo',
-                'standalone_deploy_release': 'queens',
-                'standalone_deploy_newest_hash': 'current',
-                'standalone_deploy_hash': 'current-tripleo',
-                'standalone_target_release': 'queens',
-                'standalone_target_newest_hash': 'current',
-                'standalone_target_hash': 'current-tripleo',
-            },
-        ),
-    ],
-)
-def test_ffu_overcloud_upgrade_is_n_minus_three_to_n(
-    hash_mock, hash_mock_setup, stable_release, expected_releases
-):
-
-    expected_oc_deploy_release = expected_releases['overcloud_deploy_release']
-
-    hash_mock_setup(
-        hash_mock,
-        {
-            (stable_release, 'current-tripleo'): 'current-tripleo',
-            (stable_release, 'current'): 'current',
-            (
-                expected_oc_deploy_release,
-                'current-passed-ci',
-            ): 'previous-current-tripleo',
-        },
-    )
-
-    featureset = {
-        'mixed_upgrade': True,
-        'ffu_overcloud_upgrade': True,
-    }
-
-    upgrade_from = False
-    assert (
-        compose_releases_dictionary(stable_release, featureset, upgrade_from)
-        == expected_releases
-    )
-
-
-@mock.patch('emit_releases_file.get_dlrn_hash')
-@pytest.mark.parametrize(
-    'stable_release,expected_releases',
-    [
-        (
-            'queens',
-            {
-                'undercloud_install_release': 'queens',
-                'undercloud_install_hash': 'current-tripleo',
-                'undercloud_target_release': 'queens',
-                'undercloud_target_hash': 'current-tripleo',
-                'overcloud_deploy_release': 'newton',
-                'overcloud_deploy_hash': 'previous-current-tripleo',
-                'overcloud_target_release': 'queens',
-                'overcloud_target_hash': 'current-tripleo',
-                'standalone_deploy_release': 'queens',
-                'standalone_deploy_newest_hash': 'current',
-                'standalone_deploy_hash': 'current-tripleo',
-                'standalone_target_release': 'queens',
-                'standalone_target_newest_hash': 'current',
-                'standalone_target_hash': 'current-tripleo',
-            },
-        ),
-    ],
-)
-def test_period_ffu_overcloud_upgrade_is_n_minus_three_to_n(
-    hash_mock, hash_mock_setup, stable_release, expected_releases
-):
-
-    expected_oc_deploy_release = expected_releases['overcloud_deploy_release']
-
-    hash_mock_setup(
-        hash_mock,
-        {
-            (stable_release, 'tripleo-ci-testing'): 'current-tripleo',
-            (stable_release, 'current'): 'current',
-            (
-                expected_oc_deploy_release,
-                'current-passed-ci',
-            ): 'previous-current-tripleo',
-        },
-    )
-
-    featureset = {
-        'mixed_upgrade': True,
-        'ffu_overcloud_upgrade': True,
     }
     upgrade_from = False
     assert (
@@ -474,25 +325,6 @@ def test_period_ffu_overcloud_upgrade_is_n_minus_three_to_n(
                 'standalone_deploy_newest_hash': 'current',
                 'standalone_deploy_hash': 'current-tripleo',
                 'standalone_target_release': 'ussuri',
-                'standalone_target_newest_hash': 'current',
-                'standalone_target_hash': 'current-tripleo',
-            },
-        ),
-        (
-            'train',
-            {
-                'undercloud_install_release': 'stein',
-                'undercloud_install_hash': 'previous-current-tripleo',
-                'undercloud_target_release': 'train',
-                'undercloud_target_hash': 'current-tripleo',
-                'overcloud_deploy_release': 'train',
-                'overcloud_deploy_hash': 'current-tripleo',
-                'overcloud_target_release': 'train',
-                'overcloud_target_hash': 'current-tripleo',
-                'standalone_deploy_release': 'train',
-                'standalone_deploy_newest_hash': 'current',
-                'standalone_deploy_hash': 'current-tripleo',
-                'standalone_target_release': 'train',
                 'standalone_target_newest_hash': 'current',
                 'standalone_target_hash': 'current-tripleo',
             },
@@ -818,25 +650,6 @@ def test_period_standalone_upgrade_is_n_minus_one_to_n(
                 'standalone_target_release': 'train',
             },
         ),
-        (
-            'stein',
-            {
-                'undercloud_install_release': 'stein',
-                'undercloud_install_hash': 'current-tripleo',
-                'undercloud_target_release': 'stein',
-                'undercloud_target_hash': 'current-tripleo',
-                'overcloud_deploy_release': 'stein',
-                'overcloud_deploy_hash': 'previous-current-tripleo',
-                'overcloud_target_release': 'stein',
-                'overcloud_target_hash': 'current-tripleo',
-                'standalone_deploy_newest_hash': 'current',
-                'standalone_deploy_hash': 'current-tripleo',
-                'standalone_deploy_release': 'stein',
-                'standalone_target_newest_hash': 'current',
-                'standalone_target_hash': 'current-tripleo',
-                'standalone_target_release': 'stein',
-            },
-        ),
     ],
 )
 def test_overcloud_update_target_is_hash(
@@ -1092,25 +905,6 @@ def test_period_overcloud_update_target_is_hash(
                 'standalone_target_release': 'train',
             },
         ),
-        (
-            'stein',
-            {
-                'undercloud_install_release': 'stein',
-                'undercloud_install_hash': 'current-tripleo',
-                'undercloud_target_release': 'stein',
-                'undercloud_target_hash': 'current-tripleo',
-                'overcloud_deploy_release': 'stein',
-                'overcloud_deploy_hash': 'current-tripleo',
-                'overcloud_target_release': 'stein',
-                'overcloud_target_hash': 'current-tripleo',
-                'standalone_deploy_hash': 'current-tripleo',
-                'standalone_deploy_newest_hash': 'current',
-                'standalone_deploy_release': 'stein',
-                'standalone_target_newest_hash': 'current',
-                'standalone_target_hash': 'current-tripleo',
-                'standalone_target_release': 'stein',
-            },
-        ),
     ],
 )
 def test_noop_target_is_the_same(
@@ -1229,25 +1023,6 @@ def test_noop_target_is_the_same(
                 'standalone_target_newest_hash': 'current',
                 'standalone_target_hash': 'tripleo-ci-testing',
                 'standalone_target_release': 'train',
-            },
-        ),
-        (
-            'stein',
-            {
-                'undercloud_install_release': 'stein',
-                'undercloud_install_hash': 'tripleo-ci-testing',
-                'undercloud_target_release': 'stein',
-                'undercloud_target_hash': 'tripleo-ci-testing',
-                'overcloud_deploy_release': 'stein',
-                'overcloud_deploy_hash': 'tripleo-ci-testing',
-                'overcloud_target_release': 'stein',
-                'overcloud_target_hash': 'tripleo-ci-testing',
-                'standalone_deploy_newest_hash': 'current',
-                'standalone_deploy_hash': 'tripleo-ci-testing',
-                'standalone_deploy_release': 'stein',
-                'standalone_target_newest_hash': 'current',
-                'standalone_target_hash': 'tripleo-ci-testing',
-                'standalone_target_release': 'stein',
             },
         ),
     ],
