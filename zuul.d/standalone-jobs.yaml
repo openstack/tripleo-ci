@@ -249,6 +249,8 @@
               - ^manifests/profile/(base|pacemaker)/ceph.*$  # ceph_nfs / ganesha
               # tripleo-ansible
               - ^tripleo_ansible/roles/tripleo_ceph_.*/.*
+              # tripleo-quickstart-extras
+              - roles/standalone/tasks/ceph-install.yml
         - tripleo-ci-centos-8-scenario007-standalone: &c8_scen7
             <<: *c8_scen1
             files: &scen7_files
