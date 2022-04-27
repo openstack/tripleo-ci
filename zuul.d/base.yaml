@@ -224,35 +224,6 @@
         - images
 
 - job:
-    name: tripleo-ci-base-singlenode-centos-8
-    abstract: true
-    description: |
-        Base abstract job for singlenode TripleO CI centos-8 zuulv3 jobs
-    parent: tripleo-ci-base-centos-8
-    nodeset: single-centos-8-node
-    pre-run: playbooks/tripleo-ci/install-built-repo.yml
-    vars:
-      undercloud: 127.0.0.2
-      environment_infra: osinfra
-      environment_type: singlenode
-      common_featureset: featureset-multinode-common.yml
-      playbooks:
-        - quickstart.yml
-        - multinode-undercloud.yml
-        - multinode-undercloud-upgrade.yml
-        - multinode-overcloud-prep.yml
-        - multinode-overcloud.yml
-        - multinode-overcloud-upgrade.yml
-        - multinode-validate.yml
-      tags:
-        - build
-        - undercloud-setup
-        - undercloud-scripts
-        - undercloud-install
-        - undercloud-validate
-        - images
-
-- job:
     name: tripleo-ci-base-standalone
     abstract: true
     description: |

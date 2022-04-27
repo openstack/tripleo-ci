@@ -165,18 +165,6 @@
         - overcloud-upgrade
 
 - job:
-    name: tripleo-ci-centos-8-undercloud-upgrade
-    parent: tripleo-ci-base-singlenode-centos-8
-    branches: ^master$
-    voting: true
-    vars:
-      featureset: '050'
-      featureset_override:
-        validate_services: false
-      extra_tags:
-        - undercloud-upgrade
-
-- job:
     name: tripleo-ci-centos-8-scenario000-multinode-oooq-container-updates
     description: |
       Basic tripleo update job for centos-8, this is not an upgrade job.
