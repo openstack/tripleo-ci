@@ -39,16 +39,6 @@
       - ^zuul.d/standalone-jobs.yaml
       - ^zuul.d/undercloud-jobs.yaml
 
-# CentOS 7
-
-- job:
-    name: tripleo-build-images-base
-    abstract: true
-    description: |
-                Base abstract job for tripleo-buildimage-* centos-7 jobs
-    parent: tripleo-ci-build-images-required-projects-upstream
-    nodeset: single-centos-7-node
-
 # CentOS 8
 - job:
     name: tripleo-build-images-base-centos-8
@@ -79,7 +69,7 @@
     name: tripleo-ci-buildimage-jobs
     check:
       jobs:
-        - tripleo-buildimage-overcloud-full-centos-7-train:
+        - tripleo-buildimage-overcloud-full-centos-8:
             files: &build_images_files
               - ^playbooks/tripleo-buildimages/.*$
               - ^roles/oooci-build-images/.*$
@@ -87,10 +77,6 @@
               - tripleoclient/v1/overcloud_image.py
               - elements/.*
               - ^image-yaml/.*
-        - tripleo-buildimage-ironic-python-agent-centos-7-train:
-            files: *build_images_files
-        - tripleo-buildimage-overcloud-full-centos-8:
-            files: *build_images_files
         - tripleo-buildimage-overcloud-full-centos-8-victoria:
             files: *build_images_files
         - tripleo-buildimage-overcloud-full-centos-8-ussuri:
@@ -130,10 +116,6 @@
               - ^roles/oooci-build-images/.*$
     gate:
       jobs:
-        - tripleo-buildimage-overcloud-full-centos-7-train:
-            files: *build_images_files
-        - tripleo-buildimage-ironic-python-agent-centos-7-train:
-            files: *build_images_files
         - tripleo-buildimage-overcloud-full-centos-8:
             files: *build_images_files
         - tripleo-buildimage-overcloud-full-centos-8-victoria:
@@ -167,11 +149,7 @@
     name: tripleo-buildimage-jobs
     check:
       jobs:
-        - tripleo-buildimage-overcloud-full-centos-7:
-            files: *build_images_files
         - tripleo-buildimage-overcloud-full-centos-8:
-            files: *build_images_files
-        - tripleo-buildimage-ironic-python-agent-centos-7:
             files: *build_images_files
         - tripleo-buildimage-ironic-python-agent-centos-8:
             files: *build_images_files
@@ -183,11 +161,7 @@
             files: *build_images_hardened_uefi_files
     gate:
       jobs:
-        - tripleo-buildimage-overcloud-full-centos-7:
-            files: *build_images_files
         - tripleo-buildimage-overcloud-full-centos-8:
-            files: *build_images_files
-        - tripleo-buildimage-ironic-python-agent-centos-7:
             files: *build_images_files
         - tripleo-buildimage-ironic-python-agent-centos-8:
             files: *build_images_files
@@ -377,63 +351,3 @@
     override-checkout: stable/train
     vars:
       branch_override: stable/train
-
-- job:
-    name: tripleo-buildimage-overcloud-full-centos-7-train
-    parent: tripleo-build-images-base
-    branches: master
-    override-checkout: 'stable/train'
-    vars:
-      tripleo_image_type: overcloud-full
-      tripleo_image_os: centos7
-      branch_override: stable/train
-    irrelevant-files:
-      - ^.*\.rst$
-      - ^releasenotes/.*$
-
-- job:
-    name: tripleo-buildimage-ironic-python-agent-centos-7-train
-    parent: tripleo-build-images-base
-    branches: master
-    override-checkout: 'stable/train'
-    vars:
-      tripleo_image_type: ironic-python-agent
-      tripleo_image_os: centos7
-      branch_override: stable/train
-    irrelevant-files:
-      - ^.*\.rst$
-      - ^releasenotes/.*$
-
-# CentOS 7 Image Build Jobs
-- job:
-    name: tripleo-buildimage-ironic-python-agent-centos-7
-    parent: tripleo-build-images-base
-    branches: stable/train
-    vars:
-      tripleo_image_type: ironic-python-agent
-      tripleo_image_os: centos7
-    irrelevant-files:
-      - ^.*\.rst$
-      - ^releasenotes/.*$
-
-- job:
-    name: tripleo-buildimage-overcloud-full-centos-7
-    parent: tripleo-build-images-base
-    branches: stable/train
-    vars:
-      tripleo_image_type: overcloud-full
-      tripleo_image_os: centos7
-    irrelevant-files:
-      - ^.*\.rst$
-      - ^releasenotes/.*$
-
-- job:
-    name: tripleo-buildimage-overcloud-hardened-full-centos-7
-    parent: tripleo-build-images-base
-    branches: stable/train
-    vars:
-      tripleo_image_type: overcloud-hardened-full
-      tripleo_image_os: centos7
-    irrelevant-files:
-      - ^.*\.rst$
-      - ^releasenotes/.*$

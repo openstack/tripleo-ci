@@ -885,3 +885,60 @@
     irrelevant-files:
       - ^.*\.rst$
       - ^releasenotes/.*$
+
+# TODO(marios) tripleo-build-containers-centos-7 used by kolla stable/train
+# https://opendev.org/openstack/kolla/src/commit/d967f400e2761e9022a6b2dedc2d307d32d1ea27/.zuul.d/centos.yaml#L26
+- job:
+    name: tripleo-build-containers-centos-7
+    parent: tripleo-build-containers-base
+    branches: stable/train
+    voting: true
+- job:
+    name: tripleo-build-containers-base
+    abstract: true
+    description: |
+                                Base abstract job for standalone TripleO CI build-containers jobs running repo setup
+    parent: tripleo-ci-build-containers-required-projects-upstream
+    nodeset: single-centos-7-node
+
+# TODO(marios) tripleo-ci-centos-7-containers-multinode -> mistral stein/train/ussuri
+# https://opendev.org/openstack/mistral/src/commit/2a1736f0709d7316ae9b7bf6fa9b488c7a342009/.zuul.yaml#L119
+- job:
+    name: tripleo-ci-centos-7-containers-multinode
+    parent: tripleo-ci-base-multinode
+    branches: stable/train
+    vars:
+      nodes: 1ctlr
+      featureset: '010'
+      playbooks:
+        - multinode.yml
+
+# TODO(marios) tripleo-ci-centos-7-content-provider-train -> openstack-ansible-os_tempest victoria/wallaby
+# https://opendev.org/openstack/openstack-ansible-os_tempest/src/commit/1869a9f138bcbbdbb53f2686cd567f71e073472d/zuul.d/project.yaml#L50
+- job:
+    name: tripleo-ci-centos-7-content-provider-train
+    parent: tripleo-ci-centos-7-content-provider-base
+    branches: master
+    override-checkout: stable/train
+    vars:
+      branch_override: stable/train
+      use_buildah: true
+- job:
+    name: tripleo-ci-centos-7-content-provider-base
+    parent: tripleo-ci-base-singlenode-standard
+    nodeset: single-centos-7-node
+    run:
+      - playbooks/tripleo-buildcontainers/docker.yaml
+      - playbooks/tripleo-ci/run-v3.yaml
+      - playbooks/tripleo-ci/run-provider.yml
+    post-run: playbooks/tripleo-buildcontainers/post.yaml
+    vars:
+      featureset: '027'
+      provider_job: true
+      ib_create_web_repo: true
+      playbooks:
+        - quickstart.yml
+        - multinode-standalone-pre.yml
+      tags:
+        - undercloud
+        - build

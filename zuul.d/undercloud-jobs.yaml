@@ -117,38 +117,3 @@
     branches: ^(?!stable/(train|ussuri|victoria)).*$
     irrelevant-files: *undercloud_ignored
     vars: *undercloud_job_vars
-
-- job:
-    name: tripleo-ci-centos-7-content-provider-base
-    parent: tripleo-ci-base-singlenode-standard
-    nodeset: single-centos-7-node
-    run:
-      - playbooks/tripleo-buildcontainers/docker.yaml
-      - playbooks/tripleo-ci/run-v3.yaml
-      - playbooks/tripleo-ci/run-provider.yml
-    post-run: playbooks/tripleo-buildcontainers/post.yaml
-    vars:
-      featureset: '027'
-      provider_job: true
-      ib_create_web_repo: true
-      playbooks:
-        - quickstart.yml
-        - multinode-standalone-pre.yml
-      tags:
-        - undercloud
-        - build
-
-- job:
-    name: tripleo-ci-centos-7-content-provider
-    parent: tripleo-ci-centos-7-content-provider-base
-    branches: stable/train
-    voting: true
-
-- job:
-    name: tripleo-ci-centos-7-content-provider-train
-    parent: tripleo-ci-centos-7-content-provider-base
-    branches: master
-    override-checkout: stable/train
-    vars:
-      branch_override: stable/train
-      use_buildah: true

@@ -61,7 +61,6 @@
       jobs:
         - tripleo-ci-centos-9-content-provider
         - tripleo-ci-centos-8-content-provider
-        - tripleo-ci-centos-7-content-provider
         - tripleo-ci-centos-8-containers-multinode:
             irrelevant-files: &multinode_ignored
               - ^.*\.md$
@@ -138,29 +137,17 @@
             dependencies:
               - tripleo-ci-centos-9-content-provider
         - tripleo-ci-centos-9-scenario007-multinode-oooq-container: *cs9_multinode_all
-        - tripleo-ci-centos-7-containers-multinode:
-            irrelevant-files: *multinode_ignored
-            vars: *multi_consumer_vars
-            dependencies:
-              - tripleo-ci-centos-7-content-provider
-
     gate:
       queue: tripleo
       jobs:
         - tripleo-ci-centos-9-content-provider
         - tripleo-ci-centos-8-content-provider
-        - tripleo-ci-centos-7-content-provider
         - tripleo-ci-centos-9-containers-multinode: *cs9_multinode_all
         - tripleo-ci-centos-8-containers-multinode:
             irrelevant-files: *multinode_ignored
             vars: *multi_consumer_vars
             dependencies:
               - tripleo-ci-centos-8-content-provider
-        - tripleo-ci-centos-7-containers-multinode:
-            irrelevant-files: *multinode_ignored
-            vars: *multi_consumer_vars
-            dependencies:
-              - tripleo-ci-centos-7-content-provider
 
 - project-template:
     name: tripleo-multinode-container-full-pipeline
@@ -187,9 +174,6 @@
               - tripleo-ci-centos-8-content-provider
         - tripleo-ci-centos-9-containers-multinode: *cs9_multinode_all
         - tripleo-ci-centos-9-scenario007-multinode-oooq-container: *cs9_multinode_all
-        - tripleo-ci-centos-7-containers-multinode:
-            irrelevant-files: *multinode_ignored
-
     gate:
       queue: tripleo
       jobs:
@@ -214,8 +198,6 @@
             vars: *multi_consumer_vars
             dependencies:
               - tripleo-ci-centos-8-content-provider
-        - tripleo-ci-centos-7-containers-multinode:
-            irrelevant-files: *multinode_ignored
 
 # NOTE(rfolco): tripleo-multinode-branchful should be used in ci repos only
 # Check where this template is used across openstack repos with the url below:
@@ -351,17 +333,6 @@
     override-checkout: stable/train
     vars:
       branch_override: stable/train
-
-## CentOS 7 jobs
-- job:
-    name: tripleo-ci-centos-7-containers-multinode
-    parent: tripleo-ci-base-multinode
-    branches: stable/train
-    vars:
-      nodes: 1ctlr
-      featureset: '010'
-      playbooks:
-        - multinode.yml
 
 - job:
     name: tripleo-ci-centos-8-scenario007-multinode-oooq-container

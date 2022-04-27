@@ -57,15 +57,6 @@
 # Note: It merges tripleo-build-containers-base-with-files and
 # tripleo-build-containers-base.
 
-# CentOS 7 Distro based Job
-- job:
-    name: tripleo-build-containers-base
-    abstract: true
-    description: |
-                Base abstract job for standalone TripleO CI build-containers jobs running repo setup
-    parent: tripleo-ci-build-containers-required-projects-upstream
-    nodeset: single-centos-7-node
-
 # CentOS 8 Distro based Job
 - job:
     name: tripleo-build-containers-base-centos-8
@@ -100,75 +91,13 @@
     name: tripleo-ci-build-containers-jobs
     check:
       jobs:
-        - tripleo-build-containers-centos-7-buildah-train:
-            files: &build_container_files
+        - tripleo-build-containers-centos-9:
+            files:
               - ^playbooks/tripleo-buildcontainers/.*$
               - ^roles/build-containers/.*$
               - zuul.d/layout.yaml
               - zuul.d/build-containers.yaml
               - ^roles/tripleo-build-jobs-repos/.*$
-        - tripleo-build-containers-centos-9:
-            files: *build_container_files
-    gate:
-      queue: tripleo
-      jobs:
-        - tripleo-build-containers-centos-7-buildah-train:
-            files: *build_container_files
-
-- project-template:
-    name: tripleo-build-containers-jobs
-    check:
-      jobs:
-        - tripleo-build-containers-centos-7-buildah
-    gate:
-      queue: tripleo
-      jobs:
-        - tripleo-build-containers-centos-7-buildah
-
-- project-template:
-    name: tripleo-build-containers-jobs-train
-    check:
-      jobs:
-        - tripleo-build-containers-centos-7-train
-    gate:
-      queue: tripleo
-      jobs:
-        - tripleo-build-containers-centos-7-train
-
-- job:
-    name: tripleo-build-containers-centos-7-base
-    parent: tripleo-build-containers-base
-    branches: ^(?!stable/(pike|queens)).*$
-    voting: true
-
-- job:
-    name: tripleo-build-containers-centos-7
-    parent: tripleo-build-containers-base
-    branches: stable/train
-    voting: true
-
-- job:
-    name: tripleo-build-containers-centos-7-train
-    parent: tripleo-build-containers-centos-7-base
-    override-checkout: stable/train
-    vars:
-      branch_override: stable/train
-
-- job:
-    name: tripleo-build-containers-centos-7-buildah
-    description: |
-      container build job (buildah cli/backend)
-    parent: tripleo-build-containers-centos-7
-    vars:
-      use_buildah: true
-
-- job:
-    name: tripleo-build-containers-centos-7-buildah-train
-    parent: tripleo-build-containers-centos-7-base
-    override-checkout: stable/train
-    vars:
-      branch_override: stable/train
-      use_buildah: true
 
 # CentOS 8
 - job:
