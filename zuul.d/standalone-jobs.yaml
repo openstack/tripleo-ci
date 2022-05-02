@@ -809,3 +809,19 @@
     parent: tripleo-ci-centos-9-scenario004-standalone
     files: *scen4_files
     vars: *ceph_nightly_vars
+
+##################################
+# Standalone Upgrade distro jobs #
+##################################
+
+- job:
+    name: tripleo-ci-standalone-upgrade-centos-8
+    parent: tripleo-ci-base-standalone-upgrade-standard
+    nodeset: single-centos-8-node
+    branches: *c8_branches
+
+- job:
+    name: tripleo-ci-standalone-upgrade-centos-9
+    parent: tripleo-ci-base-standalone-upgrade-standard
+    nodeset: single-centos-9-node
+    branches: *c9_branches
