@@ -405,7 +405,7 @@
 
 - job:
     name: tripleo-ci-centos-8-undercloud-upgrade-ussuri
-    parent: tripleo-ci-base-singlenode-centos-8
+    parent: tripleo-ci-base-undercloud-centos-8
     branches: ^stable/ussuri$
     voting: true
     vars:
@@ -417,7 +417,7 @@
 
 - job:
     name: tripleo-ci-centos-8-undercloud-upgrade-victoria
-    parent: tripleo-ci-base-singlenode-centos-8
+    parent: tripleo-ci-base-undercloud-centos-8
     branches: ^stable/victoria$
     voting: true
     vars:
@@ -429,7 +429,7 @@
 
 - job:
     name: tripleo-ci-centos-8-undercloud-ffu-wallaby
-    parent: tripleo-ci-base-singlenode-centos-8
+    parent: tripleo-ci-base-undercloud-centos-8
     branches: ^stable/wallaby$
     voting: true
     vars:
@@ -442,8 +442,20 @@
 ## CentOS 9 Undercloud Upgrade
 - job:
     name: tripleo-ci-centos-9-undercloud-upgrade
-    parent: tripleo-ci-base-singlenode-centos-8
-    nodeset: single-centos-9-node
+    parent: tripleo-ci-base-undercloud-centos-9
+    branches: ^master$
+    voting: true
+    vars:
+      featureset: '050'
+      featureset_override:
+        validate_services: false
+      extra_tags:
+        - undercloud-upgrade
+
+## CentOS 8 undercloud upgrade
+- job:
+    name: tripleo-ci-centos-8-undercloud-upgrade
+    parent: tripleo-ci-base-undercloud-centos-8
     branches: ^master$
     voting: true
     vars:
