@@ -119,7 +119,7 @@
         - multinode-overcloud-update.yml
         - multinode-overcloud-upgrade.yml
         - multinode-validate.yml
-      tags:
+      tags: &multinode_tags
         - build
         - undercloud-setup
         - undercloud-scripts
@@ -132,6 +132,29 @@
         - overcloud-deploy
         - overcloud-post-deploy
         - overcloud-validate
+
+# The base standard job for Multinode Mixed OS jobs
+- job:
+    name: tripleo-ci-base-multinode-mixed-os-standard
+    abstract: true
+    description: |
+                Base abstract job for multinode TripleO CI zuulv3 jobs
+    parent: tripleo-ci-base-standard
+    pre-run: playbooks/tripleo-ci/install-built-repo.yml
+    vars:
+      undercloud: 127.0.0.2
+      environment_infra: osinfra
+      environment_type: multinode
+      common_featureset: featureset-multinode-common.yml
+      playbooks:
+        - quickstart.yml
+        - multinode-overcloud-mixed-os-repos-compute.yml
+        - multinode-undercloud-mixed-os.yml
+        - multinode-overcloud-prep.yml
+        - multinode-overcloud-mixed-os-deploy-control.yml
+        - multinode-overcloud-mixed-os-deploy-compute.yml
+        - multinode-validate.yml
+      tags: *multinode_tags
 
 # Singlenode Standard Job
 - job:

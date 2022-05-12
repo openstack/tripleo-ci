@@ -19,7 +19,7 @@
         Base abstract job to add required-projects for Upstream Multinode Jobs
     abstract: true
     parent: tripleo-ci-base-multinode-standard
-    required-projects:
+    required-projects: &multinode_required_projects
       - opendev.org/openstack/tripleo-ansible
       - opendev.org/openstack/tripleo-common
       - opendev.org/openstack/tripleo-operator-ansible
@@ -54,6 +54,16 @@
         Base abstract job for multinode TripleO CI centos-9 zuulv3 jobs
     parent: tripleo-ci-base-required-projects-multinode-upstream
     nodeset: two-centos-9-nodes
+
+# Centos 8/9 mixed os multinode base job
+- job:
+    name: tripleo-ci-base-required-projects-multinode-mixed-os-upstream
+    description: |
+        Base abstract job to add required-projects for Upstream Mixed OS Multinode Jobs
+    abstract: true
+    parent: tripleo-ci-base-multinode-mixed-os-standard
+    required-projects: *multinode_required_projects
+    nodeset: two-centos-9-one-centos-8-nodes
 
 - project-template:
     name: tripleo-multinode-container-minimal-pipeline
@@ -135,12 +145,19 @@
             vars: *multi_consumer_vars
             dependencies:
               - tripleo-ci-centos-9-content-provider
+        - tripleo-ci-centos-8-9-multinode-mixed-os: &multinode_mixed_os
+            irrelevant-files: *multinode_ignored
+            vars: *multi_consumer_vars
+            dependencies:
+              - tripleo-ci-centos-8-content-provider
+              - tripleo-ci-centos-9-content-provider
         - tripleo-ci-centos-9-scenario007-multinode-oooq-container: *cs9_multinode_all
     gate:
       jobs:
         - tripleo-ci-centos-9-content-provider
         - tripleo-ci-centos-8-content-provider
         - tripleo-ci-centos-9-containers-multinode: *cs9_multinode_all
+        - tripleo-ci-centos-8-9-multinode-mixed-os: *multinode_mixed_os
         - tripleo-ci-centos-8-containers-multinode:
             irrelevant-files: *multinode_ignored
             vars: *multi_consumer_vars
@@ -341,3 +358,13 @@
       featureset: '030'
       playbooks:
         - multinode.yml
+
+## Centos 8 9 mixed deployment
+- job:
+    name: tripleo-ci-centos-8-9-multinode-mixed-os
+    parent: tripleo-ci-base-required-projects-multinode-mixed-os-upstream
+    branches: stable/wallaby
+    voting: true
+    vars:
+      featureset: '066'
+      nodes: 1ctlr_1comp_mixed_os
