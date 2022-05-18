@@ -706,6 +706,7 @@
               - deployment/database/*
               - deployment/etcd/*
               - deployment/haproxy/*
+              - deployment/keystone/*
               - deployment/metrics/*
               - deployment/neutron/*
               - deployment/nova/*
