@@ -31,6 +31,7 @@ import requests
 import yaml
 from typing import Dict
 
+# TODO(pojadhav): remove ussuri, victoria once we EOL victoria
 # Define releases
 RELEASES = [
     'train',

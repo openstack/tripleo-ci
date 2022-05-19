@@ -339,6 +339,15 @@
           - 'sahara_tempest_plugin.tests.api.test_data_sources.DataSourceTest'
           - 'mistral_tempest_tests.tests.api.v2.test_actions.ActionTestsV2'
 
+# TODO(pojadhav) used by openstack/tripleo-upgrade on stable/victoria
+# https://review.opendev.org/c/openstack/tripleo-upgrade/+/836802/2#message-34eefaa88d2296ff439bed130ea69cebd6979559
+- job:
+    name: tripleo-ci-centos-8-content-provider-ussuri
+    parent: tripleo-ci-centos-8-content-provider
+    override-checkout: stable/ussuri
+    vars:
+      branch_override: stable/ussuri
+
 # TODO(marios) used by openstack/manila on stable/stein
 # https://review.opendev.org/c/openstack/tripleo-ci/+/838110/10#message-68c2e8290269a5fdceb4c122e57a563a54d68839
 - job:
@@ -421,11 +430,7 @@
             irrelevant-files: *multinode_ignored
         - tripleo-ci-centos-8-scenario000-multinode-oooq-container-updates:
             irrelevant-files: *multinode_ignored
-        - tripleo-ci-centos-8-scenario000-multinode-oooq-container-updates-ussuri:
-            irrelevant-files: *multinode_ignored
         - tripleo-ci-centos-8-scenario000-multinode-oooq-container-updates-train:
-            irrelevant-files: *multinode_ignored
-        - tripleo-ci-centos-8-scenario000-multinode-oooq-container-upgrades-ussuri:
             irrelevant-files: *multinode_ignored
         - tripleo-ci-centos-8-standalone:
             irrelevant-files: &standalone_ignored
@@ -469,11 +474,7 @@
             irrelevant-files: *standalone_ignored
         - tripleo-ci-centos-8-scenario000-multinode-oooq-container-updates:
             irrelevant-files: *multinode_ignored
-        - tripleo-ci-centos-8-scenario000-multinode-oooq-container-updates-ussuri:
-            irrelevant-files: *multinode_ignored
         - tripleo-ci-centos-8-scenario000-multinode-oooq-container-updates-train:
-            irrelevant-files: *multinode_ignored
-        - tripleo-ci-centos-8-scenario000-multinode-oooq-container-upgrades-ussuri:
             irrelevant-files: *multinode_ignored
 
 - project-template:
@@ -502,11 +503,7 @@
             irrelevant-files: *multinode_ignored
         - tripleo-ci-centos-8-scenario000-multinode-oooq-container-updates:
             irrelevant-files: *multinode_ignored
-        - tripleo-ci-centos-8-scenario000-multinode-oooq-container-updates-ussuri:
-            irrelevant-files: *multinode_ignored
         - tripleo-ci-centos-8-scenario000-multinode-oooq-container-updates-train:
-            irrelevant-files: *multinode_ignored
-        - tripleo-ci-centos-8-scenario000-multinode-oooq-container-upgrades-ussuri:
             irrelevant-files: *multinode_ignored
         - tripleo-ci-centos-7-standalone:
             irrelevant-files: *standalone_ignored
@@ -544,11 +541,7 @@
             irrelevant-files: *standalone_ignored
         - tripleo-ci-centos-8-scenario000-multinode-oooq-container-updates:
             irrelevant-files: *multinode_ignored
-        - tripleo-ci-centos-8-scenario000-multinode-oooq-container-updates-ussuri:
-            irrelevant-files: *multinode_ignored
         - tripleo-ci-centos-8-scenario000-multinode-oooq-container-updates-train:
-            irrelevant-files: *multinode_ignored
-        - tripleo-ci-centos-8-scenario000-multinode-oooq-container-upgrades-ussuri:
             irrelevant-files: *multinode_ignored
 
 - project-template:
@@ -724,7 +717,6 @@
               - ci/environments/scenario007-standalone.yaml
               # puppet-tripleo
               - ^manifests/haproxy.*$
-        - tripleo-ci-centos-8-standalone-upgrade-ussuri
         - tripleo-ci-centos-8-standalone
         - tripleo-ci-centos-8-standalone-build
         - tripleo-ci-centos-7-standalone
@@ -758,7 +750,6 @@
             files: *scen4_files
         - tripleo-ci-centos-8-scenario007-standalone:
             files: *scen7_files
-        - tripleo-ci-centos-8-standalone-upgrade-ussuri
         - tripleo-ci-centos-7-standalone
         - tripleo-ci-centos-8-standalone
         - tripleo-ci-centos-7-standalone
@@ -838,8 +829,6 @@
 
         - tripleo-ci-centos-8-undercloud-containers:
             irrelevant-files: *undercloud_ignored
-        - tripleo-ci-centos-8-undercloud-upgrade-ussuri:
-            irrelevant-files: *undercloud_ignored
     gate:
       queue: tripleo
       jobs:
@@ -848,8 +837,6 @@
         - tripleo-ci-centos-7-undercloud-containers:
             irrelevant-files: *undercloud_ignored
         - tripleo-ci-centos-8-undercloud-containers:
-            irrelevant-files: *undercloud_ignored
-        - tripleo-ci-centos-8-undercloud-upgrade-ussuri:
             irrelevant-files: *undercloud_ignored
 
 # Deprecated Rocky jobs
@@ -872,7 +859,7 @@
     name: tripleo-ci-centos-8-scenario010-standalone
     voting: true
     parent: tripleo-ci-centos-8-scenario010-standalone-base
-    branches: ^(?!stable/(train|ussuri|victoria|wallaby)).*$
+    branches: ^(?!stable/(train|victoria|wallaby)).*$
 
 # Centos8 jobs no longer running for tripleo/wallaby. This is used by DIB:
 # https://opendev.org/openstack/diskimage-builder/src/commit/94fab70e5834a8deaa03ca32957e37586951743d/.zuul.d/project.yaml#L9
