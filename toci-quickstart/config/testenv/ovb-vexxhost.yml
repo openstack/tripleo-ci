@@ -35,7 +35,7 @@ docker_registry_host: >-
   {%- elif job.consumer_job | default(false) | bool -%}
   {{ job.registry_ip_address_branch[release] }}:5001
   {%- else -%}
-  {%- if release in ["master"] -%}
+  {%- if (release not in ["victoria"] and ansible_distribution|lower in ["centos"]) -%}
   quay.rdoproject.org
   {%- else -%}
   trunk.registry.rdoproject.org
