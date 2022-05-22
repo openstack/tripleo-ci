@@ -278,6 +278,8 @@
               - ^manifests/profile/base/octavia.*$
               # tripleo-quickstart-extras
               - roles/octavia-amphora-download/.*
+              - roles/standalone/tasks/ceph-install.yml
+              - roles/standalone/tasks/storage-network.yml
               # tripleo-heat-templates
               # TODO(beagles): octavia testing touches neutron, glance and nova.
               # It may be sensible to expand this list after it has proven itself.
