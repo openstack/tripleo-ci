@@ -147,15 +147,19 @@
               - zuul.d/multinode-jobs.yaml
               - zuul.d/undercloud-jobs.yaml
               - zuul.d/standalone-jobs.yaml
+        - tripleo-ci-centos-8-content-provider-ussuri:
+            irrelevant-files: *upgrade_irrelevant
         - tripleo-ci-centos-8-standalone-upgrade-victoria:
             vars: *consumer_vars
             dependencies:
               - tripleo-ci-centos-8-content-provider
+              - tripleo-ci-centos-8-content-provider-ussuri
         - tripleo-ci-centos-8-undercloud-upgrade-victoria:
             vars: *consumer_vars
             irrelevant-files: *undercloud_ignored
             dependencies:
               - tripleo-ci-centos-8-content-provider
+              - tripleo-ci-centos-8-content-provider-ussuri
         - tripleo-ci-centos-8-scenario000-multinode-oooq-container-updates-victoria:
             irrelevant-files: *multinode_ignored
             vars: *consumer_vars
@@ -171,15 +175,19 @@
       jobs:
         - tripleo-ci-centos-8-content-provider:
             irrelevant-files: *upgrade_irrelevant
+        - tripleo-ci-centos-8-content-provider-ussuri:
+            irrelevant-files: *upgrade_irrelevant
         - tripleo-ci-centos-8-standalone-upgrade-victoria:
             vars: *consumer_vars
             dependencies:
               - tripleo-ci-centos-8-content-provider
+              - tripleo-ci-centos-8-content-provider-ussuri
         - tripleo-ci-centos-8-undercloud-upgrade-victoria:
             vars: *consumer_vars
             irrelevant-files: *undercloud_ignored
             dependencies:
               - tripleo-ci-centos-8-content-provider
+              - tripleo-ci-centos-8-content-provider-ussuri
         - tripleo-ci-centos-8-scenario000-multinode-oooq-container-updates-victoria:
             irrelevant-files: *multinode_ignored
             vars: *consumer_vars
