@@ -855,6 +855,13 @@
         - multinode-validate.yml
 
 # Deprecated C8 jobs
+
+- job:
+    name: tripleo-ci-centos-8-scenario010-standalone-base
+    parent: tripleo-ci-base-standalone-centos-8
+    nodeset: single-centos-8-node-nested-virt
+    abstract: true
+
 - job:
     name: tripleo-ci-centos-8-scenario010-standalone
     voting: true

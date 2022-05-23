@@ -263,8 +263,9 @@
               - ci/environments/scenario007-standalone.yaml
               # puppet-tripleo
               - ^manifests/haproxy.*$
-        - tripleo-ci-centos-8-scenario010-standalone-train: &c8_scen10
+        - tripleo-ci-centos-8-scenario010-standalone-train: &c8_scen10_train
             <<: *c8_scen1
+            branches: stable/train
             files: &scen10_files
               # tripleo-common
               - ^container-images/tcib/base/os/octavia.*$
@@ -294,9 +295,11 @@
               # tripleo-ansible
               - ^tripleo_ansible/roles/octavia_.*/.*
               - ^tripleo_ansible/playbooks/octavia.*$
-        - tripleo-ci-centos-8-scenario010-standalone-victoria: *c8_scen10
-        - tripleo-ci-centos-8-scenario010-ovn-provider-standalone-train: *c8_scen10
-        - tripleo-ci-centos-8-scenario010-ovn-provider-standalone-victoria: *c8_scen10
+        - tripleo-ci-centos-8-scenario010-standalone-victoria: &c8_scen10_victoria
+            <<: *c8_scen10_train
+            branches: stable/victoria
+        - tripleo-ci-centos-8-scenario010-ovn-provider-standalone-train: *c8_scen10_train
+        - tripleo-ci-centos-8-scenario010-ovn-provider-standalone-victoria: *c8_scen10_victoria
         - tripleo-ci-centos-8-scenario012-standalone: &c8_scen12
             <<: *c8_scen1
             files: &scen12_files
@@ -356,10 +359,10 @@
         - tripleo-ci-centos-8-scenario003-standalone: *c8_scen3
         - tripleo-ci-centos-8-scenario004-standalone: *c8_scen4
         - tripleo-ci-centos-8-scenario007-standalone: *c8_scen7
-        - tripleo-ci-centos-8-scenario010-standalone-train: *c8_scen10
-        - tripleo-ci-centos-8-scenario010-standalone-victoria: *c8_scen10
-        - tripleo-ci-centos-8-scenario010-ovn-provider-standalone-train: *c8_scen10
-        - tripleo-ci-centos-8-scenario010-ovn-provider-standalone-victoria: *c8_scen10
+        - tripleo-ci-centos-8-scenario010-standalone-train: *c8_scen10_train
+        - tripleo-ci-centos-8-scenario010-standalone-victoria: *c8_scen10_victoria
+        - tripleo-ci-centos-8-scenario010-ovn-provider-standalone-train: *c8_scen10_train
+        - tripleo-ci-centos-8-scenario010-ovn-provider-standalone-victoria: *c8_scen10_victoria
         - tripleo-ci-centos-8-scenario012-standalone: *c8_scen12
         - tripleo-ci-centos-8-standalone:
             vars: *consumer_vars
@@ -637,45 +640,131 @@
     parent: tripleo-ci-scenario007-standalone-options
 
 - job:
+    name: tripleo-ci-scenario010-standalone-options
+    vars:
+      # using featureset062 is tech debt and should be addressed at a future sprint
+      featureset: '062'
+      standalone_ceph: true
+      featureset_override:
+        validate_services: false
+        standalone_environment_files:
+          - 'environments/low-memory-usage.yaml'
+          - 'ci/environments/scenario010-standalone.yaml'
+          - 'ci/environments/octavia-kvm.yaml'
+
+- job:
+    name: tripleo-ci-scenario010-ovn-provider-standalone-options
+    vars:
+      featureset: '062'
+      standalone_ceph: true
+      featureset_override:
+        validate_services: false
+        tempest_tempestconf_profile_overrides:
+          load_balancer.provider: 'ovn'
+          load_balancer.member_role: '"Member"'
+          load_balancer.test_reuse_connection: false
+          load_balancer.load_balancing_algorithm: 'SOURCE_IP_PORT'
+          load_balancer.test_flavors: false
+          loadbalancer-feature-enabled.health_monitor_enabled: false
+          loadbalancer-feature-enabled.pool_algorithms_enabled: false
+          loadbalancer-feature-enabled.l7_protocol_enabled: false
+          loadbalancer-feature-enabled.l4_protocol: 'TCP'
+          loadbalancer-feature-enabled.session_persistence_enabled: false
+          loadbalancer-feature-enabled.not_implemented_is_error: false
+          network-feature-enabled.port_security: true
+          load_balancer.test_server_path: >-
+            "/usr/lib/python{{ [ansible_python.version.major, ansible_python.version.minor] | join('.') }}/site-packages/octavia_tempest_plugin/contrib/test_server/test_server.bin"
+        tempest_test_whitelist:
+          # The parent class runs *smoke, which only runs HTTP tests that
+          # the ovn-provider doesn't support, so run some it does.
+          - '^octavia_tempest_plugin.tests.scenario.v2.test_load_balancer.LoadBalancerScenarioTest'
+        standalone_environment_files:
+          - 'environments/low-memory-usage.yaml'
+          - 'ci/environments/scenario010-standalone.yaml'
+
+- job:
     name: tripleo-ci-centos-9-scenario010-standalone
-    parent: tripleo-ci-centos-8-scenario010-standalone-base
+    parent: tripleo-ci-scenario010-standalone-options
+
+- job:
+    name: tripleo-ci-centos-9-scenario010-standalone
+    parent: tripleo-ci-base-standalone-centos-9
     branches: *c9_branches
     nodeset: single-centos-9-node-nested-virt
     files: *scen10_files
+    vars: &sc010_vars
+      tags:
+        - build
+        - standalone
+        - octavia
+        - nested-virt
 
 - job:
     name: tripleo-ci-centos-9-scenario010-ovn-provider-standalone
-    parent: tripleo-ci-centos-8-scenario010-ovn-provider-standalone-base
+    parent: tripleo-ci-scenario010-ovn-provider-standalone-options
+
+- job:
+    name: tripleo-ci-centos-9-scenario010-ovn-provider-standalone
+    parent: tripleo-ci-base-standalone-centos-9
     branches: *c9_branches
     nodeset: single-centos-9-node
     files: *scen10_files
+    vars: &sc010_ovn_vars
+      tags:
+        - build
+        - standalone
+        - octavia
 
 # branched scenario010 based jobs - this will enable the tripleo-ci team
 # to enable voting / gating on scenario010 jobs on a per branch basis.
 
 - job:
     name: tripleo-ci-centos-8-scenario010-standalone-train
+    parent: tripleo-ci-scenario010-standalone-options
+
+- job:
+    name: tripleo-ci-centos-8-scenario010-standalone-train
     voting: true
-    parent: tripleo-ci-centos-8-scenario010-standalone-base
+    parent: tripleo-ci-base-standalone-centos-8
+    nodeset: single-centos-8-node-nested-virt
     branches: stable/train
+    vars: *sc010_vars
+
+- job:
+    name: tripleo-ci-centos-8-scenario010-ovn-provider-standalone-train
+    parent: tripleo-ci-scenario010-ovn-provider-standalone-options
 
 - job:
     name: tripleo-ci-centos-8-scenario010-ovn-provider-standalone-train
     voting: true
-    parent: tripleo-ci-centos-8-scenario010-ovn-provider-standalone-base
+    parent: tripleo-ci-base-standalone-centos-8
     branches: stable/train
+    vars: *sc010_ovn_vars
+
+- job:
+    name: tripleo-ci-centos-8-scenario010-standalone-victoria
+    parent: tripleo-ci-scenario010-standalone-options
 
 - job:
     name: tripleo-ci-centos-8-scenario010-standalone-victoria
     voting: true
-    parent: tripleo-ci-centos-8-scenario010-standalone-base
+    parent: tripleo-ci-base-standalone-centos-8
     branches: stable/victoria
+    nodeset: single-centos-8-node-nested-virt
+    files: *scen10_files
+    vars: *sc010_vars
+
+- job:
+    name: tripleo-ci-centos-8-scenario010-ovn-provider-standalone-victoria
+    parent: tripleo-ci-scenario010-ovn-provider-standalone-options
 
 - job:
     name: tripleo-ci-centos-8-scenario010-ovn-provider-standalone-victoria
     voting: true
-    parent: tripleo-ci-centos-8-scenario010-standalone-base
+    parent: tripleo-ci-base-standalone-centos-8
     branches: stable/victoria
+    files: *scen10_files
+    vars: *sc010_ovn_vars
 
 - project-template:
     name: tripleo-standalone-multinode-ipa-pipeline
