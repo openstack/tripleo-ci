@@ -72,6 +72,9 @@
         - tripleo-ci-centos-8-content-provider-victoria:
             vars:
               force_non_periodic: true
+        - tripleo-ci-centos-8-content-provider-ussuri:
+            vars:
+              force_non_periodic: true
         - tripleo-ci-centos-8-standalone-upgrade-victoria:
             vars: &consumer_vars
               force_non_periodic: true
@@ -81,6 +84,7 @@
                 - build
             dependencies:
               - tripleo-ci-centos-8-content-provider-victoria
+              - tripleo-ci-centos-8-content-provider-ussuri
         - tripleo-ci-centos-8-undercloud-upgrade-victoria:
             vars: *consumer_vars
             irrelevant-files: &undercloud_ignored
@@ -109,6 +113,7 @@
               - zuul.d/multinode-jobs.yaml
             dependencies:
               - tripleo-ci-centos-8-content-provider-victoria
+              - tripleo-ci-centos-8-content-provider-ussuri
         - tripleo-ci-centos-8-scenario000-multinode-oooq-container-upgrades-victoria:
             irrelevant-files: &multinode_ignored
               - ^.*\.md$
