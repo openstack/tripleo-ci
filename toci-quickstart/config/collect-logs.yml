@@ -24,6 +24,7 @@ artcl_collect_list:
   - /home/{{ undercloud_user }}/.tripleo/
   - /home/{{ undercloud_user }}/stackrc
   - /home/{{ undercloud_user }}/overcloudrc
+  - /home/{{ undercloud_user }}/99-standalone-vars
   - /home/*/*.log
   - /home/*/*.txt
   - /home/*/*.json
@@ -222,6 +223,7 @@ artcl_collect_list:
   - /etc/yum.repos.d/
   - /etc/zaqar/
   - /tmp/tripleo-container-image-prepare-ansible.log
+  - /usr/share/ansible/tripleo-inventory/
   - /var/log/atop*
   - /var/log/dmesg.txt
   - /var/log/host_info.txt
