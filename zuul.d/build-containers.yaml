@@ -78,7 +78,6 @@
     parent: tripleo-ci-build-containers-required-projects-upstream
     nodeset: single-centos-9-node
     vars:
-      containers_base_image: quay.io/centos/centos:stream9
       registry_namespace: tripleomastercentos9
       push_containers: false
       push_containers_podman: false
