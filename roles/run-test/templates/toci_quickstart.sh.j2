@@ -39,7 +39,6 @@ QUICKSTART_VENV_CMD="
     --url-requirements git+https://opendev.org/openstack/tripleo-operator-ansible/#egg=tripleo-operator-ansible
 {% endif %}
     --working-dir $LOCAL_WORKING_DIR
-    --release $QUICKSTART_RELEASE
     --playbook noop.yml
     --retain-inventory
     {{ undercloud }}
