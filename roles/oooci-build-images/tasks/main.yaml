@@ -52,18 +52,6 @@
       become: true
   when: ansible_distribution|lower  == "redhat"
 
-- name: Install python3-devel
-  package:
-    name: python3-devel  # required for python-tripleoclient pip install
-    state: present
-  become: true
-
-- name: Install python-tripleoclient for Image build
-  package:
-    name: "python*-tripleoclient"
-    state: present
-  become: true
-
 - name: Generate build-images.sh script
   template:
     src: templates/build-images.sh.j2
