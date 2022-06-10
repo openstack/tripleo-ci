@@ -375,11 +375,8 @@
         - tripleo-ci-centos-9-scenario012-standalone: *c9_scen12
 
 - job:
-    name: tripleo-ci-centos-8-scenario012-standalone
-    voting: true
-    parent: tripleo-ci-base-standalone-centos-8
-    branches: *c8_branches
-    vars: &scen12_job_vars
+    name: tripleo-ci-scenario012-standalone-options
+    vars:
       featureset: '060'
       standalone_ceph: false
       featureset_override:
@@ -389,10 +386,23 @@
           - 'ci/environments/scenario012-standalone.yaml'
 
 - job:
+    name: tripleo-ci-centos-8-scenario012-standalone
+    parent: tripleo-ci-scenario012-standalone-options
+
+- job:
+    name: tripleo-ci-centos-8-scenario012-standalone
+    voting: true
+    parent: tripleo-ci-base-standalone-centos-8
+    branches: *c8_branches
+
+- job:
+    name: tripleo-ci-centos-9-scenario012-standalone
+    parent: tripleo-ci-scenario012-standalone-options
+
+- job:
     name: tripleo-ci-centos-9-scenario012-standalone
     parent: tripleo-ci-base-standalone-centos-9
     branches: *c9_branches
-    vars: *scen12_job_vars
 
 # CentOS 8 Jobs
 - job:
