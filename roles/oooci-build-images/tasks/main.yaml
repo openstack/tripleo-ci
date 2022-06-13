@@ -52,6 +52,29 @@
       become: true
   when: ansible_distribution|lower  == "redhat"
 
+# Note(chkumar): Workaround to make
+# executable DIB 05-selinux-9-stream script to handle
+# https://bugs.launchpad.net/tripleo/+bug/1978456/comments/2
+- name: Workaround for libselinux-3.4-2
+  become: true
+  when:
+    - ansible_distribution == "CentOS"
+    - ansible_distribution_major_version is version('9', '==')
+  block:
+    - name: Make sure diskimage-builder is installed there
+      package:
+        name: "diskimage-builder"
+        state: present
+
+    - name: Make libselinux-3.4-2 workaround executable  # noqa: deprecated-command-syntax
+      shell: |
+        for file in /usr/lib/python3.9/site-packages/diskimage_builder/elements/redhat-common/post-install.d/05-selinux-9-stream \
+          /usr/share/diskimage-builder/elements/redhat-common/post-install.d/05-selinux-9-stream; do
+          if [[ -f $file ]]; then
+            chmod a+rx $file
+          fi
+        done
+
 - name: Generate build-images.sh script
   template:
     src: templates/build-images.sh.j2
