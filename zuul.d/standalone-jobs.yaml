@@ -125,6 +125,7 @@
               - ^((docker|puppet)/services|deployment)/.*cinder.*$
               - ^((docker|puppet)/services|deployment)/.*glance.*$
               - ^((docker|puppet)/services|deployment)/.*gnocchi.*$
+              - ^((docker|puppet)/services|deployment)/.*heat.*$
               - ^((docker|puppet)/services|deployment)/.*logging.*$
               - ^((docker|puppet)/services|deployment)/.*metrics.*$
               - ^((docker|puppet)/services|deployment)/.*monitoring.*$
@@ -142,6 +143,7 @@
               - ^manifests/profile/(base|pacemaker)/cinder.*$
               - ^manifests/profile/(base|pacemaker)/glance.*$
               - ^manifests/profile/(base|pacemaker)/gnocchi.*$
+              - ^manifests/profile/(base|pacemaker)/heat.*$
               - ^manifests/profile/(base|pacemaker)/logging.*$
               - ^manifests/profile/(base|pacemaker)/metrics.*$
               - ^manifests/profile/(base|pacemaker)/monitoring.*$
