@@ -824,3 +824,30 @@
     parent: tripleo-ci-base-standalone-upgrade-standard
     nodeset: single-centos-9-node
     branches: *c9_branches
+
+########################################################
+# standalone-full-tempest-scenario & - api options job #
+# ######################################################
+
+- job:
+    name: tripleo-ci-standalone-full-tempest-scenario-options
+    vars:
+      featureset: '052'
+      featureset_override:
+        tempest_run_concurrency: 4
+        tempest_services: &tempest_services
+          - cinder
+          - horizon
+          - neutron
+        tempest_test_whitelist:
+          - 'scenario'
+
+- job:
+    name: tripleo-ci-standalone-full-tempest-api-options
+    vars:
+      featureset: '052'
+      featureset_override:
+        tempest_run_concurrency: 4
+        tempest_services: *tempest_services
+        tempest_test_whitelist:
+          - 'api'
