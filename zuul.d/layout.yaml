@@ -15,6 +15,7 @@
       - tripleo-undercloud-jobs-pipeline
       - tripleo-periodic
       - tripleo-ceph-periodic
+    queue: tripleo
     check:
       jobs:
         - openstack-tox-linters
@@ -40,7 +41,6 @@
             dependencies:
               - openstack-tox-linters
     gate:
-      queue: tripleo
       jobs:
         # Don't put a files section on the linters job, otherwise no
         # jobs might be defined and nothing can merge in this repo.

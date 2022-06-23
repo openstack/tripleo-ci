@@ -94,6 +94,7 @@
 
 - project-template:
     name: tripleo-standalone-scenarios-pipeline
+    queue: tripleo
     check:
       jobs:
         - tripleo-ci-centos-8-content-provider:
@@ -345,7 +346,6 @@
             files: *scen12_files
 
     gate:
-      queue: tripleo
       jobs:
         - tripleo-ci-centos-8-content-provider:
             irrelevant-files: *irrelevant_files
@@ -679,6 +679,7 @@
 
 - project-template:
     name: tripleo-standalone-multinode-ipa-pipeline
+    queue: tripleo
     check:
       jobs:
         - tripleo-ci-centos-8-content-provider
@@ -727,7 +728,6 @@
             dependencies:
               - tripleo-ci-centos-9-content-provider
     gate:
-      queue: tripleo
       jobs:
         - tripleo-ci-centos-8-content-provider
         - tripleo-ci-centos-9-content-provider
