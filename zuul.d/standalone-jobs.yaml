@@ -343,6 +343,7 @@
         - tripleo-ci-centos-9-scenario012-standalone: &c9_scen12
             <<: *c9_scen1
             files: *scen12_files
+        - tripleo-ci-centos-9-standalone-fips: *cs9_vars
 
     gate:
       queue: tripleo
@@ -851,3 +852,19 @@
         tempest_services: *tempest_services
         tempest_test_whitelist:
           - 'api'
+
+### FIPS Jobs
+
+- job:
+    name: tripleo-ci-centos-9-standalone-fips
+    parent: tripleo-ci-centos-9-standalone
+    voting: false
+    vars:
+      enable_fips: true
+      nslookup_target: 'opendev.org'
+      featureset_override:
+        enable_fips: true
+        standalone_environment_files:
+          - 'environments/fips.yaml'
+        tempest_tempestconf_profile_overrides:
+          validation.ssh_key_type: 'ecdsa'

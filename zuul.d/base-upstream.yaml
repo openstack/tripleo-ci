@@ -11,7 +11,7 @@
     description: |
         Base abstract job to add common required-projects for tripleo-ci-base
     abstract: true
-    parent: multinode
+    parent: multinode-fips
     required-projects:
       - opendev.org/openstack/tripleo-ci
       - opendev.org/openstack/tripleo-quickstart
@@ -67,6 +67,8 @@
       bridge_address_subnet: 24
       bridge_address_offset: 2
       bridge_mtu: 1350
+      # Disable fips role for all jobs, and select the ones that we want to enable
+      enable_fips: false
     roles:
       - zuul: opendev.org/zuul/zuul-jobs
       - zuul: opendev.org/openstack/openstack-zuul-jobs
