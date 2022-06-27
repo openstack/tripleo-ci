@@ -318,3 +318,16 @@ artcl_exclude_list:
   - anaconda*
   - standalone-install-*
   - undercloud-install-*
+  # Another list discovered after POST_FAILURES
+  - home/{{ undercloud_user }}/src
+  - home/{{ undercloud_user }}/workspace
+  - /lib/rpm/
+  - /lib64/pcsd
+  - /opt/git
+  - /tmp
+  - /usr/lib/rpm
+  - /usr/lib64/pcsd
+  - /var/lib/texmf/
+  - /usr/tmp
+  - /usr/share/texlive
+  - /var/tmp
