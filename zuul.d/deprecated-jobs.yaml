@@ -282,11 +282,6 @@
         tempest_run_concurrency: 1
         tempest_tempest_conf_overrides:
           'telemetry.alarm_granularity': '60'
-        tempest_test_whitelist:
-          - 'tempest.api.identity.v3'
-          - 'tempest.scenario.test_volume_boot_pattern.TestVolumeBootPattern.test_volume_boot_pattern'
-          - 'tempest.scenario.test_snapshot_pattern.TestSnapshotPattern.test_snapshot_pattern'
-          - 'telemetry_tempest_plugin.scenario.test_telemetry_integration.TestTelemetryIntegration'
 
 # TODO(marios): used by aodh stable/stein
 # https://review.opendev.org/c/openstack/tripleo-ci/+/838110/9#message-0ba0f11e598b89ea088ff4014c68d9201ebcd5b4
@@ -311,12 +306,6 @@
         tempest_extra_config:
           auth.tempest_roles: "'Member, creator'"
           telemetry.alarm_granularity: '60'
-        tempest_test_whitelist:
-          - 'tempest.api.object_storage.test_object_services.ObjectTest'
-          - 'barbican_tempest_plugin.tests.scenario.test_volume_encryption.VolumeEncryptionTest'
-          - 'barbican_tempest_plugin.tests.scenario.test_image_signing.ImageSigningSnapshotTest'
-          - 'barbican_tempest_plugin.tests.scenario.test_image_signing.ImageSigningTest.test_signed_image_upload_and_boot'
-          - 'telemetry_tempest_plugin.scenario.test_telemetry_integration.TestTelemetryIntegration'
 
 # TODO(marios): used by openstack/sahara stable/ussuri
 # https://review.opendev.org/c/openstack/tripleo-ci/+/838110/8#message-c775ca4b4fbc2d1ced632f162e8e54879dfff735
@@ -334,10 +323,6 @@
         tempest_services:
           - mistral
           - sahara
-        tempest_test_whitelist:
-          - 'tempest.scenario.test_network_basic_ops.TestNetworkBasicOps.test_network_basic_ops'
-          - 'sahara_tempest_plugin.tests.api.test_data_sources.DataSourceTest'
-          - 'mistral_tempest_tests.tests.api.v2.test_actions.ActionTestsV2'
 
 # TODO(pojadhav) used by openstack/tripleo-upgrade on stable/victoria
 # https://review.opendev.org/c/openstack/tripleo-upgrade/+/836802/2#message-34eefaa88d2296ff439bed130ea69cebd6979559
@@ -365,9 +350,6 @@
           - 'ci/environments/scenario004-standalone.yaml'
         tempest_services:
           - manila
-        tempest_test_whitelist:
-          - 'tempest.scenario.test_network_basic_ops.TestNetworkBasicOps.test_network_basic_ops'
-          - 'manila_tempest_tests.tests.api.test_shares.SharesCephFSTest.test_create_get_delete_share'
 
 # TODO(marios): used by ansible-role-python_venv_build on branch stable/stein.
 # https://review.opendev.org/c/openstack/tripleo-ci/+/838110/8#message-db697f5274005c959b6005ac0999cc2bc0b23d61
@@ -381,11 +363,6 @@
         use_os_tempest: true
         tempest_tempest_conf_overrides:
           auth.use_dynamic_credentials: true
-        tempest_test_whitelist:
-          - 'tempest.api.identity.v3'
-          - 'tempest.scenario.test_server_basic_ops'
-          - 'tempest.api.volume.admin.test_multi_backend'
-          - 'tempest.scenario.test_object_storage_basic_ops'
 
 #
 # DEPRECATED MULTINODE TEMPLATES:

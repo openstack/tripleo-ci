@@ -440,8 +440,6 @@
         tempest_run_concurrency: 1
         tempest_tempest_conf_overrides:
           'auth.tempest_roles': "Member"
-        tempest_test_whitelist:
-          - 'keystone_tempest_plugin.tests.api.identity.v3'
 
 - job:
     name: tripleo-ci-centos-8-scenario000-standalone
@@ -468,11 +466,6 @@
         tempest_tempest_conf_overrides:
           'telemetry.alarm_granularity': '60'
           'auth.tempest_roles': "Member"
-        tempest_test_whitelist:
-          - 'tempest.api.identity.v3'
-          - 'tempest.scenario.test_volume_boot_pattern.TestVolumeBootPattern.test_volume_boot_pattern'
-          - 'tempest.scenario.test_snapshot_pattern.TestSnapshotPattern.test_snapshot_pattern'
-          - 'telemetry_tempest_plugin.scenario.test_telemetry_integration.TestTelemetryIntegration'
 
 - job:
     name: tripleo-ci-centos-8-scenario001-standalone
@@ -512,12 +505,6 @@
         tempest_extra_config:
           auth.tempest_roles: "'Member, creator'"
           telemetry.alarm_granularity: '60'
-        tempest_test_whitelist:
-          - 'tempest.api.object_storage.test_object_services.ObjectTest'
-          - 'barbican_tempest_plugin.tests.scenario.test_volume_encryption.VolumeEncryptionTest'
-          - 'barbican_tempest_plugin.tests.scenario.test_image_signing.ImageSigningSnapshotTest'
-          - 'barbican_tempest_plugin.tests.scenario.test_image_signing.ImageSigningTest.test_signed_image_upload_and_boot'
-          - 'telemetry_tempest_plugin.scenario.test_telemetry_integration.TestTelemetryIntegration'
 
 - job:
     name: tripleo-ci-centos-8-scenario002-standalone
@@ -553,12 +540,6 @@
           - designate
         tempest_tempest_conf_overrides:
           auth.tempest_roles: "Member"
-        tempest_test_whitelist:
-          - 'tempest.scenario.test_network_basic_ops.TestNetworkBasicOps.test_network_basic_ops'
-          - 'sahara_tempest_plugin.tests.api.test_data_sources.DataSourceTest'
-          - 'mistral_tempest_tests.tests.api.v2.test_actions.ActionTestsV2'
-          - 'designate_tempest_plugin.tests.api.v2.test_recordset.RecordsetsTest'
-          - 'designate_tempest_plugin.tests.api.v2.test_zones.ZonesTest'
 
 - job:
     name: tripleo-ci-centos-8-scenario003-standalone
@@ -594,10 +575,6 @@
           - manila
         tempest_tempest_conf_overrides:
           'auth.tempest_roles': 'Member'
-        tempest_test_whitelist:
-          - 'tempest.scenario.test_network_basic_ops.TestNetworkBasicOps.test_network_basic_ops'
-          - 'manila_tempest_tests.tests.api.test_shares.SharesNFSTest.test_create_get_delete_share'
-          - 'tempest.scenario.test_object_storage_basic_ops'
 
 - job:
     name: tripleo-ci-centos-8-scenario004-standalone
@@ -630,9 +607,6 @@
           - 'ci/environments/scenario007-standalone.yaml'
         tempest_services:
           - neutron
-        tempest_test_whitelist:
-          - 'tempest.scenario.test_network_basic_ops.TestNetworkBasicOps.test_network_basic_ops'
-          - 'tempest.scenario.test_minimum_basic.TestMinimumBasicScenario.test_minimum_basic_scenario'
         tempest_private_net_provider_type: 'vxlan'
         use_os_tempest: true
 
@@ -939,8 +913,6 @@
           - cinder
           - horizon
           - neutron
-        tempest_test_whitelist:
-          - 'scenario'
 
 - job:
     name: tripleo-ci-standalone-full-tempest-api-options
@@ -949,8 +921,7 @@
       featureset_override:
         tempest_run_concurrency: 4
         tempest_services: *tempest_services
-        tempest_test_whitelist:
-          - 'api'
+
 
 ### FIPS Jobs
 
