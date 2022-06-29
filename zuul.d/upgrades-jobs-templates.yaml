@@ -3,6 +3,7 @@
 # upgrade jobs for all branches
 - project-template:
     name: tripleo-upgrades-master-pipeline
+    queue: tripleo
     check:
       jobs:
         - tripleo-ci-centos-9-content-provider
@@ -92,7 +93,6 @@
               - tripleo-ci-centos-9-content-provider
               - tripleo-ci-centos-9-content-provider-wallaby
     gate:
-      queue: tripleo
       jobs:
         - tripleo-ci-centos-9-content-provider
         - tripleo-ci-centos-9-content-provider-wallaby
@@ -101,6 +101,7 @@
 
 - project-template:
     name: tripleo-upgrades-wallaby-pipeline
+    queue: tripleo
     check:
       jobs:
         - tripleo-ci-centos-9-content-provider
@@ -114,7 +115,6 @@
               - tripleo-ci-centos-8-content-provider
               - tripleo-ci-centos-8-content-provider-train
     gate:
-      queue: tripleo
       jobs:
         - tripleo-ci-centos-9-content-provider
         - tripleo-ci-centos-8-content-provider
@@ -124,6 +124,7 @@
 
 - project-template:
     name: tripleo-upgrades-victoria-pipeline
+    queue: tripleo
     check:
       jobs:
         - tripleo-ci-centos-8-content-provider:
@@ -171,7 +172,6 @@
             dependencies:
               - tripleo-ci-centos-8-content-provider
     gate:
-      queue: tripleo
       jobs:
         - tripleo-ci-centos-8-content-provider:
             irrelevant-files: *upgrade_irrelevant
@@ -202,6 +202,7 @@
 
 - project-template:
     name: tripleo-upgrades-train-pipeline
+    queue: tripleo
     check:
       jobs:
         - tripleo-ci-centos-8-content-provider
@@ -211,7 +212,6 @@
             dependencies:
               - tripleo-ci-centos-8-content-provider
     gate:
-      queue: tripleo
       jobs:
         - tripleo-ci-centos-8-content-provider
         - tripleo-ci-centos-8-scenario000-multinode-oooq-container-updates-train:

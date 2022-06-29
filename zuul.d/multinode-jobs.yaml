@@ -57,6 +57,7 @@
 
 - project-template:
     name: tripleo-multinode-container-minimal-pipeline
+    queue: tripleo
     check:
       jobs:
         - tripleo-ci-centos-9-content-provider
@@ -138,7 +139,6 @@
               - tripleo-ci-centos-9-content-provider
         - tripleo-ci-centos-9-scenario007-multinode-oooq-container: *cs9_multinode_all
     gate:
-      queue: tripleo
       jobs:
         - tripleo-ci-centos-9-content-provider
         - tripleo-ci-centos-8-content-provider
@@ -151,6 +151,7 @@
 
 - project-template:
     name: tripleo-multinode-container-full-pipeline
+    queue: tripleo
     check:
       jobs:
         - tripleo-ci-centos-9-content-provider:
@@ -175,7 +176,6 @@
         - tripleo-ci-centos-9-containers-multinode: *cs9_multinode_all
         - tripleo-ci-centos-9-scenario007-multinode-oooq-container: *cs9_multinode_all
     gate:
-      queue: tripleo
       jobs:
         - tripleo-ci-centos-9-content-provider:
             irrelevant-files: *multinode_ignored

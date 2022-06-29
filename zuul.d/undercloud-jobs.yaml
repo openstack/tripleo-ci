@@ -5,6 +5,7 @@
 
 - project-template:
     name: tripleo-undercloud-jobs-pipeline
+    queue: tripleo
     check:
       jobs:
         - tripleo-ci-centos-9-content-provider
@@ -58,7 +59,6 @@
               - tripleo-ci-centos-9-content-provider
 
     gate:
-      queue: tripleo
       jobs:
         - tripleo-ci-centos-9-content-provider
         - tripleo-ci-centos-8-content-provider
