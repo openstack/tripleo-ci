@@ -252,8 +252,8 @@
               - ^manifests/profile/(base|pacemaker)/ceph.*$  # ceph_nfs / ganesha
               # tripleo-ansible
               - ^tripleo_ansible/roles/tripleo_ceph_.*/.*
-              # tripleo-quickstart-extras
-              - roles/standalone/tasks/ceph-install.yml
+              # tripleo-quickstart-extras (including standalone ceph)
+              - roles/standalone/tasks/.*
         - tripleo-ci-centos-8-scenario007-standalone: &c8_scen7
             <<: *c8_scen1
             files: &scen7_files
@@ -279,10 +279,9 @@
               - ^manifests/haproxy.*$
               - ^manifests/profile/base/database/mysql.*$
               - ^manifests/profile/base/octavia.*$
-              # tripleo-quickstart-extras
+              # tripleo-quickstart-extras (including standalone ceph)
+              - roles/standalone/tasks/.*
               - roles/octavia-amphora-download/.*
-              - roles/standalone/tasks/ceph-install.yml
-              - roles/standalone/tasks/storage-network.yml
               # tripleo-heat-templates
               # TODO(beagles): octavia testing touches neutron, glance and nova.
               # It may be sensible to expand this list after it has proven itself.
