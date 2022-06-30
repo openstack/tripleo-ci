@@ -226,6 +226,8 @@
               - ^manifests/profile/(base|pacemaker)/mistral.*$
               - ^manifests/profile/(base|pacemaker)/sahara.*$
               - ^manifests/profile/(base|pacemaker)/designate.*$
+              - ^manifests/profile/base/neutron/dhcp.pp
+              - ^manifests/profile/base/neutron/plugins/ml2/ovn.pp
               # tripleo-ansible
               - ^tripleo_ansible/roles/tripleo_create_admin/.*
               - ^tripleo_ansible/roles/tripleo_hieradata/.*
