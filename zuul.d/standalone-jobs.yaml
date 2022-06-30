@@ -67,7 +67,7 @@
     parent: tripleo-ci-base-standalone-centos-9
     branches: &c9_branches ^(?!stable/(train|victoria)).*$
     vars:
-      containers_base_image: quay.io/centos/centos:stream9
+      containers_base_image: registry.access.redhat.com/ubi9:latest
       featureset: '052'
     irrelevant-files: *irrelevant_files
 

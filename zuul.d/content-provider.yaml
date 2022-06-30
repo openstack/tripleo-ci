@@ -30,7 +30,7 @@
     branches: ^(?!stable/(train|victoria)).*$
     nodeset: single-centos-9-node
     vars:
-      containers_base_image: quay.io/centos/centos:stream9
+      containers_base_image: registry.access.redhat.com/ubi9:latest
 
 - job:
     name: tripleo-ci-centos-9-content-provider-wallaby
