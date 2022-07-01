@@ -160,7 +160,7 @@
               - roles/prepare-node/.*
               - roles/ceph-loop-device/.*  # scen1/4 ceph
               # tripleo-ansible
-              - ^tripleo_ansible/roles/tripleo_ceph_.*/.*
+              - ^tripleo_ansible/roles/tripleo_ceph.*/.*
               - ^tripleo_ansible/roles/tripleo_hieradata/.*
               - ^tripleo_ansible/roles/tripleo_upgrade_hiera/.*
               - ^tripleo_ansible/roles/tripleo_lvmfilter/.*
@@ -253,7 +253,7 @@
               - ^manifests/profile/(base|pacemaker)/manila.*$
               - ^manifests/profile/(base|pacemaker)/ceph.*$  # ceph_nfs / ganesha
               # tripleo-ansible
-              - ^tripleo_ansible/roles/tripleo_ceph_.*/.*
+              - ^tripleo_ansible/roles/tripleo_ceph.*/.*
               # tripleo-quickstart-extras (including standalone ceph)
               - roles/standalone/tasks/.*
         - tripleo-ci-centos-8-scenario007-standalone: &c8_scen7
