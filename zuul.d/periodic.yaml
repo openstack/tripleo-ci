@@ -19,7 +19,6 @@
               - ^vars/sova-patterns.yml$
               - tox.ini
               - ^setup.*$
-              - ^scripts/.*
             vars:
               force_non_periodic: true
         - tripleo-ci-centos-9-containers-multinode: &unbranched_vars_periodic

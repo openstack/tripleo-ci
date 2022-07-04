@@ -61,7 +61,6 @@
       - ^vars/sova-patterns.yml$
       - tox.ini
       - ^setup.*$
-      - ^scripts/.*
       - ^tripleoclient/tests/.*$
       - ^tripleo_common/tests/.*$
 

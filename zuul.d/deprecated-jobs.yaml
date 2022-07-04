@@ -261,7 +261,6 @@
       - ^vars/sova-patterns.yml$
       - tox.ini
       - ^setup.*$
-      - ^scripts/.*
 
 # TODO(marios): used by aodh stable/stein & train
 # https://review.opendev.org/c/openstack/tripleo-ci/+/838110/8#message-ba07c5505dcadd7b0943b96c7db180e1f1579483

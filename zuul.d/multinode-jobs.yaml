@@ -127,7 +127,6 @@
               - zuul.d/undercloud-jobs.yaml
               # tripleo-ansible
               - ^_skeleton_role_/.*
-              - ^scripts/.*
               - ^scripts/tripleo-critical-bugs/.*
               - ^tox.ini$
               - ^tripleo_ansible/playbooks/docker-vfs-setup.yml$
