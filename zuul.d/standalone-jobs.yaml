@@ -111,6 +111,7 @@
               - ^container-images/tcib/base/os/cinder.*$
               - ^container-images/tcib/base/os/gnocchi.*$
               - ^container-images/tcib/base/os/heat.*$
+              - ^container-images/tcib/base/os/horizon.*$
               - ^container-images/tcib/base/qdrouterd.*$
               - ^container-images/tcib/base/rabbitmq.*$
               - ^container-images/tcib/base/redis.*$
@@ -127,6 +128,7 @@
               - ^((docker|puppet)/services|deployment)/.*glance.*$
               - ^((docker|puppet)/services|deployment)/.*gnocchi.*$
               - ^((docker|puppet)/services|deployment)/.*heat.*$
+              - ^((docker|puppet)/services|deployment)/.*horizon.*$
               - ^((docker|puppet)/services|deployment)/.*logging.*$
               - ^((docker|puppet)/services|deployment)/.*metrics.*$
               - ^((docker|puppet)/services|deployment)/.*monitoring.*$
@@ -145,6 +147,7 @@
               - ^manifests/profile/(base|pacemaker)/glance.*$
               - ^manifests/profile/(base|pacemaker)/gnocchi.*$
               - ^manifests/profile/(base|pacemaker)/heat.*$
+              - ^manifests/profile/(base|pacemaker)/horizon.*$
               - ^manifests/profile/(base|pacemaker)/logging.*$
               - ^manifests/profile/(base|pacemaker)/metrics.*$
               - ^manifests/profile/(base|pacemaker)/monitoring.*$
@@ -239,17 +242,20 @@
             <<: *c8_scen1
             files: &scen4_files
               # tripleo-common
+              - ^container-images/tcib/base/os/horizon.*$
               - ^container-images/tcib/base/os/manila.*$
               - ^tripleo_common/image/.*$
               # tripleo-heat-templates
               - ^(docker/services|deployment)/ceph.*$
               - ^(docker/services|deployment)/glance.*$
               - ^(docker/services|deployment)/manila.*$
+              - ^(docker/services|deployment)/horizon.*$
               - ^((docker|puppet)/services|deployment)/database/mysql.*$
               - ci/environments/scenario004-standalone.yaml
               # puppet-tripleo
               - ^manifests/haproxy.*$
               - ^manifests/profile/(base|pacemaker)/glance.*$
+              - ^manifests/profile/(base|pacemaker)/horizon.*$
               - ^manifests/profile/(base|pacemaker)/manila.*$
               - ^manifests/profile/(base|pacemaker)/ceph.*$  # ceph_nfs / ganesha
               # tripleo-ansible
@@ -271,6 +277,7 @@
             branches: stable/train
             files: &scen10_files
               # tripleo-common
+              - ^container-images/tcib/base/os/horizon.*$
               - ^container-images/tcib/base/os/octavia.*$
               - workbooks/octavia_post.yaml
               - playbooks/octavia-files.yaml
@@ -281,6 +288,7 @@
               # puppet-tripleo
               - ^manifests/haproxy.*$
               - ^manifests/profile/base/database/mysql.*$
+              - ^manifests/profile/base/horizon.*$
               - ^manifests/profile/base/octavia.*$
               # tripleo-quickstart-extras (including standalone ceph)
               - roles/standalone/tasks/.*
@@ -288,6 +296,7 @@
               # tripleo-heat-templates
               # TODO(beagles): octavia testing touches neutron, glance and nova.
               # It may be sensible to expand this list after it has proven itself.
+              - ^(docker/services|deployment)/horizon.*$
               - ^(docker/services|deployment)/octavia.*$
               - ci/environments/scenario010-standalone.yaml
               - ^environments/services/octavia.*.yaml
