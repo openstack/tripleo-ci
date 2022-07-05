@@ -844,15 +844,7 @@
 
 
 - job:
-    name: tripleo-ci-centos-8-standalone-on-multinode-ipa
-    parent: tripleo-ci-base-standalone-centos-8
-    voting: true
-    nodeset: two-centos-8-nodes
-    branches: ^(stable/victoria).*$
-    required-projects:
-      - opendev.org/x/tripleo-ipa
-    roles:
-      - zuul: opendev.org/x/tripleo-ipa
+    name: tripleo-ci-standalone-on-multinode-ipa-options
     vars: &multinode_ipa_job_vars
       featureset: '052'
       enable_tls: true
@@ -871,6 +863,22 @@
           service-clients.http_timeout: '120'
 
 - job:
+    name: tripleo-ci-centos-8-standalone-on-multinode-ipa
+    parent: tripleo-ci-base-standalone-centos-8
+    voting: true
+    nodeset: two-centos-8-nodes
+    branches: ^(stable/victoria).*$
+    required-projects:
+      - opendev.org/x/tripleo-ipa
+    roles:
+      - zuul: opendev.org/x/tripleo-ipa
+
+- job:
+    name: tripleo-ci-centos-8-standalone-on-multinode-ipa
+    branches: *c8_branches
+    parent: tripleo-ci-standalone-on-multinode-ipa-options
+
+- job:
     name: tripleo-ci-centos-9-standalone-on-multinode-ipa
     parent: tripleo-ci-base-standalone-centos-9
     branches: *c9_branches
@@ -879,7 +887,12 @@
       - opendev.org/x/tripleo-ipa
     roles:
       - zuul: opendev.org/x/tripleo-ipa
-    vars: *multinode_ipa_job_vars
+
+- job:
+    name: tripleo-ci-centos-9-standalone-on-multinode-ipa
+    branches: *c9_branches
+    parent: tripleo-ci-standalone-on-multinode-ipa-options
+
 
 - job:
     name: tripleo-ci-centos-8-repoclosure
