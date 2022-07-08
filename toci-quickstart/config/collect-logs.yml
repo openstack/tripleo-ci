@@ -134,6 +134,7 @@ artcl_collect_list:
   - /etc/NetworkManager/
   - /etc/networks*
   - /etc/neutron/
+  - /etc/nftables/
   - /etc/nodepool/
   - /etc/nova*
   - /etc/nova*/
