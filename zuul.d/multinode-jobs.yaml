@@ -64,11 +64,11 @@
         - tripleo-ci-centos-8-content-provider
         - tripleo-ci-centos-8-containers-multinode:
             irrelevant-files: &multinode_ignored
+              - .*molecule.*
               - ^.*\.md$
               - ^.*\.rst$
               - ^lower-constraints.txt$
               - ^test-requirements.txt$
-              - ^molecule-requirements.txt$
               - ^Puppetfile.*$
               - ^doc/.*$
               - ^docs/.*$
@@ -120,11 +120,9 @@
               - ^scripts/tripleo-critical-bugs/.*
               - ^tox.ini$
               - ^tripleo_ansible/playbooks/docker-vfs-setup.yml$
-              - ^tripleo_ansible/.*molecule.*
               - ^tripleo_ansible/roles/.*/meta.*
               - ^tripleo_ansible/roles/test_deps/.*
               - ^zuul.d/base.yaml
-              - ^zuul.d/molecule.yaml
             vars: &multi_consumer_vars
               consumer_job: true
               build_container_images: false

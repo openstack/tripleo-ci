@@ -79,6 +79,7 @@
     run: playbooks/tripleo-ci/run-v3.yaml
     post-run: playbooks/tripleo-ci/post.yaml
     irrelevant-files: &irrelevant_files
+      - .*molecule.*
       - ^.*\.md$
       - ^.*\.rst$
       - ^doc/.*$
