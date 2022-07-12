@@ -899,6 +899,7 @@
     parent: tripleo-ci-centos-9-scenario001-standalone
     files: *scen1_files
     vars: &ceph_nightly_vars
+      standalone_container_ceph_updates: true
       docker_ceph_namespace: quay.io/ceph
       docker_ceph_image: daemon
       docker_ceph_tag: latest-pacific-devel
