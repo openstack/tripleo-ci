@@ -18,7 +18,6 @@
       - opendev.org/openstack/tripleo-quickstart
       - opendev.org/openstack/tripleo-quickstart-extras
       - opendev.org/openstack/tripleo-operator-ansible
-      - opendev.org/openstack/ansible-collections-openstack
       - opendev.org/openstack/tripleo-upgrade
       - opendev.org/openstack/tripleo-ansible
       - opendev.org/openstack/tripleo-common
