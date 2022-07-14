@@ -8,7 +8,7 @@
     description: |
       Deprecated TripleO Job
       Job no longer supported that should be removed from Zuul config.
-    parent: tripleo-ci-base-standalone
+    parent: tripleo-ci-base-standalone-standard
     pre-run: playbooks/deprecated/pre.yaml
 
 - job:
@@ -16,7 +16,7 @@
     description: |
       Deprecated TripleO Job
       Job no longer supported that should be removed from Zuul config.
-    parent: tripleo-ci-base-multinode
+    parent: tripleo-ci-base-multinode-standard
     pre-run: playbooks/deprecated/pre.yaml
 
 # TODO(rfolco): non-containeirized (nc) scenarios are no longer supported.
@@ -122,7 +122,7 @@
 
 - job:
     name: tripleo-ci-centos-8-standalone-upgrade
-    parent: tripleo-ci-base-standalone-upgrade-centos-8
+    parent: tripleo-ci-base-standalone-upgrade-standard
     voting: false
     branches: ^master$
     vars:
@@ -844,7 +844,7 @@
 
 - job:
     name: tripleo-ci-centos-7-undercloud-containers
-    parent: tripleo-ci-base-singlenode
+    parent: tripleo-ci-base-singlenode-standard
     nodeset: single-centos-7-node
     branches: ^(stable/rocky).*$
     vars:
@@ -936,3 +936,10 @@
       tags:
         - undercloud
         - build
+
+# TODO(ChandanKumar): Once https://review.opendev.org/c/openstack/openstack-ansible-os_tempest/+/849973 and
+# https://review.opendev.org/c/openstack/openstack-ansible-os_tempest/+/849861 merges remove this.
+# It adds a temprory base to avoid zuul job error issue
+- job:
+    name: tripleo-ci-base-standalone
+    parent: tripleo-ci-base-standard
