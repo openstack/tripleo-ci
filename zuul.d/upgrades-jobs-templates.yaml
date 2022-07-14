@@ -10,6 +10,7 @@
         - tripleo-ci-centos-9-content-provider-wallaby
         - tripleo-ci-centos-9-scenario000-multinode-oooq-container-updates: &cs9_update_all
             irrelevant-files: &multinode_ignored
+              - .*molecule.*
               - ^.*\.md$
               - ^.*\.rst$
               - ^doc/.*$
@@ -48,6 +49,7 @@
         - tripleo-ci-centos-9-undercloud-upgrade: &cs9_undercloud_upgrade
             vars: *consumer_vars
             irrelevant-files: &undercloud_ignored
+              - .*molecule.*
               - ^.*\.md$
               - ^.*\.rst$
               - ^doc/.*$

@@ -12,6 +12,7 @@
         - tripleo-ci-centos-8-content-provider
         - tripleo-ci-centos-8-undercloud-containers:
             irrelevant-files: &undercloud_ignored
+              - .*molecule.*
               - ^.*\.md$
               - ^.*\.rst$
               - ^doc/.*$
@@ -41,11 +42,9 @@
               - ^_skeleton_role_/.*
               - ^scripts/.*
               - ^tripleo_ansible/playbooks/docker-vfs-setup.yml$
-              - ^tripleo_ansible/.*molecule.*
               - ^tripleo_ansible/roles/.*/meta.*
               - ^tripleo_ansible/roles/test_deps/.*
               - ^zuul.d/base.yaml
-              - ^zuul.d/molecule.yaml
             vars: &undercloud_consumer_vars
               consumer_job: true
               remove_tags:
