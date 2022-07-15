@@ -42,7 +42,7 @@
       - name: github.com/ansible-collections/ansible.netcommon
         override-checkout: 2.4.0
       - name: github.com/ansible-collections/community.general
-        override-checkout: 4.0.2
+        override-checkout: 4.7.0
       - name: github.com/ansible-collections/community.libvirt
         override-checkout: 1.0.2
       - name: github.com/ansible-collections/openvswitch.openvswitch
