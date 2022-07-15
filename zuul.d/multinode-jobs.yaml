@@ -258,11 +258,19 @@
     branches: &c9_branches ^(?!stable/(train|victoria)).*$
     irrelevant-files: *multinode_ignored
     voting: true
+
+- job:
+    name: tripleo-ci-containers-multinode-options
     vars:
       nodes: 1ctlr
       featureset: '010'
       playbooks:
         - multinode.yml
+
+- job:
+    name: tripleo-ci-centos-9-containers-multinode
+    branches: *c9_branches
+    parent: tripleo-ci-containers-multinode-options
 
 - job:
     name: tripleo-ci-centos-9-scenario007-multinode-oooq-container
@@ -281,11 +289,11 @@
     parent: tripleo-ci-base-multinode-centos-8
     branches: &c8_branches ^(stable/(train|victoria)).*$
     voting: true
-    vars:
-      nodes: 1ctlr
-      featureset: '010'
-      playbooks:
-        - multinode.yml
+
+- job:
+    name: tripleo-ci-centos-8-containers-multinode
+    branches: *c8_branches
+    parent: tripleo-ci-containers-multinode-options
 
 - job:
     name: tripleo-ci-centos-8-containers-undercloud-minion
