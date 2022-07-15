@@ -1,5 +1,5 @@
 ---
-# zuul.d/basei-upstream.yaml
+# zuul.d/base.yaml
 # This file contains parent layouts for all TripleO jobs.
 # Do not add children specific layout here.
 
