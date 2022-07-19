@@ -43,6 +43,9 @@ exclude_containers:
       - sahara-api
       - sahara-engine
       - sensu-client
+  rhos-17.1:
+    redhat8: *exclude_master_containers
+    redhat9: *exclude_cs9_master_containers
   rhos-17:
     redhat8: *exclude_master_containers
     redhat9: *exclude_cs9_master_containers
