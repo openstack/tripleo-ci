@@ -201,6 +201,12 @@
         that:
           - authfile_exist.stat.exists | bool
 
+- name: Generate tcib extra config file
+  copy:
+    dest: "{{ workspace }}/extra_config.yaml"
+    content: |
+      {{ tcib_extra_config | to_nice_yaml }}
+
 - name: Generate kolla building script
   template:
     src: templates/kolla-build.sh.j2

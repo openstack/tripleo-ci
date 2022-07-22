@@ -92,4 +92,7 @@ openstack tripleo container image build \
      --tcib-extra tcib_release={{ ansible_distribution_major_version }} \
      --tcib-extra tcib_python_version={{ (ansible_distribution_major_version is version('9', '<')) | ternary ('3.6', '3.9') }} \
 {%   endif %}
+{% if tcib_extra_config is defined %}
+     --extra-config {{ workspace }}/extra_config.yaml \
+{% endif %}
      --debug
