@@ -875,7 +875,7 @@
 
 - job:
     name: tripleo-ci-centos-8-standalone-on-multinode-ipa
-    branches: *c8_branches
+    branches: ^(stable/victoria).*$
     parent: tripleo-ci-standalone-on-multinode-ipa-options
 
 - job:
