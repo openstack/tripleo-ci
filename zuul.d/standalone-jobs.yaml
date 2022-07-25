@@ -49,6 +49,7 @@
       - .*molecule.*
       - ^.*\.md$
       - ^.*\.rst$
+      - ^.ansible-lint$
       - ^Puppetfile.*$
       - ^doc/.*$
       - ^etc/.*$

@@ -13,6 +13,7 @@
               - .*molecule.*
               - ^.*\.md$
               - ^.*\.rst$
+              - ^.ansible-lint$
               - ^doc/.*$
               - ^docs/.*$
               - ^etc/.*$
@@ -52,6 +53,7 @@
               - .*molecule.*
               - ^.*\.md$
               - ^.*\.rst$
+              - ^.ansible-lint$
               - ^doc/.*$
               - ^docs/.*$
               - ^etc/.*$
@@ -134,6 +136,7 @@
               - .*molecule.*
               - ^.*\.md$
               - ^.*\.rst$
+              - ^.ansible-lint$
               - ^Puppetfile.*$
               - ^doc/.*$
               - ^etc/.*$

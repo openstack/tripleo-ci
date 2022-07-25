@@ -15,6 +15,7 @@
               - .*molecule.*
               - ^.*\.md$
               - ^.*\.rst$
+              - ^.ansible-lint$
               - ^doc/.*$
               - ^docs/.*$
               - ^etc/.*$

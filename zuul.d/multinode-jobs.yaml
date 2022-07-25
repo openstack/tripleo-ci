@@ -67,6 +67,7 @@
               - .*molecule.*
               - ^.*\.md$
               - ^.*\.rst$
+              - ^.ansible-lint$
               - ^lower-constraints.txt$
               - ^test-requirements.txt$
               - ^Puppetfile.*$
@@ -209,6 +210,7 @@
             irrelevant-files: &branchful_ignored
               - ^.*\.md$
               - ^.*\.rst$
+              - ^.ansible-lint$
               - ^doc/.*$
               - ^docs/.*$
               - ^etc/.*$
