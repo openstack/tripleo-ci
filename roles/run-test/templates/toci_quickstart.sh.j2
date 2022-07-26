@@ -98,6 +98,17 @@ if [[ -f "$RELEASES_FILE_OUTPUT" ]]; then
 
 fi
 
+if is_featureset mixed_os "{{ job_featureset_file }}"; then
+    eight_release=$LOCAL_WORKING_DIR/config/release/tripleo-ci/${DISTRIBUTION:-CentOS}-8/$QUICKSTART_RELEASE.yml
+    RELEASE_ARGS=(
+        ["multinode-overcloud-mixed-os-repos-compute.yml"]=" --extra-vars @$eight_release --extra-vars registry_distro=8 "
+        ["multinode-undercloud-mixed-os.yml"]=" $QUICKSTART_DEFAULT_RELEASE_ARG --extra-vars registry_distro=9 "
+        ["multinode-overcloud-prep.yml"]=" $QUICKSTART_DEFAULT_RELEASE_ARG --extra-vars registry_distro=9 "
+        ["multinode-overcloud-mixed-os-deploy-control.yml"]=" $QUICKSTART_DEFAULT_RELEASE_ARG --extra-vars registry_distro=9 "
+        ["multinode-overcloud-mixed-os-deploy-compute.yml"]=" --extra-vars @$eight_release --extra-vars registry_distro=8 "
+    )
+fi
+
 declare -A PLAYBOOKS_ARGS=(
     ["baremetal-full-overcloud.yml"]=" --extra-vars validation_args='--validation-errors-nonfatal' "
     ["multinode-overcloud.yml"]=" --extra-vars validation_args='--validation-errors-nonfatal' "

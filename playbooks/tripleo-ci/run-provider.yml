@@ -23,6 +23,7 @@
       set_fact:
         provider_job_branch: "{{ ci_branch }}"
         registry_ip_address_branch: "{'{{ ci_branch }}': '{{ provider_ip }}'}"
+        registry_ip_address_distro: "{'{{ ansible_distribution_major_version }}': '{{ provider_ip }}'}"
 
     - name: Check if DLRN tag was dumped in /tmp/container_build_id
       stat:
@@ -42,6 +43,7 @@
           set_fact:
             provider_dlrn_hash_branch: "{'{{ ci_branch }}': '{{ dlrn_file['content'] | b64decode | trim }}'}"
             provider_dlrn_hash_tag_branch: "{'{{ ci_branch }}': '{{ dlrn_file['content'] | b64decode | trim }}'}"
+            provider_dlrn_hash_distro: "{'{{ ansible_distribution_major_version }}': '{{ dlrn_file['content'] | b64decode | trim }}'}"
 
     - name: Return Zuul data
       debug:
@@ -59,5 +61,7 @@
           provider_dlrn_hash_tag_branch: "{{ provider_dlrn_hash_tag_branch|default('') }}"
           provider_job_branch: "{{ provider_job_branch }}"
           registry_ip_address_branch: "{{ registry_ip_address_branch }}"
+          registry_ip_address_distro: "{{ registry_ip_address_distro }}"
+          provider_dlrn_hash_distro: "{{ provider_dlrn_hash_distro|default('') }}"
       tags:
         - skip_ansible_lint
