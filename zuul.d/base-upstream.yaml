@@ -97,6 +97,8 @@
       - ^.ansible-lint$
       - ^.pre-commit-config.yaml$
       - ^.yamllint$
+      - ^tripleoclient/tests/.*$
+      - ^tripleo_common/tests/.*$
 
 # The base standard job for Multinode jobs
 - job:

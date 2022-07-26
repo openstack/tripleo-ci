@@ -40,6 +40,9 @@
               - playbooks/quickstart-extras-standalone.yml
               - roles/standalone/.*
               - roles/standalone-upgrade/.*
+              # unit tests
+              - ^tripleoclient/tests/.*$
+              - ^tripleo_common/tests/.*$
             vars: &consumer_vars
               consumer_job: true
               build_container_images: false
@@ -93,6 +96,9 @@
               # upgrade/update featuresets
               - ^config/general_config/featureset037.yml
               - ^config/general_config/featureset051.yml
+              # unit tests
+              - ^tripleoclient/tests/.*$
+              - ^tripleo_common/tests/.*$
             dependencies:
               - tripleo-ci-centos-9-content-provider
               - tripleo-ci-centos-9-content-provider-wallaby
@@ -153,6 +159,8 @@
               - zuul.d/multinode-jobs.yaml
               - zuul.d/undercloud-jobs.yaml
               - zuul.d/standalone-jobs.yaml
+              - ^tripleoclient/tests/.*$
+              - ^tripleo_common/tests/.*$
         - tripleo-ci-centos-8-content-provider-ussuri:
             irrelevant-files: *upgrade_irrelevant
         - tripleo-ci-centos-8-standalone-upgrade-victoria:

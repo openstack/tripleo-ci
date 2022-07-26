@@ -62,6 +62,8 @@
       - tox.ini
       - ^setup.*$
       - ^scripts/.*
+      - ^tripleoclient/tests/.*$
+      - ^tripleo_common/tests/.*$
 
 - job:
     name: tripleo-ci-centos-9-standalone
