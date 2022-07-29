@@ -1,9 +1,16 @@
 ---
 - hosts: all
+  vars:
+    gating_repo_loop_input: "{{ dict(registry_ip_address_branch|default({})) }}"
   tasks:
-
     - when: registry_ip_address_branch is defined
       block:
+        - name: override gating_repo_loop_input if we have distro.keys
+          when:
+            - registry_ip_address_distro is defined
+            - registry_ip_address_distro.keys() | length > 1
+          set_fact:
+            gating_repo_loop_input: "{{ dict(registry_ip_address_distro) }}"
 
         # Check if we have built something in content provider.
         # If we did - create a gating-repo pointing to content provider. The
@@ -13,10 +20,10 @@
           wait_for:
             timeout: 2
             port: 8766
-            host: '{{ registry_ip_address_branch[item.key] }}'
+            host: '{{ gating_repo_loop_input[item.key] }}'
           register: waitfor
           ignore_errors: true
-          loop: '{{ registry_ip_address_branch | dict2items }}'
+          loop: '{{ gating_repo_loop_input | dict2items }}'
 
         # create the gating repo for any branch defined in
         # registry_ip_address_branch.
