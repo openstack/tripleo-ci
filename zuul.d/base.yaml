@@ -94,6 +94,8 @@
       - ^.ansible-lint$
       - ^.pre-commit-config.yaml$
       - ^.yamllint$
+      - ^tripleoclient/tests/.*$
+      - ^tripleo_common/tests/.*$
 
 # This job definition holds the required projects
 # for tripleo-ci-base-centos-8. The required projects are separated
@@ -156,6 +158,8 @@
        ^.ansible-lint$
       - ^.pre-commit-config.yaml$
       - ^.yamllint$
+      - ^tripleoclient/tests/.*$
+      - ^tripleo_common/tests/.*$
 
 - job:
     name: tripleo-ci-base-ovb

@@ -134,6 +134,9 @@
               - ^tripleo_ansible/roles/.*/meta.*
               - ^tripleo_ansible/roles/test_deps/.*
               - ^zuul.d/base.yaml
+              # unit tests
+              - ^tripleoclient/tests/.*$
+              - ^tripleo_common/tests/.*$
             vars: &multi_consumer_vars
               consumer_job: true
               build_container_images: false
@@ -244,6 +247,8 @@
               - ^playbooks/tripleo-buildimages/.*$
               - ^vars/sova-patterns.yml$
               - ^scripts/tripleo-critical-bugs/.*
+              - ^tripleoclient/tests/.*$
+              - ^tripleo_common/tests/.*$
             dependencies:
               - openstack-tox-linters
         - tripleo-ci-centos-8-content-provider-train:

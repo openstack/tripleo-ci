@@ -46,6 +46,9 @@
               - ^tripleo_ansible/roles/.*/meta.*
               - ^tripleo_ansible/roles/test_deps/.*
               - ^zuul.d/base.yaml
+              # unit tests
+              - ^tripleoclient/tests/.*$
+              - ^tripleo_common/tests/.*$
             vars: &undercloud_consumer_vars
               consumer_job: true
               remove_tags:
