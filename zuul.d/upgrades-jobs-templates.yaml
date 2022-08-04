@@ -43,6 +43,8 @@
               # unit tests
               - ^tripleoclient/tests/.*$
               - ^tripleo_common/tests/.*$
+              - ^scripts/tripleo-mount-image$
+              - ^scripts/tripleo-unmount-image$
             vars: &consumer_vars
               consumer_job: true
               build_container_images: false
@@ -99,6 +101,8 @@
               # unit tests
               - ^tripleoclient/tests/.*$
               - ^tripleo_common/tests/.*$
+              - ^scripts/tripleo-mount-image$
+              - ^scripts/tripleo-unmount-image$
             dependencies:
               - tripleo-ci-centos-9-content-provider
               - tripleo-ci-centos-9-content-provider-wallaby
@@ -161,6 +165,8 @@
               - zuul.d/standalone-jobs.yaml
               - ^tripleoclient/tests/.*$
               - ^tripleo_common/tests/.*$
+              - ^scripts/tripleo-mount-image$
+              - ^scripts/tripleo-unmount-image$
         - tripleo-ci-centos-8-content-provider-ussuri:
             irrelevant-files: *upgrade_irrelevant
         - tripleo-ci-centos-8-standalone-upgrade-victoria:
