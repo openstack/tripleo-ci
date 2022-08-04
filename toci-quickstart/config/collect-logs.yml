@@ -63,6 +63,7 @@ artcl_collect_list:
   - /tmp/ansible-*
   - /etc/ansible/
   - /etc/aodh/
+  - /etc/audit/
   - /etc/autofs*
   - /etc/auto.master*
   - /etc/barbican/
