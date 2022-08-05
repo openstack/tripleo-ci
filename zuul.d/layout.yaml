@@ -15,6 +15,7 @@
       - tripleo-undercloud-jobs-pipeline
       - tripleo-periodic
       - tripleo-ceph-periodic
+      - tripleo-periodic-fips
     queue: tripleo
     check:
       jobs:

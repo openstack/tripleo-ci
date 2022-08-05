@@ -360,7 +360,9 @@
         - tripleo-ci-centos-9-scenario012-standalone: &c9_scen12
             <<: *c9_scen1
             files: *scen12_files
-        - tripleo-ci-centos-9-standalone-fips: *cs9_vars
+        - tripleo-ci-centos-9-standalone-fips:
+            <<: *cs9_vars
+            voting: false
 
     gate:
       jobs:
@@ -969,13 +971,11 @@
         tempest_test_whitelist:
           - 'api'
 
-### FIPS Jobs
-
+### CentOS-9 FIPS Jobs
 - job:
     name: tripleo-ci-centos-9-standalone-fips
     parent: tripleo-ci-centos-9-standalone
-    voting: false
-    vars:
+    vars: &fips_vars
       enable_fips: true
       nslookup_target: 'opendev.org'
       featureset_override:
@@ -984,3 +984,167 @@
           - 'environments/fips.yaml'
         tempest_tempestconf_profile_overrides:
           validation.ssh_key_type: 'ecdsa'
+
+- job:
+    name: tripleo-ci-centos-9-scenario001-standalone-fips
+    parent: tripleo-ci-centos-9-scenario001-standalone
+    vars:
+      <<: *fips_vars
+      featureset_override:
+        standalone_environment_files:
+          - 'environments/low-memory-usage.yaml'
+          - 'ci/environments/scenario001-standalone.yaml'
+          - 'environments/fips.yaml'
+
+- job:
+    name: tripleo-ci-centos-9-scenario002-standalone-fips
+    parent: tripleo-ci-centos-9-scenario002-standalone
+    vars:
+      <<: *fips_vars
+      featureset_override:
+        standalone_environment_files:
+          - 'environments/low-memory-usage.yaml'
+          - 'ci/environments/scenario002-standalone.yaml'
+          - 'environments/fips.yaml'
+
+- job:
+    name: tripleo-ci-centos-9-scenario003-standalone-fips
+    parent: tripleo-ci-centos-9-scenario003-standalone
+    vars:
+      <<: *fips_vars
+      featureset_override:
+        standalone_environment_files:
+          - 'environments/low-memory-usage.yaml'
+          - 'ci/environments/scenario003-standalone.yaml'
+          - 'environments/fips.yaml'
+
+- job:
+    name: tripleo-ci-centos-9-scenario004-standalone-fips
+    parent: tripleo-ci-centos-9-scenario004-standalone
+    vars:
+      <<: *fips_vars
+      featureset_override:
+        standalone_environment_files:
+          - 'environments/low-memory-usage.yaml'
+          - 'ci/environments/scenario004-standalone.yaml'
+          - 'environments/podman.yaml'
+          - 'environments/fips.yaml'
+
+- job:
+    name: tripleo-ci-centos-9-scenario007-standalone-fips
+    parent: tripleo-ci-centos-9-scenario007-standalone
+    vars:
+      <<: *fips_vars
+      featureset_override:
+        standalone_environment_files:
+          - 'environments/low-memory-usage.yaml'
+          - 'ci/environments/scenario007-standalone.yaml'
+          - 'environments/fips.yaml'
+
+- job:
+    name: tripleo-ci-centos-9-scenario010-standalone-fips
+    parent: tripleo-ci-centos-9-scenario010-standalone
+    vars:
+      <<: *fips_vars
+      featureset_override:
+        standalone_environment_files:
+          - 'environments/low-memory-usage.yaml'
+          - 'ci/environments/scenario010-standalone.yaml'
+          - 'ci/environments/octavia-kvm.yaml'
+          - 'environments/fips.yaml'
+
+- job:
+    name: tripleo-ci-centos-9-scenario010-ovn-provider-standalone-fips
+    parent: tripleo-ci-centos-9-scenario010-ovn-provider-standalone
+    vars:
+      <<: *fips_vars
+      featureset_override:
+        standalone_environment_files:
+          - 'environments/low-memory-usage.yaml'
+          - 'ci/environments/scenario010-standalone.yaml'
+          - 'environments/fips.yaml'
+
+- job:
+    name: tripleo-ci-centos-9-scenario012-standalone-fips
+    parent: tripleo-ci-centos-9-scenario012-standalone
+    vars:
+      <<: *fips_vars
+      featureset_override:
+        standalone_environment_files:
+          - 'environments/low-memory-usage.yaml'
+          - 'ci/environments/scenario012-standalone.yaml'
+          - 'environments/fips.yaml'
+
+### CentOS-9 FIPS Jobs - stable/wallaby
+
+- job:
+    name: tripleo-ci-centos-9-standalone-fips-wallaby
+    parent: tripleo-ci-centos-9-standalone-fips
+    branches: master
+    override-checkout: stable/wallaby
+    vars:
+      branch_override: stable/wallaby
+
+- job:
+    name: tripleo-ci-centos-9-scenario001-standalone-fips-wallaby
+    parent: tripleo-ci-centos-9-scenario001-standalone-fips
+    branches: master
+    override-checkout: stable/wallaby
+    vars:
+      branch_override: stable/wallaby
+
+- job:
+    name: tripleo-ci-centos-9-scenario002-standalone-fips-wallaby
+    parent: tripleo-ci-centos-9-scenario002-standalone-fips
+    branches: master
+    override-checkout: stable/wallaby
+    vars:
+      branch_override: stable/wallaby
+
+- job:
+    name: tripleo-ci-centos-9-scenario003-standalone-fips-wallaby
+    parent: tripleo-ci-centos-9-scenario003-standalone-fips
+    branches: master
+    override-checkout: stable/wallaby
+    vars:
+      branch_override: stable/wallaby
+
+- job:
+    name: tripleo-ci-centos-9-scenario004-standalone-fips-wallaby
+    parent: tripleo-ci-centos-9-scenario004-standalone-fips
+    branches: master
+    override-checkout: stable/wallaby
+    vars:
+      branch_override: stable/wallaby
+
+- job:
+    name: tripleo-ci-centos-9-scenario007-standalone-fips-wallaby
+    parent: tripleo-ci-centos-9-scenario007-standalone-fips
+    branches: master
+    override-checkout: stable/wallaby
+    vars:
+      branch_override: stable/wallaby
+
+- job:
+    name: tripleo-ci-centos-9-scenario010-standalone-fips-wallaby
+    parent: tripleo-ci-centos-9-scenario010-standalone-fips
+    branches: master
+    override-checkout: stable/wallaby
+    vars:
+      branch_override: stable/wallaby
+
+- job:
+    name: tripleo-ci-centos-9-scenario010-ovn-provider-standalone-fips-wallaby
+    parent: tripleo-ci-centos-9-scenario010-ovn-provider-standalone-fips
+    branches: master
+    override-checkout: stable/wallaby
+    vars:
+      branch_override: stable/wallaby
+
+- job:
+    name: tripleo-ci-centos-9-scenario012-standalone-fips-wallaby
+    parent: tripleo-ci-centos-9-scenario012-standalone-fips
+    branches: master
+    override-checkout: stable/wallaby
+    vars:
+      branch_override: stable/wallaby

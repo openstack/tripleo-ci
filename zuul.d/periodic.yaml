@@ -212,3 +212,41 @@
             dependencies:
               - tripleo-ci-centos-9-content-provider
         - tripleo-ci-centos-9-scenario004-ceph-nightly: *ceph_vars_periodic
+
+- project-template:
+    name: tripleo-periodic-fips
+    periodic:
+      jobs:
+        - tripleo-ci-centos-9-content-provider: &fips_force_non_periodic
+            vars:
+              force_non_periodic: true
+        - tripleo-ci-centos-9-content-provider-wallaby: *fips_force_non_periodic
+        - tripleo-ci-centos-9-standalone-fips: &fips_vars_periodic
+            vars: &fips_consumer_vars
+              force_non_periodic: true
+              consumer_job: true
+              build_container_images: false
+              remove_tags:
+                - build
+            dependencies:
+              - tripleo-ci-centos-9-content-provider
+        - tripleo-ci-centos-9-scenario001-standalone-fips: *fips_vars_periodic
+        - tripleo-ci-centos-9-scenario002-standalone-fips: *fips_vars_periodic
+        - tripleo-ci-centos-9-scenario003-standalone-fips: *fips_vars_periodic
+        - tripleo-ci-centos-9-scenario004-standalone-fips: *fips_vars_periodic
+        - tripleo-ci-centos-9-scenario007-standalone-fips: *fips_vars_periodic
+        - tripleo-ci-centos-9-scenario010-standalone-fips: *fips_vars_periodic
+        - tripleo-ci-centos-9-scenario010-ovn-provider-standalone-fips: *fips_vars_periodic
+        - tripleo-ci-centos-9-scenario012-standalone-fips: *fips_vars_periodic
+        - tripleo-ci-centos-9-standalone-fips-wallaby: &fips_vars_periodic_wallaby
+            vars: *fips_consumer_vars
+            dependencies:
+              - tripleo-ci-centos-9-content-provider-wallaby
+        - tripleo-ci-centos-9-scenario001-standalone-fips-wallaby: *fips_vars_periodic_wallaby
+        - tripleo-ci-centos-9-scenario002-standalone-fips-wallaby: *fips_vars_periodic_wallaby
+        - tripleo-ci-centos-9-scenario003-standalone-fips-wallaby: *fips_vars_periodic_wallaby
+        - tripleo-ci-centos-9-scenario004-standalone-fips-wallaby: *fips_vars_periodic_wallaby
+        - tripleo-ci-centos-9-scenario007-standalone-fips-wallaby: *fips_vars_periodic_wallaby
+        - tripleo-ci-centos-9-scenario010-standalone-fips-wallaby: *fips_vars_periodic_wallaby
+        - tripleo-ci-centos-9-scenario010-ovn-provider-standalone-fips-wallaby: *fips_vars_periodic_wallaby
+        - tripleo-ci-centos-9-scenario012-standalone-fips-wallaby: *fips_vars_periodic_wallaby
