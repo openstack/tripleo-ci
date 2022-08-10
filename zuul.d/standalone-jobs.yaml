@@ -920,7 +920,7 @@
       standalone_container_ceph_updates: true
       docker_ceph_namespace: quay.io/ceph
       docker_ceph_image: daemon
-      docker_ceph_tag: latest-pacific-devel
+      docker_ceph_tag: latest-quincy
 
 - job:
     name: tripleo-ci-centos-9-scenario004-ceph-nightly
