@@ -820,6 +820,7 @@
               - deployment/timesync/*
               # puppet
               - manifests/profile/base/rabbitmq.pp
+              - tripleo_ipa
             vars: &ipa_consumer_vars
               consumer_job: true
               build_container_images: false
