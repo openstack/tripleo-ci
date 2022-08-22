@@ -66,27 +66,22 @@
               - tripleo-ci-centos-8-content-provider-train
 
 - project-template:
-    name: tripleo-periodic-upgrades-victoria-pipeline
+    name: tripleo-periodic-upgrades-master-pipeline
     periodic:
       jobs:
-        - tripleo-ci-centos-8-content-provider-victoria:
+        - tripleo-ci-centos-9-content-provider-wallaby:
             vars:
               force_non_periodic: true
-        - tripleo-ci-centos-8-content-provider-ussuri:
+        - tripleo-ci-centos-9-content-provider:
             vars:
               force_non_periodic: true
-        - tripleo-ci-centos-8-standalone-upgrade-victoria:
+        - tripleo-ci-centos-9-undercloud-upgrade:
             vars: &consumer_vars
               force_non_periodic: true
               consumer_job: true
               build_container_images: false
               remove_tags:
                 - build
-            dependencies:
-              - tripleo-ci-centos-8-content-provider-victoria
-              - tripleo-ci-centos-8-content-provider-ussuri
-        - tripleo-ci-centos-8-undercloud-upgrade-victoria:
-            vars: *consumer_vars
             irrelevant-files: &undercloud_ignored
               - ^.*\.md$
               - ^.*\.rst$
@@ -112,9 +107,9 @@
               - zuul.d/undercloud-jobs.yaml
               - zuul.d/multinode-jobs.yaml
             dependencies:
-              - tripleo-ci-centos-8-content-provider-victoria
-              - tripleo-ci-centos-8-content-provider-ussuri
-        - tripleo-ci-centos-8-scenario000-multinode-oooq-container-upgrades-victoria:
+              - tripleo-ci-centos-9-content-provider
+              - tripleo-ci-centos-9-content-provider-wallaby
+        - tripleo-ci-centos-9-scenario000-multinode-oooq-container-updates:
             irrelevant-files: &multinode_ignored
               - ^.*\.md$
               - ^.*\.rst$
@@ -143,33 +138,6 @@
               - playbooks/quickstart-extras-standalone.yml
               - roles/standalone/.*
               - roles/standalone-upgrade/.*
-            vars: *consumer_vars
-            dependencies:
-              - tripleo-ci-centos-8-content-provider-victoria
-        - tripleo-ci-centos-8-scenario000-multinode-oooq-container-updates-victoria:
-            irrelevant-files: *multinode_ignored
-            vars: *consumer_vars
-            dependencies:
-              - tripleo-ci-centos-8-content-provider-victoria
-
-- project-template:
-    name: tripleo-periodic-upgrades-master-pipeline
-    periodic:
-      jobs:
-        - tripleo-ci-centos-9-content-provider-wallaby:
-            vars:
-              force_non_periodic: true
-        - tripleo-ci-centos-9-content-provider:
-            vars:
-              force_non_periodic: true
-        - tripleo-ci-centos-9-undercloud-upgrade:
-            vars: *consumer_vars
-            irrelevant-files: *undercloud_ignored
-            dependencies:
-              - tripleo-ci-centos-9-content-provider
-              - tripleo-ci-centos-9-content-provider-wallaby
-        - tripleo-ci-centos-9-scenario000-multinode-oooq-container-updates:
-            irrelevant-files: *multinode_ignored
             vars: *consumer_vars
             dependencies:
               - tripleo-ci-centos-9-content-provider
