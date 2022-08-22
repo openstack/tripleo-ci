@@ -42,7 +42,7 @@
 - job:
     name: tripleo-ci-centos-8-standalone
     parent: tripleo-ci-base-standalone-centos-8
-    branches: ^(stable/(train|victoria|wallaby)).*$
+    branches: ^(stable/(train|wallaby)).*$
     vars:
       featureset: '052'
     irrelevant-files: &irrelevant_files
@@ -68,7 +68,7 @@
 - job:
     name: tripleo-ci-centos-9-standalone
     parent: tripleo-ci-base-standalone-centos-9
-    branches: &c9_branches ^(?!stable/(train|victoria)).*$
+    branches: &c9_branches ^(?!stable/train).*$
     vars:
       containers_base_image: registry.access.redhat.com/ubi9:latest
       featureset: '052'
@@ -105,7 +105,7 @@
         - tripleo-ci-centos-9-content-provider:
             irrelevant-files: *irrelevant_files
         - tripleo-ci-centos-8-scenario001-standalone: &c8_scen1
-            branches: &c8_branches ^(stable/(train|victoria)).*$
+            branches: &c8_branches ^(stable/train).*$
             files: &scen1_files
               # tripleo-common
               - ^container-images/tcib/base/collectd.*$
@@ -309,11 +309,7 @@
               # tripleo-ansible
               - ^tripleo_ansible/roles/octavia_.*/.*
               - ^tripleo_ansible/playbooks/octavia.*$
-        - tripleo-ci-centos-8-scenario010-standalone-victoria: &c8_scen10_victoria
-            <<: *c8_scen10_train
-            branches: stable/victoria
         - tripleo-ci-centos-8-scenario010-ovn-provider-standalone-train: *c8_scen10_train
-        - tripleo-ci-centos-8-scenario010-ovn-provider-standalone-victoria: *c8_scen10_victoria
         - tripleo-ci-centos-8-scenario012-standalone: &c8_scen12
             <<: *c8_scen1
             files: &scen12_files
@@ -376,9 +372,7 @@
         - tripleo-ci-centos-8-scenario004-standalone: *c8_scen4
         - tripleo-ci-centos-8-scenario007-standalone: *c8_scen7
         - tripleo-ci-centos-8-scenario010-standalone-train: *c8_scen10_train
-        - tripleo-ci-centos-8-scenario010-standalone-victoria: *c8_scen10_victoria
         - tripleo-ci-centos-8-scenario010-ovn-provider-standalone-train: *c8_scen10_train
-        - tripleo-ci-centos-8-scenario010-ovn-provider-standalone-victoria: *c8_scen10_victoria
         - tripleo-ci-centos-8-scenario012-standalone: *c8_scen12
         - tripleo-ci-centos-8-standalone:
             vars: *consumer_vars
@@ -753,39 +747,13 @@
     branches: stable/train
     vars: *sc010_ovn_vars
 
-- job:
-    name: tripleo-ci-centos-8-scenario010-standalone-victoria
-    parent: tripleo-ci-scenario010-standalone-options
-
-- job:
-    name: tripleo-ci-centos-8-scenario010-standalone-victoria
-    voting: true
-    parent: tripleo-ci-base-standalone-centos-8
-    branches: stable/victoria
-    nodeset: single-centos-8-node-nested-virt
-    files: *scen10_files
-    vars: *sc010_vars
-
-- job:
-    name: tripleo-ci-centos-8-scenario010-ovn-provider-standalone-victoria
-    parent: tripleo-ci-scenario010-ovn-provider-standalone-options
-
-- job:
-    name: tripleo-ci-centos-8-scenario010-ovn-provider-standalone-victoria
-    voting: true
-    parent: tripleo-ci-base-standalone-centos-8
-    branches: stable/victoria
-    files: *scen10_files
-    vars: *sc010_ovn_vars
-
 - project-template:
     name: tripleo-standalone-multinode-ipa-pipeline
     queue: tripleo
     check:
       jobs:
-        - tripleo-ci-centos-8-content-provider
         - tripleo-ci-centos-9-content-provider
-        - tripleo-ci-centos-8-standalone-on-multinode-ipa:
+        - tripleo-ci-centos-9-standalone-on-multinode-ipa:
             files: &tls_ipa_files
               # tripleo-quickstart-extras
               - ^roles/.*multinode-ipa.*$
@@ -823,21 +791,10 @@
               remove_tags:
                 - build
             dependencies:
-              - tripleo-ci-centos-8-content-provider
-        - tripleo-ci-centos-9-standalone-on-multinode-ipa:
-            files: *tls_ipa_files
-            vars: *ipa_consumer_vars
-            dependencies:
               - tripleo-ci-centos-9-content-provider
     gate:
       jobs:
-        - tripleo-ci-centos-8-content-provider
         - tripleo-ci-centos-9-content-provider
-        - tripleo-ci-centos-8-standalone-on-multinode-ipa:
-            files: *tls_ipa_files
-            vars: *ipa_consumer_vars
-            dependencies:
-              - tripleo-ci-centos-8-content-provider
         - tripleo-ci-centos-9-standalone-on-multinode-ipa:
             files: *tls_ipa_files
             vars: *ipa_consumer_vars
@@ -863,22 +820,6 @@
           - ci/environments/standalone-ipa.yaml
         tempest_tempest_conf_overrides:
           service-clients.http_timeout: '120'
-
-- job:
-    name: tripleo-ci-centos-8-standalone-on-multinode-ipa
-    parent: tripleo-ci-base-standalone-centos-8
-    voting: true
-    nodeset: two-centos-8-nodes
-    branches: ^(stable/victoria).*$
-    required-projects:
-      - opendev.org/x/tripleo-ipa
-    roles:
-      - zuul: opendev.org/x/tripleo-ipa
-
-- job:
-    name: tripleo-ci-centos-8-standalone-on-multinode-ipa
-    branches: ^(stable/victoria).*$
-    parent: tripleo-ci-standalone-on-multinode-ipa-options
 
 - job:
     name: tripleo-ci-centos-9-standalone-on-multinode-ipa
