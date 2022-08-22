@@ -105,7 +105,7 @@
 - job:
     name: tripleo-ci-centos-8-undercloud-containers
     parent: tripleo-ci-base-undercloud-centos-8
-    branches: ^(stable/(train|victoria)).*$
+    branches: ^(stable/train).*$
     voting: true
     vars: &undercloud_job_vars
       featureset: '027'
@@ -117,6 +117,6 @@
 - job:
     name: tripleo-ci-centos-9-undercloud-containers
     parent: tripleo-ci-base-undercloud-centos-9
-    branches: ^(?!stable/(train|victoria)).*$
+    branches: ^(?!stable/train).*$
     irrelevant-files: *undercloud_ignored
     vars: *undercloud_job_vars

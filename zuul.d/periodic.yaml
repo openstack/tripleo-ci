@@ -41,9 +41,6 @@
         - tripleo-ci-centos-9-content-provider-wallaby:
             vars:
               force_non_periodic: true
-        - tripleo-ci-centos-8-content-provider-victoria:
-            vars:
-              force_non_periodic: true
         - tripleo-ci-centos-8-content-provider-train:
             vars:
               force_non_periodic: true
@@ -56,10 +53,6 @@
                 - build
             dependencies:
               - tripleo-ci-centos-9-content-provider-wallaby
-        - tripleo-ci-centos-8-containers-multinode-victoria:
-            vars: *multi_consumer_vars_periodic
-            dependencies:
-              - tripleo-ci-centos-8-content-provider-victoria
         - tripleo-ci-centos-8-containers-multinode-train:
             vars: *multi_consumer_vars_periodic
             dependencies:

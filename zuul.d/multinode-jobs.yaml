@@ -182,11 +182,6 @@
             vars: *multi_consumer_vars
             dependencies:
               - tripleo-ci-centos-8-content-provider
-        - tripleo-ci-centos-8-scenario007-multinode-oooq-container:
-            irrelevant-files: *multinode_ignored
-            vars: *multi_consumer_vars
-            dependencies:
-              - tripleo-ci-centos-8-content-provider
         - tripleo-ci-centos-8-containers-undercloud-minion:
             irrelevant-files: *multinode_ignored
             vars: *multi_consumer_vars
@@ -203,11 +198,6 @@
         - tripleo-ci-centos-9-containers-multinode: *cs9_multinode_all
         - tripleo-ci-centos-9-scenario007-multinode-oooq-container: *cs9_multinode_all
         - tripleo-ci-centos-8-containers-multinode:
-            irrelevant-files: *multinode_ignored
-            vars: *multi_consumer_vars
-            dependencies:
-              - tripleo-ci-centos-8-content-provider
-        - tripleo-ci-centos-8-scenario007-multinode-oooq-container:
             irrelevant-files: *multinode_ignored
             vars: *multi_consumer_vars
             dependencies:
@@ -279,7 +269,7 @@
 - job:
     name: tripleo-ci-centos-9-containers-multinode
     parent: tripleo-ci-base-multinode-centos-9
-    branches: &c9_branches ^(?!stable/(train|victoria)).*$
+    branches: &c9_branches ^(?!stable/train).*$
     irrelevant-files: *multinode_ignored
     voting: true
 
@@ -311,7 +301,7 @@
 - job:
     name: tripleo-ci-centos-8-containers-multinode
     parent: tripleo-ci-base-multinode-centos-8
-    branches: &c8_branches ^(stable/(train|victoria)).*$
+    branches: &c8_branches ^(stable/train).*$
     voting: true
 
 - job:
@@ -341,30 +331,12 @@
       branch_override: stable/wallaby
 
 - job:
-    name: tripleo-ci-centos-8-containers-multinode-victoria
-    parent: tripleo-ci-centos-8-containers-multinode
-    branches: master
-    override-checkout: stable/victoria
-    vars:
-      branch_override: stable/victoria
-
-- job:
     name: tripleo-ci-centos-8-containers-multinode-train
     parent: tripleo-ci-centos-8-containers-multinode
     branches: master
     override-checkout: stable/train
     vars:
       branch_override: stable/train
-
-- job:
-    name: tripleo-ci-centos-8-scenario007-multinode-oooq-container
-    parent: tripleo-ci-base-multinode-centos-8
-    branches: stable/victoria
-    vars:
-      nodes: 1ctlr
-      featureset: '030'
-      playbooks:
-        - multinode.yml
 
 ## Centos 8 9 mixed deployment
 - job:
