@@ -22,6 +22,17 @@ overcloud_neutron_global_physnet_mtu: "{{ mtu }}"
 
 ceph_use_fqdn: true
 
+# TODO(ysandeep): Remove once https://bugs.launchpad.net/bugs/1983718 is fixed.
+# This override the value `undercloud_undercloud_nameservers:` we have in multinode.yml
+# for RDO jobs(running on Vexxhost), In upstream we have 127.0.0.1 entry in
+# nameserver because in Upstream we have unbound service running
+# on the node, The images we use in RDO don't have unbound installed.
+# There are differene in ways how we built images in rdo(virt-customize)
+# vs upstream(dib).
+undercloud_undercloud_nameservers:
+  - 1.1.1.1
+  - 8.8.8.8
+
 # environment settings, not TRIPLEO-CI specific
 undercloud_local_interface: "br-ex"  # related to osinfra network configuration
 minion_local_interface: "br-ex"  # related to osinfra network configuration
