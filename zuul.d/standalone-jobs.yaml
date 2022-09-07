@@ -815,7 +815,10 @@
               - deployment/rabbitmq/*
               - deployment/timesync/*
               # puppet
-              - manifests/profile/base/rabbitmq.pp
+              - ^manifests/haproxy.*$
+              - ^manifests/profile/(base|pacemaker)/database/mysql.*.pp$
+              - ^manifests/profile/(base|pacemaker)/haproxy.*.pp$
+              - ^manifests/profile/(base|pacemaker)/rabbitmq.*.pp$
               - tripleo_ipa
             vars: &ipa_consumer_vars
               consumer_job: true
