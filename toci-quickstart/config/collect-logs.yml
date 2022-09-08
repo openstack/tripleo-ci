@@ -112,6 +112,8 @@ artcl_collect_list:
   - /etc/ironic/
   - /etc/ironic-inspector/
   - /etc/iscsi/
+  - /etc/issue
+  - /etc/issue.net
   - /etc/keepalived/
   - /etc/keystone/
   - /etc/kolla/
@@ -127,6 +129,7 @@ artcl_collect_list:
   - /etc/modprobe.d/
   - /etc/modules-load.d/
   - /etc/mongo*
+  - /etc/motd
   - /etc/multipath*
   - /etc/my.cnf*
   - /etc/my.cnf.d/
