@@ -43,6 +43,7 @@
               # unit tests
               - ^tripleoclient/tests/.*$
               - ^tripleo_common/tests/.*$
+              - ^scripts/undercloud-upgrade-ephemeral-heat.py
               - ^scripts/tripleo-mount-image$
               - ^scripts/tripleo-unmount-image$
             vars: &consumer_vars
