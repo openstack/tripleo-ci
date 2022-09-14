@@ -43,3 +43,9 @@ registry_namespace: >-
 container_registry_image: quay.io/tripleoci/registry:2
 provider_registry_port: 5001
 container_exclude_distro: "{{ ansible_distribution|lower }}{{ ansible_distribution_major_version}}"
+# Extra config needs to be passed to tcib tool
+# https://docs.openstack.org/tripleo-ansible/latest/roles/role-tripleo_container_image_build.html#r-o-l-e-d-e-f-a-u-l-t-s
+tcib_extra_config:
+  tcib_args:
+    TRIPLEO_ANSIBLE_REQ: /usr/share/openstack-tripleo-common-containers/container-images/kolla/tripleo-ansible-ee/requirements.yaml
+    ANSIBLE_RUNNER_IMAGE: quay.io/tripleoansible/ansible-runner:stream9
