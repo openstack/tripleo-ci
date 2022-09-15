@@ -150,7 +150,6 @@
             dependencies:
               - tripleo-ci-centos-9-content-provider
         - tripleo-ci-centos-8-9-multinode-mixed-os: &multinode_mixed_os
-            voting: false  #  TODO(marios) https://bugs.launchpad.net/tripleo/+bug/1989341
             irrelevant-files: *multinode_ignored
             vars: *multi_consumer_vars
             dependencies:
@@ -162,8 +161,7 @@
         - tripleo-ci-centos-9-content-provider
         - tripleo-ci-centos-8-content-provider
         - tripleo-ci-centos-9-containers-multinode: *cs9_multinode_all
-        #  TODO(marios) https://bugs.launchpad.net/tripleo/+bug/1989341
-        #  - tripleo-ci-centos-8-9-multinode-mixed-os: *multinode_mixed_os
+        - tripleo-ci-centos-8-9-multinode-mixed-os: *multinode_mixed_os
         - tripleo-ci-centos-8-containers-multinode:
             irrelevant-files: *multinode_ignored
             vars: *multi_consumer_vars

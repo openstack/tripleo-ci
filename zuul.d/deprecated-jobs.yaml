@@ -462,7 +462,6 @@
             irrelevant-files: *standalone_ignored
 
     gate:
-      queue: tripleo
       jobs:
         - tripleo-ci-centos-7-containers-multinode:
             irrelevant-files: *multinode_ignored
@@ -476,16 +475,6 @@
             irrelevant-files: *multinode_ignored
         - tripleo-ci-centos-8-scenario000-multinode-oooq-container-updates-train:
             irrelevant-files: *multinode_ignored
-
-- project-template:
-    name: tripleo-multinode-baremetal-full
-    gate:
-      queue: tripleo
-
-- project-template:
-    name: tripleo-multinode-baremetal-minimal
-    gate:
-      queue: tripleo
 
 - project-template:
     name: tripleo-multinode-container-full
@@ -527,7 +516,6 @@
             irrelevant-files: *standalone_ignored
 
     gate:
-      queue: tripleo
       jobs:
         - tripleo-ci-centos-7-containers-multinode:
             irrelevant-files: *multinode_ignored
@@ -730,7 +718,6 @@
             files: *scen4_files
 
     gate:
-      queue: tripleo
       jobs:
         - tripleo-ci-centos-7-scenario001-standalone:
             files: *scen1_files
@@ -830,7 +817,6 @@
         - tripleo-ci-centos-8-undercloud-containers:
             irrelevant-files: *undercloud_ignored
     gate:
-      queue: tripleo
       jobs:
         - tripleo-ci-centos-7-undercloud-oooq:
             irrelevant-files: *undercloud_ignored
