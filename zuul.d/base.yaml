@@ -52,8 +52,6 @@
     name: tripleo-ci-base-standard
     abstract: true
     parent: tripleo-ci-base-common-required-projects
-    # min version to use (needed for proper python interpreter detection)
-    ansible-version: 2.8
     description: |
         Base abstract job for all TripleO CI zuulv3 jobs
     timeout: 10800
@@ -256,8 +254,6 @@
     abstract: true
     description: |
                 Base abstract job for OVB TripleO CI zuulv3 jobs
-    # min version to use
-    ansible-version: 2.9
     parent: tripleo-ci-base-standard
     vars:
       undercloud: undercloud
