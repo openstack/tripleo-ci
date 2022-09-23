@@ -48,4 +48,3 @@ container_exclude_distro: "{{ ansible_distribution|lower }}{{ ansible_distributi
 tcib_extra_config:
   tcib_args:
     TRIPLEO_ANSIBLE_REQ: /usr/share/openstack-tripleo-common-containers/container-images/kolla/tripleo-ansible-ee/requirements.yaml
-    ANSIBLE_RUNNER_IMAGE: quay.io/tripleoansible/ansible-runner:stream9
