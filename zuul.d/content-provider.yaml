@@ -20,14 +20,14 @@
 - job:
     name: tripleo-ci-centos-8-content-provider
     parent: tripleo-ci-content-provider-required-projects-upstream
-    branches: ^(stable/(train|victoria|wallaby)).*$
+    branches: ^(stable/(train|wallaby)).*$
     nodeset: single-centos-8-node
 
 
 - job:
     name: tripleo-ci-centos-9-content-provider
     parent: tripleo-ci-content-provider-required-projects-upstream
-    branches: ^(?!stable/(train|victoria)).*$
+    branches: ^(?!stable/train).*$
     nodeset: single-centos-9-node
     vars:
       containers_base_image: registry.access.redhat.com/ubi9:latest
@@ -45,13 +45,6 @@
     override-checkout: stable/wallaby
     vars:
       branch_override: stable/wallaby
-
-- job:
-    name: tripleo-ci-centos-8-content-provider-victoria
-    parent: tripleo-ci-centos-8-content-provider
-    override-checkout: stable/victoria
-    vars:
-      branch_override: stable/victoria
 
 - job:
     name: tripleo-ci-centos-8-content-provider-train
