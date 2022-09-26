@@ -348,6 +348,18 @@
     vars:
       branch_override: stable/ussuri
 
+# TODO(pojadhav) used by openstack/puppet-tripleo on stable/train
+# https://review.opendev.org/c/openstack/tripleo-ci/+/853931/8#message-546978d64c7dad6cadca89ba5c5395629fddb392
+- job:
+    name: tripleo-ci-centos-8-scenario007-multinode-oooq-container
+    parent: tripleo-ci-base-multinode-centos-8
+    branches: &c8_branches ^(stable/train).*$
+    vars:
+      nodes: 1ctlr
+      featureset: '030'
+      playbooks:
+        - multinode.yml
+
 # TODO(marios) used by openstack/manila on stable/stein
 # https://review.opendev.org/c/openstack/tripleo-ci/+/838110/10#message-68c2e8290269a5fdceb4c122e57a563a54d68839
 - job:
@@ -393,6 +405,7 @@
 
 - project-template:
     name: tripleo-multinode-container-minimal
+    queue: tripleo
     check:
       jobs:
         - tripleo-ci-centos-8-containers-multinode:
@@ -478,6 +491,7 @@
 
 - project-template:
     name: tripleo-multinode-container-full
+    queue: tripleo
     check:
       jobs:
         - tripleo-ci-centos-8-containers-multinode:
@@ -556,6 +570,7 @@
 #
 - project-template:
     name: tripleo-standalone-scenarios-full
+    queue: tripleo
     check:
       jobs:
         - tripleo-ci-centos-8-scenario001-standalone:
@@ -786,6 +801,7 @@
 #
 - project-template:
     name: tripleo-undercloud-jobs
+    queue: tripleo
     check:
       jobs:
         - tripleo-ci-centos-7-undercloud-oooq:
