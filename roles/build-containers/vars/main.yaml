@@ -24,9 +24,6 @@ exclude_containers:
   wallaby:
     centos8: *exclude_master_containers
     centos9: *exclude_cs9_master_containers
-  victoria:
-    centos8: &exclude_containers
-      - neutron-mlnx-agent
   train:
     centos7: &exclude_containers_train
       - opendaylight
@@ -52,7 +49,8 @@ exclude_containers:
     redhat8: *exclude_master_containers
     redhat9: *exclude_cs9_master_containers
   rhos-16.2:
-    redhat8: *exclude_containers
+    redhat8:
+      - neutron-mlnx-agent
 
 timestamper_cmd: >-
     | awk '{ print strftime("%Y-%m-%d %H:%M:%S |"), $0; fflush(); }'
