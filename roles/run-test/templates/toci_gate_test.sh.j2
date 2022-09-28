@@ -36,9 +36,6 @@ export NODEPOOL_PROVIDER=${NODEPOOL_PROVIDER:-""}
 # create logs dir (check if collect-logs doesn't already do this)
 mkdir -p $WORKSPACE/logs
 
-# Set job as failed until it's overwritten by pingtest/tempest real test subunit
-cat $TRIPLEO_ROOT/tripleo-ci/scripts/fake_fail_subunit | gzip - > $WORKSPACE/logs/testrepository.subunit.gz
-
 # Since python3 became default on some distros without even having a python/pip
 # command installed due to PEP-0394, we can no longer rely on having
 # unversioned commands available like python(2|3) or pip(2|3). We should only

@@ -25,7 +25,6 @@ ceph_use_fqdn: true
 undercloud_local_interface: "br-ex"  # related to osinfra network configuration
 flavor_args: ""
 undercloud_conf_extras: "net_config_override = /opt/stack/new/tripleo-ci/undercloud-configs/net-config-multinode.json.template"
-generate_pingtest_subunit: true
 # Images settings
 image_cache_dir_cleanup: true
 # user home (working_dir default) is the base dir for all images operations
