@@ -38,6 +38,7 @@ RELEASES = [
     'ussuri',
     'victoria',
     'wallaby',
+    'zed',
     'master',
 ]
 # Define long term releases
