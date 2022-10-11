@@ -1016,6 +1016,80 @@
           - 'ci/environments/scenario012-standalone.yaml'
           - 'environments/fips.yaml'
 
+### CentOS-9 FIPS Jobs - stable/zed
+
+- job:
+    name: tripleo-ci-centos-9-standalone-fips-zed
+    parent: tripleo-ci-centos-9-standalone-fips
+    branches: master
+    override-checkout: stable/zed
+    vars:
+      branch_override: stable/zed
+
+- job:
+    name: tripleo-ci-centos-9-scenario001-standalone-fips-zed
+    parent: tripleo-ci-centos-9-scenario001-standalone-fips
+    branches: master
+    override-checkout: stable/zed
+    vars:
+      branch_override: stable/zed
+
+- job:
+    name: tripleo-ci-centos-9-scenario002-standalone-fips-zed
+    parent: tripleo-ci-centos-9-scenario002-standalone-fips
+    branches: master
+    override-checkout: stable/zed
+    vars:
+      branch_override: stable/zed
+
+- job:
+    name: tripleo-ci-centos-9-scenario003-standalone-fips-zed
+    parent: tripleo-ci-centos-9-scenario003-standalone-fips
+    branches: master
+    override-checkout: stable/zed
+    vars:
+      branch_override: stable/zed
+
+- job:
+    name: tripleo-ci-centos-9-scenario004-standalone-fips-zed
+    parent: tripleo-ci-centos-9-scenario004-standalone-fips
+    branches: master
+    override-checkout: stable/zed
+    vars:
+      branch_override: stable/zed
+
+- job:
+    name: tripleo-ci-centos-9-scenario007-standalone-fips-zed
+    parent: tripleo-ci-centos-9-scenario007-standalone-fips
+    branches: master
+    override-checkout: stable/zed
+    vars:
+      branch_override: stable/zed
+
+- job:
+    name: tripleo-ci-centos-9-scenario010-standalone-fips-zed
+    parent: tripleo-ci-centos-9-scenario010-standalone-fips
+    branches: master
+    override-checkout: stable/zed
+    vars:
+      branch_override: stable/zed
+
+- job:
+    name: tripleo-ci-centos-9-scenario010-ovn-provider-standalone-fips-zed
+    parent: tripleo-ci-centos-9-scenario010-ovn-provider-standalone-fips
+    branches: master
+    override-checkout: stable/zed
+    vars:
+      branch_override: stable/zed
+
+- job:
+    name: tripleo-ci-centos-9-scenario012-standalone-fips-zed
+    parent: tripleo-ci-centos-9-scenario012-standalone-fips
+    branches: master
+    override-checkout: stable/zed
+    vars:
+      branch_override: stable/zed
+
 ### CentOS-9 FIPS Jobs - stable/wallaby
 
 - job:
