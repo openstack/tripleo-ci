@@ -40,6 +40,13 @@
       branch_override: stable/wallaby
 
 - job:
+    name: tripleo-ci-centos-9-content-provider-zed
+    parent: tripleo-ci-centos-9-content-provider
+    override-checkout: stable/zed
+    vars:
+      branch_override: stable/zed
+
+- job:
     name: tripleo-ci-centos-8-content-provider-wallaby
     parent: tripleo-ci-centos-8-content-provider
     override-checkout: stable/wallaby
