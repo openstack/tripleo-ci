@@ -7,7 +7,7 @@
     check:
       jobs:
         - tripleo-ci-centos-9-content-provider
-        - tripleo-ci-centos-9-content-provider-wallaby
+        - tripleo-ci-centos-9-content-provider-zed
         - tripleo-ci-centos-9-scenario000-multinode-oooq-container-updates: &cs9_update_all
             irrelevant-files: &multinode_ignored
               - .*molecule.*
@@ -106,7 +106,7 @@
               - ^scripts/tripleo-unmount-image$
             dependencies:
               - tripleo-ci-centos-9-content-provider
-              - tripleo-ci-centos-9-content-provider-wallaby
+              - tripleo-ci-centos-9-content-provider-zed
     gate:
       jobs:
         - tripleo-ci-centos-9-content-provider
