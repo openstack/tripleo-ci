@@ -110,7 +110,7 @@
     gate:
       jobs:
         - tripleo-ci-centos-9-content-provider
-        - tripleo-ci-centos-9-content-provider-wallaby
+        - tripleo-ci-centos-9-content-provider-zed
         - tripleo-ci-centos-9-undercloud-upgrade: *cs9_undercloud_upgrade
         - tripleo-ci-centos-9-scenario000-multinode-oooq-container-updates: *cs9_update_all
 
