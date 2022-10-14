@@ -93,6 +93,10 @@
             files: *build_images_files
         - tripleo-buildimage-ironic-python-agent-centos-9:
             files: *build_images_files
+        - tripleo-buildimage-ironic-python-agent-centos-9-zed:
+            files: *build_images_files
+        - tripleo-buildimage-overcloud-full-centos-9-zed:
+            files: *build_images_files
         - tripleo-buildimage-overcloud-hardened-uefi-full-centos-9:
             files: &build_images_hardened_uefi_files
               - ^image-yaml/.*hardened-images-uefi.*
@@ -102,6 +106,8 @@
               - ^diskimage_builder/elements/bootloader
               - ^diskimage_builder/elements/growvols
               - ^roles/oooci-build-images/.*$
+        - tripleo-buildimage-overcloud-hardened-uefi-full-centos-9-zed:
+            files: *build_images_hardened_uefi_files
     gate:
       jobs:
         - tripleo-buildimage-overcloud-full-centos-8:
@@ -118,7 +124,13 @@
             files: *build_images_files
         - tripleo-buildimage-ironic-python-agent-centos-9:
             files: *build_images_files
+        - tripleo-buildimage-ironic-python-agent-centos-9-zed:
+            files: *build_images_files
+        - tripleo-buildimage-overcloud-full-centos-9-zed:
+            files: *build_images_files
         - tripleo-buildimage-overcloud-hardened-uefi-full-centos-9:
+            files: *build_images_hardened_uefi_files
+        - tripleo-buildimage-overcloud-hardened-uefi-full-centos-9-zed:
             files: *build_images_hardened_uefi_files
 
 - project-template:
@@ -196,6 +208,29 @@
     irrelevant-files: *build_image_irrelevant
 
 # Centos9 Branchful jobs for the CIP repos (branch always master)
+
+- job:
+    name: tripleo-buildimage-ironic-python-agent-centos-9-zed
+    parent: tripleo-buildimage-ironic-python-agent-centos-9
+    branches: master
+    override-checkout: stable/zed
+    vars:
+      branch_override: stable/zed
+
+- job:
+    name: tripleo-buildimage-overcloud-full-centos-9-zed
+    parent: tripleo-buildimage-overcloud-full-centos-9
+    branches: master
+    override-checkout: stable/zed
+    vars:
+      branch_override: stable/zed
+
+- job:
+    name: tripleo-buildimage-overcloud-hardened-uefi-full-centos-9-zed
+    parent: tripleo-buildimage-overcloud-hardened-uefi-full-centos-9
+    override-checkout: stable/zed
+    vars:
+      branch_override: stable/zed
 
 - job:
     name: tripleo-buildimage-ironic-python-agent-centos-9-wallaby
