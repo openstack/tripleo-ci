@@ -41,7 +41,6 @@
               - zuul.d/upgrades-jobs-templates.yaml
               # tripleo-ansible
               - ^_skeleton_role_/.*
-              - ^scripts/.*
               - ^tripleo_ansible/playbooks/docker-vfs-setup.yml$
               - ^tripleo_ansible/roles/.*/meta.*
               - ^tripleo_ansible/roles/test_deps/.*
