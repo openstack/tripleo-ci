@@ -10,6 +10,7 @@
       - tripleo-ci-buildimage-jobs
       - tripleo-multinode-branchful
       - tripleo-multinode-container-full-pipeline
+      - tripleo-external-compute-deployment-pipeline
       - tripleo-standalone-scenarios-pipeline
       - tripleo-standalone-multinode-ipa-pipeline
       - tripleo-undercloud-jobs-pipeline
