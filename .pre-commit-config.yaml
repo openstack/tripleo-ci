@@ -1,19 +1,19 @@
 ---
 repos:
   - repo: https://github.com/python/black.git
-    rev: 22.3.0
+    rev: 22.10.0
     hooks:
       - id: black
         language_version: python3
   - repo: https://gitlab.com/pycqa/flake8.git
-    rev: 3.8.4
+    rev: 5.0.4
     hooks:
       - id: flake8
         additional_dependencies:
           - flake8-black>=0.1.1
         language_version: python3
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v3.4.0
+    rev: v4.3.0
     hooks:
       - id: end-of-file-fixer
       - id: trailing-whitespace
@@ -25,7 +25,7 @@ repos:
       - id: check-yaml
         files: .*\.(yaml|yml)$
   - repo: https://gitlab.com/pycqa/flake8
-    rev: '3.8.4'
+    rev: '5.0.4'
     hooks:
       - id: flake8
   - repo: https://github.com/ansible/ansible-lint.git
@@ -38,7 +38,7 @@ repos:
           - ansible-core
           - yamllint
   - repo: https://github.com/openstack-dev/bashate.git
-    rev: 2.0.0
+    rev: 2.1.1
     hooks:
       - id: bashate
         entry: bashate --error . --ignore=E006,E040
