@@ -327,7 +327,6 @@ artcl_exclude_list:
   - undercloud-install-*
   # Another list discovered after POST_FAILURES
   - home/{{ undercloud_user }}/src
-  - home/{{ undercloud_user }}/workspace
   - /lib/rpm/
   - /lib64/pcsd
   - /opt/git
