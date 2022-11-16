@@ -78,6 +78,7 @@
               - ^.*\.md$
               - ^.*\.rst$
               - ^.ansible-lint$
+              - ^.pre-commit-config.yaml$
               - ^lower-constraints.txt$
               - ^test-requirements.txt$
               - ^Puppetfile.*$

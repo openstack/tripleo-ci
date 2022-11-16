@@ -50,6 +50,7 @@
       - ^.*\.md$
       - ^.*\.rst$
       - ^.ansible-lint$
+      - ^.pre-commit-config.yaml$
       - ^Puppetfile.*$
       - ^doc/.*$
       - ^etc/.*$

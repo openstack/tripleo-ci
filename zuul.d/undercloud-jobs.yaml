@@ -16,6 +16,7 @@
               - ^.*\.md$
               - ^.*\.rst$
               - ^.ansible-lint$
+              - ^.pre-commit-config.yaml$
               - ^doc/.*$
               - ^docs/.*$
               - ^etc/.*$
