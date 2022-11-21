@@ -68,11 +68,9 @@ function show_options {
     echo "      --overcloud-delete      -- Delete the overcloud."
     echo "      --use-containers        -- Use a containerized compute node."
     echo "      --enable-check          -- Enable checks on update."
-    echo "      --overcloud-pingtest    -- Run a tenant vm, attach and ping floating IP."
     echo "      --overcloud-sanitytest    -- Run some basic crud checks for each service."
     echo "      --skip-sanitytest-create  -- Do not create resources when performing a sanitytest (assume they exist)."
     echo "      --skip-sanitytest-cleanup -- Do not delete the created resources when performing a sanitytest."
-    echo "      --skip-pingtest-cleanup -- For debuging purposes, do not delete the created resources when performing a pingtest."
     echo "      --run-tempest           -- Run tempest tests."
     echo "      --all, -a               -- Run all of the above commands."
     echo "      -x                      -- enable tracing"
@@ -87,7 +85,7 @@ if [ ${#@} = 0 ]; then
 fi
 
 TEMP=$(getopt -o ,h \
-        -l,help,repo-setup,delorean-setup,delorean-build,multinode-setup,bootstrap-subnodes,undercloud,overcloud-images,register-nodes,introspect-nodes,overcloud-deploy,overcloud-update,overcloud-upgrade,overcloud-upgrade-converge,overcloud-delete,use-containers,overcloud-pingtest,undercloud-upgrade,skip-pingtest-cleanup,all,enable-check,run-tempest,setup-nodepool-files,overcloud-sanitytest,skip-sanitytest-create,skip-sanitytest-cleanup \
+        -l,help,repo-setup,delorean-setup,delorean-build,multinode-setup,bootstrap-subnodes,undercloud,overcloud-images,register-nodes,introspect-nodes,overcloud-deploy,overcloud-update,overcloud-upgrade,overcloud-upgrade-converge,overcloud-delete,use-containers,undercloud-upgrade,all,enable-check,run-tempest,setup-nodepool-files,overcloud-sanitytest,skip-sanitytest-create,skip-sanitytest-cleanup \
         -o,x,h,a \
         -n $SCRIPT_NAME -- "$@")
 
@@ -147,8 +145,6 @@ OVERCLOUD_SANITYTEST_SKIP_CREATE=${OVERCLOUD_SANITYTEST_SKIP_CREATE:-""}
 OVERCLOUD_SANITYTEST_SKIP_CLEANUP=${OVERCLOUD_SANITYTEST_SKIP_CLEANUP:-""}
 OVERCLOUD_SANITYTEST=${OVERCLOUD_SANITYTEST:-""}
 SANITYTEST_CONTENT_NAME=${SANITYTEST_CONTENT_NAME:-"sanity_test"}
-SKIP_PINGTEST_CLEANUP=${SKIP_PINGTEST_CLEANUP:-""}
-OVERCLOUD_PINGTEST=${OVERCLOUD_PINGTEST:-""}
 UNDERCLOUD_SANITY_CHECK=${UNDERCLOUD_SANITY_CHECK:-""}
 REPO_SETUP=${REPO_SETUP:-""}
 REPO_PREFIX=${REPO_PREFIX:-"/etc/yum.repos.d/"}
@@ -221,8 +217,6 @@ while true ; do
         --overcloud-upgrade-converge) OVERCLOUD_UPGRADE_CONVERGE="1"; shift 1;;
         --overcloud-delete) OVERCLOUD_DELETE="1"; shift 1;;
         --overcloud-images) OVERCLOUD_IMAGES="1"; shift 1;;
-        --overcloud-pingtest) OVERCLOUD_PINGTEST="1"; shift 1;;
-        --skip-pingtest-cleanup) SKIP_PINGTEST_CLEANUP="1"; shift 1;;
         --overcloud-sanitytest) OVERCLOUD_SANITYTEST="1"; shift 1;;
         --skip-sanitytest-create) OVERCLOUD_SANITYTEST_SKIP_CREATE="1"; shift 1;;
         --skip-sanitytest-cleanup) OVERCLOUD_SANITYTEST_SKIP_CLEANUP="1"; shift 1;;
@@ -986,135 +980,6 @@ function overcloud_sanitytest {
     fi
 }
 
-function cleanup_pingtest {
-
-    log "Overcloud pingtest; cleaning environment"
-    overcloudrc_check
-    wait_command="openstack stack show tenant-stack"
-    openstack stack delete --yes tenant-stack || true
-    if $(dirname $0)/wait_for -w 300 -d 10 -s "Stack not found" -- "$wait_command"; then
-        log "Overcloud pingtest - deleted the tenant-stack heat stack"
-    else
-        log "Overcloud pingtest - time out waiting to delete tenant heat stack, please check manually"
-    fi
-    log "Overcloud pingtest - cleaning all 'pingtest_*' images"
-    openstack image list | grep pingtest | awk '{print $2}' | xargs -r -n1 openstack image delete || true
-    log "Overcloud pingtest - cleaning demo network 'nova'"
-    neutron net-delete nova || true
-}
-
-function overcloud_pingtest {
-
-    log "Overcloud pingtest"
-    exitval=0
-
-    stackrc_check
-    SUBNET_ID=$(openstack network list -c Subnets -c Name -f value | grep ctlplane | awk {'print $2'})
-    CTLPLANE_CIDR=$(neutron subnet-show $SUBNET_ID -F cidr -f value)
-    CTLPLANE_NET=$(echo $CTLPLANE_CIDR | awk -F "." {'print $1"."$2"."$3'})
-
-    overcloudrc_check
-
-    if [ "$SKIP_PINGTEST_CLEANUP" != 1 ]; then
-        cleanup_pingtest
-    else
-        log "Skipping pre-pingtest cleanup because --skip-pingtest-cleanup was specified."
-    fi
-
-    # NOTE(bnemec): We have to use the split cirros image here to avoid
-    # https://bugs.launchpad.net/cirros/+bug/1312199  With the separate
-    # kernel and ramdisk Nova will add the necessary kernel param for us.
-    IMAGE_PATH=$OVERCLOUD_IMAGES_PATH/cirros.img
-    INITRAMFS_PATH=$OVERCLOUD_IMAGES_PATH/cirros.initramfs
-    KERNEL_PATH=$OVERCLOUD_IMAGES_PATH/cirros.kernel
-    if [ ! -e $IMAGE_PATH -o ! -e $INITRAMFS_PATH -o ! -e $KERNEL_PATH ]; then
-        log "Overcloud pingtest, trying to download Cirros image"
-        curl -fLo $IMAGE_PATH http://download.cirros-cloud.net/0.3.4/cirros-0.3.4-x86_64-disk.img
-        curl -fLo $INITRAMFS_PATH http://download.cirros-cloud.net/0.3.4/cirros-0.3.4-x86_64-initramfs
-        curl -fLo $KERNEL_PATH http://download.cirros-cloud.net/0.3.4/cirros-0.3.4-x86_64-kernel
-    fi
-    log "Overcloud pingtest, uploading demo tenant image to glance"
-    ramdisk_id=$(openstack image create pingtest_initramfs --public --container-format ari --disk-format ari --file $INITRAMFS_PATH | grep ' id ' | awk '{print $4}')
-    kernel_id=$(openstack image create pingtest_kernel --public --container-format aki --disk-format aki --file $KERNEL_PATH | grep ' id ' | awk '{print $4}')
-    openstack image create pingtest_image --public --container-format ami --disk-format ami --property kernel_id=$kernel_id --property ramdisk_id=$ramdisk_id --file $IMAGE_PATH
-
-    log "Overcloud pingtest, creating external network"
-    neutron net-create nova --shared --router:external=True --provider:network_type flat \
-  --provider:physical_network datacentre
-
-    FLOATING_IP_CIDR=${FLOATING_IP_CIDR:-$CTLPLANE_CIDR}
-    FLOATING_IP_START=${FLOATING_IP_START:-"${CTLPLANE_NET}.50"}
-    FLOATING_IP_END=${FLOATING_IP_END:-"${CTLPLANE_NET}.64"}
-    EXTERNAL_NETWORK_GATEWAY=${EXTERNAL_NETWORK_GATEWAY:-"${CTLPLANE_NET}.1"}
-    TENANT_STACK_DEPLOY_ARGS=${TENANT_STACK_DEPLOY_ARGS:-""}
-    neutron subnet-create --name ext-subnet --allocation-pool start=$FLOATING_IP_START,end=$FLOATING_IP_END --disable-dhcp --gateway $EXTERNAL_NETWORK_GATEWAY nova $FLOATING_IP_CIDR
-    # pingtest environment for scenarios jobs is in TripleO Heat Templates.
-    if [ -e "${TRIPLEO_HEAT_TEMPLATES_ROOT}/ci/pingtests/${MULTINODE_ENV_NAME}.yaml" ]; then
-        TENANT_PINGTEST_TEMPLATE="${TRIPLEO_HEAT_TEMPLATES_ROOT}/ci/pingtests/${MULTINODE_ENV_NAME}.yaml"
-    elif [ -e "${TRIPLEO_HEAT_TEMPLATES_ROOT}/ci/pingtests/tenantvm_floatingip.yaml" ]; then
-        TENANT_PINGTEST_TEMPLATE="${TRIPLEO_HEAT_TEMPLATES_ROOT}/ci/pingtests/tenantvm_floatingip.yaml"
-    else
-        # If the template is not found, we will get the template from the tripleo-ci location for backwards compatibility.
-        TENANT_PINGTEST_TEMPLATE="${TRIPLEO_ROOT}/tripleo-ci/templates/tenantvm_floatingip.yaml"
-    fi
-    log "Overcloud pingtest, creating tenant-stack heat stack:"
-    openstack stack create -f yaml -t $TENANT_PINGTEST_TEMPLATE $TENANT_STACK_DEPLOY_ARGS tenant-stack || exitval=1
-
-    WAIT_FOR_COMMAND="openstack stack list | grep tenant-stack"
-
-    # No point in waiting if the previous command failed.
-    if [ ${exitval} -eq 0 ]; then
-        # TODO(beagles): While the '-f' flag will short-circuit fail us, we'll
-        # likely have to wait for service operations to timeout before the
-        # stack gets marked as failed anyways. A CI oriented configuration for
-        # some key services *might* work for 'fail faster', but where things
-        # can be so slow already it might just cause more pain.
-        #
-        if $(dirname $0)/wait_for -w 300 -d 10 -s "CREATE_COMPLETE" -f "CREATE_FAILED" -- $WAIT_FOR_COMMAND; then
-            log "Overcloud pingtest, heat stack CREATE_COMPLETE";
-
-            vm1_ip=`openstack stack output show tenant-stack server1_public_ip | grep value | awk '{print $4}'`
-
-            log "Overcloud pingtest, trying to ping the floating IPs $vm1_ip"
-
-            if $(dirname $0)/wait_for -w 360 -d 10 -s "bytes from $vm1_ip" -- "ping -c 1 $vm1_ip" ; then
-                ping -c 1 $vm1_ip
-                log "Overcloud pingtest, SUCCESS"
-            else
-                ping -c 1 $vm1_ip || :
-                nova show Server1 || :
-                nova service-list || :
-                neutron agent-list || :
-                nova console-log Server1 || :
-                log "Overcloud pingtest, FAIL"
-                exitval=1
-            fi
-        else
-            nova service-list || :
-            neutron agent-list || :
-            openstack stack show tenant-stack || :
-            openstack stack event list -f table tenant-stack || :
-            openstack stack resource list -n5 tenant-stack || :
-            openstack stack failures list tenant-stack || :
-            log "Overcloud pingtest, failed to create heat stack, trying cleanup"
-            exitval=1
-        fi
-    else
-        log "Overcloud pingtest, stack create command failed immediately"
-    fi
-    if [ "$SKIP_PINGTEST_CLEANUP" != 1 ]; then
-        cleanup_pingtest
-    else
-        log "Overcloud pingtest, the resources created by the pingtest will remain until a new pingtest is executed."
-    fi
-    if [ $exitval -eq 0 ]; then
-        log "Overcloud pingtest SUCCEEDED"
-    else
-        log "Overcloud pingtest FAILED"
-    fi
-    exit $exitval
-}
-
 function clean_tempest {
     neutron net-delete nova || echo "Cleaning tempest: no networks were created"
 }
@@ -1585,10 +1450,6 @@ fi
 if [[ "$USE_CONTAINERS" == 1 && "$OVERCLOUD_DEPLOY" != 1 ]]; then
     echo "Error: --overcloud-deploy flag is required with the flag --use-containers"
     exit 1
-fi
-
-if [ "$OVERCLOUD_PINGTEST" = 1 ]; then
-    overcloud_pingtest
 fi
 
 if [ "$OVERCLOUD_SANITYTEST" = 1 ]; then
