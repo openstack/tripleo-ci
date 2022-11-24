@@ -95,4 +95,8 @@ openstack tripleo container image build \
 {% if (tcib_extra_config is defined) and (release|default(branch) not  in ["train", "wallaby"]) %}
      --extra-config {{ workspace }}/extra_config.yaml \
 {% endif %}
-     --debug
+# TODO(tkajinam): With Ansible 2.14, the playbook triggered by the command
+#                 gets stuck if -vvv is set. We temporarily remove --debug
+#                 as a workaround until we find out the appropriate fix.
+#                 https://github.com/ansible/ansible-runner/issues/1164
+#     --debug
