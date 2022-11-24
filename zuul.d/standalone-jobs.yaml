@@ -168,6 +168,7 @@
               # tripleo-ansible
               - ^tripleo_ansible/roles/tripleo_ceph.*/.*
               - ^tripleo_ansible/roles/tripleo_hieradata/.*
+              - ^tripleo_ansible/roles/tripleo_podman/.*
               - ^tripleo_ansible/roles/tripleo_upgrade_hiera/.*
               - ^tripleo_ansible/roles/tripleo_lvmfilter/.*
               - ^setup.*
