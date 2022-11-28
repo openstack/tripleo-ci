@@ -367,3 +367,21 @@
     vars:
       featureset: '066'
       nodes: 1ctlr_1comp_mixed_os
+
+- job:
+    name: tripleo-ci-centos-8-9-multinode-mixed-os-update
+    parent: tripleo-ci-base-required-projects-multinode-mixed-os-upstream
+    branches: stable/wallaby
+    voting: false
+    vars:
+      run_test_role_vars:
+        overcloud_deploy_script: "{{ ansible_user_dir }}/overcloud-deploy.sh"
+        overcloud_update: true
+        overcloud_ssh_user: "zuul"
+        tripleo_upgrade_validations_non_fatal: true
+        tripleo_upgrade_debug: false
+        tripleo_ci: true
+      featureset: '066'
+      nodes: 1ctlr_1comp_mixed_os
+      extra_tags:
+        - overcloud-update

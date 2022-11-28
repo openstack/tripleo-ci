@@ -152,6 +152,7 @@
         - multinode-undercloud-mixed-os.yml
         - multinode-overcloud-prep.yml
         - multinode-overcloud-mixed-os-deploy.yml
+        - multinode-overcloud-update.yml
         - multinode-validate.yml
       tags: *multinode_tags
 
