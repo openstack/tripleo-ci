@@ -9,11 +9,19 @@
       Base abstract job to add required-projects for Upstream Standalone jobs
     abstract: true
     parent: tripleo-ci-base-standalone-standard
-    required-projects:
+    required-projects: &standalone_rq
       - opendev.org/openstack/tripleo-ansible
       - opendev.org/openstack/tripleo-operator-ansible
       - name: opendev.org/openstack/ansible-config_template
         override-checkout: master
+
+- job:
+    name: tripleo-ci-base-required-projects-edpm-upstream
+    description: |
+      Base abstract job to add required-projects for Upstream edpm jobs
+    abstract: true
+    parent: tripleo-ci-base-multinode-edpm-standard
+    required-projects: *standalone_rq
 
 # Centos 8 base jobs
 - job:
@@ -33,6 +41,13 @@
     parent: tripleo-ci-base-required-projects-standalone-upstream
     nodeset: single-centos-9-node
 
+- job:
+    name: tripleo-ci-base-edpm-centos-9
+    abstract: true
+    description: |
+      Base abstract job for standalone TripleO CI Centos-9 zuulv3 jobs.
+    parent: tripleo-ci-base-required-projects-edpm-upstream
+    nodeset: two-centos-9-nodes
 
 # ATTENTION: Try to avoid adding irrelevant-files inside templates
 # or project because it does override values defined at job level.
@@ -1168,22 +1183,13 @@
       branch_override: stable/wallaby
 
 # Jobs for testing external data plane management
+
 - job:
     name: tripleo-ci-centos-9-standalone-external-compute-target-host
-    parent: tripleo-ci-base-multinode-centos-9
+    parent: tripleo-ci-base-edpm-centos-9
     branches:
       - master
       - stable/zed
-    vars:
-      featureset: '053'
-      # Needed for control plane and controller networking
-      bridge_address_offset: 4
-      playbooks:
-        - quickstart.yml
-        - deploy-standalone-compute.yml
-      tags:
-        - build
-        - standalone
 
 - project-template:
     name: tripleo-external-compute-deployment-pipeline

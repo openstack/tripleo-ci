@@ -156,6 +156,23 @@
         - multinode-validate.yml
       tags: *multinode_tags
 
+# EDPM base job
+- job:
+    name: tripleo-ci-base-multinode-edpm-standard
+    abstract: true
+    description: |
+                Base abstract job for multinode TripleO CI zuulv3 jobs
+    parent: tripleo-ci-base-multinode-standard
+    vars:
+      featureset: '053'
+      bridge_address_offset: 4
+      playbooks:
+        - quickstart.yml
+        - deploy-standalone-compute.yml
+      tags:
+        - build
+        - standalone
+
 # Singlenode Standard Job
 - job:
     name: tripleo-ci-base-singlenode-standard
