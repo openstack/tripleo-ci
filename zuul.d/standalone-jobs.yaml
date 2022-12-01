@@ -145,6 +145,7 @@
               - ^((docker|puppet)/services|deployment)/.*cinder.*$
               - ^((docker|puppet)/services|deployment)/.*glance.*$
               - ^((docker|puppet)/services|deployment)/.*gnocchi.*$
+              - ^((docker|puppet)/services|deployment)/haproxy-(container|pacemaker)-.*$
               - ^((docker|puppet)/services|deployment)/.*heat.*$
               - ^((docker|puppet)/services|deployment)/.*horizon.*$
               - ^((docker|puppet)/services|deployment)/.*logging.*$
@@ -205,6 +206,7 @@
               - ^((docker|puppet)/services|deployment)/.*ec2-api.*$
               - ^((docker|puppet)/services|deployment)/.*glance.*$
               - ^((docker|puppet)/services|deployment)/.*gnocchi.*$
+              - ^((docker|puppet)/services|deployment)/haproxy-(container|pacemaker)-.*$
               - ^((docker|puppet)/services|deployment)/.*iscsid.*$
               - ^((docker|puppet)/services|deployment)/.*panko.*$
               - ^((docker|puppet)/services|deployment)/.*swift.*$
@@ -212,6 +214,7 @@
               - ^((docker|puppet)/services|deployment)/database/redis.*$
               - ci/environments/scenario002-standalone.yaml
               # puppet-tripleo
+              - ^manifests/haproxy.*$
               - ^manifests/profile/(base|pacemaker)/aodh.*$
               - ^manifests/profile/(base|pacemaker)/barbican.*$
               - ^manifests/profile/(base|pacemaker)/ceilometer.*$
@@ -236,6 +239,7 @@
               - ^container-images/tcib/base/os/mistral.*$
               # tripleo-heat-templates
               - ^((docker|puppet)/services|deployment)/.*designate.*$
+              - ^((docker|puppet)/services|deployment)/haproxy-(container|pacemaker)-.*$
               - ^((docker|puppet)/services|deployment)/.*unbound.*$
               - ^((docker|puppet)/services|deployment)/.*glance.*$
               - ^((docker|puppet)/services|deployment)/.*mistral.*$
@@ -267,6 +271,7 @@
               # tripleo-heat-templates
               - ^(docker/services|deployment)/ceph.*$
               - ^(docker/services|deployment)/glance.*$
+              - ^(docker/services|deployment)/haproxy-(container|pacemaker)-.*$
               - ^(docker/services|deployment)/manila.*$
               - ^(docker/services|deployment)/horizon.*$
               - ^((docker|puppet)/services|deployment)/database/mysql.*$
@@ -287,6 +292,7 @@
               # tripleo-common
               - ^container-images/tcib/base/os/neutron.*$
               # tripleo-heat-templates
+              - ^((docker|puppet)/services|deployment)/haproxy-(container|pacemaker)-.*$
               - ^((docker|puppet)/services|deployment)/.*neutron.*$
               - ci/environments/scenario007-standalone.yaml
               # puppet-tripleo
@@ -315,6 +321,7 @@
               # tripleo-heat-templates
               # TODO(beagles): octavia testing touches neutron, glance and nova.
               # It may be sensible to expand this list after it has proven itself.
+              - ^(docker/services|deployment)/haproxy-(container|pacemaker)-.*$
               - ^(docker/services|deployment)/horizon.*$
               - ^(docker/services|deployment)/octavia.*$
               - ci/environments/scenario010-standalone.yaml
@@ -331,6 +338,7 @@
             files: &scen12_files
               # tripleo-heat-templates
               - ^(docker/services|deployment)/glance.*$
+              - ^(docker/services|deployment)/haproxy-(container|pacemaker)-.*$
               - ^(docker/services|deployment)/ironic.*$
               - ci/environments/scenario012-standalone.yaml
               # tripleo-quickstart
