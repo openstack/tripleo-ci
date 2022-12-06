@@ -66,3 +66,11 @@
         value: '0 2147483647'
         state: present
         sysctl_file: /etc/sysctl.d/99-workarounds.conf
+
+# Reference: https://bugs.launchpad.net/tripleo/+bug/1998954
+- name: Ensure CentOS runs with selinux permissive
+  become: true
+  selinux:
+    policy: targeted
+    state: permissive
+  when: ansible_distribution == 'CentOS'
