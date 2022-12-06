@@ -7,11 +7,16 @@ export ZUUL_BRANCH=${ZUUL_BRANCH:-""}
 if [ "$ZUUL_BRANCH" = "stable/1.0" -o "$ZUUL_BRANCH" = "stable/2.0" -a "$ZUUL_PROJECT" = "openstack/openstack-virtual-baremetal" ]; then
     export ZUUL_BRANCH="master"
 fi
-# For puppet-pacemaker "stable/1.1.x" is a centos7 support branch
+# Match puppet-pacemaker branches to respective releases
 if [ "$ZUUL_BRANCH" = "stable/1.1.x" -a "$ZUUL_PROJECT" = "openstack/puppet-pacemaker" ]; then
-    export ZUUL_BRANCH="stable/train"
-    export STABLE_RELEASE="train"
+    export ZUUL_BRANCH="stable/wallaby"
+    export STABLE_RELEASE="wallaby"
 fi
+if [ "$ZUUL_BRANCH" = "stable/1.5.x" -a "$ZUUL_PROJECT" = "openstack/puppet-pacemaker" ]; then
+    export ZUUL_BRANCH="stable/zed"
+    export STABLE_RELEASE="zed"
+fi
+
 # For Ansible collection repo "stable/1.0.0" is a feature branch
 if [ "$ZUUL_BRANCH" = "stable/1.0.0" -a "$ZUUL_PROJECT" = "openstack/ansible-collections-openstack" ]; then
     export ZUUL_BRANCH="master"
