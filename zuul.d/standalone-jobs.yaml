@@ -57,7 +57,7 @@
 - job:
     name: tripleo-ci-centos-8-standalone
     parent: tripleo-ci-base-standalone-centos-8
-    branches: ^(stable/(train|wallaby)).*$
+    branches: stable/train
     vars:
       featureset: '052'
     irrelevant-files: &irrelevant_files

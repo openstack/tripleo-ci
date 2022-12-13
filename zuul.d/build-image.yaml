@@ -260,7 +260,7 @@
 - job:
     name: tripleo-buildimage-ironic-python-agent-centos-8
     parent: tripleo-build-images-base-centos-8
-    branches: ^(stable/(train|wallaby)).*$
+    branches: stable/train
     vars:
       tripleo_image_type: ironic-python-agent
     irrelevant-files:
@@ -270,7 +270,7 @@
 - job:
     name: tripleo-buildimage-overcloud-full-centos-8
     parent: tripleo-build-images-base-centos-8
-    branches: ^(stable/(train|wallaby)).*$
+    branches: stable/train
     vars:
       tripleo_image_type: overcloud-full
     irrelevant-files:
