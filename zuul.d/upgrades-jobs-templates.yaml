@@ -218,8 +218,7 @@
     name: tripleo-ci-centos-9-undercloud-upgrade
     parent: tripleo-ci-base-undercloud-centos-9
     branches: ^master$
-    # TODO: revert voting to "true" after fixing https://bugs.launchpad.net/tripleo/+bug/1996933
-    voting: false
+    voting: true
     vars:
       featureset: '050'
       featureset_override:
