@@ -39,7 +39,7 @@ rhcloud: >-
   vexxhost
   {%- elif 'psi-public-nodepool-tripleo' in nodepool_provider -%}
   psi
-  {%- elif nodepool_provider in ['ibm-bm2-nodepool', 'ibm-bm3-nodepool'] -%}
+  {%- elif 'ibm-bm3-nodepool' in nodepool_provider -%}
   ibm
   {%- elif nodepool_provider == 'tripleo-ci' and environment_type == 'ovb' -%}
   internal
