@@ -241,7 +241,7 @@
 - job:
     name: tripleo-ci-centos-8-standalone-ffu-wallaby
     parent: tripleo-ci-centos-8-standalone
-    voting: false
+    voting: true
     branches: ^stable/wallaby$
     vars:
       playbooks:
