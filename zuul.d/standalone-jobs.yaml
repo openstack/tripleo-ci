@@ -1202,11 +1202,9 @@
 - project-template:
     name: tripleo-external-compute-deployment-pipeline
     queue: tripleo
-    # Note(chandankumar): Gate jobs will be added once these jobs will be voting.
     check:
       jobs:
         - tripleo-ci-centos-9-standalone-external-compute-target-host: &compute_vars
-            voting: false
             irrelevant-files: *irrelevant_files
             files: &compute_files
               # tripleo-ansible
@@ -1223,3 +1221,7 @@
             dependencies:
               - tripleo-ci-centos-9-content-provider
         - tripleo-ci-centos-9-content-provider
+    gate:
+      jobs:
+        - tripleo-ci-centos-9-content-provider
+        - tripleo-ci-centos-9-standalone-external-compute-target-host: *compute_vars
