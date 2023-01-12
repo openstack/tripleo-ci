@@ -1,4 +1,0 @@
-FROM trunk.registry.rdoproject.org/rhel/rhel8-rhui:8.0-126
-RUN rm -f /etc/yum.repos.d/delorean*
-COPY repos/delorean* /etc/yum.repos.d/
-RUN dnf clean all

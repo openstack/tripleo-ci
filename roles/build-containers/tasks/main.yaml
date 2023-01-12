@@ -163,12 +163,6 @@
           {% endif %}
           chown -R {{ ansible_user }}: /tmp/base-build/repos/*
 
-    - name: render dockerfile rhui
-      when: zuul_internal is undefined
-      template:
-        src: templates/Dockerfile_rhui.j2
-        dest: /tmp/base-build/Dockerfile
-
     - name: render dockerfile zuul_internal
       when: zuul_internal is defined
       template:
@@ -291,7 +285,7 @@
         $(command -v docker || command -v podman) run -d \
           -e REGISTRY_HTTP_ADDR=0.0.0.0:{{ provider_registry_port }} \
           -p {{ provider_registry_port }}:{{ provider_registry_port }} \
-          --name registry trunk.registry.rdoproject.org/ceph/registry:2
+          --name registry quay.rdoproject.org/ceph/registry:2
       changed_when: true
   become: true
 
