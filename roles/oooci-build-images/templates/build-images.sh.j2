@@ -1,9 +1,11 @@
 set -ex
 
 # Activate virtualenv only if exists
+{% if osp_release is not defined %}
 if [ -d "{{ workspace }}/venv" ]; then
   source {{ workspace }}/venv/bin/activate
 fi
+{% endif %}
 
 # When python-tripleoclient is installed via packages
 # elements_path are automatically setted.
