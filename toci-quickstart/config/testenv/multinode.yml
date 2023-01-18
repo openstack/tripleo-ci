@@ -38,7 +38,10 @@ undercloud_undercloud_cleanup: false
 
 # Container update settings
 update_containers: >-
-  {% if containerized_overcloud|bool or containerized_undercloud|bool -%}
+  {% if registry_distro is defined and registry_distro|default('') is version('8', '==') and
+      job is defined and job.component is defined -%}
+  false
+  {%- elif containerized_overcloud|bool or containerized_undercloud|bool -%}
   true
   {%- endif -%}
 
