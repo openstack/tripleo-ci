@@ -244,13 +244,11 @@
               - ^((docker|puppet)/services|deployment)/.*glance.*$
               - ^((docker|puppet)/services|deployment)/.*mistral.*$
               - ^((docker|puppet)/services|deployment)/.*nova.*$
-              - ^((docker|puppet)/services|deployment)/.*sahara.*$
               - ci/environments/scenario003-standalone.yaml
               # puppet-tripleo
               - ^manifests/haproxy.*$
               - ^manifests/profile/(base|pacemaker)/glance.*$
               - ^manifests/profile/(base|pacemaker)/mistral.*$
-              - ^manifests/profile/(base|pacemaker)/sahara.*$
               - ^manifests/profile/(base|pacemaker)/designate.*$
               - ^manifests/profile/base/neutron/dhcp.pp
               - ^manifests/profile/base/neutron/plugins/ml2/ovn.pp
@@ -573,14 +571,12 @@
           - 'ci/environments/scenario003-standalone.yaml'
         tempest_services:
           - mistral
-          - sahara
           - designate
         tempest_tempest_conf_overrides:
           auth.tempest_roles: "Member"
           dns.nameservers: '1.1.1.1'
         tempest_test_whitelist:
           - 'tempest.scenario.test_network_basic_ops.TestNetworkBasicOps.test_network_basic_ops'
-          - 'sahara_tempest_plugin.tests.api.test_data_sources.DataSourceTest'
           - 'mistral_tempest_tests.tests.api.v2.test_actions.ActionTestsV2'
           - 'designate_tempest_plugin.tests.api.v2.test_recordset.RecordsetsTest'
           - 'designate_tempest_plugin.tests.api.v2.test_zones.ZonesTest'
