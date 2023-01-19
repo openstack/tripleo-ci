@@ -135,12 +135,30 @@
               - tripleo-ci-centos-9-content-provider
 
 - project-template:
+    name: tripleo-periodic-upgrades-zed-pipeline
+    periodic:
+      jobs:
+        - tripleo-ci-centos-9-content-provider-zed: &force_non_periodic
+            vars:
+              force_non_periodic: true
+        - tripleo-ci-centos-9-content-provider-wallaby: *force_non_periodic
+        - tripleo-ci-centos-9-undercloud-upgrade-zed:
+            irrelevant-files: *undercloud_ignored
+            vars: *consumer_vars
+            dependencies:
+              - tripleo-ci-centos-9-content-provider-zed
+              - tripleo-ci-centos-9-content-provider-wallaby
+        - tripleo-ci-centos-9-scenario000-multinode-oooq-container-updates:
+            irrelevant-files: *multinode_ignored
+            vars: *consumer_vars
+            dependencies:
+              - tripleo-ci-centos-9-content-provider-zed
+
+- project-template:
     name: tripleo-periodic-upgrades-wallaby-pipeline
     periodic:
       jobs:
-        - tripleo-ci-centos-9-content-provider-wallaby: &force_non_periodic
-            vars:
-              force_non_periodic: true
+        - tripleo-ci-centos-9-content-provider-wallaby: *force_non_periodic
         - tripleo-ci-centos-8-content-provider-wallaby: *force_non_periodic
         - tripleo-ci-centos-8-content-provider-train: *force_non_periodic
         - tripleo-ci-centos-9-scenario000-multinode-oooq-container-updates:

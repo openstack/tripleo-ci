@@ -117,6 +117,27 @@
         - tripleo-ci-centos-9-scenario000-multinode-oooq-container-updates: *cs9_update_all
 
 - project-template:
+    name: tripleo-upgrades-zed-pipeline
+    queue: tripleo
+    check:
+      jobs:
+        - tripleo-ci-centos-9-content-provider
+        - tripleo-ci-centos-9-content-provider-wallaby
+        - tripleo-ci-centos-9-scenario000-multinode-oooq-container-updates: *cs9_update_all
+        - tripleo-ci-centos-9-undercloud-upgrade-zed: &cs9_undercloud_upgrade_zed
+            vars: *consumer_vars
+            irrelevant-files: *undercloud_ignored
+            dependencies:
+              - tripleo-ci-centos-9-content-provider
+              - tripleo-ci-centos-9-content-provider-wallaby
+    gate:
+      jobs:
+        - tripleo-ci-centos-9-content-provider
+        - tripleo-ci-centos-9-content-provider-wallaby
+        - tripleo-ci-centos-9-scenario000-multinode-oooq-container-updates: *cs9_update_all
+        - tripleo-ci-centos-9-undercloud-upgrade-zed: *cs9_undercloud_upgrade_zed
+
+- project-template:
     name: tripleo-upgrades-wallaby-pipeline
     queue: tripleo
     check:
@@ -218,6 +239,18 @@
     name: tripleo-ci-centos-9-undercloud-upgrade
     parent: tripleo-ci-base-undercloud-centos-9
     branches: ^master$
+    voting: true
+    vars:
+      featureset: '050'
+      featureset_override:
+        validate_services: false
+      extra_tags:
+        - undercloud-upgrade
+
+- job:
+    name: tripleo-ci-centos-9-undercloud-upgrade-zed
+    parent: tripleo-ci-base-undercloud-centos-9
+    branches: ^stable/zed$
     voting: true
     vars:
       featureset: '050'
