@@ -69,3 +69,8 @@ image_sanity_files:
 missing_dirs:
   - /var/lib/pcs
   - /etc/pki/tls/private
+
+# discover-latest-images related params
+tripleo_ci_discover_latest: false
+tripleo_ci_discover_base_url: ''
+tripleo_ci_discover_qcow_prefix: ''

@@ -14,6 +14,26 @@
     path: '{{ workspace }}/logs'
     state: directory
 
+- name: Get the latest image on demand
+  when:
+    - tripleo_ci_discover_latest | bool
+  block:
+    - name: Find latest image name
+      vars:
+        base_url: "{{ tripleo_ci_discover_base_url }}"
+        qcow_prefix: "{{ tripleo_ci_discover_qcow_prefix }}"
+      import_role:
+        name: discover-latest-image
+
+    - name: Set needed facts
+      set_fact:
+        cacheable: true
+        tripleo_image_source: "{{ discovered_image_url }}"
+        baseos_undercloud_image_url: "{{ discovered_image_url }}"
+        baseos_image: "{{ ansible_distribution | lower }}"
+        baseos_image_type: qcow2
+        baseos_md5sum: "{{ discovered_md5sum }} {{ discovered_image_name }}"
+
 - name: Set dib related facts used by tripleo-ci build-image role build template
   set_fact:
     dib_local_image: "{{ workspace }}/{{ tripleo_image_source | urlsplit('path') | basename }}"
