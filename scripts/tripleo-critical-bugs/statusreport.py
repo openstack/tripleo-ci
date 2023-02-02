@@ -42,7 +42,6 @@ class StatusReport(object):
     """
 
     def __init__(self, config):
-
         self.config = config
         self.brief_status = {}
         self.detailed_status = {}

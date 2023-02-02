@@ -418,7 +418,6 @@ export STANDALONE_TARGET_HASH="{standalone_target_hash}"
 
 
 if __name__ == '__main__':
-
     default_log_file = '{}.log'.format(os.path.basename(__file__))
     default_output_file = '{}.out'.format(os.path.basename(__file__))
 

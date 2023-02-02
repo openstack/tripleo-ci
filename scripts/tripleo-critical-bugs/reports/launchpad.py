@@ -37,7 +37,6 @@ class LaunchpadReport(object):
         bug_statuses_open = ['Confirmed', 'Triaged', 'In Progress', 'Fix Committed']
         bug_statuses_closed = ['Fix Released']
         for label, config_string in self.bugs.items():
-
             c = config_string.split(',')
             project = launchpad.projects[c[0]]
             filter_re = c[1]
@@ -60,6 +59,5 @@ class LaunchpadReport(object):
                         importance='Critical',
                         tags='alert',
                     ):
-
                         bugs_with_alerts_closed[task.bug.id] = task.bug
             return bugs_with_alerts_open, bugs_with_alerts_closed

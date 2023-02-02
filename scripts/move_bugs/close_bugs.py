@@ -97,7 +97,6 @@ def close_bug(bug_tasks):
 
 
 def main():
-
     parser = argparse.ArgumentParser(
         description="Print launchpad bugs as influxdb lines"
     )

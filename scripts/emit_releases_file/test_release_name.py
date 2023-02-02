@@ -6,7 +6,6 @@ import pytest
 
 @pytest.fixture
 def hash_mock_setup():
-
     # We need this variables to be arrays to emulate a reference in python
     # https://stackoverflow.com/questions/12116127/python-yield-generator-variable-scope
     # For python3 we have special keyword nonlocal so we can refer the variable
@@ -133,7 +132,6 @@ def hash_mock_setup():
 def test_overcloud_upgrade_is_n_minus_one_to_n(
     hash_mock, hash_mock_setup, stable_release, expected_releases
 ):
-
     hash_mock_setup(
         hash_mock,
         {
@@ -261,7 +259,6 @@ def test_overcloud_upgrade_is_n_minus_one_to_n(
 def test_period_overcloud_upgrade_is_n_minus_one_to_n(
     hash_mock, hash_mock_setup, stable_release, expected_releases
 ):
-
     hash_mock_setup(
         hash_mock,
         {
@@ -459,7 +456,6 @@ def test_undercloud_upgrade_is_n_minus_one_to_n(
 def test_period_undercloud_upgrade_is_n_minus_one_to_n(
     hash_mock, hash_mock_setup, stable_release, expected_releases
 ):
-
     expected_release = expected_releases['undercloud_install_release']
 
     hash_mock_setup(
@@ -512,7 +508,6 @@ def test_period_undercloud_upgrade_is_n_minus_one_to_n(
 def test_standalone_upgrade_is_n_minus_one_to_n(
     hash_mock, hash_mock_setup, stable_release, expected_releases
 ):
-
     expected_release = expected_releases['standalone_deploy_release']
 
     hash_mock_setup(
@@ -583,7 +578,6 @@ def test_standalone_upgrade_is_n_minus_one_to_n(
 def test_period_standalone_upgrade_is_n_minus_one_to_n(
     hash_mock, hash_mock_setup, stable_release, expected_releases
 ):
-
     expected_release = expected_releases['standalone_deploy_release']
 
     hash_mock_setup(
@@ -712,7 +706,6 @@ def test_period_standalone_upgrade_is_n_minus_one_to_n(
 def test_overcloud_update_target_is_hash(
     hash_mock, hash_mock_setup, stable_release, expected_releases
 ):
-
     expected_release = expected_releases['overcloud_deploy_release']
 
     hash_mock_setup(
@@ -839,7 +832,6 @@ def test_overcloud_update_target_is_hash(
 def test_period_overcloud_update_target_is_hash(
     hash_mock, hash_mock_setup, stable_release, expected_releases
 ):
-
     expected_release = expected_releases['overcloud_deploy_release']
 
     hash_mock_setup(
@@ -1087,7 +1079,6 @@ def test_noop_target_is_the_same(
 def test_periodic_noop_target_is_the_same(
     hash_mock, hash_mock_setup, stable_release, expected_releases
 ):
-
     hash_mock_setup(
         hash_mock,
         {
