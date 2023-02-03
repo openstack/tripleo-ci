@@ -263,9 +263,8 @@
     - name: Tag images
       vars:
         image: "{{ item }}"
-      include: tag.yaml
-      static: false
-      with_items: "{{ built_images.stdout_lines }}"
+      include_tasks: tag.yaml
+      loop: "{{ built_images.stdout_lines }}"
   become: true
 
 - name: Run registry
@@ -303,7 +302,6 @@
     - name: Retag and push images to provider registry
       vars:
         image: "{{ item }}"
-      include: provider_push.yaml
-      static: false
-      with_items: "{{ built_images.stdout_lines }}"
+      include_tasks: provider_push.yaml
+      loop: "{{ built_images.stdout_lines }}"
   become: true
