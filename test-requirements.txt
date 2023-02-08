@@ -19,7 +19,7 @@ colorama==0.4.4
 commonmark==0.9.1
 cookiecutter==1.7.3
 coverage==6.2
-cryptography==36.0.1
+cryptography==39.0.1
 dataclasses==0.8; python_version < '3.7'
 distlib==0.3.4
 distro==1.6.0
