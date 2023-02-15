@@ -104,7 +104,7 @@ if is_featureset mixed_os "{{ job_featureset_file }}"; then
         ["multinode-overcloud-mixed-os-repos-compute.yml"]=" --extra-vars @$eight_release --extra-vars registry_distro=8 "
         ["multinode-undercloud-mixed-os.yml"]=" $QUICKSTART_DEFAULT_RELEASE_ARG --extra-vars registry_distro=9 --extra-vars registry_distro_lower=8 "
         ["multinode-overcloud-prep.yml"]=" $QUICKSTART_DEFAULT_RELEASE_ARG --extra-vars registry_distro=9 "
-        ["multinode-overcloud-mixed-os-deploy-control.yml"]=" $QUICKSTART_DEFAULT_RELEASE_ARG --extra-vars registry_distro=9 --extra-vars registry_distro_lower=8 "
+        ["multinode-overcloud-mixed-os-deploy.yml"]=" $QUICKSTART_DEFAULT_RELEASE_ARG --extra-vars registry_distro=9 --extra-vars registry_distro_lower=8 "
     )
 fi
 
