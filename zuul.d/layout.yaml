@@ -6,17 +6,7 @@
 
 - project:
     templates:
-      - tripleo-ci-build-containers-jobs
-      - tripleo-ci-buildimage-jobs
       - tripleo-multinode-branchful
-      - tripleo-multinode-container-full-pipeline
-      - tripleo-external-compute-deployment-pipeline
-      - tripleo-standalone-scenarios-pipeline
-      - tripleo-standalone-multinode-ipa-pipeline
-      - tripleo-undercloud-jobs-pipeline
-      - tripleo-periodic
-      - tripleo-ceph-periodic
-      - tripleo-periodic-fips
     queue: tripleo
     check:
       jobs:
@@ -39,7 +29,7 @@
               tox_environment:
                 PYTEST_REQPASS: 84
         - openstack-tox-py39: *tox-py
-        - tripleo-ci-centos-9-content-provider:
+        - tripleo-ci-centos-9-content-provider-wallaby:
             dependencies:
               - openstack-tox-linters
     gate:
