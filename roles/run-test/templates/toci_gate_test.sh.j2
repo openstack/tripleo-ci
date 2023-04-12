@@ -105,8 +105,16 @@ elif is_featureset undercloud_upgrade "{{ job_featureset_file }}"; then
     {% if provider_dlrn_hash_tag_branch is defined %}
     EMIT_RELEASES_EXTRA_ARGS="$EMIT_RELEASES_EXTRA_ARGS --content-provider-hashes={{ provider_dlrn_hash_tag_branch.keys()|zip(provider_dlrn_hash_tag_branch.values())|map('join',':')|join(';') }} --target-branch-override=$UPGRADE_RELEASE --install-branch-override=$QUICKSTART_RELEASE"
     {% endif %}
+# For minor_update we stay on the same branch, but we need to pass zuul information of 'current' content provider job in target-branch-override.
+elif is_featureset minor_update "{{ job_featureset_file }}"; then
+    echo "minor update centos9/wallaby"
+    {% if provider_dlrn_hash_tag_branch is defined %}
+    EMIT_RELEASES_EXTRA_ARGS="$EMIT_RELEASES_EXTRA_ARGS --content-provider-hashes={{ provider_dlrn_hash_tag_branch.keys()|zip(provider_dlrn_hash_tag_branch.values())|map('join',':')|join(';') }} --target-branch-override=${QUICKSTART_RELEASE}-current --install-branch-override=$QUICKSTART_RELEASE"
+    {% endif %}
+# This is a case for train branch, which uses featureset038. In featureset038 we test update workflow itself, no containers or rpms update happens.
+# Target branch is overridden to be exactly the same as for deployment, because only containers used during deployment are in local container registry.
 elif is_featureset overcloud_update "{{ job_featureset_file }}"; then
-    echo ""
+    echo "minor update centos8/train"
     {% if provider_dlrn_hash_tag_branch is defined %}
     EMIT_RELEASES_EXTRA_ARGS="$EMIT_RELEASES_EXTRA_ARGS --content-provider-hashes={{ provider_dlrn_hash_tag_branch.keys()|zip(provider_dlrn_hash_tag_branch.values())|map('join',':')|join(';') }} --target-branch-override=$QUICKSTART_RELEASE"
     {% endif %}
@@ -124,7 +132,7 @@ QUICKSTART_RELEASE="promotion-testing-hash-${QUICKSTART_RELEASE}"
 EMIT_RELEASES_EXTRA_ARGS="$EMIT_RELEASES_EXTRA_ARGS --is-periodic"
 {% endif %}
 
-if [[ -f "$RELEASES_SCRIPT" ]] && [[ {{ featureset }} =~ 037|047|050|056|065|067 ]]; then
+if [[ -f "$RELEASES_SCRIPT" ]] && [[ {{ featureset }} =~ 037|047|050|056|065|067|068 ]]; then
 
     if [[  -f "$RELEASES_FILE_OUTPUT" ]]; then
         echo "Importing ready releases.sh file - skipping releases.sh file generation."

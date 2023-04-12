@@ -33,11 +33,31 @@
       containers_base_image: registry.access.redhat.com/ubi9:latest
 
 - job:
+    name: tripleo-ci-centos-9-content-provider-current
+    parent: tripleo-ci-centos-9-content-provider
+    vars:
+      buildcontainers_override_repos: current
+      featureset_override:
+        dlrn_hash_tag: current
+        promote_source: current
+
+- job:
     name: tripleo-ci-centos-9-content-provider-wallaby
     parent: tripleo-ci-centos-9-content-provider
     override-checkout: stable/wallaby
     vars:
       branch_override: stable/wallaby
+
+- job:
+    name: tripleo-ci-centos-9-content-provider-current-wallaby
+    parent: tripleo-ci-centos-9-content-provider-current
+    override-checkout: stable/wallaby
+    vars:
+      branch_override: stable/wallaby
+      buildcontainers_override_repos: current
+      featureset_override:
+        dlrn_hash_tag: current
+        promote_source: current
 
 - job:
     name: tripleo-ci-centos-9-content-provider-zed

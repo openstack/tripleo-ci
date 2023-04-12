@@ -15,6 +15,7 @@
           - 'dlrn_hash_tag_newest'
           - 'extra_args'
           - 'enable_fips'
+          - 'promote_source'
           - 'run_tempest'
           - 'standalone_container_cli'
           - 'standalone_environment_files'

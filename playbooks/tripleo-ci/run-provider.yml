@@ -19,6 +19,11 @@
         name: build-containers
         tasks_from: set_ci_branch.yml
 
+    - name: Combine override_repos with ci_branch variable
+      set_fact:
+        ci_branch: "{{ ci_branch + '-' + override_repos }}"
+      when: override_repos != ''
+
     - name: Set branch variables
       set_fact:
         provider_job_branch: "{{ ci_branch }}"

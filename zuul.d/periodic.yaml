@@ -4,7 +4,7 @@
     periodic:
       jobs:
         - tripleo-ci-centos-9-content-provider:
-            irrelevant-files:
+            irrelevant-files: &unbranched_content_provider_files
               - .*molecule.*
               - ^.*\.md$
               - ^.*\.rst$
@@ -21,8 +21,17 @@
               - ^setup.*$
             vars:
               force_non_periodic: true
-        - tripleo-ci-centos-9-containers-multinode: &unbranched_vars_periodic
+        - tripleo-ci-centos-9-content-provider-current:
+            irrelevant-files: *unbranched_content_provider_files
             vars:
+              force_non_periodic: true
+              buildcontainers_override_repos: current
+              featureset_override:
+                dlrn_hash_tag: current
+                promote_source: current
+
+        - tripleo-ci-centos-9-containers-multinode:
+            vars: &unbranched_vars_periodic
               force_non_periodic: true
               consumer_job: true
               build_container_images: false
@@ -30,8 +39,15 @@
                 - build
             dependencies:
               - tripleo-ci-centos-9-content-provider
-        - tripleo-ci-centos-9-standalone: *unbranched_vars_periodic
-        - tripleo-ci-centos-9-scenario000-multinode-oooq-container-updates: *unbranched_vars_periodic
+        - tripleo-ci-centos-9-standalone:
+            vars: *unbranched_vars_periodic
+            dependencies:
+              - tripleo-ci-centos-9-content-provider
+        - tripleo-ci-centos-9-scenario000-multinode-oooq-container-updates:
+            vars: *unbranched_vars_periodic
+            dependencies:
+              - tripleo-ci-centos-9-content-provider
+              - tripleo-ci-centos-9-content-provider-current
 
 - project-template:
     name: tripleo-multinode-branchful
@@ -161,11 +177,13 @@
         - tripleo-ci-centos-9-content-provider-wallaby: *force_non_periodic
         - tripleo-ci-centos-8-content-provider-wallaby: *force_non_periodic
         - tripleo-ci-centos-8-content-provider-train: *force_non_periodic
+        - tripleo-ci-centos-9-content-provider-current-wallaby: *force_non_periodic
         - tripleo-ci-centos-9-scenario000-multinode-oooq-container-updates:
             irrelevant-files: *multinode_ignored
             vars: *consumer_vars
             dependencies:
               - tripleo-ci-centos-9-content-provider-wallaby
+              - tripleo-ci-centos-9-content-provider-current-wallaby
         - tripleo-ci-centos-8-undercloud-ffu-wallaby:
             vars: *consumer_vars
             irrelevant-files: *undercloud_ignored

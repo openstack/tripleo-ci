@@ -19,6 +19,10 @@
     ci_branch: "{{ osp_branch }}"
   when: osp_branch is defined
 
+- name: Set override_repos for buildcontainers_override_repos
+  set_fact:
+    override_repos: "{{ buildcontainers_override_repos | default('') }}"
+
 - name: Fail if we did not set ci_branch fact
   fail:
     msg: >-

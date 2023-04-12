@@ -607,82 +607,6 @@ def test_period_standalone_upgrade_is_n_minus_one_to_n(
     'stable_release,expected_releases',
     [
         (
-            'master',
-            {
-                'undercloud_install_release': 'master',
-                'undercloud_install_hash': 'current-tripleo',
-                'undercloud_target_release': 'master',
-                'undercloud_target_hash': 'current-tripleo',
-                'overcloud_deploy_release': 'master',
-                'overcloud_deploy_hash': 'previous-current-tripleo',
-                'overcloud_target_release': 'master',
-                'overcloud_target_hash': 'current-tripleo',
-                'standalone_deploy_newest_hash': 'current',
-                'standalone_deploy_hash': 'current-tripleo',
-                'standalone_deploy_release': 'master',
-                'standalone_target_newest_hash': 'current',
-                'standalone_target_hash': 'current-tripleo',
-                'standalone_target_release': 'master',
-            },
-        ),
-        (
-            'wallaby',
-            {
-                'undercloud_install_release': 'wallaby',
-                'undercloud_install_hash': 'current-tripleo',
-                'undercloud_target_release': 'wallaby',
-                'undercloud_target_hash': 'current-tripleo',
-                'overcloud_deploy_release': 'wallaby',
-                'overcloud_deploy_hash': 'previous-current-tripleo',
-                'overcloud_target_release': 'wallaby',
-                'overcloud_target_hash': 'current-tripleo',
-                'standalone_deploy_release': 'wallaby',
-                'standalone_deploy_newest_hash': 'current',
-                'standalone_deploy_hash': 'current-tripleo',
-                'standalone_target_release': 'wallaby',
-                'standalone_target_newest_hash': 'current',
-                'standalone_target_hash': 'current-tripleo',
-            },
-        ),
-        (
-            'victoria',
-            {
-                'undercloud_install_release': 'victoria',
-                'undercloud_install_hash': 'current-tripleo',
-                'undercloud_target_release': 'victoria',
-                'undercloud_target_hash': 'current-tripleo',
-                'overcloud_deploy_release': 'victoria',
-                'overcloud_deploy_hash': 'previous-current-tripleo',
-                'overcloud_target_release': 'victoria',
-                'overcloud_target_hash': 'current-tripleo',
-                'standalone_deploy_release': 'victoria',
-                'standalone_deploy_newest_hash': 'current',
-                'standalone_deploy_hash': 'current-tripleo',
-                'standalone_target_release': 'victoria',
-                'standalone_target_newest_hash': 'current',
-                'standalone_target_hash': 'current-tripleo',
-            },
-        ),
-        (
-            'ussuri',
-            {
-                'undercloud_install_release': 'ussuri',
-                'undercloud_install_hash': 'current-tripleo',
-                'undercloud_target_release': 'ussuri',
-                'undercloud_target_hash': 'current-tripleo',
-                'overcloud_deploy_release': 'ussuri',
-                'overcloud_deploy_hash': 'previous-current-tripleo',
-                'overcloud_target_release': 'ussuri',
-                'overcloud_target_hash': 'current-tripleo',
-                'standalone_deploy_release': 'ussuri',
-                'standalone_deploy_newest_hash': 'current',
-                'standalone_deploy_hash': 'current-tripleo',
-                'standalone_target_release': 'ussuri',
-                'standalone_target_newest_hash': 'current',
-                'standalone_target_hash': 'current-tripleo',
-            },
-        ),
-        (
             'train',
             {
                 'undercloud_install_release': 'train',
@@ -703,7 +627,7 @@ def test_period_standalone_upgrade_is_n_minus_one_to_n(
         ),
     ],
 )
-def test_overcloud_update_target_is_hash(
+def test_overcloud_update_train_target_is_hash(
     hash_mock, hash_mock_setup, stable_release, expected_releases
 ):
     expected_release = expected_releases['overcloud_deploy_release']
@@ -719,6 +643,75 @@ def test_overcloud_update_target_is_hash(
 
     featureset = {
         'overcloud_update': True,
+    }
+
+    upgrade_from = False
+    assert (
+        compose_releases_dictionary(stable_release, featureset, upgrade_from)
+        == expected_releases
+    )
+
+
+@mock.patch('emit_releases_file.get_dlrn_hash')
+@pytest.mark.parametrize(
+    'stable_release,expected_releases',
+    [
+        (
+            'master',
+            {
+                'undercloud_install_release': 'master',
+                'undercloud_install_hash': 'current-tripleo',
+                'undercloud_target_release': 'master',
+                'undercloud_target_hash': 'current',
+                'overcloud_deploy_release': 'master',
+                'overcloud_deploy_hash': 'current-tripleo',
+                'overcloud_target_release': 'master',
+                'overcloud_target_hash': 'current',
+                'standalone_deploy_newest_hash': 'current',
+                'standalone_deploy_hash': 'current-tripleo',
+                'standalone_deploy_release': 'master',
+                'standalone_target_newest_hash': 'current',
+                'standalone_target_hash': 'current-tripleo',
+                'standalone_target_release': 'master',
+            },
+        ),
+        (
+            'wallaby',
+            {
+                'undercloud_install_release': 'wallaby',
+                'undercloud_install_hash': 'current-tripleo',
+                'undercloud_target_release': 'wallaby',
+                'undercloud_target_hash': 'current',
+                'overcloud_deploy_release': 'wallaby',
+                'overcloud_deploy_hash': 'current-tripleo',
+                'overcloud_target_release': 'wallaby',
+                'overcloud_target_hash': 'current',
+                'standalone_deploy_release': 'wallaby',
+                'standalone_deploy_newest_hash': 'current',
+                'standalone_deploy_hash': 'current-tripleo',
+                'standalone_target_release': 'wallaby',
+                'standalone_target_newest_hash': 'current',
+                'standalone_target_hash': 'current-tripleo',
+            },
+        ),
+    ],
+)
+def test_overcloud_minor_update_target_is_hash(
+    hash_mock, hash_mock_setup, stable_release, expected_releases
+):
+    expected_release = expected_releases['overcloud_deploy_release']
+
+    hash_mock_setup(
+        hash_mock,
+        {
+            (stable_release, 'current-tripleo'): 'current-tripleo',
+            (stable_release, 'current'): 'current',
+            (expected_release, 'current'): 'current',
+        },
+    )
+
+    featureset = {
+        'minor_update': True,
     }
 
     upgrade_from = False
@@ -829,7 +822,7 @@ def test_overcloud_update_target_is_hash(
         ),
     ],
 )
-def test_period_overcloud_update_target_is_hash(
+def test_periodic_overcloud_update_target_is_hash(
     hash_mock, hash_mock_setup, stable_release, expected_releases
 ):
     expected_release = expected_releases['overcloud_deploy_release']

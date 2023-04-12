@@ -234,7 +234,7 @@ def compose_releases_dictionary(
     ):
         current_hash = content_provider_hashes[target_branch_override]
         logger.info(
-            "Using hash override {} for branch {}".format(
+            "Using hash override {} from content provider hashes map for branch {}".format(
                 current_hash, target_branch_override
             )
         )
@@ -324,6 +324,31 @@ def compose_releases_dictionary(
         releases_dictionary['standalone_deploy_release'] = install_release
         releases_dictionary['standalone_deploy_newest_hash'] = install_newest_hash
         releases_dictionary['standalone_deploy_hash'] = install_hash
+
+    elif featureset.get('minor_update'):
+        if is_periodic:
+            previous_hash = get_dlrn_hash(
+                stable_release, PREVIOUS_HASH_NAME, distro_name, distro_version
+            )
+            releases_dictionary['overcloud_deploy_hash'] = previous_hash
+        else:
+            target_newest_hash = get_dlrn_hash(
+                stable_release, NEWEST_HASH_NAME, distro_name, distro_version
+            )
+            releases_dictionary['undercloud_target_hash'] = target_newest_hash
+            releases_dictionary['overcloud_target_hash'] = target_newest_hash
+            if content_provider_hashes is not None and content_provider_hashes.get(
+                install_branch_override
+            ):
+                install_hash = content_provider_hashes[install_branch_override]
+                releases_dictionary['undercloud_install_hash'] = install_hash
+                releases_dictionary['overcloud_deploy_hash'] = install_hash
+            if content_provider_hashes is not None and content_provider_hashes.get(
+                target_branch_override
+            ):
+                current_hash = content_provider_hashes[target_branch_override]
+                releases_dictionary['undercloud_target_hash'] = current_hash
+                releases_dictionary['overcloud_target_hash'] = current_hash
 
     elif featureset.get('overcloud_update'):
         logger.info('Doing an overcloud update')

@@ -83,7 +83,7 @@ if [[ -f "$RELEASES_FILE_OUTPUT" ]]; then
         ["multinode-overcloud.yml"]=$(get_extra_vars_from_release \
             $OVERCLOUD_DEPLOY_RELEASE $OVERCLOUD_DEPLOY_HASH)
         ["multinode-overcloud-update.yml"]=$(get_extra_vars_from_release \
-            $OVERCLOUD_DEPLOY_RELEASE $OVERCLOUD_DEPLOY_HASH)
+            $OVERCLOUD_TARGET_RELEASE $OVERCLOUD_TARGET_HASH)
         ["multinode-overcloud-upgrade.yml"]=$(get_extra_vars_from_release \
             $OVERCLOUD_TARGET_RELEASE $OVERCLOUD_TARGET_HASH)
         ["multinode-validate.yml"]=$(get_extra_vars_from_release \
@@ -113,6 +113,17 @@ declare -A PLAYBOOKS_ARGS=(
     ["multinode-overcloud.yml"]=" --extra-vars validation_args='--validation-errors-nonfatal' "
     ["multinode.yml"]=" --extra-vars validation_args='--validation-errors-nonfatal' "
 )
+
+# minor_update variable is set to true only in featureset068
+# We need to override container_registry_release to get ip of docker registry and dlrn hash from content provider which provides containers with 'current' tag
+# Containers are required to be pulled both to undercloud and overcloud to run minor update on the same branch
+# Also to trigger update of undercloud and overcloud from correct playbook, overcloud_update and undercloud_update extra-vars are set to false respectively
+if is_featureset minor_update "{{ job_featureset_file }}"; then
+    PLAYBOOKS_ARGS=(
+        ["multinode-undercloud-upgrade.yml"]=" --extra-vars container_registry_release='${QUICKSTART_RELEASE}-current' --extra-vars promote_source='current'  --extra-vars overcloud_update='false' "
+        ["multinode-overcloud-update.yml"]=" --extra-vars container_registry_release='${QUICKSTART_RELEASE}-current' --extra-vars promote_source='current' --extra-vars undercloud_update='false' "
+    )
+fi
 
 mkdir -p $LOCAL_WORKING_DIR
 # TODO(gcerami) parametrize hosts

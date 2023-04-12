@@ -120,6 +120,7 @@
               # upgrade/update featuresets
               - ^config/general_config/featureset037.yml
               - ^config/general_config/featureset051.yml
+              - ^config/general_config/featureset068.yml
               - zuul.d/upgrades-jobs-templates.yaml
               - zuul.d/build-containers.yaml
               - zuul.d/build-image.yaml
