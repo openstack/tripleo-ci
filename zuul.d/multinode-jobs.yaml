@@ -216,7 +216,7 @@
     check:
       jobs:
         - openstack-tox-linters
-        - tripleo-ci-centos-9-content-provider-zed:
+        - tripleo-ci-centos-9-content-provider-wallaby:
             irrelevant-files: &branchful_ignored
               - ^.*\.md$
               - ^.*\.rst$
@@ -241,19 +241,10 @@
               - ^tripleo_common/tests/.*$
             dependencies:
               - openstack-tox-linters
-        - tripleo-ci-centos-9-content-provider-wallaby:
-            irrelevant-files: *branchful_ignored
-            dependencies:
-              - openstack-tox-linters
         - tripleo-ci-centos-8-content-provider-train:
             irrelevant-files: *branchful_ignored
             dependencies:
               - openstack-tox-linters
-        - tripleo-ci-centos-9-containers-multinode-zed: &multi_consumer_job_zed
-            irrelevant-files: *branchful_ignored
-            vars: *multi_consumer_vars
-            dependencies:
-              - tripleo-ci-centos-9-content-provider-zed
         - tripleo-ci-centos-9-containers-multinode-wallaby: &multi_consumer_job_wallaby
             irrelevant-files: *branchful_ignored
             vars: *multi_consumer_vars
@@ -267,13 +258,10 @@
 
     gate:
       jobs:
-        - tripleo-ci-centos-9-content-provider-zed:
-            irrelevant-files: *branchful_ignored
         - tripleo-ci-centos-9-content-provider-wallaby:
             irrelevant-files: *branchful_ignored
         - tripleo-ci-centos-8-content-provider-train:
             irrelevant-files: *branchful_ignored
-        - tripleo-ci-centos-9-containers-multinode-zed: *multi_consumer_job_zed
         - tripleo-ci-centos-9-containers-multinode-wallaby: *multi_consumer_job_wallaby
         - tripleo-ci-centos-8-containers-multinode-train: *multi_consumer_job_train
 
