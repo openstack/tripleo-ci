@@ -1,3 +1,4 @@
 ---
 collections:
   - name: community.general  # molecule uses 'ini_file'
+  - name: ansible.posix
