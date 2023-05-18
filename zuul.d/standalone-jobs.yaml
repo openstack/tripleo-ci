@@ -137,7 +137,8 @@
               - workbooks/ceph-ansible.yaml
               - tripleo_common/actions/ansible.py
               # python-tripleoclient
-              - tripleoclient/utils.py
+              - ^tripleoclient/utils.py$
+              - ^tripleoclient/v2/overcloud_ceph.py$
               # tripleo-heat-templates
               - ^((docker|puppet)/services|deployment)/.*aodh.*$
               - ^((docker|puppet)/services|deployment)/.*ceilometer.*$
