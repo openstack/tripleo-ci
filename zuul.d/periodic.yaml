@@ -198,7 +198,6 @@
         - tripleo-ci-centos-9-content-provider: &fips_force_non_periodic
             vars:
               force_non_periodic: true
-        - tripleo-ci-centos-9-content-provider-zed: *fips_force_non_periodic
         - tripleo-ci-centos-9-content-provider-wallaby: *fips_force_non_periodic
         - tripleo-ci-centos-9-standalone-fips: &fips_vars_periodic
             vars: &fips_consumer_vars
@@ -229,15 +228,3 @@
         - tripleo-ci-centos-9-scenario010-standalone-fips-wallaby: *fips_vars_periodic_wallaby
         - tripleo-ci-centos-9-scenario010-ovn-provider-standalone-fips-wallaby: *fips_vars_periodic_wallaby
         - tripleo-ci-centos-9-scenario012-standalone-fips-wallaby: *fips_vars_periodic_wallaby
-        - tripleo-ci-centos-9-standalone-fips-zed: &fips_vars_periodic_zed
-            vars: *fips_consumer_vars
-            dependencies:
-              - tripleo-ci-centos-9-content-provider-zed
-        - tripleo-ci-centos-9-scenario001-standalone-fips-zed: *fips_vars_periodic_zed
-        - tripleo-ci-centos-9-scenario002-standalone-fips-zed: *fips_vars_periodic_zed
-        - tripleo-ci-centos-9-scenario003-standalone-fips-zed: *fips_vars_periodic_zed
-        - tripleo-ci-centos-9-scenario004-standalone-fips-zed: *fips_vars_periodic_zed
-        - tripleo-ci-centos-9-scenario007-standalone-fips-zed: *fips_vars_periodic_zed
-        - tripleo-ci-centos-9-scenario010-standalone-fips-zed: *fips_vars_periodic_zed
-        - tripleo-ci-centos-9-scenario010-ovn-provider-standalone-fips-zed: *fips_vars_periodic_zed
-        - tripleo-ci-centos-9-scenario012-standalone-fips-zed: *fips_vars_periodic_zed
