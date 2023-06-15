@@ -174,13 +174,13 @@
               - tripleo-ci-centos-8-content-provider-train
 
 - project-template:
-    name: tripleo-ceph-periodic
+    name: tripleo-ceph-periodic-wallaby
     periodic:
       jobs:
-        - tripleo-ci-centos-9-content-provider:
+        - tripleo-ci-centos-9-content-provider-wallaby:
             vars:
               force_non_periodic: true
-        - tripleo-ci-centos-9-scenario001-ceph-nightly: &ceph_vars_periodic
+        - tripleo-ci-centos-9-scenario001-ceph-nightly-wallaby: &ceph_vars_periodic
             vars:
               force_non_periodic: true
               consumer_job: true
@@ -188,8 +188,8 @@
               remove_tags:
                 - build
             dependencies:
-              - tripleo-ci-centos-9-content-provider
-        - tripleo-ci-centos-9-scenario004-ceph-nightly: *ceph_vars_periodic
+              - tripleo-ci-centos-9-content-provider-wallaby
+        - tripleo-ci-centos-9-scenario004-ceph-nightly-wallaby: *ceph_vars_periodic
 
 - project-template:
     name: tripleo-periodic-fips

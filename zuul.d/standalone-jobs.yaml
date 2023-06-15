@@ -892,6 +892,22 @@
     files: *scen4_files
     vars: *ceph_nightly_vars
 
+- job:
+    name: tripleo-ci-centos-9-scenario001-ceph-nightly-wallaby
+    parent: tripleo-ci-centos-9-scenario001-ceph-nightly
+    branches: master
+    override-checkout: stable/wallaby
+    vars: &ceph_nightly_wallaby_vars
+      branch_override: stable/wallaby
+      docker_ceph_tag: latest-pacific
+
+- job:
+    name: tripleo-ci-centos-9-scenario004-ceph-nightly-wallaby
+    parent: tripleo-ci-centos-9-scenario004-ceph-nightly
+    branches: master
+    override-checkout: stable/wallaby
+    vars: *ceph_nightly_wallaby_vars
+
 ##################################
 # Standalone Upgrade distro jobs #
 ##################################

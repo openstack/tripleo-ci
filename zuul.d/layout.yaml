@@ -7,6 +7,7 @@
 - project:
     templates:
       - tripleo-multinode-branchful
+      - tripleo-ceph-periodic-wallaby
     queue: tripleo
     check:
       jobs:
