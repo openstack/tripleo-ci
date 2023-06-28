@@ -1,6 +1,6 @@
 ---
 oooci_image_build_archive_dest: "{{ ansible_user_dir }}"
-tripleo_image_source: https://cloud.centos.org/centos/8-stream/x86_64/images/CentOS-Stream-GenericCloud-8-20230501.0.x86_64.qcow2
+tripleo_image_source: https://cloud.centos.org/centos/8-stream/x86_64/images/CentOS-Stream-GenericCloud-8-latest.x86_64.qcow2
 workspace: "{{ ansible_user_dir }}/workspace"
 openstack_git_root: "{{ ansible_user_dir }}/src/opendev.org/openstack"
 dib_pin: ""
