@@ -130,8 +130,15 @@ fi
 PERIODIC=1
 QUICKSTART_RELEASE="promotion-testing-hash-${QUICKSTART_RELEASE}"
 EMIT_RELEASES_EXTRA_ARGS="$EMIT_RELEASES_EXTRA_ARGS --is-periodic"
+{% if osp_release is defined %}
+if is_featureset minor_update "{{ job_featureset_file }}"; then
+# In downstream minor update job we use special, seperate promotion file
+QUICKSTART_RELEASE="update-promotion-testing-hash-${STABLE_RELEASE:-master}"
+fi
+{% endif %}
 {% endif %}
 
+{% if osp_release is not defined %}
 if [[ -f "$RELEASES_SCRIPT" ]] && [[ {{ featureset }} =~ 037|047|050|056|065|067|068 ]]; then
 
     if [[  -f "$RELEASES_FILE_OUTPUT" ]]; then
@@ -147,6 +154,7 @@ if [[ -f "$RELEASES_SCRIPT" ]] && [[ {{ featureset }} =~ 037|047|050|056|065|067
             $EMIT_RELEASES_EXTRA_ARGS
     fi
 fi
+{% endif %}
 
 # Import gated tripleo-upgrade in oooq for upgrades/updates jobs
 if [[ -d $TRIPLEO_ROOT/tripleo-upgrade ]]; then

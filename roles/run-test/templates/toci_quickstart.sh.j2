@@ -115,14 +115,22 @@ declare -A PLAYBOOKS_ARGS=(
 )
 
 # minor_update variable is set to true only in featureset068
-# We need to override container_registry_release to get ip of docker registry and dlrn hash from content provider which provides containers with 'current' tag
+# In downstream we do not use content provider and we pull already created images, so we only need to override container images tag with newer one(override_docker_image_tag)
+# In upstream we need to override container_registry_release to get ip of docker registry and dlrn hash from content provider which provides containers with 'current' tag
 # Containers are required to be pulled both to undercloud and overcloud to run minor update on the same branch
 # Also to trigger update of undercloud and overcloud from correct playbook, overcloud_update and undercloud_update extra-vars are set to false respectively
 if is_featureset minor_update "{{ job_featureset_file }}"; then
+{% if osp_release is defined %}
+    PLAYBOOKS_ARGS=(
+        ["multinode-undercloud-upgrade.yml"]="--extra-vars overcloud_update='false' --extra-vars override_docker_image_tag='true' "
+        ["multinode-overcloud-update.yml"]="--extra-vars undercloud_update='false' --extra-vars override_docker_image_tag='true'"
+    )
+{% else %}
     PLAYBOOKS_ARGS=(
         ["multinode-undercloud-upgrade.yml"]=" --extra-vars container_registry_release='${QUICKSTART_RELEASE}-current' --extra-vars promote_source='current'  --extra-vars overcloud_update='false' "
         ["multinode-overcloud-update.yml"]=" --extra-vars container_registry_release='${QUICKSTART_RELEASE}-current' --extra-vars promote_source='current' --extra-vars undercloud_update='false' "
     )
+{% endif %}
 fi
 
 mkdir -p $LOCAL_WORKING_DIR
