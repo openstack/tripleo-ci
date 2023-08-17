@@ -793,18 +793,19 @@
               - ci/environments/standalone-ipa.yaml
               - deployment/ipa/ipaservices-baremetal-ansible.yaml
               - deployment/apache/*
-              - deployment/ceph-ansible/*
+              - deployment/cinder/*
               - deployment/database/*
-              - deployment/etcd/*
+              - deployment/glance/*
               - deployment/haproxy/*
               - deployment/horizon/*
               - deployment/keystone/*
-              - deployment/metrics/*
+              - deployment/memcached/*
               - deployment/neutron/*
               - deployment/nova/*
-              - deployment/octavia/*
               - deployment/ovn/*
+              - deployment/placement/*
               - deployment/rabbitmq/*
+              - deployment/swift/*
               - deployment/timesync/*
               # puppet
               - ^manifests/haproxy.*$
