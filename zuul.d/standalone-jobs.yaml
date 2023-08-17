@@ -797,6 +797,7 @@
               - deployment/database/*
               - deployment/etcd/*
               - deployment/haproxy/*
+              - deployment/horizon/*
               - deployment/keystone/*
               - deployment/metrics/*
               - deployment/neutron/*
