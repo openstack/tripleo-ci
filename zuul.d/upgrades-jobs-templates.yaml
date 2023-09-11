@@ -149,29 +149,13 @@
         - tripleo-ci-centos-9-content-provider
         - tripleo-ci-centos-9-content-provider-current
         - tripleo-ci-centos-9-scenario000-multinode-oooq-container-updates: *cs9_update_all
-        - tripleo-ci-centos-8-content-provider
-        - tripleo-ci-centos-8-content-provider-train
-        - tripleo-ci-centos-8-undercloud-ffu-wallaby: &undercloud_ffu
-            vars: *consumer_vars
-            irrelevant-files: *undercloud_ignored
-            dependencies:
-              - tripleo-ci-centos-8-content-provider
-              - tripleo-ci-centos-8-content-provider-train
-        - tripleo-ci-centos-8-standalone-ffu-wallaby: &standalone_ffu
-            vars: *consumer_vars
-            dependencies:
-              - tripleo-ci-centos-8-content-provider
-              - tripleo-ci-centos-8-content-provider-train
     gate:
       jobs:
         - tripleo-ci-centos-9-content-provider
-        - tripleo-ci-centos-8-content-provider
         - tripleo-ci-centos-9-content-provider-current
-        - tripleo-ci-centos-8-content-provider-train
         - tripleo-ci-centos-9-scenario000-multinode-oooq-container-updates: *cs9_update_all
-        - tripleo-ci-centos-8-undercloud-ffu-wallaby: *undercloud_ffu
-        - tripleo-ci-centos-8-standalone-ffu-wallaby: *standalone_ffu
 
+# No reference to this on any branch used (past Train)
 - project-template:
     name: tripleo-upgrades-train-pipeline
     queue: tripleo

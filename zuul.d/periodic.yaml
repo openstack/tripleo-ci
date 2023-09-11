@@ -56,9 +56,6 @@
         - tripleo-ci-centos-9-content-provider-wallaby:
             vars:
               force_non_periodic: true
-        - tripleo-ci-centos-8-content-provider-train:
-            vars:
-              force_non_periodic: true
         - tripleo-ci-centos-9-containers-multinode-wallaby:
             vars: &multi_consumer_vars_periodic
               force_non_periodic: true
@@ -68,10 +65,6 @@
                 - build
             dependencies:
               - tripleo-ci-centos-9-content-provider-wallaby
-        - tripleo-ci-centos-8-containers-multinode-train:
-            vars: *multi_consumer_vars_periodic
-            dependencies:
-              - tripleo-ci-centos-8-content-provider-train
 
 - project-template:
     name: tripleo-periodic-upgrades-master-pipeline
@@ -176,7 +169,6 @@
       jobs:
         - tripleo-ci-centos-9-content-provider-wallaby: *force_non_periodic
         - tripleo-ci-centos-8-content-provider-wallaby: *force_non_periodic
-        - tripleo-ci-centos-8-content-provider-train: *force_non_periodic
         - tripleo-ci-centos-9-content-provider-current-wallaby: *force_non_periodic
         - tripleo-ci-centos-9-scenario000-multinode-oooq-container-updates:
             irrelevant-files: *multinode_ignored
@@ -184,12 +176,6 @@
             dependencies:
               - tripleo-ci-centos-9-content-provider-wallaby
               - tripleo-ci-centos-9-content-provider-current-wallaby
-        - tripleo-ci-centos-8-undercloud-ffu-wallaby:
-            vars: *consumer_vars
-            irrelevant-files: *undercloud_ignored
-            dependencies:
-              - tripleo-ci-centos-8-content-provider-wallaby
-              - tripleo-ci-centos-8-content-provider-train
 
 - project-template:
     name: tripleo-ceph-periodic-wallaby

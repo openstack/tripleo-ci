@@ -72,7 +72,7 @@
       jobs:
         - tripleo-ci-centos-9-content-provider
         - tripleo-ci-centos-8-content-provider
-        - tripleo-ci-centos-8-containers-multinode:
+        - tripleo-ci-centos-9-containers-multinode:
             irrelevant-files: &multinode_ignored
               - .*molecule.*
               - ^.*\.md$
@@ -144,11 +144,6 @@
               remove_tags:
                 - build
             dependencies:
-              - tripleo-ci-centos-8-content-provider
-        - tripleo-ci-centos-9-containers-multinode: &cs9_multinode_all
-            irrelevant-files: *multinode_ignored
-            vars: *multi_consumer_vars
-            dependencies:
               - tripleo-ci-centos-9-content-provider
         - tripleo-ci-centos-8-9-multinode-mixed-os: &multinode_mixed_os
             irrelevant-files: *multinode_ignored
@@ -156,18 +151,17 @@
             dependencies:
               - tripleo-ci-centos-8-content-provider
               - tripleo-ci-centos-9-content-provider
-        - tripleo-ci-centos-9-scenario007-multinode-oooq-container: *cs9_multinode_all
+        - tripleo-ci-centos-9-scenario007-multinode-oooq-container: &cs9_multinode_all
+            irrelevant-files: *multinode_ignored
+            vars: *multi_consumer_vars
+            dependencies:
+              - tripleo-ci-centos-9-content-provider
     gate:
       jobs:
         - tripleo-ci-centos-9-content-provider
         - tripleo-ci-centos-8-content-provider
         - tripleo-ci-centos-9-containers-multinode: *cs9_multinode_all
         - tripleo-ci-centos-8-9-multinode-mixed-os: *multinode_mixed_os
-        - tripleo-ci-centos-8-containers-multinode:
-            irrelevant-files: *multinode_ignored
-            vars: *multi_consumer_vars
-            dependencies:
-              - tripleo-ci-centos-8-content-provider
 
 - project-template:
     name: tripleo-multinode-container-full-pipeline
@@ -242,29 +236,17 @@
               - ^tripleo_common/tests/.*$
             dependencies:
               - openstack-tox-linters
-        - tripleo-ci-centos-8-content-provider-train:
-            irrelevant-files: *branchful_ignored
-            dependencies:
-              - openstack-tox-linters
         - tripleo-ci-centos-9-containers-multinode-wallaby: &multi_consumer_job_wallaby
             irrelevant-files: *branchful_ignored
             vars: *multi_consumer_vars
             dependencies:
               - tripleo-ci-centos-9-content-provider-wallaby
-        - tripleo-ci-centos-8-containers-multinode-train: &multi_consumer_job_train
-            irrelevant-files: *branchful_ignored
-            vars: *multi_consumer_vars
-            dependencies:
-              - tripleo-ci-centos-8-content-provider-train
 
     gate:
       jobs:
         - tripleo-ci-centos-9-content-provider-wallaby:
             irrelevant-files: *branchful_ignored
-        - tripleo-ci-centos-8-content-provider-train:
-            irrelevant-files: *branchful_ignored
         - tripleo-ci-centos-9-containers-multinode-wallaby: *multi_consumer_job_wallaby
-        - tripleo-ci-centos-8-containers-multinode-train: *multi_consumer_job_train
 
 ## CentOS 9 jobs
 - job:

@@ -69,7 +69,7 @@
     name: tripleo-ci-buildimage-jobs
     check:
       jobs:
-        - tripleo-buildimage-overcloud-full-centos-8:
+        - tripleo-buildimage-overcloud-full-centos-9:
             files: &build_images_files
               - ^playbooks/tripleo-buildimages/.*$
               - ^roles/oooci-build-images/.*$
@@ -77,25 +77,9 @@
               - tripleoclient/v1/overcloud_image.py
               - elements/.*
               - ^image-yaml/.*
-        - tripleo-buildimage-overcloud-full-centos-8-train:
-            files: *build_images_files
-        - tripleo-buildimage-ironic-python-agent-centos-8:
-            files: *build_images_files
-        - tripleo-buildimage-ironic-python-agent-centos-8-train:
-            files: *build_images_files
-        - tripleo-buildimage-overcloud-hardened-full-centos-8-train:
-            files: &build_images_hardened_files
-              - ^image-yaml/.*hardened.*
-              - ^elements/overcloud-secure
-              - ^elements/overcloud-partition
-              - ^diskimage_builder/elements/modprobe
         - tripleo-buildimage-overcloud-full-centos-9:
             files: *build_images_files
         - tripleo-buildimage-ironic-python-agent-centos-9:
-            files: *build_images_files
-        - tripleo-buildimage-ironic-python-agent-centos-9-zed:
-            files: *build_images_files
-        - tripleo-buildimage-overcloud-full-centos-9-zed:
             files: *build_images_files
         - tripleo-buildimage-overcloud-hardened-uefi-full-centos-9:
             files: &build_images_hardened_uefi_files
@@ -106,41 +90,19 @@
               - ^diskimage_builder/elements/bootloader
               - ^diskimage_builder/elements/growvols
               - ^roles/oooci-build-images/.*$
-        - tripleo-buildimage-overcloud-hardened-uefi-full-centos-9-zed:
-            files: *build_images_hardened_uefi_files
     gate:
       jobs:
-        - tripleo-buildimage-overcloud-full-centos-8:
-            files: *build_images_files
-        - tripleo-buildimage-overcloud-full-centos-8-train:
-            files: *build_images_files
-        - tripleo-buildimage-ironic-python-agent-centos-8:
-            files: *build_images_files
-        - tripleo-buildimage-ironic-python-agent-centos-8-train:
-            files: *build_images_files
-        - tripleo-buildimage-overcloud-hardened-full-centos-8-train:
-            files: *build_images_hardened_files
         - tripleo-buildimage-overcloud-full-centos-9:
             files: *build_images_files
         - tripleo-buildimage-ironic-python-agent-centos-9:
             files: *build_images_files
-        - tripleo-buildimage-ironic-python-agent-centos-9-zed:
-            files: *build_images_files
-        - tripleo-buildimage-overcloud-full-centos-9-zed:
-            files: *build_images_files
         - tripleo-buildimage-overcloud-hardened-uefi-full-centos-9:
-            files: *build_images_hardened_uefi_files
-        - tripleo-buildimage-overcloud-hardened-uefi-full-centos-9-zed:
             files: *build_images_hardened_uefi_files
 
 - project-template:
     name: tripleo-buildimage-jobs
     check:
       jobs:
-        - tripleo-buildimage-overcloud-full-centos-8:
-            files: *build_images_files
-        - tripleo-buildimage-ironic-python-agent-centos-8:
-            files: *build_images_files
         - tripleo-buildimage-overcloud-full-centos-9:
             files: *build_images_files
         - tripleo-buildimage-ironic-python-agent-centos-9:
@@ -149,10 +111,6 @@
             files: *build_images_hardened_uefi_files
     gate:
       jobs:
-        - tripleo-buildimage-overcloud-full-centos-8:
-            files: *build_images_files
-        - tripleo-buildimage-ironic-python-agent-centos-8:
-            files: *build_images_files
         - tripleo-buildimage-overcloud-full-centos-9:
             files: *build_images_files
         - tripleo-buildimage-ironic-python-agent-centos-9:
@@ -183,7 +141,7 @@
 - job:
     name: tripleo-buildimage-ironic-python-agent-centos-9
     parent: tripleo-build-images-base-centos-9
-    branches: &c9_branches ^(?!stable/train).*$
+    branches: &c9_branches ^(stable/wallaby).*$
     vars:
       tripleo_image_type: ironic-python-agent
     irrelevant-files: &build_image_irrelevant
