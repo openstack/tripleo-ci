@@ -252,7 +252,7 @@ toml==0.10.2
     #   pre-commit
     #   pytest
     #   pytest-cov
-urllib3==1.26.5
+urllib3==1.26.18
     # via requests
 virtualenv==20.4.7
     # via pre-commit
