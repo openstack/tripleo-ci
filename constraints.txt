@@ -57,7 +57,7 @@ cookiecutter==1.7.3
     # via molecule
 coverage==5.5
     # via pytest-cov
-cryptography==3.4.7
+cryptography==42.0.0
     # via
     #   ansible
     #   paramiko
