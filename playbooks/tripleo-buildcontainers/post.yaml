@@ -1,7 +1,0 @@
----
-- hosts: primary
-  tasks:
-    - name: Run build containers post tasks
-      include_role:
-        name: build-containers
-        tasks_from: post

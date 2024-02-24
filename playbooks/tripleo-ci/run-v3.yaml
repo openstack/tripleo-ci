@@ -1,6 +1,0 @@
----
-- hosts:
-    - primary
-  roles:
-    - role: ci-common-vars
-    - role: run-test

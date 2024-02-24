@@ -1,5 +1,0 @@
-pbr
-# required to run scripts/tripleo-jobs.py
-sqlalchemy
-jenkinsapi
-colorama

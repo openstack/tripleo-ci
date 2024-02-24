@@ -1,6 +1,0 @@
----
-# In ansible 2.7 should be enough to add the option public: true to the calling include_role
-# for this role. This is the best workaround
-- name: Include the vars to be available for the playbook
-  include_vars:
-    dir: vars

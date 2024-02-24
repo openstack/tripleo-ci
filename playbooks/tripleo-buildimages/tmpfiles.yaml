@@ -1,9 +1,0 @@
----
-- hosts: all
-  tasks:
-    - name: remove removal of tmp files
-      become: true
-      lineinfile:
-        path: /usr/lib/tmpfiles.d/tmp.conf
-        regex: "(10|30)d"
-        state: absent

@@ -1,9 +1,0 @@
-#!/usr/bin/bash
-# In some of scripts we still have python shebang "#!/usr/bin/env python"
-# which fails in python3 hosts.
-# In packages it's fixed by adding pathfix.py tasks to spec files.
-# Add the same behavior here as we build from source, not packages.
-for python_file in "{{ tripleo_shebang_path | join(' ')}}"
-do
-    /usr/bin/pathfix.py -pni /usr/bin/python3 $python_file
-done
