@@ -29,7 +29,7 @@ execnet==1.9.0
 filelock==3.4.1
 greenlet==1.1.2
 identify==2.4.2
-idna==3.3
+idna==3.7
 importlib-metadata==4.8.3
 importlib-resources==5.2.3
 iniconfig==1.1.1
